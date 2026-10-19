@@ -1,63 +1,88 @@
-import { useCallback, useEffect, useState, type JSX } from 'react'
-import type { PingResponse } from '../shared/schemas'
+import { useEffect, useMemo, type JSX } from 'react'
+import { CircuitCanvas } from './canvas/CircuitCanvas'
+import { useCircuitStore } from './store/circuitStore'
+import { buildNetlist } from './wiring/netlist'
+import { IpcStatus } from './ui/IpcStatus'
+import { PartDrawer } from './ui/PartDrawer'
+import { PartInspector } from './ui/PartInspector'
+import { Toolbar } from './ui/Toolbar'
 
-type IpcStatus =
-  | { readonly kind: 'checking' }
-  | { readonly kind: 'ready'; readonly response: PingResponse }
-  | { readonly kind: 'failed'; readonly message: string }
+function isTextEntry(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+  const tag = target.tagName
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable
+}
 
 export function App(): JSX.Element {
-  const [status, setStatus] = useState<IpcStatus>({ kind: 'checking' })
+  const document = useCircuitStore((state) => state.document)
+  const undo = useCircuitStore((state) => state.undo)
+  const redo = useCircuitStore((state) => state.redo)
+  const removeSelected = useCircuitStore((state) => state.removeSelected)
+  const duplicateSelected = useCircuitStore((state) => state.duplicateSelected)
+  const rotateSelected = useCircuitStore((state) => state.rotateSelected)
+  const selectParts = useCircuitStore((state) => state.selectParts)
+  const selectWire = useCircuitStore((state) => state.selectWire)
 
-  const checkIpc = useCallback(async (): Promise<void> => {
-    setStatus({ kind: 'checking' })
-    try {
-      const response = await window.api.ping({ sentAt: Date.now() })
-      setStatus({ kind: 'ready', response })
-    } catch (error) {
-      setStatus({
-        kind: 'failed',
-        message: error instanceof Error ? error.message : String(error),
-      })
-    }
-  }, [])
+  // The netlist is derived state: it is rebuilt whenever the topology changes.
+  const netlist = useMemo(() => buildNetlist(document), [document])
 
   useEffect(() => {
-    void checkIpc()
-  }, [checkIpc])
+    const onKeyDown = (event: KeyboardEvent): void => {
+      const modifier = event.ctrlKey || event.metaKey
+      const key = event.key.toLowerCase()
+
+      if (modifier && key === 'z') {
+        event.preventDefault()
+        if (event.shiftKey) redo()
+        else undo()
+        return
+      }
+      if (modifier && key === 'y') {
+        event.preventDefault()
+        redo()
+        return
+      }
+      if (isTextEntry(event.target)) return
+
+      if (modifier && key === 'd') {
+        event.preventDefault()
+        duplicateSelected()
+        return
+      }
+      if (key === 'r') {
+        rotateSelected()
+        return
+      }
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        event.preventDefault()
+        removeSelected()
+        return
+      }
+      if (event.key === 'Escape') {
+        selectParts([])
+        selectWire(null)
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [duplicateSelected, redo, removeSelected, rotateSelected, selectParts, selectWire, undo])
 
   return (
     <div className="app-shell">
-      <header className="app-toolbar">
-        <span className="app-brand">
-          Hu<span className="app-brand-accent">CAD</span> Circuits
-        </span>
-        <span className="app-tagline">offline Arduino simulator</span>
-      </header>
-
+      <Toolbar />
       <main className="app-main">
-        <section className="app-canvas" aria-label="Circuit canvas">
-          <p className="app-placeholder">Canvas arrives in Milestone 2.</p>
-        </section>
-        <aside className="app-drawer" aria-label="Parts drawer">
-          <h2 className="app-panel-title">Parts</h2>
-          <p className="app-placeholder">
-            Arduino Uno R3, breadboard, LED, resistor, push button, potentiometer, buzzer.
-          </p>
-        </aside>
+        <CircuitCanvas />
+        <div className="app-sidebar">
+          <PartDrawer />
+          <PartInspector />
+        </div>
       </main>
-
-      <footer className="app-status" role="status">
-        {status.kind === 'checking' && <span>IPC: checking…</span>}
-        {status.kind === 'failed' && (
-          <span className="app-status-error">IPC failed: {status.message}</span>
-        )}
-        {status.kind === 'ready' && (
-          <span>
-            IPC ok · echo {status.response.echo} · Electron {status.response.versions.electron} ·
-            Chrome {status.response.versions.chrome} · Node {status.response.versions.node}
-          </span>
-        )}
+      <footer className="app-status">
+        <span data-testid="scene-counts">
+          {document.parts.length} parts · {document.wires.length} wires · {netlist.netCount} nets
+        </span>
+        <IpcStatus />
       </footer>
     </div>
   )

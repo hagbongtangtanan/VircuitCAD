@@ -61,3 +61,34 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   and no setuid `chrome-sandbox`, so `electron-builder` (which signs/reflinks the Electron
   binary) is not exercised. Verification instead runs the real Electron binary against the
   built `out/` bundle over the Chrome DevTools Protocol.
+
+## 2026-10-19 — Circuit model, canvas and netlist
+
+- **The document is the single source of truth.** `CircuitDocument` (parts, wires) lives in the
+  zustand store and everything else is derived: Konva nodes read the store, the netlist is
+  rebuilt with `useMemo` whenever the document changes. No view state is ever the authority.
+- **Every part is a `PartDefinition`.** Pins, size, default props, editable prop fields,
+  internal nets and the Konva body live in one registry entry, so the drawer, inspector,
+  canvas and netlist all read the same description. Part geometry helpers
+  (`pinWorldPosition`) apply rotation about the part centre, which keeps wires attached while
+  a part is rotated.
+- **Snapshots instead of invertible commands.** `createHistory` stores the previous document on
+  every edit; undo/redo therefore cannot drift out of sync with the operation it reverses. A
+  drag is one entry: `beginTransientEdit` banks the pre-drag document and the intermediate
+  `movePart` calls bypass the stack until `commitTransientEdit`.
+- **Netlist is union-find over pins.** Every pin starts as its own node; `internalNets` (both
+  breadboard column halves plus the four power rails) and then each wire union nodes together.
+  Union-find handles the cycles that jumper wires between breadboard columns create, which a
+  naive DFS would have to special-case.
+- **Breadboard connectivity is modelled, not drawn ad hoc.** The 30-column board exposes 420
+  pins (two five-hole column halves plus four 30-hole rails) and 64 internal nets; the drawn
+  board body is generated from the same row/column constants, so holes and pins cannot drift
+  apart.
+- **Pins and wire strokes keep a constant on-screen size.** They are drawn inside the
+  zoom-transformed layer, so their radii/widths are divided by the current scale. Grid lines
+  thicken the same way; the grid step doubles when a 10-unit cell would render below 8 px.
+- **The verification probe drives the real UI.** `EXPECT_CANVAS=1` makes
+  `scripts/verify-electron.mjs` click a drawer button and then dispatch CDP mouse events onto
+  two pin coordinates, asserting that a wire appears and the two nets merge. This exercises the
+  Konva hit-testing and store paths that unit tests cannot reach, with zero console errors and
+  zero CSP violations required.

@@ -13,7 +13,7 @@ Under active development.
 | Milestone | Scope                                                | State   |
 | --------- | ---------------------------------------------------- | ------- |
 | 1         | Scaffolding, secure shell, typed IPC ping, packaging | Done    |
-| 2         | Canvas, parts drawer, wiring, netlist, undo/redo     | Planned |
+| 2         | Canvas, parts drawer, wiring, netlist, undo/redo     | Done    |
 | 3         | Editor, compiler, serial monitor                     | Planned |
 | 4         | avr8js simulation (LED, buzzer, input)               | Planned |
 | 5         | `.circuit` / `.ino` / `.hex` file flows              | Planned |
@@ -51,6 +51,14 @@ logged no console errors or CSP violations. Start a build with remote debugging,
 ```bash
 electron out/main/index.js --remote-debugging-port=9222 &
 CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
+```
+
+Set `EXPECT_CANVAS=1` to also drive the circuit editor end to end: the script places a part from
+the drawer, clicks two pins through the real Konva event path, and checks that a wire appeared
+and the two nets merged.
+
+```bash
+EXPECT_CANVAS=1 CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
 ```
 
 On a headless or containerised Linux box where the setuid `chrome-sandbox` helper is not
