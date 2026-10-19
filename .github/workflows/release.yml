@@ -94,3 +94,18 @@ jobs:
       # `publish` block in electron-builder.yml points at this repository.
       - name: Package and publish
         run: npx electron-builder --publish always
+
+      # Publishing and the installers themselves should not be all-or-nothing:
+      # when a publish call fails or a runner uploads late, the built files are
+      # still retrievable from the run.
+      - name: Keep the installers as workflow artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-installers
+          path: |
+            release/*.AppImage
+            release/*.exe
+            release/*.dmg
+            release/latest-*.yml
+          if-no-files-found: ignore

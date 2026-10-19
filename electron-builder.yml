@@ -14,8 +14,10 @@ files:
 # can be spawned as a normal executable. Build it first with
 # `npm run fetch:toolchain`; the download cache is excluded.
 extraResources:
-  - from: resources/toolchain
-    to: toolchain
+  # Only the host platform's toolchain is shipped; `fetch-toolchain.mjs` does not
+  # create the other directories, which electron-builder treats as a warning.
+  - from: resources/toolchain/${os}
+    to: toolchain/${os}
     filter:
       - '**/*'
       - '!.cache/**'
