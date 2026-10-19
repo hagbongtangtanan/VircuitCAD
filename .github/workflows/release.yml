@@ -1,9 +1,15 @@
 # Primary release path: pushing a `v*` tag builds the installers on every
-# platform and uploads them to the matching GitHub Release. The manual
-# counterpart is `npm run release` (scripts/release.mjs), which publishes an
-# already-built `release/` directory from a workstation or for a hotfix.
+# platform, keeps them as workflow artifacts, and publishes them to the matching
+# GitHub Release from a single final job.
+#
+# Publishing used to happen from each runner independently. That races when two
+# platforms finish at the same time (the second publisher tries to create a
+# release that the first one just created) and it makes a failed platform look
+# like a missing asset with no fallback. Building first and publishing once from
+# the collected artifacts removes both failure modes.
 #
 # A manual `workflow_dispatch` run publishes the current package.json version.
+
 name: Release
 
 on:
@@ -12,7 +18,6 @@ on:
       - 'v*'
   workflow_dispatch:
 
-# Creating a release and uploading assets needs write access to the repository.
 permissions:
   contents: write
 
@@ -21,8 +26,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release:
-    name: ${{ matrix.os }}
+  build:
+    name: build (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -32,13 +37,6 @@ jobs:
           - windows-latest
           - macos-latest
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # A tag with a suffix (v0.2.0-beta.1) publishes as a pre-release; the
-      # local script applies the same rule to the version suffix.
-      EP_PRE_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') && contains(github.ref_name, '-') }}
-      # Re-running a release job must still overwrite assets on a release that
-      # is already older than the publisher's two hour upload window.
-      EP_GH_IGNORE_TIME: 'true'
       # The builds are intentionally unsigned: no certificate is available yet.
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
     steps:
@@ -69,12 +67,7 @@ jobs:
 
       # The vendored avr-gcc is Linux-only, so the Windows and macOS packages
       # are built without a compiler: electron-builder only warns about the
-      # missing resource directory, and the simulator still runs. Vendoring a
-      # compiler per platform is future work.
-      #
-      # `prebuild:linux` runs the same fetch on a developer machine, so this
-      # explicit step is what guarantees the AppImage contains a compiler even
-      # when the npm cache is cold on a fresh runner.
+      # missing resource directory, and the simulator still runs.
       - name: Vendor the offline toolchain
         if: runner.os == 'Linux'
         run: npm run fetch:toolchain
@@ -86,26 +79,64 @@ jobs:
       - name: Build the app
         run: npm run build
 
-      # No extra apt packages are needed: electron-builder downloads its own
-      # appimagetool, and libfuse2 is a runtime dependency of the generated
-      # AppImage rather than a build dependency.
-      #
-      # Each runner uploads its own installers to the release for the tag; the
-      # `publish` block in electron-builder.yml points at this repository.
-      - name: Package and publish
-        run: npx electron-builder --publish always
+      - name: Package the installers
+        run: npx electron-builder --publish never
 
-      # Publishing and the installers themselves should not be all-or-nothing:
-      # when a publish call fails or a runner uploads late, the built files are
-      # still retrievable from the run.
+      # Even a platform whose publish fails in the final job leaves a complete,
+      # downloadable installer behind in the run.
       - name: Keep the installers as workflow artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-installers
+          name: installers-${{ runner.os }}
           path: |
             release/*.AppImage
             release/*.exe
             release/*.dmg
-            release/latest-*.yml
+            release/*.zip
+            release/*.blockmap
+            release/latest*.yml
           if-no-files-found: ignore
+
+  publish:
+    name: publish release
+    needs: build
+    # Publish whatever built, even when one platform failed: a partial release
+    # plus the workflow artifacts is better than losing the working installers.
+    if: always() && needs.build.result != 'cancelled'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish every asset to one release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            tag="${GITHUB_REF_NAME}"
+          else
+            tag="v$(node -p "require('./package.json').version")"
+          fi
+          echo "publishing ${tag}"
+          ls -lh dist
+          flags=(--title "HuCAD ${tag#v}" --generate-notes --target "${GITHUB_SHA}")
+          case "${tag}" in
+            *-*) flags+=(--prerelease) ;;
+          esac
+          gh release view "${tag}" >/dev/null 2>&1 ||
+            gh release create "${tag}" "${flags[@]}"
+          # --clobber makes manual re-runs idempotent.
+          gh release upload "${tag}" dist/* --clobber

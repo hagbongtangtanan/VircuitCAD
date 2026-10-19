@@ -153,7 +153,7 @@ Known modelling limits, chosen to keep the solver fast and predictable:
 npm run build:linux
 ```
 
-produces `release/HuCAD-0.2.0-linux-x86_64.AppImage` (about 234 MB). The `prebuild:linux`
+produces `release/HuCAD-0.2.1-linux-x86_64.AppImage` (about 234 MB). The `prebuild:linux`
 hook vendors the toolchain first (a no-op when it is already there), then electron-builder copies
 it and the samples outside the asar into `resources/`, so the installed app compiles sketches and
 opens samples with no network and no system packages. The packaged directory is smoke-tested with
@@ -178,10 +178,10 @@ and `SHA256SUMS.txt`) to the GitHub Release for that tag. Tags with a suffix, su
 `v0.2.0-beta.1`, are published as pre-releases.
 
 ```bash
-npm version 0.2.0 --no-git-tag-version   # or edit package.json by hand
-git commit -am "chore: release v0.2.0"
-git tag v0.2.0
-git push origin main v0.2.0
+npm version 0.2.1 --no-git-tag-version   # or edit package.json by hand
+git commit -am "chore: release v0.2.1"
+git tag v0.2.1
+git push origin main v0.2.1
 ```
 
 `scripts/release.mjs` is the manual/hotfix path: it publishes an already-built `release/`
