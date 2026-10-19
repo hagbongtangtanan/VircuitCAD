@@ -14,6 +14,17 @@ export const partTypeSchema = z.enum([
   'push-button',
   'potentiometer',
   'buzzer',
+  'capacitor',
+  'diode',
+  'inductor',
+  'slide-switch',
+  'ldr',
+  'rgb-led',
+  'seven-segment',
+  'dc-motor',
+  'battery-aa',
+  'battery-9v',
+  'power-supply',
 ])
 
 export const pointSchema = z.strictObject({
@@ -36,6 +47,17 @@ export const partPropsSchemas = {
     resistanceOhms: z.number().positive().max(1_000_000),
   }),
   buzzer: z.strictObject({}),
+  capacitor: z.strictObject({ capacitanceMicroFarads: z.number().positive().max(1_000_000) }),
+  diode: z.strictObject({}),
+  inductor: z.strictObject({ inductanceMilliHenries: z.number().positive().max(1_000_000) }),
+  'slide-switch': z.strictObject({}),
+  ldr: z.strictObject({}),
+  'rgb-led': z.strictObject({}),
+  'seven-segment': z.strictObject({ color: ledColorSchema }),
+  'dc-motor': z.strictObject({}),
+  'battery-aa': z.strictObject({}),
+  'battery-9v': z.strictObject({}),
+  'power-supply': z.strictObject({}),
 } as const
 
 export const pinRefSchema = z.strictObject({
@@ -77,6 +99,17 @@ export const partSchema = z.discriminatedUnion('type', [
   z.strictObject(partVariant('push-button')),
   z.strictObject(partVariant('potentiometer')),
   z.strictObject(partVariant('buzzer')),
+  z.strictObject(partVariant('capacitor')),
+  z.strictObject(partVariant('diode')),
+  z.strictObject(partVariant('inductor')),
+  z.strictObject(partVariant('slide-switch')),
+  z.strictObject(partVariant('ldr')),
+  z.strictObject(partVariant('rgb-led')),
+  z.strictObject(partVariant('seven-segment')),
+  z.strictObject(partVariant('dc-motor')),
+  z.strictObject(partVariant('battery-aa')),
+  z.strictObject(partVariant('battery-9v')),
+  z.strictObject(partVariant('power-supply')),
 ])
 
 export const currentCircuitVersion = 1

@@ -14,7 +14,7 @@ export function SketchEditor(): JSX.Element {
       <CodeMirror
         value={source}
         height="100%"
-        theme="dark"
+        theme="light"
         extensions={[cpp()]}
         basicSetup={{ lineNumbers: true, foldGutter: true, highlightActiveLine: true }}
         onChange={(value) => setSource(value)}

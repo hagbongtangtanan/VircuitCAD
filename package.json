@@ -1,8 +1,8 @@
 {
-  "name": "hucad-circuits",
+  "name": "circuitbench",
   "version": "0.1.0",
   "private": true,
-  "description": "Offline, local Tinkercad Circuits-style Arduino simulator desktop app",
+  "description": "CircuitBench: offline, local Tinkercad-style Arduino circuit simulator",
   "author": "BIT-CT, CTU-San Francisco",
   "license": "MIT",
   "main": "out/main/index.js",
@@ -24,7 +24,9 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify:electron": "node scripts/verify-electron.mjs"
+    "verify:electron": "node scripts/verify-electron.mjs",
+    "toolchain:verify": "node scripts/fetch-toolchain.mjs --verify",
+    "prebuild:linux": "node scripts/fetch-toolchain.mjs"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "6.0.3",
@@ -55,5 +57,5 @@
     "vite": "8.3.4",
     "vitest": "5.0.5"
   },
-  "desktopName": "hucad-circuits.desktop"
+  "desktopName": "circuitbench.desktop"
 }

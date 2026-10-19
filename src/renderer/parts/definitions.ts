@@ -128,6 +128,157 @@ export const buzzerDefinition: PartDefinition<'buzzer'> = {
   propFields: [],
 }
 
+export const capacitorDefinition: PartDefinition<'capacitor'> = {
+  type: 'capacitor',
+  label: 'Capacitor',
+  category: 'passives',
+  size: { width: 40, height: 40 },
+  defaultProps: { capacitanceMicroFarads: 100 },
+  pins: [pin('1', '+', { x: 10, y: 40 }), pin('2', '−', { x: 30, y: 40 })],
+  propFields: [
+    {
+      kind: 'number',
+      key: 'capacitanceMicroFarads',
+      label: 'Capacitance',
+      min: 1,
+      max: 1_000_000,
+      step: 1,
+      unit: 'µF',
+    },
+  ],
+}
+
+export const diodeDefinition: PartDefinition<'diode'> = {
+  type: 'diode',
+  label: 'Diode',
+  category: 'passives',
+  size: { width: 50, height: 24 },
+  defaultProps: {},
+  pins: [pin('anode', 'A', { x: 0, y: 12 }), pin('cathode', 'K', { x: 50, y: 12 })],
+  propFields: [],
+}
+
+export const inductorDefinition: PartDefinition<'inductor'> = {
+  type: 'inductor',
+  label: 'Inductor',
+  category: 'passives',
+  size: { width: 60, height: 26 },
+  defaultProps: { inductanceMilliHenries: 10 },
+  pins: [pin('1', '1', { x: 0, y: 13 }), pin('2', '2', { x: 60, y: 13 })],
+  propFields: [
+    {
+      kind: 'number',
+      key: 'inductanceMilliHenries',
+      label: 'Inductance',
+      min: 1,
+      max: 1_000_000,
+      step: 1,
+      unit: 'mH',
+    },
+  ],
+}
+
+export const slideSwitchDefinition: PartDefinition<'slide-switch'> = {
+  type: 'slide-switch',
+  label: 'Slide Switch',
+  category: 'inputs',
+  size: { width: 56, height: 30 },
+  defaultProps: {},
+  pins: [pin('1', '1', { x: 0, y: 15 }), pin('2', '2', { x: 56, y: 15 })],
+  propFields: [],
+}
+
+export const ldrDefinition: PartDefinition<'ldr'> = {
+  type: 'ldr',
+  label: 'Photoresistor',
+  category: 'inputs',
+  size: { width: 44, height: 44 },
+  defaultProps: {},
+  pins: [pin('1', '1', { x: 10, y: 44 }), pin('2', '2', { x: 34, y: 44 })],
+  propFields: [],
+}
+
+const RGB_CHANNELS = ['red', 'green', 'blue'] as const
+
+export const rgbLedDefinition: PartDefinition<'rgb-led'> = {
+  type: 'rgb-led',
+  label: 'RGB LED',
+  category: 'outputs',
+  size: { width: 44, height: 52 },
+  defaultProps: {},
+  pins: [
+    ...RGB_CHANNELS.map((channel, index) =>
+      pin(channel, channel[0]!.toUpperCase(), { x: 8 + index * 10, y: 52 })
+    ),
+    pin('cathode', 'K', { x: 38, y: 52 }),
+  ],
+  propFields: [],
+}
+
+const SEVEN_SEGMENT_PINS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp'] as const
+
+export const sevenSegmentDefinition: PartDefinition<'seven-segment'> = {
+  type: 'seven-segment',
+  label: '7-Segment Display',
+  category: 'outputs',
+  size: { width: 70, height: 90 },
+  defaultProps: { color: 'red' },
+  pins: [
+    ...SEVEN_SEGMENT_PINS.map((segment, index) =>
+      pin(segment, segment, { x: 8 + index * 8, y: 90 })
+    ),
+    pin('common', 'CC', { x: 4, y: 90 }),
+  ],
+  propFields: [
+    {
+      kind: 'select',
+      key: 'color',
+      label: 'Color',
+      options: ['red', 'green', 'blue', 'yellow', 'white'] satisfies readonly LedColor[],
+    },
+  ],
+}
+
+export const dcMotorDefinition: PartDefinition<'dc-motor'> = {
+  type: 'dc-motor',
+  label: 'DC Motor',
+  category: 'outputs',
+  size: { width: 56, height: 56 },
+  defaultProps: {},
+  pins: [pin('plus', '+', { x: 14, y: 56 }), pin('minus', '-', { x: 42, y: 56 })],
+  propFields: [],
+}
+
+export const batteryAaDefinition: PartDefinition<'battery-aa'> = {
+  type: 'battery-aa',
+  label: 'AA Battery',
+  category: 'boards',
+  size: { width: 64, height: 30 },
+  defaultProps: {},
+  pins: [pin('plus', '+', { x: 64, y: 15 }), pin('minus', '−', { x: 0, y: 15 })],
+  propFields: [],
+}
+
+export const batteryNineVoltDefinition: PartDefinition<'battery-9v'> = {
+  type: 'battery-9v',
+  label: '9V Battery',
+  category: 'boards',
+  size: { width: 56, height: 40 },
+  defaultProps: {},
+  pins: [pin('plus', '+', { x: 44, y: 0 }), pin('minus', '−', { x: 12, y: 0 })],
+  propFields: [],
+}
+
+export const powerSupplyDefinition: PartDefinition<'power-supply'> = {
+  type: 'power-supply',
+  label: '5V Supply',
+  category: 'boards',
+  size: { width: 60, height: 44 },
+  defaultProps: {},
+  pins: [pin('plus', '+5V', { x: 48, y: 0 }), pin('minus', 'GND', { x: 12, y: 0 })],
+  propFields: [],
+}
+
 const UNO_DIGITAL_PINS = [
   'D13',
   'D12',
@@ -320,6 +471,17 @@ export const partDefinitions = [
   pushButtonDefinition,
   potentiometerDefinition,
   buzzerDefinition,
+  capacitorDefinition,
+  diodeDefinition,
+  inductorDefinition,
+  slideSwitchDefinition,
+  ldrDefinition,
+  rgbLedDefinition,
+  sevenSegmentDefinition,
+  dcMotorDefinition,
+  batteryAaDefinition,
+  batteryNineVoltDefinition,
+  powerSupplyDefinition,
 ] as const
 
 const definitionsByType = new Map<PartType, PartDefinition>(

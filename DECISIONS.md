@@ -225,3 +225,77 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   Linux-only and `fetch-toolchain.mjs` refuses to run elsewhere, so CI skips that step on those
   runners and electron-builder only warns about the missing resource directory. The canvas,
   wiring and simulator work there; compiling a sketch needs a matching toolchain first.
+
+## 2026-10-20 — CircuitBench UI shell
+
+- **The product name is a constant, not a rename.** `APP_NAME` in `src/shared/app.ts` feeds the
+  window title, the top bar, the HTML title and the document title. The npm package, repository
+  and installer artifact names stay `HuCAD Circuits` for now: renaming them changes download
+  URLs, the updater's `latest*.yml` and the GitHub release identity, which belongs to the
+  packaging milestone rather than the shell.
+- **Light theme with a token layer.** `ui/tokens.css` owns every colour, radius, shadow and
+  spacing value, and `styles.css` only consumes them. Konva cannot read CSS custom properties,
+  so canvas chrome (grid, pins, handles) mirrors the same palette in `parts/partColors.ts` and
+  `canvas/CircuitCanvas.tsx`; those two spots must change together.
+- **System fonts only.** The shell uses `system-ui`/`Segoe UI` stacks and a monospace stack
+  instead of bundling a webfont: the app must work offline, and shipping a font adds megabytes
+  and a licence obligation for no visible gain.
+- **Viewport state lives in a store.** Pan/zoom used to be local to `CircuitCanvas`;
+  `store/viewportStore.ts` now owns it so the floating canvas toolbar can zoom, reset and
+  fit-to-content without imperative refs, and `fitToContent` can measure the document (parts,
+  their rotated footprints and pin anchors) in one place.
+- **The floating inspector only exists while something is selected.** Tinkercad's inspector
+  appears next to the selection and disappears otherwise; keeping an empty panel permanently
+  docked would waste canvas space. Selection is already the store's source of truth, so the
+  panel is a pure derivation of it.
+- **Placeholders are labelled, not faked.** The Flip tool, Notes tool, block modes and Schematic
+  tab are visible but inert, each with a tooltip or note naming the milestone that implements
+  it. A disabled control with an honest label is better than a button that silently does
+  nothing, and it keeps the shell's information architecture testable early.
+- **Clicked parts avoid existing footprints.** A click in the parts panel places the part at the
+  centre of the current viewport, then walks right/down on the grid until the new bounding box
+  no longer overlaps an existing part. Dropping on top of the Uno (which is what a naive centre
+  placement does once the sample is loaded) hides pins the user needs next.
+- **The serial drawer opens on first output but stays in the DOM.** Collapsing it uses `hidden`
+  on the body rather than unmounting, so the monitor keeps its buffer and scroll position and
+  the CDP probe can assert its presence without racing the auto-open behaviour.
+
+## 2026-10-20 — CircuitBench identity, interactive inputs, wider part library
+
+- **This supersedes the "names stay HuCAD" note above.** The npm package is now `circuitbench`,
+  the desktop entry is `circuitbench.desktop`, the app id is `com.circuitbench.app` and artifacts
+  are `CircuitBench-<version>-<os>-<arch>.<ext>`. The GitHub repository stays `HuCAD` because
+  existing releases, badges and clone URLs point at it; `publish.repo` therefore still says
+  `HuCAD`. The Electron user-data directory follows the package name, so the packaged app writes
+  to `~/.config/circuitbench`. The `.hucad` project extension and `hucad-project` format id are
+  kept as the on-disk format because changing them would invalidate every saved project and
+  sample for no user-visible gain.
+- **Runtime input is separate from the document.** `store/interactionStore.ts` holds held
+  buttons, latched switches, potentiometer wipers and sensor levels. The simulation pulls a
+  snapshot through `ArduinoSimulation.readInputs` and folds it into the solve signature, so
+  pressing a button re-solves instantly without dirtying the project, entering the undo stack or
+  stopping the emulator (`useCircuitStore` only stops the sim when the document itself changes).
+  Before this, `SolveOptions` existed but was never passed at runtime, so buttons and pots were
+  inert while the simulator ran.
+- **Momentary vs latched controls.** Push buttons are pressed on `mousedown` and released on
+  `mouseup`/`mouseleave`/window blur; slide switches latch on click. Both are also reachable from
+  the inspector so a control can be driven without fighting the drag gesture.
+- **Capacitors and inductors are DC models.** A capacitor is an open circuit and an inductor a
+  50 mΩ short. Adding transient analysis would change the solver from a few-millisecond linear
+  solve to a time-stepped integrator; the simulator's job here is "does this circuit work", not
+  SPICE accuracy. The limitation is documented in the README rather than hidden.
+- **Diodes reuse the LED branch machinery.** LED, diode, RGB channel and seven-segment segment
+  are all "forward voltage plus series resistance" branches solved iteratively until the on/off
+  set is stable. Branch keys are `partId` for single-die parts and `partId:channel` for multi-die
+  parts, which lets one brightness map feed the canvas without special cases in the store.
+- **Batteries and supplies are Thevenin sources inside the solver.** They need no Uno driver, so
+  a battery + motor + LED circuit solves on its own; an ideal source would make parallel grounds
+  singular, hence the small series resistance (0.5 Ω AA, 1 Ω 9V, 0.1 Ω supply).
+- **Placement walks outward in footprint-sized rings.** The previous fixed 30 px right/down scan
+  could never escape the 300×200 Uno, so clicked parts landed on top of the board. The step now
+  scales with the part's own size, and rings are visited nearest-first.
+- **The toolchain fetch is idempotent and verifiable.** `fetch-toolchain.mjs` exits early when
+  `bin/avr-g++`, `core/uno/core.a` and the Arduino core are present, `--force` rebuilds, and
+  `--verify` checks without the network for CI. `prebuild:linux` runs the fetch so a fresh clone
+  cannot produce a compiler-less AppImage, and the release workflow runs `toolchain:verify` as an
+  explicit gate. Windows and macOS still ship without a compiler (unchanged).

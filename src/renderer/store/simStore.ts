@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { CLOCK_HZ, ArduinoSimulation, type SimulationFrame } from '../sim/simulation'
 import { useSerialStore } from '../serial/serialStore'
 import { useCircuitStore } from './circuitStore'
+import { currentSolveOptions } from './interactionStore'
 import { useSketchStore } from './sketchStore'
 
 export type SimulationStatus = 'idle' | 'preparing' | 'running' | 'stopped' | 'error'
@@ -12,6 +13,8 @@ export interface SimStore {
   readonly elapsedMs: number
   /** 0 to 1 per LED part id. */
   readonly ledBrightness: Readonly<Record<string, number>>
+  /** 0 to 1 rotor speed per DC motor part id. */
+  readonly motorSpeed: Readonly<Record<string, number>>
   readonly pinVoltages: Readonly<Record<string, number | null>>
 
   start(): Promise<void>
@@ -47,9 +50,12 @@ export const useSimStore = create<SimStore>()((set, get) => {
   function publish(frame: SimulationFrame, force = false): void {
     const now = performance.now()
     const brightness = brightnessRecord(frame)
-    const signature = Object.entries(brightness)
-      .map(([partId, value]) => `${partId}:${value.toFixed(3)}`)
-      .join('|')
+    const signature = [
+      ...Object.entries(brightness).map(([partId, value]) => `${partId}:${value.toFixed(3)}`),
+      ...Object.entries(frame.motorSpeed).map(
+        ([partId, value]) => `motor:${partId}:${value.toFixed(3)}`
+      ),
+    ].join('|')
     if (
       !force &&
       now - lastPublishTime < PUBLISH_INTERVAL_MS &&
@@ -62,6 +68,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
     set({
       elapsedMs: Math.round(frame.elapsedMs),
       ledBrightness: brightness,
+      motorSpeed: Object.fromEntries(frame.motorSpeed),
       pinVoltages: Object.fromEntries(frame.pinVoltages),
     })
   }
@@ -96,12 +103,20 @@ export const useSimStore = create<SimStore>()((set, get) => {
     error: null,
     elapsedMs: 0,
     ledBrightness: {},
+    motorSpeed: {},
     pinVoltages: {},
 
     async start(): Promise<void> {
       if (get().status === 'running') return
       stopEngine()
-      set({ status: 'preparing', error: null, elapsedMs: 0, ledBrightness: {}, pinVoltages: {} })
+      set({
+        status: 'preparing',
+        error: null,
+        elapsedMs: 0,
+        ledBrightness: {},
+        motorSpeed: {},
+        pinVoltages: {},
+      })
 
       const sketch = useSketchStore.getState()
       let hex = sketch.hex
@@ -123,6 +138,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
         simulation.onSerialByte = (byte) => {
           useSerialStore.getState().appendBytes(Uint8Array.of(byte))
         }
+        simulation.readInputs = currentSolveOptions
         engine = simulation
         lastFrameTime = performance.now()
         lastPublishTime = 0
@@ -139,7 +155,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
     stop(): void {
       if (get().status !== 'running' && get().status !== 'preparing') return
       stopEngine()
-      set({ status: 'stopped', ledBrightness: {}, pinVoltages: {} })
+      set({ status: 'stopped', ledBrightness: {}, motorSpeed: {}, pinVoltages: {} })
     },
 
     async toggle(): Promise<void> {

@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useState, type JSX } from 'react'
+import { useEffect, useState, type JSX } from 'react'
+import { APP_NAME } from '../shared/app'
 import { CircuitCanvas } from './canvas/CircuitCanvas'
-import { BuildOutput } from './editor/BuildOutput'
-import { SketchEditor } from './editor/SketchEditor'
-import { SerialMonitor } from './serial/SerialMonitor'
+import { CanvasToolbar } from './ui/CanvasToolbar'
+import { CodePanel } from './ui/CodePanel'
+import { InspectorPanel } from './ui/InspectorPanel'
+import { PartsPanel } from './ui/PartsPanel'
+import { SerialDrawer } from './ui/SerialDrawer'
+import { StatusBar } from './ui/StatusBar'
+import { TopBar, type WorkspaceView } from './ui/TopBar'
 import { useCircuitStore } from './store/circuitStore'
 import { updateWindowTitle, useProjectStore } from './store/projectStore'
-import { useSimStore } from './store/simStore'
 import { useSketchStore } from './store/sketchStore'
-import { buildNetlist } from './wiring/netlist'
-import { IpcStatus } from './ui/IpcStatus'
-import { PartDrawer } from './ui/PartDrawer'
-import { PartInspector } from './ui/PartInspector'
-import { Toolbar, type WorkspaceView } from './ui/Toolbar'
+import { useViewportStore } from './store/viewportStore'
 
 function isTextEntry(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false
@@ -19,36 +19,39 @@ function isTextEntry(target: EventTarget | null): boolean {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable
 }
 
+/** Placeholder surface until the schematic view lands in a later milestone. */
+function SchematicPlaceholder(): JSX.Element {
+  return (
+    <div className="cb-schematic-placeholder" data-testid="schematic-view">
+      <div className="cb-placeholder-card">
+        <h2>Schematic view</h2>
+        <p>
+          A readable schematic of the same circuit arrives in Milestone 9. The circuit canvas keeps
+          working in the meantime.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export function App(): JSX.Element {
   const [view, setView] = useState<WorkspaceView>('circuit')
+  const [codeOpen, setCodeOpen] = useState(false)
 
-  const document = useCircuitStore((state) => state.document)
   const undo = useCircuitStore((state) => state.undo)
   const redo = useCircuitStore((state) => state.redo)
   const removeSelected = useCircuitStore((state) => state.removeSelected)
   const duplicateSelected = useCircuitStore((state) => state.duplicateSelected)
   const rotateSelected = useCircuitStore((state) => state.rotateSelected)
-  const selectParts = useCircuitStore((state) => state.selectParts)
-  const selectWire = useCircuitStore((state) => state.selectWire)
 
   const build = useSketchStore((state) => state.build)
   const refreshToolchain = useSketchStore((state) => state.refreshToolchain)
-  const toolchain = useSketchStore((state) => state.toolchain)
-  const simStatus = useSimStore((state) => state.status)
-  const simError = useSimStore((state) => state.error)
-  const simElapsedMs = useSimStore((state) => state.elapsedMs)
   const projectName = useProjectStore((state) => state.name)
   const projectDirty = useProjectStore((state) => state.dirty)
-  const projectError = useProjectStore((state) => state.error)
   const saveProject = useProjectStore((state) => state.save)
   const openProject = useProjectStore((state) => state.open)
   const loadSamples = useProjectStore((state) => state.loadSamples)
-  const litLeds = useSimStore(
-    (state) => Object.values(state.ledBrightness).filter((value) => value > 0.02).length
-  )
-
-  // Derived state: the netlist is rebuilt whenever the topology changes.
-  const netlist = useMemo(() => buildNetlist(document), [document])
+  const fitToContent = useViewportStore((state) => state.fitToContent)
 
   useEffect(() => {
     void refreshToolchain()
@@ -66,7 +69,7 @@ export function App(): JSX.Element {
 
       if (modifier && key === 'b') {
         event.preventDefault()
-        setView('code')
+        setCodeOpen(true)
         void build()
         return
       }
@@ -102,14 +105,14 @@ export function App(): JSX.Element {
         rotateSelected()
         return
       }
+      if (key === 'f') {
+        fitToContent()
+        return
+      }
       if (event.key === 'Delete' || event.key === 'Backspace') {
         event.preventDefault()
         removeSelected()
         return
-      }
-      if (event.key === 'Escape') {
-        selectParts([])
-        selectWire(null)
       }
     }
 
@@ -118,69 +121,43 @@ export function App(): JSX.Element {
   }, [
     build,
     duplicateSelected,
+    fitToContent,
     openProject,
     redo,
     removeSelected,
     rotateSelected,
     saveProject,
-    selectParts,
-    selectWire,
     undo,
   ])
 
   return (
-    <div className="app-shell">
-      <Toolbar view={view} onChangeView={setView} />
+    <div className="cb-shell" data-app={APP_NAME}>
+      <TopBar
+        view={view}
+        onChangeView={setView}
+        codeOpen={codeOpen}
+        onToggleCode={() => setCodeOpen((current) => !current)}
+      />
 
-      <main className="app-main" data-view={view}>
-        {view === 'circuit' ? (
-          <>
-            <CircuitCanvas />
-            <div className="app-sidebar">
-              <PartDrawer />
-              <PartInspector />
-            </div>
-          </>
-        ) : (
-          <div className="code-workspace">
-            <SketchEditor />
-            <div className="code-panels">
-              <SerialMonitor />
-              <BuildOutput />
-            </div>
-          </div>
-        )}
-      </main>
+      <div className="cb-workspace">
+        <div className="cb-stage">
+          {view === 'circuit' ? (
+            <>
+              <CircuitCanvas />
+              <CanvasToolbar />
+              <InspectorPanel />
+            </>
+          ) : (
+            <SchematicPlaceholder />
+          )}
+          <SerialDrawer />
+        </div>
 
-      <footer className="app-status">
-        <span data-testid="project-status" title={projectError ?? undefined}>
-          {projectName}
-          {projectDirty ? ' · unsaved changes' : ''}
-          {projectError === null ? '' : ` · ${projectError}`}
-        </span>
-        <span data-testid="scene-counts">
-          {document.parts.length} parts · {document.wires.length} wires · {netlist.netCount} nets
-        </span>
-        <span data-testid="sim-readout">
-          {simStatus === 'running'
-            ? `Sim: running · ${(simElapsedMs / 1000).toFixed(1)} s · ${litLeds} LED${litLeds === 1 ? '' : 's'} lit`
-            : simStatus === 'preparing'
-              ? 'Sim: building sketch…'
-              : simStatus === 'error'
-                ? `Sim: error — ${simError ?? 'unknown'}`
-                : simStatus === 'stopped'
-                  ? 'Sim: stopped'
-                  : 'Sim: idle'}
-        </span>
-        <span data-testid="toolchain-status">
-          {toolchain === null
-            ? 'Toolchain: checking…'
-            : toolchain.available
-              ? `Toolchain: ${toolchain.avrGcc ?? 'avr-gcc'} · Arduino core ${toolchain.arduinoCore ?? '?'}`
-              : `Toolchain: unavailable — ${toolchain.detail}`}
-        </span>
-        <IpcStatus />
-      </footer>
+        {codeOpen && <CodePanel onClose={() => setCodeOpen(false)} />}
+        <PartsPanel />
+      </div>
+
+      <StatusBar />
     </div>
   )
 }

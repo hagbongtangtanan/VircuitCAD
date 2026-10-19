@@ -138,7 +138,8 @@ if (EXPECT_CANVAS) {
   const probe = await send('Runtime.evaluate', {
     expression: `(async () => {
       const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-      const counts = () => document.querySelector('[data-testid="scene-counts"]')?.textContent ?? ''
+      const text = (selector) => document.querySelector(selector)?.textContent ?? ''
+      const counts = () => text('[data-testid="scene-counts"]')
       // The Vite dev server can trigger a one-off reload while it pre-bundles
       // dependencies, so wait for the editor to actually be on screen.
       let led = null
@@ -147,37 +148,51 @@ if (EXPECT_CANVAS) {
         led = document.querySelector('[data-part-type="led"]')
       }
       const before = counts()
-      const projectBefore =
-        document.querySelector('[data-testid="project-status"]')?.textContent ?? ''
-      if (!led) return { error: 'parts drawer did not render an led button' }
+      const projectBefore = text('[data-testid="project-status"]')
+      if (!led) return { error: 'parts panel did not render an led button' }
       led.click()
-      await sleep(100)
+      await sleep(150)
       const afterAdd = counts()
-      const stage = document.querySelector('.circuit-canvas canvas')
-      const rect = stage?.getBoundingClientRect()
-      // The LED is placed by the drawer at world (60, 80) and the canvas starts
-      // with a (60, 60) offset at scale 1, so both pins are easy to locate.
-      const viewportOffset = { x: 60, y: 60 }
-      const pinTargets =
-        rect === null || rect === undefined
-          ? []
-          : [
-              { x: rect.left + viewportOffset.x + 70, y: rect.top + viewportOffset.y + 120 },
-              { x: rect.left + viewportOffset.x + 90, y: rect.top + viewportOffset.y + 120 },
-            ]
+
+      // A clicked part is placed at the centre of the visible canvas, so the two
+      // LED pins sit 10 world units either side of that centre, 20 below it.
+      const canvas = document.querySelector('.circuit-canvas canvas')
+      const rect = canvas?.getBoundingClientRect()
+      const zoomText = text('[data-testid="zoom-level"]').replace('%', '')
+      const zoom = (zoomText === '' ? 100 : Number(zoomText)) / 100
+      const centreX = rect ? rect.left + rect.width / 2 : 0
+      const centreY = rect ? rect.top + rect.height / 2 : 0
+      const pinTargets = rect
+        ? [
+            { x: centreX - 10 * zoom, y: centreY + 20 * zoom },
+            { x: centreX + 10 * zoom, y: centreY + 20 * zoom },
+          ]
+        : []
+
+      const menuToggle = document.querySelector('[data-testid="file-menu-toggle"]')
+      menuToggle?.click()
+      await sleep(100)
+      const hasFileButtons = ['file-new', 'file-open', 'file-save'].every(
+        (id) => document.querySelector('[data-testid="' + id + '"]') !== null
+      )
+      menuToggle?.click()
+      await sleep(100)
+
       return {
         before,
         afterAdd,
         projectBefore,
-        projectAfter: document.querySelector('[data-testid="project-status"]')?.textContent ?? '',
-        hasFileButtons: ['file-new', 'file-open', 'file-save'].every(
-          (id) => document.querySelector('[data-testid="' + id + '"]') !== null
-        ),
+        projectAfter: text('[data-testid="project-status"]'),
+        hasFileButtons,
         pinTargets,
         canvasCount: document.querySelectorAll('.circuit-canvas canvas').length,
         canvasSize: rect ? { width: Math.round(rect.width), height: Math.round(rect.height) } : null,
         hasDrawer: document.querySelector('[data-testid="part-drawer"]') !== null,
         hasInspector: document.querySelector('[data-testid="inspector"]') !== null,
+        hasTopBar: document.querySelector('.cb-topbar') !== null,
+        hasToolbar: document.querySelector('[data-testid="canvas-toolbar"]') !== null,
+        hasStatusBar: document.querySelector('.cb-statusbar') !== null,
+        title: document.title,
       }
     })()`,
     awaitPromise: true,
@@ -213,11 +228,19 @@ if (EXPECT_CANVAS) {
     expression: `(async () => {
       const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
       const text = (selector) => document.querySelector(selector)?.textContent ?? ''
-      const select = document.querySelector('[data-testid="samples"]')
-      if (!select) return { error: 'no samples picker' }
+      const section = document.querySelector('[data-testid="parts-section"]')
+      if (!section) return { error: 'no parts section picker' }
       const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value')?.set
-      setter?.call(select, 'blink-led.hucad')
-      select.dispatchEvent(new Event('change', { bubbles: true }))
+      setter?.call(section, 'starters')
+      section.dispatchEvent(new Event('change', { bubbles: true }))
+
+      let starter = null
+      for (let attempt = 0; attempt < 40 && starter === null; attempt += 1) {
+        await sleep(100)
+        starter = document.querySelector('[data-sample="blink-led.hucad"]')
+      }
+      if (starter === null) return { error: 'the starters list did not render' }
+      starter.click()
 
       let counts = ''
       for (let attempt = 0; attempt < 40; attempt += 1) {
@@ -226,6 +249,8 @@ if (EXPECT_CANVAS) {
         if (counts.startsWith('3 parts')) break
       }
       window.__verifySample = true
+      setter?.call(section, 'basic')
+      section.dispatchEvent(new Event('change', { bubbles: true }))
       return { counts, project: text('[data-testid="project-status"]') }
     })()`,
     awaitPromise: true,
@@ -252,13 +277,11 @@ if (EXPECT_EDITOR) {
       }
 
       // The dev server may reload once while it pre-bundles dependencies, which
-      // detaches any element we grabbed, so re-query the tab on every attempt.
+      // detaches any element we grabbed, so re-query the toggle on every attempt.
       let editorReady = null
       for (let attempt = 0; attempt < 40 && editorReady === null; attempt += 1) {
-        const tab = [...document.querySelectorAll('button[role="tab"]')].find(
-          (button) => (button.textContent ?? '').trim() === 'Code'
-        )
-        if (tab) tab.click()
+        const toggle = document.querySelector('[data-testid="code-toggle"]')
+        if (toggle && toggle.getAttribute('aria-pressed') !== 'true') toggle.click()
         await sleep(250)
         editorReady = document.querySelector('.cm-editor')
       }
@@ -313,10 +336,8 @@ if (EXPECT_SIM) {
         return null
       }
 
-      const codeTab = [...document.querySelectorAll('button[role="tab"]')].find(
-        (button) => (button.textContent ?? '').trim() === 'Code'
-      )
-      codeTab?.click()
+      const codeToggle = document.querySelector('[data-testid="code-toggle"]')
+      if (codeToggle && codeToggle.getAttribute('aria-pressed') !== 'true') codeToggle.click()
       await sleep(300)
 
       const simButton = document.querySelector('[data-testid="sim-button"]')
@@ -385,14 +406,20 @@ if (EXPECT_CANVAS) {
   if (interaction === null) failures.push('editor probe did not run')
   else if (interaction.error !== undefined) failures.push(`editor probe: ${interaction.error}`)
   else {
-    if (!interaction.hasDrawer) failures.push('parts drawer missing')
+    if (!interaction.hasDrawer) failures.push('parts panel missing')
     if (!interaction.hasInspector) failures.push('inspector missing')
+    if (!interaction.hasTopBar) failures.push('top bar missing')
+    if (!interaction.hasToolbar) failures.push('canvas toolbar missing')
+    if (!interaction.hasStatusBar) failures.push('status bar missing')
+    if (!/CircuitBench/.test(interaction.title ?? '')) {
+      failures.push(`window title does not use APP_NAME: ${interaction.title}`)
+    }
     if (interaction.canvasCount < 1) failures.push('circuit canvas missing')
     if (interaction.canvasSize === null || interaction.canvasSize.width < 100) {
       failures.push(`circuit canvas has no layout (${JSON.stringify(interaction.canvasSize)})`)
     }
     const parseCounts = (text) => {
-      const match = /^(\d+) parts · (\d+) wires · (\d+) nets$/.exec(text ?? '')
+      const match = /^(\d+) parts? · (\d+) wires? · (\d+) nets?$/.exec(text ?? '')
       return match
         ? { parts: Number(match[1]), wires: Number(match[2]), nets: Number(match[3]) }
         : null

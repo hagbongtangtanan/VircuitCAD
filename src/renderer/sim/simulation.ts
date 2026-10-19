@@ -17,7 +17,7 @@ import type { CircuitDocument } from '../../shared/circuit'
 import { pinKey } from '../../shared/circuit'
 import { parseIntelHex, toProgramWords } from '../../shared/intelhex'
 import { buildNetlist } from '../wiring/netlist'
-import type { DriverMap, SolveResult } from './solver'
+import type { DriverMap, SolveOptions, SolveResult } from './solver'
 import { solveCircuit } from './solver'
 import {
   GROUND_RESISTANCE_OHMS,
@@ -33,12 +33,16 @@ import {
 export const CLOCK_HZ = 16_000_000
 /** Nominal current for a fully lit LED; 20 mA is the usual "bright" LED. */
 const LED_FULL_BRIGHTNESS_AMPS = 0.02
+/** 5 V across a 20 Ω motor draws 250 mA; treat that as full speed. */
+const MOTOR_FULL_CURRENT_AMPS = 0.25
 
 export interface SimulationFrame {
   /** 0 to 1 per LED part id. */
   readonly ledBrightness: ReadonlyMap<string, number>
   /** Volts driven onto each Uno pin, null while the pin is high-impedance. */
   readonly pinVoltages: ReadonlyMap<string, number | null>
+  /** 0 to 1 rotor speed per DC motor part id. */
+  readonly motorSpeed: ReadonlyMap<string, number>
   readonly elapsedMs: number
 }
 
@@ -64,6 +68,8 @@ export class ArduinoSimulation {
   private lastSolve: SolveResult | null = null
 
   onSerialByte: ((byte: number) => void) | null = null
+  /** Pulled every frame so UI input (buttons, pots) reaches the solver. */
+  readInputs: (() => SolveOptions) | null = null
 
   constructor(hex: string, document: CircuitDocument) {
     this.document = document
@@ -156,11 +162,18 @@ export class ArduinoSimulation {
   /** Reads the pin registers, solves the circuit and reports the visible state. */
   frame(): SimulationFrame {
     const { drivers, pinVoltages } = this.drivers()
+    const inputs = this.readInputs?.() ?? {}
 
     let signature = ''
     for (const [key, driver] of drivers) signature += `${key}=${driver.volts};`
+    const pressed = [...(inputs.pressedParts ?? [])].sort().join(',')
+    const pots = [...(inputs.potPositions ?? [])]
+      .map(([partId, value]) => `${partId}=${value.toFixed(3)}`)
+      .sort()
+      .join(',')
+    signature += `|pressed:${pressed}|pots:${pots}`
     if (signature !== this.lastDriversSignature) {
-      this.lastSolve = solveCircuit(this.document, this.netlist, drivers)
+      this.lastSolve = solveCircuit(this.document, this.netlist, drivers, inputs)
       this.lastDriversSignature = signature
     }
 
@@ -169,6 +182,11 @@ export class ArduinoSimulation {
       ledBrightness.set(partId, brightnessFor(amps))
     }
 
-    return { ledBrightness, pinVoltages, elapsedMs: this.elapsedMs }
+    const motorSpeed = new Map<string, number>()
+    for (const [partId, amps] of this.lastSolve?.motorCurrents ?? []) {
+      motorSpeed.set(partId, Math.min(1, amps / MOTOR_FULL_CURRENT_AMPS))
+    }
+
+    return { ledBrightness, pinVoltages, motorSpeed, elapsedMs: this.elapsedMs }
   }
 }

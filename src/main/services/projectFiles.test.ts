@@ -58,7 +58,7 @@ describe('project files on disk', () => {
   it('surfaces a corrupt project as a readable error', async () => {
     const path = join(directory, 'broken.hucad')
     await writeFile(path, '{"format":"nope"}')
-    await expect(readProjectFile(path)).rejects.toThrow(/not a HuCAD project/)
+    await expect(readProjectFile(path)).rejects.toThrow(/not a CircuitBench project/)
   })
 
   it('writes sketches verbatim and HEX with a trailing newline', async () => {

@@ -1,8 +1,13 @@
-# HuCAD Circuits
+# CircuitBench
 
-HuCAD Circuits is an **offline, local-first, Tinkercad Circuits-style Arduino simulator**
-desktop app. Drag parts onto a canvas, wire them up, write Arduino C++ side by side, and run
-the sketch against an emulated AVR — with no account and no network access at any point.
+CircuitBench is an **offline, local-first, Tinkercad Circuits-style Arduino simulator** desktop
+app. Drag parts onto a canvas, wire them up, write Arduino C++ side by side, and run the sketch
+against an emulated AVR — with no account and no network access at any point.
+
+The product name is a single constant, `APP_NAME` in `src/shared/app.ts`. The npm package,
+windows, user-data directory, desktop entry and installer artifact names are all `CircuitBench`;
+only the git repository keeps the historical `HuCAD` name because it anchors existing releases
+and clone URLs.
 
 Built by BIT-CT students from CTU-San Francisco.
 
@@ -12,27 +17,34 @@ Built by BIT-CT students from CTU-San Francisco.
 
 Under active development.
 
-| Milestone | Scope                                                | State |
-| --------- | ---------------------------------------------------- | ----- |
-| 1         | Scaffolding, secure shell, typed IPC ping, packaging | Done  |
-| 2         | Canvas, parts drawer, wiring, netlist, undo/redo     | Done  |
-| 3         | Editor, compiler, serial monitor                     | Done  |
-| 4         | avr8js simulation (LED, buzzer, input)               | Done  |
-| 5         | `.circuit` / `.ino` / `.hex` file flows              | Done  |
-| 6         | Packaging, docs, samples                             | Done  |
+| Milestone | Scope                                                         | State       |
+| --------- | ------------------------------------------------------------- | ----------- |
+| 1         | Scaffolding, secure IPC, design system, full UI shell         | Done        |
+| 2         | Canvas, breadboard, curved wiring, undo/redo, notes           | In progress |
+| 3         | Core parts, inspector, property editing                       | In progress |
+| 4         | MNA solver, LED/resistor models, sim engine                   | Done        |
+| 5         | Compiler + text editor + serial (blocks engine still to come) | In progress |
+| 6         | Block editor (Blocks / Text / Blocks + Text)                  | Not started |
+| 7         | LED glow, burn-out, buzzer audio, multimeter, warnings        | Not started |
+| 8         | Extended parts and starter gallery                            | Not started |
+| 9         | Persistence, schematic view, PNG export, shortcuts            | Not started |
+| 10        | Windows-first installers, bundled toolchain, docs             | In progress |
+
+Milestones 2–5 are partially delivered by the earlier shell work; the remaining rows track the
+Tinkercad-fidelity programme rather than the original six-step plan.
 
 ## Download
 
 Latest installers: **<https://github.com/hagbongtangtanan/HuCAD/releases/latest>**
 
-| Platform | Artifact                            | Install                                                     |
-| -------- | ----------------------------------- | ----------------------------------------------------------- |
-| Linux    | `HuCAD-Circuits-*-linux-*.AppImage` | `chmod +x` it, then run it                                  |
-| Windows  | `HuCAD-Circuits-*-win-*.exe`        | run the installer (SmartScreen: **More info → Run anyway**) |
-| macOS    | `HuCAD-Circuits-*-mac-*.dmg`        | drag to Applications (first open: right-click → **Open**)   |
+| Platform | Artifact                          | Install                                                     |
+| -------- | --------------------------------- | ----------------------------------------------------------- |
+| Linux    | `CircuitBench-*-linux-*.AppImage` | `chmod +x` it, then run it                                  |
+| Windows  | `CircuitBench-*-win-*.exe`        | run the installer (SmartScreen: **More info → Run anyway**) |
+| macOS    | `CircuitBench-*-mac-*.dmg`        | drag to Applications (first open: right-click → **Open**)   |
 
 The Linux AppImage needs FUSE 2 (`sudo apt install libfuse2` on Ubuntu 22.04+); where FUSE is
-unavailable, run it as `./HuCAD-Circuits-*.AppImage --appimage-extract-and-run`. Compiling a
+unavailable, run it as `./CircuitBench-*.AppImage --appimage-extract-and-run`. Compiling a
 sketch needs the vendored AVR toolchain, which currently ships for Linux only — the canvas,
 wiring and simulation work on every platform.
 
@@ -50,7 +62,9 @@ wiring and simulation work on every platform.
   It downloads pinned, checksum-verified `avr-gcc`, `avr-libc`, `binutils-avr` and the
   Arduino AVR core, then precompiles the core for the Uno. This is the only step that uses
   the network; the app itself never does. The directory is gitignored and is shipped inside
-  packaged builds by electron-builder.
+  packaged builds by electron-builder. The script is idempotent: once the toolchain is present
+  it exits immediately, so `npm run build:linux` runs it automatically through `prebuild:linux`.
+  `npm run toolchain:verify` checks for a usable toolchain without touching the network.
 
 ## Scripts
 
@@ -104,15 +118,45 @@ the first **Save** asks for a `.hucad` location instead of offering to overwrite
 renderer only ever sees paths that came out of a native dialog, and a save can only reuse such
 a path, never invent one.
 
+## Supported parts
+
+All parts below are modelled by the MNA solver and animate while the simulation runs. The
+**Basic** section of the library is a curated subset; **All parts** groups everything.
+
+| Group    | Parts                                                         |
+| -------- | ------------------------------------------------------------- |
+| Boards   | Arduino Uno R3, breadboard, AA battery, 9V battery, 5V supply |
+| Passives | resistor, capacitor, inductor, diode                          |
+| Inputs   | push button, slide switch, potentiometer, photoresistor (LDR) |
+| Outputs  | LED, RGB LED, 7-segment display, buzzer, DC motor             |
+
+Interaction: hold a push button on the canvas to press it, click a slide switch (or the
+inspector checkbox) to latch it, and use the inspector sliders for the potentiometer wiper and
+the LDR's ambient light. The seven-segment display lights each segment independently from its
+own pin, and RGB channels are solved separately, so mixed colours are real currents rather than
+a painted effect.
+
+Known modelling limits, chosen to keep the solver fast and predictable:
+
+- Capacitors are open circuits and inductors are 50 mΩ shorts; there is no transient/AC analysis.
+- The LDR is driven by the inspector's light slider, not by an LED shining on it.
+- The DC motor is a 20 Ω load: it spins up whenever it has voltage, there is no back-EMF or
+  mechanical load.
+- Sensors with digital protocols (ultrasonic, PIR, temperature, gas, soil) and displays with
+  controllers (LCD, OLED) are not in this tranche; they need device-level models and are tracked
+  as Milestone 8 work.
+
 ## Packaging
 
 ```bash
 npm run build:linux
 ```
 
-produces `release/HuCAD-Circuits-0.1.0-linux-x86_64.AppImage` (about 235 MB). The vendored toolchain
-and the samples are copied outside the asar into `resources/`, so the installed app compiles
-sketches and opens samples with no network and no system packages. `release/` is gitignored; the
+produces `release/CircuitBench-0.1.0-linux-x86_64.AppImage` (about 234 MB). The `prebuild:linux`
+hook vendors the toolchain first (a no-op when it is already there), then electron-builder copies
+it and the samples outside the asar into `resources/`, so the installed app compiles sketches and
+opens samples with no network and no system packages. The packaged directory is smoke-tested with
+the same CDP probe as the dev build (`CDP_HOST=... EXPECT_EDITOR=1 EXPECT_SIM=1`). `release/` is gitignored; the
 icon (`resources/icon.png`, 512×512) is committed. The NSIS target builds on Windows (or with
 wine):
 
@@ -120,7 +164,7 @@ wine):
 npm run build:win
 ```
 
-Artifact names are deliberately space-free (`HuCAD-Circuits-<version>-<os>-<arch>.<ext>`): GitHub
+Artifact names are deliberately space-free (`CircuitBench-<version>-<os>-<arch>.<ext>`): GitHub
 rewrites spaces in uploaded asset names, which would break both the download links and the
 updater metadata in `latest-*.yml`.
 
@@ -169,10 +213,11 @@ CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
 ```
 
 Set `EXPECT_CANVAS=1` to also drive the circuit editor end to end: the script places a part from
-the drawer, clicks two pins through the real Konva event path, and checks that a wire appeared
-and the two nets merged. It then loads the bundled Blink sample and checks that the scene was
-replaced with three parts, three wires and the sample's project label. Add `EXPECT_EDITOR=1` to switch to the Code view and compile the
-default sketch through the vendored toolchain, asserting on the reported flash/RAM usage. Add
+the parts panel, clicks two pins through the real Konva event path, and checks that a wire
+appeared and the two nets merged. It then loads the bundled Blink sample from the panel's
+Starters view and checks that the scene was replaced with three parts, three wires and the
+sample's project label. Add `EXPECT_EDITOR=1` to open the code panel and compile the default
+sketch through the vendored toolchain, asserting on the reported flash/RAM usage. Add
 `EXPECT_SIM=1` to run that sketch on the emulated AVR and wait for its `Serial` output in the
 monitor, then stop it again.
 
@@ -203,6 +248,9 @@ src/main/        Electron main process: window + security posture, ipc/, service
 src/preload/     contextBridge surface (`window.api`), the only renderer↔main bridge
 src/shared/      IPC contract, zod schemas, circuit model, compiler helpers
 src/renderer/    React app: canvas/ parts/ wiring/ sim/ editor/ serial/ store/ ui/
+                 ui/                shell: top bar, canvas toolbar, parts panel, code panel,
+                                    serial drawer, floating inspector, status bar, tokens.css
+                 store/viewportStore.ts  pan/zoom/fit state shared by canvas and toolbar
                  sim/simulation.ts  avr8js CPU + peripherals, pin polling
                  sim/solver.ts      modified nodal analysis for the wired circuit
 src/shared/      intelhex.ts        Intel HEX to AVR program memory

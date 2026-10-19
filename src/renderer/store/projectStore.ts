@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { APP_NAME, DEFAULT_PROJECT_NAME } from '../../shared/app'
 import { emptyCircuitDocument, type CircuitDocument } from '../../shared/circuit'
 import {
   createProject,
@@ -25,6 +26,7 @@ export interface ProjectStore {
   loadSamples(): Promise<void>
   openSample(name: string): Promise<void>
   newProject(): void
+  rename(name: string): void
   save(): Promise<void>
   exportSketch(): Promise<void>
   exportHex(): Promise<void>
@@ -45,7 +47,7 @@ function errorMessage(error: unknown): string {
 
 export function updateWindowTitle(name: string, dirty: boolean): void {
   if (typeof document === 'undefined') return
-  document.title = `${dirty ? '• ' : ''}${name} — HuCAD Circuits`
+  document.title = `${dirty ? '• ' : ''}${name} — ${APP_NAME}`
 }
 
 export const useProjectStore = create<ProjectStore>()((set, get) => {
@@ -82,7 +84,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
 
   return {
     path: null,
-    name: 'untitled',
+    name: DEFAULT_PROJECT_NAME,
     dirty: false,
     busy: false,
     error: null,
@@ -129,7 +131,16 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     newProject(): void {
       resetAll()
       set({ path: null, error: null })
-      markSaved('untitled')
+      markSaved(DEFAULT_PROJECT_NAME)
+    },
+
+    rename(name: string): void {
+      const trimmed = name.trim()
+      const next = trimmed === '' ? DEFAULT_PROJECT_NAME : trimmed
+      if (next === get().name) return
+      // A different name means the document no longer matches what is on disk.
+      set({ name: next, dirty: true })
+      updateWindowTitle(next, true)
     },
 
     async save(): Promise<void> {

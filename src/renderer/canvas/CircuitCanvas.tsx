@@ -7,22 +7,23 @@ import { definitionOf, pinWorldPosition } from '../parts/definitions'
 import { PartBody } from '../parts/renderers'
 import { PIN_ACTIVE_FILL, PIN_FILL, PIN_HOVER_FILL } from '../parts/partColors'
 import { useCircuitStore } from '../store/circuitStore'
+import { useShallow } from 'zustand/react/shallow'
+import { useInteractionStore } from '../store/interactionStore'
 import { useSimStore } from '../store/simStore'
+import { useViewportStore } from '../store/viewportStore'
 import { PART_DRAG_MIME } from './dnd'
 import {
   GRID_SIZE,
-  MAX_SCALE,
-  MIN_SCALE,
   orthogonalRoute,
   polylineMidpoint,
   screenToWorld,
   snapPoint,
-  zoomAtPointer,
   type Size,
-  type Viewport,
 } from './geometry'
 
-const INITIAL_VIEWPORT: Viewport = { scale: 1, offsetX: 60, offsetY: 60 }
+/** Konva needs concrete colours, so canvas chrome is mirrored from tokens.css. */
+const GRID_COLOR = '#e7ecf5'
+const GRID_AXIS_COLOR = '#d3dbe9'
 
 function refsEqual(a: PinRef | null, b: PinRef | null): boolean {
   return a !== null && b !== null && a.partId === b.partId && a.pinId === b.pinId
@@ -63,6 +64,17 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
 
   return (
     <Group>
+      {props.state !== 'idle' && (
+        <Circle
+          x={props.position.x}
+          y={props.position.y}
+          radius={radius * 2.6}
+          fill="transparent"
+          stroke={props.state === 'active' ? '#2f7df6' : '#f0a41b'}
+          strokeWidth={1.5 / props.scale}
+          listening={false}
+        />
+      )}
       <Circle
         x={props.position.x}
         y={props.position.y}
@@ -85,7 +97,7 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
           y={props.position.y - labelOffset - 4 / props.scale}
           text={props.label}
           fontSize={8 / props.scale}
-          fill="#8f98a8"
+          fill="#6d7889"
           listening={false}
         />
       )}
@@ -110,6 +122,27 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
   const commitTransientEdit = useCircuitStore((state) => state.commitTransientEdit)
   const selectParts = useCircuitStore((state) => state.selectParts)
   const brightness = useSimStore((state) => state.ledBrightness[props.partId] ?? 0)
+  const pressed = useInteractionStore((state) => state.pressed[props.partId] === true)
+  const potPosition = useInteractionStore((state) => state.pots[props.partId] ?? 0.5)
+  const switchOn = useInteractionStore((state) => state.switches[props.partId] === true)
+  const sensorLevel = useInteractionStore((state) => state.sensors[props.partId] ?? 0.5)
+  const press = useInteractionStore((state) => state.press)
+  const release = useInteractionStore((state) => state.release)
+  const motorSpeed = useSimStore((state) => state.motorSpeed[props.partId] ?? 0)
+  const elapsedMs = useSimStore((state) => state.elapsedMs)
+  const channels = useSimStore(
+    useShallow((state) => {
+      const prefix = `${props.partId}:`
+      const out: Record<string, number> = {}
+      for (const [key, value] of Object.entries(state.ledBrightness)) {
+        if (key.startsWith(prefix)) out[key.slice(prefix.length)] = value
+      }
+      out.light = sensorLevel
+      out.speed = motorSpeed
+      return out
+    })
+  )
+  const spin = motorSpeed > 0.02 ? ((elapsedMs / 1000) * motorSpeed * 360) % 360 : 0
 
   if (part === undefined) return null
 
@@ -136,12 +169,28 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
         movePart(part.id, snapPoint(topLeft))
         commitTransientEdit()
       }}
+      onMouseDown={(event) => {
+        if (event.evt.button !== 0) return
+        if (part.type === 'push-button') press(part.id)
+        if (part.type === 'slide-switch') useInteractionStore.getState().toggleSwitch(part.id)
+      }}
+      onMouseUp={() => release(part.id)}
+      onMouseLeave={() => release(part.id)}
       onClick={(event) => {
         event.cancelBubble = true
         selectParts([part.id], event.evt.shiftKey)
       }}
     >
-      <PartBody part={part} selected={props.selected} brightness={brightness} />
+      <PartBody
+        part={part}
+        selected={props.selected}
+        brightness={brightness}
+        pressed={pressed}
+        potPosition={potPosition}
+        switchOn={switchOn}
+        channels={channels}
+        spin={spin}
+      />
       {definition.pins.map((pin) => {
         const state = refsEqual(props.pendingPin, { partId: part.id, pinId: pin.id })
           ? 'active'
@@ -192,19 +241,46 @@ function WireNode({ wireId, scale }: WireNodeProps): JSX.Element | null {
     flat.push(point.x, point.y)
   }
 
+  const stroke = selected ? '#2f7df6' : wire.color
+  const knotRadius = 3 / scale
+
   return (
-    <Line
-      points={flat}
-      stroke={selected ? '#4f9cf9' : wire.color}
-      strokeWidth={(selected ? 4 : 2.5) / scale}
-      hitStrokeWidth={12 / scale}
-      lineCap="round"
-      lineJoin="round"
-      onClick={(event) => {
-        event.cancelBubble = true
-        selectWire(wireId)
-      }}
-    />
+    <Group>
+      <Line
+        points={flat}
+        stroke={stroke}
+        strokeWidth={(selected ? 4 : 2.5) / scale}
+        hitStrokeWidth={12 / scale}
+        lineCap="round"
+        lineJoin="round"
+        onClick={(event) => {
+          event.cancelBubble = true
+          selectWire(wireId)
+        }}
+      />
+      {[from, to].map((point, index) => (
+        <Circle
+          key={`end-${index}`}
+          x={point.x}
+          y={point.y}
+          radius={knotRadius}
+          fill={stroke}
+          listening={false}
+        />
+      ))}
+      {wire.waypoints.map((point, index) => (
+        <Circle
+          key={`knot-${index}`}
+          x={point.x}
+          y={point.y}
+          radius={knotRadius}
+          fill={stroke}
+          stroke="#93a0b4"
+          strokeWidth={1 / scale}
+          listening={false}
+        />
+      ))}
+    </Group>
   )
 }
 
@@ -244,8 +320,8 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           height={handleSize}
           offsetX={handleSize / 2}
           offsetY={handleSize / 2}
-          fill="#f2c14e"
-          stroke="#11131a"
+          fill="#f6c445"
+          stroke="#5a6474"
           strokeWidth={1 / scale}
           draggable
           onDragEnd={(event) => {
@@ -265,8 +341,8 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
         height={handleSize}
         offsetX={handleSize / 2}
         offsetY={handleSize / 2}
-        fill="#4f9cf9"
-        stroke="#11131a"
+        fill="#2f7df6"
+        stroke="#5a6474"
         strokeWidth={1 / scale}
         draggable
         onDragEnd={(event) => {
@@ -285,12 +361,17 @@ export function CircuitCanvas(): JSX.Element {
   const stageRef = useRef<Konva.Stage | null>(null)
 
   const [size, setSize] = useState<Size>({ width: 800, height: 600 })
-  const [viewport, setViewport] = useState<Viewport>(INITIAL_VIEWPORT)
   const [hoveredPin, setHoveredPin] = useState<PinRef | null>(null)
   const [pendingPin, setPendingPin] = useState<PinRef | null>(null)
   const [pointerWorld, setPointerWorld] = useState<Point | null>(null)
   const [isSpaceDown, setIsSpaceDown] = useState(false)
+  const [isPanning, setIsPanning] = useState(false)
   const panStart = useRef<{ pointer: Point; offsetX: number; offsetY: number } | null>(null)
+
+  const viewport = useViewportStore((state) => state.viewport)
+  const setCanvasSize = useViewportStore((state) => state.setSize)
+  const zoomBy = useViewportStore((state) => state.zoomBy)
+  const panBy = useViewportStore((state) => state.panBy)
 
   const parts = useCircuitStore((state) => state.document.parts)
   const wires = useCircuitStore((state) => state.document.wires)
@@ -306,14 +387,16 @@ export function CircuitCanvas(): JSX.Element {
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0]
       if (entry === undefined) return
-      setSize({
+      const next = {
         width: Math.max(1, Math.floor(entry.contentRect.width)),
         height: Math.max(1, Math.floor(entry.contentRect.height)),
-      })
+      }
+      setSize(next)
+      setCanvasSize(next)
     })
     observer.observe(element)
     return () => observer.disconnect()
-  }, [])
+  }, [setCanvasSize])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
@@ -339,32 +422,46 @@ export function CircuitCanvas(): JSX.Element {
     return screenToWorld(pointer, viewport)
   }, [viewport])
 
-  const handleWheel = useCallback((event: KonvaEventObject<WheelEvent>): void => {
-    event.evt.preventDefault()
-    const stage = stageRef.current
-    const pointer = stage?.getPointerPosition() ?? { x: 0, y: 0 }
-    const factor = event.evt.deltaY > 0 ? 0.9 : 1.1
-    setViewport((current) =>
-      zoomAtPointer(
-        current,
-        pointer,
-        Math.min(MAX_SCALE, Math.max(MIN_SCALE, current.scale * factor))
-      )
-    )
+  const handleWheel = useCallback(
+    (event: KonvaEventObject<WheelEvent>): void => {
+      event.evt.preventDefault()
+      const pointer = stageRef.current?.getPointerPosition() ?? { x: 0, y: 0 }
+      zoomBy(event.evt.deltaY > 0 ? 0.9 : 1.1, pointer)
+    },
+    [zoomBy]
+  )
+
+  const endPan = useCallback((): void => {
+    panStart.current = null
+    setIsPanning(false)
   }, [])
+
+  // Release the pan even when the pointer leaves the stage mid-drag.
+  useEffect(() => {
+    const releaseInputs = (): void => {
+      endPan()
+      useInteractionStore.getState().releaseAll()
+    }
+    window.addEventListener('mouseup', releaseInputs)
+    window.addEventListener('blur', releaseInputs)
+    return () => {
+      window.removeEventListener('mouseup', releaseInputs)
+      window.removeEventListener('blur', releaseInputs)
+    }
+  }, [endPan])
 
   const handleStageMouseDown = useCallback(
     (event: KonvaEventObject<MouseEvent>): void => {
       const stage = event.target.getStage()
       const isEmptyClick = stage !== null && event.target === stage
-      if (event.evt.button === 1 || isSpaceDown) {
+      const wantsPan =
+        event.evt.button === 1 || event.evt.button === 2 || (isSpaceDown && event.evt.button === 0)
+
+      if (wantsPan) {
         const pointer = stage?.getPointerPosition()
         if (pointer !== null && pointer !== undefined) {
-          panStart.current = {
-            pointer,
-            offsetX: viewport.offsetX,
-            offsetY: viewport.offsetY,
-          }
+          panStart.current = { pointer, offsetX: 0, offsetY: 0 }
+          setIsPanning(true)
           event.evt.preventDefault()
         }
         return
@@ -376,7 +473,7 @@ export function CircuitCanvas(): JSX.Element {
         setPendingPin(null)
       }
     },
-    [isSpaceDown, selectParts, selectWire, viewport.offsetX, viewport.offsetY]
+    [isSpaceDown, selectParts, selectWire]
   )
 
   const handleStageMouseMove = useCallback((): void => {
@@ -384,19 +481,12 @@ export function CircuitCanvas(): JSX.Element {
     const pointer = stage?.getPointerPosition() ?? null
     const panning = panStart.current
     if (pointer !== null && panning !== null) {
-      setViewport((current) => ({
-        ...current,
-        offsetX: panning.offsetX + (pointer.x - panning.pointer.x),
-        offsetY: panning.offsetY + (pointer.y - panning.pointer.y),
-      }))
+      panBy(pointer.x - panning.pointer.x, pointer.y - panning.pointer.y)
+      panStart.current = { ...panning, pointer }
       return
     }
     setPointerWorld(pointerInWorld())
-  }, [pointerInWorld])
-
-  const handleStageMouseUp = useCallback((): void => {
-    panStart.current = null
-  }, [])
+  }, [panBy, pointerInWorld])
 
   const handleClickPin = useCallback(
     (ref: PinRef): void => {
@@ -475,10 +565,13 @@ export function CircuitCanvas(): JSX.Element {
 
   return (
     <div
-      className="circuit-canvas"
+      className={['circuit-canvas', isSpaceDown ? 'is-pannable' : '', isPanning ? 'is-panning' : '']
+        .filter(Boolean)
+        .join(' ')}
       ref={containerRef}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
+      onContextMenu={(event) => event.preventDefault()}
       data-testid="circuit-canvas"
     >
       <Stage
@@ -488,7 +581,7 @@ export function CircuitCanvas(): JSX.Element {
         onWheel={handleWheel}
         onMouseDown={handleStageMouseDown}
         onMouseMove={handleStageMouseMove}
-        onMouseUp={handleStageMouseUp}
+        onMouseUp={endPan}
       >
         <Layer
           x={viewport.offsetX}
@@ -501,7 +594,7 @@ export function CircuitCanvas(): JSX.Element {
             <Line
               key={`v-${x}`}
               points={[x, grid.top, x, grid.bottom]}
-              stroke={x === 0 ? '#3a4256' : '#232936'}
+              stroke={x === 0 ? GRID_AXIS_COLOR : GRID_COLOR}
               strokeWidth={1 / viewport.scale}
             />
           ))}
@@ -509,7 +602,7 @@ export function CircuitCanvas(): JSX.Element {
             <Line
               key={`h-${y}`}
               points={[grid.left, y, grid.right, y]}
-              stroke={y === 0 ? '#3a4256' : '#232936'}
+              stroke={y === 0 ? GRID_AXIS_COLOR : GRID_COLOR}
               strokeWidth={1 / viewport.scale}
             />
           ))}
@@ -540,7 +633,7 @@ export function CircuitCanvas(): JSX.Element {
           {pendingPreview !== null && (
             <Line
               points={pendingPreview}
-              stroke="#f2c14e"
+              stroke="#d99311"
               strokeWidth={2 / viewport.scale}
               dash={[6 / viewport.scale, 4 / viewport.scale]}
               listening={false}

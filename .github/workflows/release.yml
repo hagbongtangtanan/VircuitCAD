@@ -71,9 +71,17 @@ jobs:
       # are built without a compiler: electron-builder only warns about the
       # missing resource directory, and the simulator still runs. Vendoring a
       # compiler per platform is future work.
+      #
+      # `prebuild:linux` runs the same fetch on a developer machine, so this
+      # explicit step is what guarantees the AppImage contains a compiler even
+      # when the npm cache is cold on a fresh runner.
       - name: Vendor the offline toolchain
         if: runner.os == 'Linux'
         run: npm run fetch:toolchain
+
+      - name: Verify the vendored toolchain
+        if: runner.os == 'Linux'
+        run: npm run toolchain:verify
 
       - name: Build the app
         run: npm run build

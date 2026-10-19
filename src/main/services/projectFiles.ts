@@ -36,7 +36,7 @@ export async function writeProjectFile(path: string, project: ProjectFile): Prom
 export async function openFile(path: string): Promise<OpenFileResult> {
   const kind = openKindForPath(path)
   if (kind === null) {
-    throw new ProjectFileError('Open a .hucad project or an .ino sketch.')
+    throw new ProjectFileError('Open a CircuitBench (.hucad) project or an .ino sketch.')
   }
 
   const text = await readText(path)

@@ -1,5 +1,6 @@
 import { app, BrowserWindow, session } from 'electron'
 import { join } from 'node:path'
+import { APP_NAME } from '../shared/app'
 import { registerIpcHandlers } from './ipc'
 
 const rendererUrl = process.env['ELECTRON_RENDERER_URL']
@@ -57,8 +58,8 @@ function createWindow(): BrowserWindow {
     minWidth: 1024,
     minHeight: 640,
     show: false,
-    backgroundColor: '#11131a',
-    title: 'HuCAD Circuits',
+    backgroundColor: '#eef1f6',
+    title: APP_NAME,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true,

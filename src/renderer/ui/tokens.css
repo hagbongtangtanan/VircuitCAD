@@ -1,0 +1,67 @@
+/*
+ * Design tokens for the CircuitBench shell.
+ *
+ * Light, friendly and rounded, in the spirit of block-based circuit canvases:
+ * a white surface floating on a soft grey page, one blue accent for
+ * interaction, green for "run" and red for "stop".
+ */
+:root {
+  /* Surfaces */
+  --cb-page: #eef1f6;
+  --cb-surface: #ffffff;
+  --cb-surface-sunken: #f5f7fb;
+  --cb-surface-hover: #eaeef6;
+
+  /* Lines */
+  --cb-border: #dde3ee;
+  --cb-border-strong: #c4cddd;
+
+  /* Text */
+  --cb-text: #1d2635;
+  --cb-text-muted: #6d7889;
+  --cb-text-faint: #98a2b3;
+
+  /* Brand + semantic */
+  --cb-primary: #2f7df6;
+  --cb-primary-hover: #1f6be4;
+  --cb-primary-soft: #e6efff;
+  --cb-run: #23a55a;
+  --cb-run-hover: #1d8f4d;
+  --cb-stop: #e0523d;
+  --cb-stop-hover: #c9432f;
+  --cb-warn: #d99311;
+
+  /* Canvas */
+  --cb-canvas: #fbfcfe;
+  --cb-canvas-grid: #e7ecf5;
+  --cb-canvas-grid-strong: #d3dbe9;
+
+  /* Radii */
+  --cb-radius-sm: 6px;
+  --cb-radius-md: 10px;
+  --cb-radius-lg: 14px;
+  --cb-radius-pill: 999px;
+
+  /* Elevation */
+  --cb-shadow-sm: 0 1px 2px rgba(24, 35, 54, 0.08);
+  --cb-shadow-md: 0 4px 16px rgba(24, 35, 54, 0.1);
+  --cb-shadow-lg: 0 18px 48px rgba(24, 35, 54, 0.18);
+
+  /* Spacing scale */
+  --cb-space-1: 4px;
+  --cb-space-2: 8px;
+  --cb-space-3: 12px;
+  --cb-space-4: 16px;
+  --cb-space-5: 24px;
+
+  /* Typography. Only system fonts are used: they ship with the OS, so the app
+     stays fully offline with no bundled font assets or licensing. */
+  --cb-font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --cb-font-mono:
+    ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Consolas, 'DejaVu Sans Mono', monospace;
+
+  /* Chrome */
+  --cb-topbar-height: 52px;
+  --cb-statusbar-height: 26px;
+}

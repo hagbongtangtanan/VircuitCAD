@@ -3,7 +3,9 @@
 // is reproducible, and the download cache (kept outside the shipped directory)
 // makes re-runs cheap.
 //
-//   node scripts/fetch-toolchain.mjs [--force]
+//   node scripts/fetch-toolchain.mjs           # fetch once, no-op when present
+//   node scripts/fetch-toolchain.mjs --force   # rebuild from scratch
+//   node scripts/fetch-toolchain.mjs --verify  # offline check, exits 1 if missing
 //
 // What it installs on Linux:
 //   bin/, lib/         avr-gcc 14.3.0 + avr-libc 2.2.1 + binutils 2.43
@@ -25,6 +27,7 @@ import { fileURLToPath } from 'node:url'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const force = process.argv.includes('--force')
+const verifyOnly = process.argv.includes('--verify')
 
 const UBUNTU = 'https://archive.ubuntu.com/ubuntu'
 const ARDUINO_CORE_VERSION = '1.8.7'
@@ -161,6 +164,21 @@ async function compileCore(toolchain) {
   log(`  ${objects.length} core objects archived into ${archive}`)
 }
 
+/**
+ * A toolchain is usable when the compiler, its runtime libraries and the
+ * precompiled Arduino core are all present. Cheap to check, so ordinary builds
+ * can skip the 400 MB re-extraction.
+ */
+async function toolchainReady(target) {
+  return (
+    (await exists(join(target, 'manifest.json'))) &&
+    (await exists(join(target, 'bin', 'avr-g++'))) &&
+    (await exists(join(target, 'bin', 'avr-ar'))) &&
+    (await exists(join(target, 'core', 'uno', 'core.a'))) &&
+    (await exists(join(target, 'arduino', 'cores', 'arduino')))
+  )
+}
+
 async function main() {
   if (process.platform !== 'linux') {
     throw new Error(
@@ -171,6 +189,22 @@ async function main() {
 
   const target = join(repoRoot, 'resources', 'toolchain', 'linux')
   const cacheDir = join(repoRoot, 'resources', 'toolchain', '.cache')
+
+  if (verifyOnly) {
+    if (await toolchainReady(target)) {
+      log(`Toolchain present in ${target}`)
+      return
+    }
+    throw new Error(
+      `No usable toolchain in ${target}. Run \`npm run fetch:toolchain\` before packaging.`
+    )
+  }
+
+  if (!force && (await toolchainReady(target))) {
+    log(`Toolchain already present in ${target} (use --force to rebuild)`)
+    return
+  }
+
   const staging = join(repoRoot, 'resources', 'toolchain', '.staging')
   const root = join(staging, 'root')
   await mkdir(cacheDir, { recursive: true })

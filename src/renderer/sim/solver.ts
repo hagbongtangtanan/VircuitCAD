@@ -22,6 +22,10 @@ export interface SolveOptions {
   readonly pressedParts?: ReadonlySet<string>
   /** Potentiometer wiper position, 0 to 1. */
   readonly potPositions?: ReadonlyMap<string, number>
+  /** Latched on/off state for slide switches. */
+  readonly switchStates?: ReadonlyMap<string, boolean>
+  /** Photosensor illumination, 0 (dark) to 1 (bright). */
+  readonly sensorLevels?: ReadonlyMap<string, number>
 }
 
 export interface SolveResult {
@@ -29,6 +33,8 @@ export interface SolveResult {
   readonly ledCurrents: ReadonlyMap<string, number>
   /** Amps through each buzzer, keyed by part id. */
   readonly buzzerCurrents: ReadonlyMap<string, number>
+  /** Amps through each DC motor, keyed by part id. */
+  readonly motorCurrents: ReadonlyMap<string, number>
   /** Volts at each net, keyed by netlist net id. */
   readonly netVoltages: ReadonlyMap<number, number>
 }
@@ -47,6 +53,12 @@ const LED_SERIES_RESISTANCE_OHMS = 0.5
 const NODE_LEAK_CONDUCTANCE = 1e-9
 const OPEN_RESISTANCE_OHMS = 1e9
 const BUZZER_RESISTANCE_OHMS = 100
+const DIODE_FORWARD_VOLTS = 0.65
+const DIODE_SERIES_RESISTANCE_OHMS = 1.5
+const INDUCTOR_RESISTANCE_OHMS = 0.05
+const MOTOR_RESISTANCE_OHMS = 20
+/** Closed mechanical contacts; low enough to behave like a wire. */
+const CLOSED_SWITCH_RESISTANCE_OHMS = 0.5
 
 /**
  * Modified nodal analysis over netlist nets. Index 0 is the reference node;
@@ -192,12 +204,21 @@ class Mna {
   }
 }
 
-interface LedBranch {
+interface DiodeBranch {
   readonly partId: string
+  /** Key used in the result map: the part id, or `partId:channel` for multi-die parts. */
+  readonly key: string
   readonly anodeNet: number
   readonly cathodeNet: number
   readonly forwardVolts: number
+  readonly seriesOhms: number
+  readonly emitsLight: boolean
   on: boolean
+}
+
+/** Common forward voltage used by multi-die parts. */
+function forwardVoltsFor(color: LedColor): number {
+  return LED_FORWARD_VOLTAGE[color]
 }
 
 /**
@@ -230,27 +251,96 @@ export function solveCircuit(
 ): SolveResult {
   const pressed = options.pressedParts ?? new Set<string>()
   const pots = options.potPositions ?? new Map<string, number>()
+  const switches = options.switchStates ?? new Map<string, boolean>()
+  const sensors = options.sensorLevels ?? new Map<string, number>()
   const groundNets = findGroundNets(document, netlist, drivers)
 
   const netOf = (partId: string, pinId: string): number | undefined =>
     netlist.netIdOf({ partId, pinId })
 
-  const ledBranches: LedBranch[] = []
-  for (const part of document.parts) {
-    if (part.type !== 'led') continue
-    const anodeNet = netOf(part.id, 'anode')
-    const cathodeNet = netOf(part.id, 'cathode')
-    if (anodeNet === undefined || cathodeNet === undefined) continue
-    ledBranches.push({
-      partId: part.id,
-      anodeNet,
-      cathodeNet,
-      forwardVolts: LED_FORWARD_VOLTAGE[part.props.color],
-      on: false,
-    })
+  const diodeBranches: DiodeBranch[] = []
+  const addBranch = (branch: DiodeBranch): void => {
+    diodeBranches.push(branch)
   }
 
-  const capacity = netlist.netCount + drivers.size * 3 + ledBranches.length * 4 + 8
+  for (const part of document.parts) {
+    switch (part.type) {
+      case 'led': {
+        const anodeNet = netOf(part.id, 'anode')
+        const cathodeNet = netOf(part.id, 'cathode')
+        if (anodeNet === undefined || cathodeNet === undefined) break
+        addBranch({
+          partId: part.id,
+          key: part.id,
+          anodeNet,
+          cathodeNet,
+          forwardVolts: LED_FORWARD_VOLTAGE[part.props.color],
+          seriesOhms: LED_SERIES_RESISTANCE_OHMS,
+          emitsLight: true,
+          on: false,
+        })
+        break
+      }
+      case 'diode': {
+        const anodeNet = netOf(part.id, 'anode')
+        const cathodeNet = netOf(part.id, 'cathode')
+        if (anodeNet === undefined || cathodeNet === undefined) break
+        addBranch({
+          partId: part.id,
+          key: part.id,
+          anodeNet,
+          cathodeNet,
+          forwardVolts: DIODE_FORWARD_VOLTS,
+          seriesOhms: DIODE_SERIES_RESISTANCE_OHMS,
+          emitsLight: false,
+          on: false,
+        })
+        break
+      }
+      case 'rgb-led': {
+        const cathodeNet = netOf(part.id, 'cathode')
+        if (cathodeNet === undefined) break
+        for (const channel of ['red', 'green', 'blue'] as const) {
+          const anodeNet = netOf(part.id, channel)
+          if (anodeNet === undefined) continue
+          addBranch({
+            partId: part.id,
+            key: `${part.id}:${channel}`,
+            anodeNet,
+            cathodeNet,
+            forwardVolts: forwardVoltsFor(channel),
+            seriesOhms: LED_SERIES_RESISTANCE_OHMS,
+            emitsLight: true,
+            on: false,
+          })
+        }
+        break
+      }
+      case 'seven-segment': {
+        const cathodeNet = netOf(part.id, 'common')
+        if (cathodeNet === undefined) break
+        for (const segment of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp'] as const) {
+          const anodeNet = netOf(part.id, segment)
+          if (anodeNet === undefined) continue
+          addBranch({
+            partId: part.id,
+            key: `${part.id}:${segment}`,
+            anodeNet,
+            cathodeNet,
+            forwardVolts: forwardVoltsFor(part.props.color),
+            seriesOhms: LED_SERIES_RESISTANCE_OHMS,
+            emitsLight: true,
+            on: false,
+          })
+        }
+        break
+      }
+      default:
+        break
+    }
+  }
+
+  const capacity = netlist.netCount + drivers.size * 3 + diodeBranches.length * 4 + 24
 
   const build = (): Mna => {
     const mna = new Mna(capacity)
@@ -280,6 +370,61 @@ export function solveCircuit(
           mna.addConductance(a, b, pressed.has(part.id) ? 1 / 0.5 : 1 / OPEN_RESISTANCE_OHMS)
           break
         }
+        case 'capacitor':
+          // DC model: a capacitor blocks steady current, so it is an open circuit.
+          break
+        case 'inductor': {
+          const a = mna.indexOfNet(netOf(part.id, '1'))
+          const b = mna.indexOfNet(netOf(part.id, '2'))
+          mna.addConductance(a, b, 1 / INDUCTOR_RESISTANCE_OHMS)
+          break
+        }
+        case 'diode': {
+          // The branch table below handles conduction; nothing to add here.
+          break
+        }
+        case 'slide-switch': {
+          const a = mna.indexOfNet(netOf(part.id, '1'))
+          const b = mna.indexOfNet(netOf(part.id, '2'))
+          const closed = switches.get(part.id) === true
+          mna.addConductance(
+            a,
+            b,
+            1 / (closed ? CLOSED_SWITCH_RESISTANCE_OHMS : OPEN_RESISTANCE_OHMS)
+          )
+          break
+        }
+        case 'ldr': {
+          const a = mna.indexOfNet(netOf(part.id, '1'))
+          const b = mna.indexOfNet(netOf(part.id, '2'))
+          const level = Math.min(1, Math.max(0, sensors.get(part.id) ?? 0.5))
+          // 1 kΩ in bright light up to 1 MΩ in the dark.
+          const resistance = 1_000 * Math.pow(1_000, 1 - level)
+          mna.addConductance(a, b, 1 / resistance)
+          break
+        }
+        case 'dc-motor': {
+          const plus = mna.indexOfNet(netOf(part.id, 'plus'))
+          const minus = mna.indexOfNet(netOf(part.id, 'minus'))
+          mna.addConductance(plus, minus, 1 / MOTOR_RESISTANCE_OHMS)
+          break
+        }
+        case 'battery-aa':
+        case 'battery-9v':
+        case 'power-supply': {
+          const plus = mna.indexOfNet(netOf(part.id, 'plus'))
+          const minus = mna.indexOfNet(netOf(part.id, 'minus'))
+          const spec =
+            part.type === 'battery-aa'
+              ? { volts: 1.5, resistanceOhms: 0.5 }
+              : part.type === 'battery-9v'
+                ? { volts: 9, resistanceOhms: 1 }
+                : { volts: 5, resistanceOhms: 0.1 }
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, minus, spec.volts)
+          mna.addConductance(hidden, plus, 1 / spec.resistanceOhms)
+          break
+        }
         case 'potentiometer': {
           const low = mna.indexOfNet(netOf(part.id, '1'))
           const wiper = mna.indexOfNet(netOf(part.id, '2'))
@@ -301,12 +446,12 @@ export function solveCircuit(
       }
     }
 
-    for (const branch of ledBranches) {
+    for (const branch of diodeBranches) {
       if (!branch.on) continue
       const anode = mna.indexOfNet(branch.anodeNet)
       const cathode = mna.indexOfNet(branch.cathodeNet)
       const middle = mna.newNode()
-      mna.addConductance(anode, middle, 1 / LED_SERIES_RESISTANCE_OHMS)
+      mna.addConductance(anode, middle, 1 / branch.seriesOhms)
       mna.addVoltageSource(middle, cathode, branch.forwardVolts)
     }
 
@@ -315,7 +460,7 @@ export function solveCircuit(
 
   let solution: Float64Array | null = null
   let netIndices: ReadonlyMap<number, number> = new Map()
-  const ledCurrents = new Array<number>(ledBranches.length).fill(0)
+  const branchCurrents = new Array<number>(diodeBranches.length).fill(0)
 
   for (let iteration = 0; iteration < 8; iteration += 1) {
     const result = build().solve()
@@ -324,7 +469,7 @@ export function solveCircuit(
     netIndices = result.netIndices
 
     let changed = false
-    for (const [index, branch] of ledBranches.entries()) {
+    for (const [index, branch] of diodeBranches.entries()) {
       const anode = netIndices.get(branch.anodeNet) ?? 0
       const cathode = netIndices.get(branch.cathodeNet) ?? 0
       const volts = (solution[anode] ?? 0) - (solution[cathode] ?? 0)
@@ -333,12 +478,12 @@ export function solveCircuit(
         changed = true
       } else if (branch.on) {
         const middleVolts = (solution[cathode] ?? 0) + branch.forwardVolts
-        const current = ((solution[anode] ?? 0) - middleVolts) / LED_SERIES_RESISTANCE_OHMS
+        const current = ((solution[anode] ?? 0) - middleVolts) / branch.seriesOhms
         if (current < 0) {
           branch.on = false
           changed = true
         } else {
-          ledCurrents[index] = current
+          branchCurrents[index] = current
         }
       }
     }
@@ -346,7 +491,12 @@ export function solveCircuit(
   }
 
   if (solution === null) {
-    return { ledCurrents: new Map(), buzzerCurrents: new Map(), netVoltages: new Map() }
+    return {
+      ledCurrents: new Map(),
+      buzzerCurrents: new Map(),
+      motorCurrents: new Map(),
+      netVoltages: new Map(),
+    }
   }
 
   const netVoltages = new Map<number, number>()
@@ -355,8 +505,9 @@ export function solveCircuit(
   }
 
   const ledCurrentsByPart = new Map<string, number>()
-  for (const [index, branch] of ledBranches.entries()) {
-    ledCurrentsByPart.set(branch.partId, Math.max(0, ledCurrents[index] ?? 0))
+  for (const [index, branch] of diodeBranches.entries()) {
+    if (!branch.emitsLight) continue
+    ledCurrentsByPart.set(branch.key, Math.max(0, branchCurrents[index] ?? 0))
   }
 
   const buzzerCurrents = new Map<string, number>()
@@ -369,5 +520,15 @@ export function solveCircuit(
     buzzerCurrents.set(part.id, Math.abs(volts) / BUZZER_RESISTANCE_OHMS)
   }
 
-  return { ledCurrents: ledCurrentsByPart, buzzerCurrents, netVoltages }
+  const motorCurrents = new Map<string, number>()
+  for (const part of document.parts) {
+    if (part.type !== 'dc-motor') continue
+    const plus = netOf(part.id, 'plus')
+    const minus = netOf(part.id, 'minus')
+    if (plus === undefined || minus === undefined) continue
+    const volts = (netVoltages.get(plus) ?? 0) - (netVoltages.get(minus) ?? 0)
+    motorCurrents.set(part.id, Math.abs(volts) / MOTOR_RESISTANCE_OHMS)
+  }
+
+  return { ledCurrents: ledCurrentsByPart, buzzerCurrents, motorCurrents, netVoltages }
 }

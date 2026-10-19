@@ -266,7 +266,7 @@ function renderNotes({ version, commits, installers, hasChecksums }) {
   const windows = named(['.exe', '.msi'])
   const macs = named(['.dmg'])
   const lines = [
-    `# HuCAD Circuits v${version}`,
+    `# CircuitBench v${version}`,
     '',
     'Offline, local Tinkercad Circuits-style Arduino simulator. No account, no network.',
     '',
@@ -326,7 +326,7 @@ function renderNotes({ version, commits, installers, hasChecksums }) {
     lines.push(
       '### macOS',
       '',
-      `Open \`${asset.name}\` and drag **HuCAD Circuits** into Applications. The build is not`,
+      `Open \`${asset.name}\` and drag **CircuitBench** into Applications. The build is not`,
       'notarized, so on first launch use **right-click → Open** (or System Settings →',
       'Privacy & Security → **Open Anyway**).',
       ''
@@ -521,12 +521,12 @@ async function ensureTag({ tag, version, dryRun }) {
   if (local && remote) return
   log.step(`Tag ${tag} is missing (${local ? 'only local' : 'not created yet'})`)
   if (dryRun) {
-    log.info(`would create: git tag -a ${tag} -m "HuCAD Circuits ${tag}"`)
+    log.info(`would create: git tag -a ${tag} -m "CircuitBench ${tag}"`)
     log.info(`would push:   git push origin refs/tags/${tag}`)
     return
   }
   if (!local) {
-    await run('git', ['tag', '-a', tag, '-m', `HuCAD Circuits ${version}`])
+    await run('git', ['tag', '-a', tag, '-m', `CircuitBench ${version}`])
     log.info(`created tag ${tag}`)
   }
   await run('git', ['push', 'origin', `refs/tags/${tag}`])
@@ -547,7 +547,7 @@ async function main() {
   const prerelease = options.prerelease || isSemverPrerelease
   const draft = options.draft
 
-  log.step(`Releasing HuCAD Circuits ${version}${options.dryRun ? ' (dry run)' : ''}`)
+  log.step(`Releasing CircuitBench ${version}${options.dryRun ? ' (dry run)' : ''}`)
   log.info(`repository: ${SLUG}`)
   log.info(`tag:        ${tag}`)
   log.info(`directory:  ${artifactsDir}`)
@@ -626,7 +626,7 @@ async function main() {
   const releaseShape = {
     tag,
     targetCommitish: (await run('git', ['rev-parse', 'HEAD'])).stdout,
-    name: `HuCAD Circuits ${tag}`,
+    name: `CircuitBench ${tag}`,
     body: notes,
     draft,
     prerelease,
@@ -662,7 +662,7 @@ async function main() {
     return
   }
 
-  console.log(`\nReleased HuCAD Circuits ${version}`)
+  console.log(`\nReleased CircuitBench ${version}`)
   console.log(`  ${RELEASES_URL}/tag/${tag}`)
 }
 

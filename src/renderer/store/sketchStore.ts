@@ -26,7 +26,7 @@ export interface SketchStore {
   clearBuild(): void
 }
 
-export const DEFAULT_SKETCH = `// HuCAD Circuits — Arduino sketch
+export const DEFAULT_SKETCH = `// CircuitBench — Arduino sketch
 int ledPin = 13;
 
 void setup() {
