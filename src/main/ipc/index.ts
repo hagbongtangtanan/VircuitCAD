@@ -1,6 +1,13 @@
 import { ipcMain } from 'electron'
 import { IpcChannels } from '../../shared/ipc'
-import { pingRequestSchema, type PingResponse } from '../../shared/schemas'
+import {
+  compileRequestSchema,
+  pingRequestSchema,
+  type CompileResult,
+  type PingResponse,
+  type ToolchainStatus,
+} from '../../shared/schemas'
+import { compileSketch, readToolchainStatus } from '../services/compiler'
 
 /**
  * Registers every renderer-callable handler. Payloads arrive as `unknown` and are
@@ -21,9 +28,20 @@ export function registerIpcHandlers(): void {
       },
     }
   })
+
+  ipcMain.handle(IpcChannels.compile, async (_event, payload: unknown): Promise<CompileResult> => {
+    const request = compileRequestSchema.parse(payload)
+    return compileSketch(request.sketch)
+  })
+
+  ipcMain.handle(IpcChannels.toolchainStatus, (): Promise<ToolchainStatus> => {
+    return readToolchainStatus()
+  })
 }
 
 /** Removes all handlers; used when tearing the app down in tests. */
 export function unregisterIpcHandlers(): void {
   ipcMain.removeHandler(IpcChannels.ping)
+  ipcMain.removeHandler(IpcChannels.compile)
+  ipcMain.removeHandler(IpcChannels.toolchainStatus)
 }

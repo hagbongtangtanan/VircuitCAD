@@ -1,11 +1,15 @@
-import { useEffect, useMemo, type JSX } from 'react'
+import { useEffect, useMemo, useState, type JSX } from 'react'
 import { CircuitCanvas } from './canvas/CircuitCanvas'
+import { BuildOutput } from './editor/BuildOutput'
+import { SketchEditor } from './editor/SketchEditor'
+import { SerialMonitor } from './serial/SerialMonitor'
 import { useCircuitStore } from './store/circuitStore'
+import { useSketchStore } from './store/sketchStore'
 import { buildNetlist } from './wiring/netlist'
 import { IpcStatus } from './ui/IpcStatus'
 import { PartDrawer } from './ui/PartDrawer'
 import { PartInspector } from './ui/PartInspector'
-import { Toolbar } from './ui/Toolbar'
+import { Toolbar, type WorkspaceView } from './ui/Toolbar'
 
 function isTextEntry(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false
@@ -14,6 +18,8 @@ function isTextEntry(target: EventTarget | null): boolean {
 }
 
 export function App(): JSX.Element {
+  const [view, setView] = useState<WorkspaceView>('circuit')
+
   const document = useCircuitStore((state) => state.document)
   const undo = useCircuitStore((state) => state.undo)
   const redo = useCircuitStore((state) => state.redo)
@@ -23,14 +29,28 @@ export function App(): JSX.Element {
   const selectParts = useCircuitStore((state) => state.selectParts)
   const selectWire = useCircuitStore((state) => state.selectWire)
 
-  // The netlist is derived state: it is rebuilt whenever the topology changes.
+  const build = useSketchStore((state) => state.build)
+  const refreshToolchain = useSketchStore((state) => state.refreshToolchain)
+  const toolchain = useSketchStore((state) => state.toolchain)
+
+  // Derived state: the netlist is rebuilt whenever the topology changes.
   const netlist = useMemo(() => buildNetlist(document), [document])
+
+  useEffect(() => {
+    void refreshToolchain()
+  }, [refreshToolchain])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       const modifier = event.ctrlKey || event.metaKey
       const key = event.key.toLowerCase()
 
+      if (modifier && key === 'b') {
+        event.preventDefault()
+        setView('code')
+        void build()
+        return
+      }
       if (modifier && key === 'z') {
         event.preventDefault()
         if (event.shiftKey) redo()
@@ -66,21 +86,51 @@ export function App(): JSX.Element {
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [duplicateSelected, redo, removeSelected, rotateSelected, selectParts, selectWire, undo])
+  }, [
+    build,
+    duplicateSelected,
+    redo,
+    removeSelected,
+    rotateSelected,
+    selectParts,
+    selectWire,
+    undo,
+  ])
 
   return (
     <div className="app-shell">
-      <Toolbar />
-      <main className="app-main">
-        <CircuitCanvas />
-        <div className="app-sidebar">
-          <PartDrawer />
-          <PartInspector />
-        </div>
+      <Toolbar view={view} onChangeView={setView} />
+
+      <main className="app-main" data-view={view}>
+        {view === 'circuit' ? (
+          <>
+            <CircuitCanvas />
+            <div className="app-sidebar">
+              <PartDrawer />
+              <PartInspector />
+            </div>
+          </>
+        ) : (
+          <div className="code-workspace">
+            <SketchEditor />
+            <div className="code-panels">
+              <SerialMonitor />
+              <BuildOutput />
+            </div>
+          </div>
+        )}
       </main>
+
       <footer className="app-status">
         <span data-testid="scene-counts">
           {document.parts.length} parts · {document.wires.length} wires · {netlist.netCount} nets
+        </span>
+        <span data-testid="toolchain-status">
+          {toolchain === null
+            ? 'Toolchain: checking…'
+            : toolchain.available
+              ? `Toolchain: ${toolchain.avrGcc ?? 'avr-gcc'} · Arduino core ${toolchain.arduinoCore ?? '?'}`
+              : `Toolchain: unavailable — ${toolchain.detail}`}
         </span>
         <IpcStatus />
       </footer>

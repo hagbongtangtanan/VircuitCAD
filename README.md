@@ -14,7 +14,7 @@ Under active development.
 | --------- | ---------------------------------------------------- | ------- |
 | 1         | Scaffolding, secure shell, typed IPC ping, packaging | Done    |
 | 2         | Canvas, parts drawer, wiring, netlist, undo/redo     | Done    |
-| 3         | Editor, compiler, serial monitor                     | Planned |
+| 3         | Editor, compiler, serial monitor                     | Done    |
 | 4         | avr8js simulation (LED, buzzer, input)               | Planned |
 | 5         | `.circuit` / `.ino` / `.hex` file flows              | Planned |
 | 6         | Packaging, docs, samples                             | Planned |
@@ -24,11 +24,22 @@ Under active development.
 - Node.js 22+ and npm 10+
 - Linux only, for the `chromium` sandbox: the Electron binary needs `libnss3`, `libnspr4`
   and `libasound2` from the system. They are present on a normal desktop install.
+- One-time setup of the offline Arduino toolchain (about 420 MB on disk):
+
+  ```bash
+  npm run fetch:toolchain
+  ```
+
+  It downloads pinned, checksum-verified `avr-gcc`, `avr-libc`, `binutils-avr` and the
+  Arduino AVR core, then precompiles the core for the Uno. This is the only step that uses
+  the network; the app itself never does. The directory is gitignored and is shipped inside
+  packaged builds by electron-builder.
 
 ## Scripts
 
 ```bash
 npm install         # install dependencies
+npm run fetch:toolchain # vendor avr-gcc + the Arduino core (once, needs network)
 npm run dev         # launch the app with HMR
 npm run build       # typecheck + bundle main, preload and renderer into out/
 npm start           # preview the production bundle
@@ -55,10 +66,11 @@ CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
 
 Set `EXPECT_CANVAS=1` to also drive the circuit editor end to end: the script places a part from
 the drawer, clicks two pins through the real Konva event path, and checks that a wire appeared
-and the two nets merged.
+and the two nets merged. Add `EXPECT_EDITOR=1` to switch to the Code view and compile the
+default sketch through the vendored toolchain, asserting on the reported flash/RAM usage.
 
 ```bash
-EXPECT_CANVAS=1 CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
+EXPECT_CANVAS=1 EXPECT_EDITOR=1 CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
 ```
 
 On a headless or containerised Linux box where the setuid `chrome-sandbox` helper is not
@@ -70,10 +82,12 @@ use.
 
 ```
 src/main/        Electron main process: window + security posture, ipc/, services/
+                 services/compiler.ts   Electron paths + build queue
+                 services/toolchain.ts  avr-gcc invocation, no Electron dependency
 src/preload/     contextBridge surface (`window.api`), the only renderer↔main bridge
-src/shared/      IPC contract types + zod schemas (imported by all three sides)
-src/renderer/    React app: canvas/ parts/ wiring/ netlist/ sim/ editor/ serial/ store/ ui/
-resources/       bundled offline assets: samples/, toolchain/{win,linux}/
+src/shared/      IPC contract, zod schemas, circuit model, compiler helpers
+src/renderer/    React app: canvas/ parts/ wiring/ editor/ serial/ store/ ui/
+resources/       bundled offline assets: toolchain/ (gitignored), samples/
 ```
 
 The renderer never touches Node or the file system directly. Anything that needs the OS goes
@@ -86,6 +100,11 @@ There are no remote origins anywhere in the app: no CDNs, remote fonts, telemetr
 checks. The renderer runs under a strict `default-src 'self'` Content Security Policy applied
 by the main process, and only the dev server origin is permitted while `npm run dev` is
 running.
+
+Compilation is equally local: the main process spawns the vendored `avr-gcc` with an argument
+array (never a shell), writes the sketch to a temporary directory, and returns Intel HEX plus
+diagnostics. The only network access in the project is `npm run fetch:toolchain`, which runs
+once during setup.
 
 ## License
 

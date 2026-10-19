@@ -10,6 +10,16 @@ files:
   - out/**
   - package.json
 
+# The vendored avr-gcc + Arduino core, copied outside the asar so the compiler
+# can be spawned as a normal executable. Build it first with
+# `npm run fetch:toolchain`; the download cache is excluded.
+extraResources:
+  - from: resources/toolchain
+    to: toolchain
+    filter:
+      - '**/*'
+      - '!.cache/**'
+
 asar: true
 npmRebuild: false
 

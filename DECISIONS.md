@@ -92,3 +92,37 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   two pin coordinates, asserting that a wire appears and the two nets merge. This exercises the
   Konva hit-testing and store paths that unit tests cannot reach, with zero console errors and
   zero CSP violations required.
+
+## 2026-10-19 — Offline compiler toolchain
+
+- **The toolchain is vendored, not committed.** `scripts/fetch-toolchain.mjs` downloads
+  checksum-pinned Ubuntu `gcc-avr`/`avr-libc`/`binutils-avr` packages plus the Arduino AVR
+  core 1.8.7 tarball into `resources/toolchain/linux/` (gitignored, ~420 MB unpacked) and
+  precompiles `core/uno/core.a` for the atmega328p. Committing 60+ MB of binaries would bloat
+  every clone; this keeps the repository small while still producing a fully offline app
+  after one setup step. electron-builder copies the directory outside the asar as an
+  `extraResources` entry, so packaged builds compile with no network and no system packages.
+- **The tree stays relocatable.** avr-gcc locates its headers and libraries relative to
+  `argv[0]`, so the extracted packages keep `<root>/bin` next to `<root>/lib`. `libmpc.so.3`
+  is the one host library the AVR compiler needs that Ubuntu does not install by default; it
+  is extracted into `<root>/lib/x86_64-linux-gnu` and supplied via `LD_LIBRARY_PATH` on the
+  spawned process, not by touching the system.
+- **Compilation lives in the main process, behind IPC.** `services/toolchain.ts` is
+  Electron-free so Vitest can exercise the real avr-gcc; `services/compiler.ts` only adds the
+  platform search paths and a build queue (one compile at a time). Arguments are passed as an
+  array to `spawn` (never a shell), each build gets a fresh `mkdtemp` directory, and a runaway
+  compile is killed after 60 seconds.
+- **Arduino prototypes are generated, not required from the user.** The IDE lets `loop()`
+  call a helper defined below it, so `shared/compile.ts` scans the sketch for top-level
+  function definitions and emits forward declarations into the translation unit. Comments and
+  string literals are blanked first (preserving length and line breaks), default arguments are
+  dropped (repeating them in a declaration is a C++ error), and preprocessor lines are skipped
+  — without that last rule an `#include <EEPROM.h>` line got glued onto the next prototype and
+  the compiler warned about "extra tokens at end of #include directive".
+- **Diagnostics point at sketch lines.** The generated unit ends with `#line 1 "sketch.ino"`,
+  so GCC reports the lines the user actually typed. File names are dropped from the payload
+  for now; line and column are enough for the build output.
+- **Serial monitor infrastructure lands before the simulator.** Milestone 3 owns the line
+  buffer (CR/LF handling, bounded history) and the terminal UI; milestone 4 will feed it from
+  the emulated UART. Until then the panel explains that the simulation is not running yet
+  instead of pretending to be live.

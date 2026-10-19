@@ -7,6 +7,10 @@ dist
 release
 *.tsbuildinfo
 
+# Vendored toolchain: ~420 MB of binaries, rebuilt with
+# `node scripts/fetch-toolchain.mjs` and shipped by electron-builder.
+resources/toolchain/
+
 # Logs
 *.log
 npm-debug.log*

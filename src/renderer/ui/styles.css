@@ -120,10 +120,161 @@ input[type='color'] {
   white-space: nowrap;
 }
 
+button.is-active {
+  border-color: var(--accent);
+  background: #223049;
+}
+
+.toolbar-build {
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
 .app-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
   min-height: 0;
+}
+
+.app-main[data-view='code'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.code-workspace {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 240px);
+  min-width: 0;
+  min-height: 0;
+}
+
+.sketch-editor {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.sketch-editor .cm-editor {
+  height: 100%;
+  font-size: 0.82rem;
+}
+
+.sketch-editor .cm-scroller {
+  font-family: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, monospace;
+}
+
+.code-panels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  background: var(--surface-1);
+}
+
+.build-output,
+.serial-monitor {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.7rem 0.9rem;
+  overflow: hidden;
+}
+
+.serial-monitor {
+  border-right: 1px solid var(--border);
+}
+
+.build-summary {
+  margin: 0 0 0.5rem;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.build-summary-succeeded {
+  color: #7ddba1;
+}
+
+.build-summary-failed {
+  color: var(--danger);
+}
+
+.diagnostic-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.72rem;
+}
+
+.diagnostic {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.diagnostic-error .diagnostic-location {
+  color: var(--danger);
+}
+
+.diagnostic-warning .diagnostic-location {
+  color: #f2c14e;
+}
+
+.diagnostic-note .diagnostic-location {
+  color: var(--text-muted);
+}
+
+.diagnostic-location {
+  flex: none;
+  min-width: 4.5rem;
+}
+
+.diagnostic-message {
+  min-width: 0;
+  word-break: break-word;
+}
+
+.serial-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.serial-header .app-panel-title {
+  flex: 1;
+  margin: 0;
+}
+
+.serial-baud {
+  font-size: 0.72rem;
+}
+
+.serial-lines {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.4rem 0.5rem;
+  background: #0d0f15;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.serial-line {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.serial-pending {
+  color: var(--text-muted);
 }
 
 .circuit-canvas {

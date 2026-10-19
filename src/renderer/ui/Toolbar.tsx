@@ -1,7 +1,15 @@
 import type { JSX } from 'react'
 import { useCircuitStore } from '../store/circuitStore'
+import { useSketchStore } from '../store/sketchStore'
 
-export function Toolbar(): JSX.Element {
+export type WorkspaceView = 'circuit' | 'code'
+
+export interface ToolbarProps {
+  readonly view: WorkspaceView
+  readonly onChangeView: (view: WorkspaceView) => void
+}
+
+export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
   const canUndo = useCircuitStore((state) => state.canUndo)
   const canRedo = useCircuitStore((state) => state.canRedo)
   const undo = useCircuitStore((state) => state.undo)
@@ -14,55 +22,103 @@ export function Toolbar(): JSX.Element {
   const hasParts = useCircuitStore((state) => state.selectedPartIds.length > 0)
   const hasWire = useCircuitStore((state) => state.selectedWireId !== null)
 
+  const phase = useSketchStore((state) => state.phase)
+  const build = useSketchStore((state) => state.build)
+
   return (
     <header className="app-toolbar">
       <span className="app-brand">
         Hu<span className="app-brand-accent">CAD</span> Circuits
       </span>
 
-      <div className="toolbar-group">
-        <button type="button" onClick={undo} disabled={!canUndo} title="Undo (Ctrl+Z)">
-          Undo
-        </button>
-        <button type="button" onClick={redo} disabled={!canRedo} title="Redo (Ctrl+Y)">
-          Redo
-        </button>
-      </div>
-
-      <div className="toolbar-group">
-        <button type="button" onClick={rotateSelected} disabled={!hasParts} title="Rotate 90° (R)">
-          Rotate
+      <div className="toolbar-group" role="tablist" aria-label="Workspace view">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === 'circuit'}
+          className={view === 'circuit' ? 'is-active' : undefined}
+          onClick={() => onChangeView('circuit')}
+        >
+          Circuit
         </button>
         <button
           type="button"
-          onClick={duplicateSelected}
-          disabled={!hasParts}
-          title="Duplicate (Ctrl+D)"
+          role="tab"
+          aria-selected={view === 'code'}
+          className={view === 'code' ? 'is-active' : undefined}
+          onClick={() => onChangeView('code')}
         >
-          Duplicate
-        </button>
-        <button
-          type="button"
-          onClick={removeSelected}
-          disabled={!hasParts && !hasWire}
-          title="Delete (Del)"
-        >
-          Delete
+          Code
         </button>
       </div>
 
-      <label className="toolbar-color">
-        Wire
-        <input
-          type="color"
-          value={wireColor}
-          aria-label="Wire color"
-          onChange={(event) => setWireColor(event.target.value)}
-        />
-      </label>
+      {view === 'circuit' && (
+        <>
+          <div className="toolbar-group">
+            <button type="button" onClick={undo} disabled={!canUndo} title="Undo (Ctrl+Z)">
+              Undo
+            </button>
+            <button type="button" onClick={redo} disabled={!canRedo} title="Redo (Ctrl+Y)">
+              Redo
+            </button>
+          </div>
+
+          <div className="toolbar-group">
+            <button
+              type="button"
+              onClick={rotateSelected}
+              disabled={!hasParts}
+              title="Rotate 90° (R)"
+            >
+              Rotate
+            </button>
+            <button
+              type="button"
+              onClick={duplicateSelected}
+              disabled={!hasParts}
+              title="Duplicate (Ctrl+D)"
+            >
+              Duplicate
+            </button>
+            <button
+              type="button"
+              onClick={removeSelected}
+              disabled={!hasParts && !hasWire}
+              title="Delete (Del)"
+            >
+              Delete
+            </button>
+          </div>
+
+          <label className="toolbar-color">
+            Wire
+            <input
+              type="color"
+              value={wireColor}
+              aria-label="Wire color"
+              onChange={(event) => setWireColor(event.target.value)}
+            />
+          </label>
+        </>
+      )}
 
       <span className="toolbar-spacer" />
-      <span className="toolbar-hint">drag parts from the right · click two pins to wire them</span>
+
+      <button
+        type="button"
+        className="toolbar-build"
+        data-testid="build-button"
+        disabled={phase === 'building'}
+        title="Compile the sketch (Ctrl+B)"
+        onClick={() => void build()}
+      >
+        {phase === 'building' ? 'Building…' : 'Build'}
+      </button>
+      <span className="toolbar-hint">
+        {view === 'circuit'
+          ? 'drag parts from the right · click two pins to wire them'
+          : 'Ctrl+B compiles the sketch'}
+      </span>
     </header>
   )
 }

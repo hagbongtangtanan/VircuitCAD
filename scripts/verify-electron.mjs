@@ -15,6 +15,8 @@ const CDP_HOST = process.env.CDP_HOST ?? 'http://127.0.0.1:9222'
 const WAIT_MS = Number(process.env.CDP_WAIT_MS ?? 60000)
 // Set EXPECT_CANVAS=1 once the circuit editor is part of the shell.
 const EXPECT_CANVAS = process.env.EXPECT_CANVAS === '1'
+// Set EXPECT_EDITOR=1 to also compile the default sketch through the toolchain.
+const EXPECT_EDITOR = process.env.EXPECT_EDITOR === '1'
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -198,6 +200,68 @@ if (EXPECT_CANVAS) {
   await sleep(500)
 }
 
+let editor = null
+if (EXPECT_EDITOR) {
+  const probe = await send('Runtime.evaluate', {
+    expression: `(async () => {
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+      const text = (selector) => document.querySelector(selector)?.textContent ?? ''
+      const waitFor = async (predicate, attempts, intervalMs) => {
+        for (let attempt = 0; attempt < attempts; attempt += 1) {
+          const value = predicate()
+          if (value) return value
+          await sleep(intervalMs)
+        }
+        return null
+      }
+
+      // The dev server may reload once while it pre-bundles dependencies, which
+      // detaches any element we grabbed, so re-query the tab on every attempt.
+      let editorReady = null
+      for (let attempt = 0; attempt < 40 && editorReady === null; attempt += 1) {
+        const tab = [...document.querySelectorAll('button[role="tab"]')].find(
+          (button) => (button.textContent ?? '').trim() === 'Code'
+        )
+        if (tab) tab.click()
+        await sleep(250)
+        editorReady = document.querySelector('.cm-editor')
+      }
+      const buildButton = document.querySelector('[data-testid="build-button"]')
+      if (!buildButton) return { error: 'no build button' }
+      buildButton.click()
+
+      // The click only flips the status once React re-renders, so wait for a
+      // terminal message instead of the first non-"Compiling" string.
+      const buildStatus = await waitFor(
+        () => {
+          const value = text('[data-testid="build-status"]')
+          const finished =
+            value.startsWith('Compiled in') ||
+            value.startsWith('Build failed') ||
+            value.includes('toolchain is not installed') ||
+            value.includes('failed')
+          return finished ? value : null
+        },
+        120,
+        500
+      )
+
+      return {
+        hasEditor: editorReady !== null,
+        hasSerialMonitor: document.querySelector('[data-testid="serial-monitor"]') !== null,
+        buildStatus,
+        diagnosticCount: document.querySelectorAll('[data-testid="diagnostic-list"] li').length,
+        toolchain: text('[data-testid="toolchain-status"]'),
+      }
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  })
+  editor = probe.result.value
+  console.log('editor probe:', JSON.stringify(editor, null, 2))
+  await sleep(500)
+}
+
 console.log(`console errors: ${consoleErrors.length}`)
 for (const line of consoleErrors) console.log(`  - ${line}`)
 console.log(`csp violations: ${cspViolations.length}`)
@@ -245,6 +309,25 @@ if (EXPECT_CANVAS) {
       failures.push(`clicking two pins did not create a wire: ${interaction.afterWire}`)
     } else if (wired.nets !== after.nets - 1) {
       failures.push(`wiring the two led pins did not merge their nets: ${interaction.afterWire}`)
+    }
+  }
+}
+
+if (EXPECT_EDITOR) {
+  if (editor === null) failures.push('editor probe did not run')
+  else if (editor.error !== undefined) failures.push(`editor probe: ${editor.error}`)
+  else {
+    if (!editor.hasEditor) failures.push('the Arduino editor did not render')
+    if (!editor.hasSerialMonitor) failures.push('the serial monitor did not render')
+    if (editor.buildStatus === null) failures.push('the build never finished')
+    else if (!/^Compiled in \d+ ms · flash \d+\/32256 B/.test(editor.buildStatus)) {
+      failures.push(`unexpected build result: "${editor.buildStatus}"`)
+    }
+    if (editor.diagnosticCount > 0) {
+      failures.push(`the default sketch produced ${editor.diagnosticCount} diagnostic(s)`)
+    }
+    if (/unavailable/.test(editor.toolchain)) {
+      failures.push(`toolchain reported unavailable: ${editor.toolchain}`)
     }
   }
 }
