@@ -130,6 +130,16 @@ button.is-active {
   font-weight: 600;
 }
 
+.toolbar-run {
+  border-color: #2f9e63;
+  font-weight: 600;
+}
+
+.toolbar-run.is-active {
+  border-color: var(--danger);
+  background: #3a2430;
+}
+
 .app-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;

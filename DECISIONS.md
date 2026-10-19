@@ -126,3 +126,30 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   buffer (CR/LF handling, bounded history) and the terminal UI; milestone 4 will feed it from
   the emulated UART. Until then the panel explains that the simulation is not running yet
   instead of pretending to be live.
+
+## 2026-10-19 — Simulation behind the Run button
+
+- **avr8js runs in the renderer, not a worker.** The CPU, the circuit solver and the UI share
+  the circuit document, so keeping them in one process avoids copying a document plus pin
+  state across a `postMessage` boundary 60 times per second. Each frame advances the CPU by
+  the elapsed wall time (capped at 50 ms of simulated time), which keeps the UI responsive
+  when a frame stalls instead of spiralling into a catch-up loop. If CPU load ever becomes a
+  problem, the simulation class is framework-free and can move behind a worker unchanged.
+- **Electrical behaviour is a small MNA solve, not SPICE.** Nets come from the existing
+  union-find netlist; resistors, potentiometers, the buzzer and closed switches are
+  conductances; the Uno pins are Thevenin sources (25 Ω output, 30 kΩ pull-up, 0.5 Ω 5 V
+  rail); ground nets collapse into the reference node so two wired ground pins cannot form a
+  singular loop of ideal sources. LEDs are solved as a forward voltage with a 0.5 Ω series
+  resistance, iterating on/off state (max eight passes) until the conduction state stops
+  changing. A 1 nS leak from every net to ground defines floating nets as 0 V.
+- **Only the Uno is simulated.** The part registry has a single board, so the sim state is
+  built from the first Arduino Uno in the document. `sim/unoPins.ts` is the one place that
+  maps circuit pin ids ("D13", "A0", "GND2") onto ATmega328P port bits and supply rails.
+- **The emulator stops when the circuit changes.** Rewiring while the CPU is running would
+  leave the solver holding a stale netlist. Instead the store subscribes to the circuit
+  document and stops the run; pressing Run again picks up the new wiring.
+- **Simulation tests use a committed HEX fixture.** Linking the compiler into every unit test
+  would make the suite depend on the vendored toolchain. `sim/fixtures.ts` holds the HEX for
+  a blink-plus-serial sketch generated once with the real avr-gcc; the toolchain integration
+  tests cover the compiler, and the CDP probe covers the compile → run → serial path end to
+  end.

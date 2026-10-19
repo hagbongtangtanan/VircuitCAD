@@ -1,10 +1,7 @@
 import { create } from 'zustand'
 import { appendSerialText, createSerialBuffer, type SerialBuffer } from './serialBuffer'
 
-/**
- * Buffer for the serial monitor. Milestone 3 owns the plumbing; milestone 4
- * feeds it from the emulated AVR's UART once the simulator runs.
- */
+/** Buffer for the serial monitor, fed byte by byte from the emulated AVR's UART. */
 export interface SerialStore {
   readonly buffer: SerialBuffer
   readonly baudRate: number

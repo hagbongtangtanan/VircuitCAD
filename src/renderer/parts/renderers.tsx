@@ -8,6 +8,8 @@ import { resistorBands } from './resistorBands'
 export interface PartBodyProps {
   readonly part: PartInstance
   readonly selected: boolean
+  /** 0 to 1, only meaningful for light-emitting parts. */
+  readonly brightness?: number
 }
 
 /**
@@ -15,7 +17,7 @@ export interface PartBodyProps {
  * position, rotation and selection styling, so every case here is plain local
  * geometry that matches the pin offsets in `definitions.ts`.
  */
-export function PartBody({ part, selected }: PartBodyProps): JSX.Element {
+export function PartBody({ part, selected, brightness = 0 }: PartBodyProps): JSX.Element {
   const outline = selected ? PART_SELECTED_STROKE : PART_BODY_STROKE
   const outlineWidth = selected ? 2 : 1
   const size = definitionOf(part.type).size
@@ -23,8 +25,22 @@ export function PartBody({ part, selected }: PartBodyProps): JSX.Element {
   switch (part.type) {
     case 'led': {
       const palette = LED_COLORS[part.props.color]
+      const glow = Math.min(1, Math.max(0, brightness))
       return (
         <>
+          {glow > 0.01 && (
+            <Circle
+              x={20}
+              y={16}
+              radius={13 + 9 * glow}
+              fill={palette.glow}
+              opacity={0.4 * glow}
+              shadowColor={palette.glow}
+              shadowBlur={20 * glow}
+              shadowOpacity={0.8 * glow}
+              listening={false}
+            />
+          )}
           <Line points={[10, 40, 10, 26]} stroke={PART_BODY_STROKE} strokeWidth={2} />
           <Line points={[30, 40, 30, 26]} stroke={PART_BODY_STROKE} strokeWidth={2} />
           <Circle
@@ -35,7 +51,14 @@ export function PartBody({ part, selected }: PartBodyProps): JSX.Element {
             stroke={outline}
             strokeWidth={outlineWidth}
           />
-          <Ellipse x={17} y={13} radiusX={4} radiusY={3} fill={palette.glow} opacity={0.85} />
+          <Ellipse
+            x={17}
+            y={13}
+            radiusX={glow > 0.01 ? 6 : 4}
+            radiusY={glow > 0.01 ? 5 : 3}
+            fill={palette.glow}
+            opacity={glow > 0.01 ? 0.35 + 0.6 * glow : 0.85}
+          />
           <Line points={[28, 24, 33, 28]} stroke={PART_BODY_STROKE} strokeWidth={2} />
         </>
       )

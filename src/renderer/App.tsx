@@ -4,6 +4,7 @@ import { BuildOutput } from './editor/BuildOutput'
 import { SketchEditor } from './editor/SketchEditor'
 import { SerialMonitor } from './serial/SerialMonitor'
 import { useCircuitStore } from './store/circuitStore'
+import { useSimStore } from './store/simStore'
 import { useSketchStore } from './store/sketchStore'
 import { buildNetlist } from './wiring/netlist'
 import { IpcStatus } from './ui/IpcStatus'
@@ -32,6 +33,12 @@ export function App(): JSX.Element {
   const build = useSketchStore((state) => state.build)
   const refreshToolchain = useSketchStore((state) => state.refreshToolchain)
   const toolchain = useSketchStore((state) => state.toolchain)
+  const simStatus = useSimStore((state) => state.status)
+  const simError = useSimStore((state) => state.error)
+  const simElapsedMs = useSimStore((state) => state.elapsedMs)
+  const litLeds = useSimStore(
+    (state) => Object.values(state.ledBrightness).filter((value) => value > 0.02).length
+  )
 
   // Derived state: the netlist is rebuilt whenever the topology changes.
   const netlist = useMemo(() => buildNetlist(document), [document])
@@ -124,6 +131,17 @@ export function App(): JSX.Element {
       <footer className="app-status">
         <span data-testid="scene-counts">
           {document.parts.length} parts · {document.wires.length} wires · {netlist.netCount} nets
+        </span>
+        <span data-testid="sim-readout">
+          {simStatus === 'running'
+            ? `Sim: running · ${(simElapsedMs / 1000).toFixed(1)} s · ${litLeds} LED${litLeds === 1 ? '' : 's'} lit`
+            : simStatus === 'preparing'
+              ? 'Sim: building sketch…'
+              : simStatus === 'error'
+                ? `Sim: error — ${simError ?? 'unknown'}`
+                : simStatus === 'stopped'
+                  ? 'Sim: stopped'
+                  : 'Sim: idle'}
         </span>
         <span data-testid="toolchain-status">
           {toolchain === null

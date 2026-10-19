@@ -17,6 +17,8 @@ const WAIT_MS = Number(process.env.CDP_WAIT_MS ?? 60000)
 const EXPECT_CANVAS = process.env.EXPECT_CANVAS === '1'
 // Set EXPECT_EDITOR=1 to also compile the default sketch through the toolchain.
 const EXPECT_EDITOR = process.env.EXPECT_EDITOR === '1'
+// Set EXPECT_SIM=1 to run the compiled sketch on avr8js and wait for Serial output.
+const EXPECT_SIM = process.env.EXPECT_SIM === '1'
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -262,6 +264,63 @@ if (EXPECT_EDITOR) {
   await sleep(500)
 }
 
+let simulation = null
+if (EXPECT_SIM) {
+  const probe = await send('Runtime.evaluate', {
+    expression: `(async () => {
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+      const text = (selector) => document.querySelector(selector)?.textContent ?? ''
+      const waitFor = async (predicate, attempts, intervalMs) => {
+        for (let attempt = 0; attempt < attempts; attempt += 1) {
+          const value = predicate()
+          if (value) return value
+          await sleep(intervalMs)
+        }
+        return null
+      }
+
+      const codeTab = [...document.querySelectorAll('button[role="tab"]')].find(
+        (button) => (button.textContent ?? '').trim() === 'Code'
+      )
+      codeTab?.click()
+      await sleep(300)
+
+      const simButton = document.querySelector('[data-testid="sim-button"]')
+      if (!simButton) return { error: 'no simulation button' }
+      simButton.click()
+
+      const running = await waitFor(
+        () => text('[data-testid="sim-status"]').includes('simulating'),
+        240,
+        250
+      )
+      const serial = await waitFor(() => {
+        const lines = [...document.querySelectorAll('.serial-line')].map(
+          (element) => element.textContent ?? ''
+        )
+        return lines.length >= 2 ? lines.slice(0, 4) : null
+      }, 240, 250)
+      const readout = text('[data-testid="sim-readout"]')
+
+      simButton.click()
+      await sleep(300)
+
+      return {
+        running: running !== null,
+        serial,
+        readout,
+        stopped: text('[data-testid="sim-status"]'),
+        error: text('[data-testid="sim-readout"]').includes('error'),
+      }
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  })
+  simulation = probe.result.value
+  console.log('simulation probe:', JSON.stringify(simulation, null, 2))
+  await sleep(300)
+}
+
 console.log(`console errors: ${consoleErrors.length}`)
 for (const line of consoleErrors) console.log(`  - ${line}`)
 console.log(`csp violations: ${cspViolations.length}`)
@@ -328,6 +387,26 @@ if (EXPECT_EDITOR) {
     }
     if (/unavailable/.test(editor.toolchain)) {
       failures.push(`toolchain reported unavailable: ${editor.toolchain}`)
+    }
+  }
+}
+
+if (EXPECT_SIM) {
+  if (simulation === null) failures.push('simulation probe did not run')
+  else if (typeof simulation.error === 'string')
+    failures.push(`simulation probe: ${simulation.error}`)
+  else {
+    if (simulation.error === true) failures.push('the simulation reported an error')
+    if (!simulation.running) failures.push('the simulation never reached the running state')
+    if (!Array.isArray(simulation.serial)) failures.push('no serial output arrived')
+    else if (!simulation.serial.includes('LED on')) {
+      failures.push(`unexpected serial output: ${JSON.stringify(simulation.serial)}`)
+    }
+    if (!/running/.test(simulation.readout)) {
+      failures.push(`unexpected simulation readout: ${simulation.readout}`)
+    }
+    if (!/stopped/.test(simulation.stopped)) {
+      failures.push(`the simulation did not stop: ${simulation.stopped}`)
     }
   }
 }

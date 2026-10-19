@@ -7,6 +7,7 @@ import { definitionOf, pinWorldPosition } from '../parts/definitions'
 import { PartBody } from '../parts/renderers'
 import { PIN_ACTIVE_FILL, PIN_FILL, PIN_HOVER_FILL } from '../parts/partColors'
 import { useCircuitStore } from '../store/circuitStore'
+import { useSimStore } from '../store/simStore'
 import { PART_DRAG_MIME } from './dnd'
 import {
   GRID_SIZE,
@@ -108,6 +109,7 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
   const beginTransientEdit = useCircuitStore((state) => state.beginTransientEdit)
   const commitTransientEdit = useCircuitStore((state) => state.commitTransientEdit)
   const selectParts = useCircuitStore((state) => state.selectParts)
+  const brightness = useSimStore((state) => state.ledBrightness[props.partId] ?? 0)
 
   if (part === undefined) return null
 
@@ -139,7 +141,7 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
         selectParts([part.id], event.evt.shiftKey)
       }}
     >
-      <PartBody part={part} selected={props.selected} />
+      <PartBody part={part} selected={props.selected} brightness={brightness} />
       {definition.pins.map((pin) => {
         const state = refsEqual(props.pendingPin, { partId: part.id, pinId: pin.id })
           ? 'active'

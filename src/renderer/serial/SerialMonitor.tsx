@@ -1,17 +1,16 @@
 import { useEffect, useRef, type JSX } from 'react'
 import { useSerialStore } from './serialStore'
+import { useSimStore } from '../store/simStore'
 
 const BAUD_RATES = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200] as const
 
-/**
- * Terminal-style output view. Milestone 3 provides the buffer and the UI; the
- * emulated UART starts feeding it in milestone 4.
- */
+/** Terminal-style view of the bytes the emulated AVR writes to its UART. */
 export function SerialMonitor(): JSX.Element {
   const buffer = useSerialStore((state) => state.buffer)
   const baudRate = useSerialStore((state) => state.baudRate)
   const setBaudRate = useSerialStore((state) => state.setBaudRate)
   const clear = useSerialStore((state) => state.clear)
+  const simStatus = useSimStore((state) => state.status)
   const endRef = useRef<HTMLDivElement | null>(null)
 
   const lineCount = buffer.lines.length
@@ -44,7 +43,9 @@ export function SerialMonitor(): JSX.Element {
       <div className="serial-lines" data-testid="serial-monitor">
         {isEmpty && (
           <p className="app-placeholder">
-            No serial output yet. Run the simulation to see what the sketch prints.
+            {simStatus === 'running'
+              ? 'Simulation running — waiting for the sketch to print.'
+              : 'No serial output yet. Run the simulation to see what the sketch prints.'}
           </p>
         )}
         {buffer.lines.map((line, index) => (

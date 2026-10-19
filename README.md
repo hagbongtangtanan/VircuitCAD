@@ -15,7 +15,7 @@ Under active development.
 | 1         | Scaffolding, secure shell, typed IPC ping, packaging | Done    |
 | 2         | Canvas, parts drawer, wiring, netlist, undo/redo     | Done    |
 | 3         | Editor, compiler, serial monitor                     | Done    |
-| 4         | avr8js simulation (LED, buzzer, input)               | Planned |
+| 4         | avr8js simulation (LED, buzzer, input)               | Done    |
 | 5         | `.circuit` / `.ino` / `.hex` file flows              | Planned |
 | 6         | Packaging, docs, samples                             | Planned |
 
@@ -67,10 +67,12 @@ CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
 Set `EXPECT_CANVAS=1` to also drive the circuit editor end to end: the script places a part from
 the drawer, clicks two pins through the real Konva event path, and checks that a wire appeared
 and the two nets merged. Add `EXPECT_EDITOR=1` to switch to the Code view and compile the
-default sketch through the vendored toolchain, asserting on the reported flash/RAM usage.
+default sketch through the vendored toolchain, asserting on the reported flash/RAM usage. Add
+`EXPECT_SIM=1` to run that sketch on the emulated AVR and wait for its `Serial` output in the
+monitor, then stop it again.
 
 ```bash
-EXPECT_CANVAS=1 EXPECT_EDITOR=1 CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
+EXPECT_CANVAS=1 EXPECT_EDITOR=1 EXPECT_SIM=1 CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
 ```
 
 On a headless or containerised Linux box where the setuid `chrome-sandbox` helper is not
@@ -86,7 +88,10 @@ src/main/        Electron main process: window + security posture, ipc/, service
                  services/toolchain.ts  avr-gcc invocation, no Electron dependency
 src/preload/     contextBridge surface (`window.api`), the only renderer↔main bridge
 src/shared/      IPC contract, zod schemas, circuit model, compiler helpers
-src/renderer/    React app: canvas/ parts/ wiring/ editor/ serial/ store/ ui/
+src/renderer/    React app: canvas/ parts/ wiring/ sim/ editor/ serial/ store/ ui/
+                 sim/simulation.ts  avr8js CPU + peripherals, pin polling
+                 sim/solver.ts      modified nodal analysis for the wired circuit
+src/shared/      intelhex.ts        Intel HEX to AVR program memory
 resources/       bundled offline assets: toolchain/ (gitignored), samples/
 ```
 
@@ -105,6 +110,21 @@ Compilation is equally local: the main process spawns the vendored `avr-gcc` wit
 array (never a shell), writes the sketch to a temporary directory, and returns Intel HEX plus
 diagnostics. The only network access in the project is `npm run fetch:toolchain`, which runs
 once during setup.
+
+## Simulation
+
+The **Run** button compiles the sketch if needed and executes it on [avr8js] in the renderer.
+Every animation frame advances the emulated ATmega328P by the elapsed wall time, reads the
+PORT/PIN/DDR registers, and re-solves the wired circuit: wires and breadboard strips define
+connectivity, resistors and potentiometers are conductances, LEDs are a forward voltage plus a
+small series resistance, and the Uno's 5V/GND/IO pins are Thevenin sources. LED brightness comes
+from the solved current, and the emulated UART feeds the serial monitor.
+
+[avr8js]: https://github.com/wokwi/avr8js
+
+Modelling notes and current gaps (buttons and the potentiometer are selectable but not yet
+interactive, PWM is sampled rather than averaged, the buzzer has no audio) live in
+`DECISIONS.md`.
 
 ## License
 

@@ -1,5 +1,6 @@
 import type { JSX } from 'react'
 import { useCircuitStore } from '../store/circuitStore'
+import { useSimStore } from '../store/simStore'
 import { useSketchStore } from '../store/sketchStore'
 
 export type WorkspaceView = 'circuit' | 'code'
@@ -24,6 +25,11 @@ export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
 
   const phase = useSketchStore((state) => state.phase)
   const build = useSketchStore((state) => state.build)
+
+  const simStatus = useSimStore((state) => state.status)
+  const elapsedMs = useSimStore((state) => state.elapsedMs)
+  const toggleSimulation = useSimStore((state) => state.toggle)
+  const simulating = simStatus === 'running' || simStatus === 'preparing'
 
   return (
     <header className="app-toolbar">
@@ -114,6 +120,27 @@ export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
       >
         {phase === 'building' ? 'Building…' : 'Build'}
       </button>
+      <button
+        type="button"
+        className={simulating ? 'toolbar-run is-active' : 'toolbar-run'}
+        data-testid="sim-button"
+        disabled={simStatus === 'preparing'}
+        title={simulating ? 'Stop the simulation' : 'Compile (if needed) and run the circuit'}
+        onClick={() => void toggleSimulation()}
+      >
+        {simulating ? 'Stop' : 'Run'}
+      </button>
+      <span className="toolbar-hint" data-testid="sim-status">
+        {simStatus === 'running'
+          ? `simulating · ${(elapsedMs / 1000).toFixed(1)} s`
+          : simStatus === 'preparing'
+            ? 'building sketch…'
+            : simStatus === 'error'
+              ? 'simulation error'
+              : simStatus === 'stopped'
+                ? 'stopped'
+                : 'not simulating'}
+      </span>
       <span className="toolbar-hint">
         {view === 'circuit'
           ? 'drag parts from the right · click two pins to wire them'
