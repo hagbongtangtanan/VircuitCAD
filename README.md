@@ -1,13 +1,12 @@
-# CircuitBench
+# HuCAD
 
-CircuitBench is an **offline, local-first, Tinkercad Circuits-style Arduino simulator** desktop
+HuCAD is an **offline, local-first, Tinkercad Circuits-style Arduino simulator** desktop
 app. Drag parts onto a canvas, wire them up, write Arduino C++ side by side, and run the sketch
 against an emulated AVR — with no account and no network access at any point.
 
 The product name is a single constant, `APP_NAME` in `src/shared/app.ts`. The npm package,
-windows, user-data directory, desktop entry and installer artifact names are all `CircuitBench`;
-only the git repository keeps the historical `HuCAD` name because it anchors existing releases
-and clone URLs.
+windows, user-data directory, desktop entry, installer artifact names and the git repository are
+all `HuCAD`.
 
 Built by BIT-CT students from CTU-San Francisco.
 
@@ -37,14 +36,14 @@ Tinkercad-fidelity programme rather than the original six-step plan.
 
 Latest installers: **<https://github.com/hagbongtangtanan/HuCAD/releases/latest>**
 
-| Platform | Artifact                          | Install                                                     |
-| -------- | --------------------------------- | ----------------------------------------------------------- |
-| Linux    | `CircuitBench-*-linux-*.AppImage` | `chmod +x` it, then run it                                  |
-| Windows  | `CircuitBench-*-win-*.exe`        | run the installer (SmartScreen: **More info → Run anyway**) |
-| macOS    | `CircuitBench-*-mac-*.dmg`        | drag to Applications (first open: right-click → **Open**)   |
+| Platform | Artifact                   | Install                                                     |
+| -------- | -------------------------- | ----------------------------------------------------------- |
+| Linux    | `HuCAD-*-linux-*.AppImage` | `chmod +x` it, then run it                                  |
+| Windows  | `HuCAD-*-win-*.exe`        | run the installer (SmartScreen: **More info → Run anyway**) |
+| macOS    | `HuCAD-*-mac-*.dmg`        | drag to Applications (first open: right-click → **Open**)   |
 
 The Linux AppImage needs FUSE 2 (`sudo apt install libfuse2` on Ubuntu 22.04+); where FUSE is
-unavailable, run it as `./CircuitBench-*.AppImage --appimage-extract-and-run`. Compiling a
+unavailable, run it as `./HuCAD-*.AppImage --appimage-extract-and-run`. Compiling a
 sketch needs the vendored AVR toolchain, which currently ships for Linux only — the canvas,
 wiring and simulation work on every platform.
 
@@ -152,7 +151,7 @@ Known modelling limits, chosen to keep the solver fast and predictable:
 npm run build:linux
 ```
 
-produces `release/CircuitBench-0.1.0-linux-x86_64.AppImage` (about 234 MB). The `prebuild:linux`
+produces `release/HuCAD-0.1.0-linux-x86_64.AppImage` (about 234 MB). The `prebuild:linux`
 hook vendors the toolchain first (a no-op when it is already there), then electron-builder copies
 it and the samples outside the asar into `resources/`, so the installed app compiles sketches and
 opens samples with no network and no system packages. The packaged directory is smoke-tested with
@@ -164,7 +163,7 @@ wine):
 npm run build:win
 ```
 
-Artifact names are deliberately space-free (`CircuitBench-<version>-<os>-<arch>.<ext>`): GitHub
+Artifact names are deliberately space-free (`HuCAD-<version>-<os>-<arch>.<ext>`): GitHub
 rewrites spaces in uploaded asset names, which would break both the download links and the
 updater metadata in `latest-*.yml`.
 

@@ -411,7 +411,7 @@ if (EXPECT_CANVAS) {
     if (!interaction.hasTopBar) failures.push('top bar missing')
     if (!interaction.hasToolbar) failures.push('canvas toolbar missing')
     if (!interaction.hasStatusBar) failures.push('status bar missing')
-    if (!/CircuitBench/.test(interaction.title ?? '')) {
+    if (!/HuCAD/.test(interaction.title ?? '')) {
       failures.push(`window title does not use APP_NAME: ${interaction.title}`)
     }
     if (interaction.canvasCount < 1) failures.push('circuit canvas missing')

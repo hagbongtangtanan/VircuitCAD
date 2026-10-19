@@ -1,5 +1,5 @@
-appId: com.circuitbench.app
-productName: CircuitBench
+appId: com.hucad.app
+productName: HuCAD
 copyright: Copyright (c) 2026 BIT-CT, CTU-San Francisco
 
 directories:
@@ -27,7 +27,7 @@ extraResources:
 
 # GitHub replaces spaces in uploaded asset names, which would break the download
 # URLs embedded in latest-*.yml; every artifact name stays space-free.
-artifactName: CircuitBench-${version}-${os}-${arch}.${ext}
+artifactName: HuCAD-${version}-${os}-${arch}.${ext}
 
 # Publishing target for `electron-builder --publish always` (CI) and
 # `npm run release`. `releaseType: release` makes a tag build public instead of

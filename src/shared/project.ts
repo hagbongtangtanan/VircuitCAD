@@ -59,7 +59,7 @@ export function parseProjectText(text: string): ProjectFile {
     const [issue] = result.error.issues
     const location = issue?.path.join('.') ?? 'document'
     throw new ProjectFileError(
-      `This is not a CircuitBench project: ${location} — ${issue?.message ?? 'invalid data'}`
+      `This is not a HuCAD project: ${location} — ${issue?.message ?? 'invalid data'}`
     )
   }
   return result.data

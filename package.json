@@ -1,8 +1,8 @@
 {
-  "name": "circuitbench",
+  "name": "hucad",
   "version": "0.1.0",
   "private": true,
-  "description": "CircuitBench: offline, local Tinkercad-style Arduino circuit simulator",
+  "description": "HuCAD: offline, local Tinkercad-style Arduino circuit simulator",
   "author": "BIT-CT, CTU-San Francisco",
   "license": "MIT",
   "main": "out/main/index.js",
@@ -57,5 +57,5 @@
     "vite": "8.3.4",
     "vitest": "5.0.5"
   },
-  "desktopName": "circuitbench.desktop"
+  "desktopName": "hucad.desktop"
 }

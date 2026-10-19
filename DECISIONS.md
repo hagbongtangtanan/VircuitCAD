@@ -299,3 +299,14 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   `--verify` checks without the network for CI. `prebuild:linux` runs the fetch so a fresh clone
   cannot produce a compiler-less AppImage, and the release workflow runs `toolchain:verify` as an
   explicit gate. Windows and macOS still ship without a compiler (unchanged).
+
+## 2026-10-20 — Product name reverted to HuCAD
+
+- **`APP_NAME` is `HuCAD` again, and every derived identity follows it.** The npm package is
+  `hucad`, the desktop entry is `hucad.desktop`, the app id is `com.hucad.app`, artifacts are
+  `HuCAD-<version>-<os>-<arch>.<ext>`, and the packaged app writes to `~/.config/hucad`. This
+  supersedes both earlier naming entries; the repository was already `HuCAD`, so releases and
+  clone URLs stay valid.
+- **Only user-facing identity changed.** The `.hucad` project extension, `hucad-project` format
+  id and drag MIME are unchanged because they are internal/file-format contracts; the two
+  CircuitBench paragraphs above are left as history rather than rewritten.

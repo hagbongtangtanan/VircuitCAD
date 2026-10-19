@@ -26,7 +26,7 @@ describe('project files', () => {
   })
 
   it('rejects JSON that is not a project', () => {
-    expect(() => parseProjectText('{"hello":1}')).toThrow(/not a CircuitBench project/)
+    expect(() => parseProjectText('{"hello":1}')).toThrow(/not a HuCAD project/)
     expect(() => parseProjectText(JSON.stringify({ ...project, version: 99 }))).toThrow(
       ProjectFileError
     )
