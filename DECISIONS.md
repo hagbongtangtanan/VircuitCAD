@@ -172,3 +172,31 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 - **Dirty state is a comparison, not a change counter.** The store keeps snapshots of the last
   saved circuit document (reference equality) and sketch string. Any store update recomputes
   the flag, so undoing back to the saved state correctly clears the unsaved marker.
+
+## 2026-10-19 — Bundled samples and the AppImage
+
+- **Samples are ordinary project files shipped as read-only resources.** The renderer asks the
+  main process for a list and opens one by file name; the name is matched against
+  `SAMPLE_NAME_PATTERN` and resolved inside a fixed directory, so a compromised renderer cannot
+  escape it. Opening a sample replaces the circuit and the sketch and shows the sample's human
+  label ("Blink led") in the status bar, but leaves the project path empty so the first save
+  goes through the normal dialog instead of overwriting the example.
+- **Packaged builds mirror the repository layout.** electron-builder's `extraResources` copies
+  `resources/toolchain` to `toolchain` and `resources/samples` to `samples`, next to
+  `app.asar`; `samplesDirectory()` checks `process.resourcesPath` first and falls back to the
+  checkout so `npm run dev` and the un-packaged probe work unchanged.
+- **The AppImage is verified, not assumed.** `--appimage-extract` followed by `AppRun` and the
+  same CDP probe is the only check that proves `process.resourcesPath` resolution and that the
+  vendored `avr-gcc` still runs after packaging, since both are invisible to `npm run build`.
+- **The icon and desktop entry are part of the build.** `resources/icon.png` (512×512,
+  generated) is picked up from the build-resources directory, and `desktopName` in
+  `package.json` plus `linux.syncDesktopName` make the `.desktop` file, `StartupWMClass` and
+  Electron's `app_id` agree so the launcher groups the running window correctly.
+- **A failing simulation tick reports an error instead of freezing.** The animation loop wraps
+  the CPU step and the publish in a guard; an exception cancels the loop and puts the store in
+  `error` with the message, so the status bar explains what happened instead of showing a
+  frozen "running" clock.
+- **Regexes inside the injected CDP expression need doubled backslashes.** The probe's
+  expression is written as a JavaScript template literal, so `/\d+/` in the repository source
+  reaches the page as `/d+/` and silently never matches. The LED check uses a character class
+  (`[0-9]+`) to stay readable and immune to that trap.

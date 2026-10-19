@@ -31,6 +31,8 @@ export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
   const saveProject = useProjectStore((state) => state.save)
   const newProject = useProjectStore((state) => state.newProject)
   const exportSketch = useProjectStore((state) => state.exportSketch)
+  const samples = useProjectStore((state) => state.samples)
+  const openSample = useProjectStore((state) => state.openSample)
   const exportHex = useProjectStore((state) => state.exportHex)
   const projectBusy = useProjectStore((state) => state.busy)
   const hasHex = useSketchStore((state) => state.hex !== null)
@@ -89,6 +91,26 @@ export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
         >
           Save
         </button>
+        {samples.length > 0 && (
+          <select
+            className="toolbar-samples"
+            data-testid="samples"
+            aria-label="Open a sample project"
+            value=""
+            disabled={projectBusy}
+            onChange={(event) => {
+              const name = event.target.value
+              if (name !== '') void openSample(name)
+            }}
+          >
+            <option value="">Samples…</option>
+            {samples.map((sample) => (
+              <option key={sample.name} value={sample.name}>
+                {sample.label}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {view === 'circuit' && (

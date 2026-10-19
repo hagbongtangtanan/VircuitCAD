@@ -42,6 +42,7 @@ export function App(): JSX.Element {
   const projectError = useProjectStore((state) => state.error)
   const saveProject = useProjectStore((state) => state.save)
   const openProject = useProjectStore((state) => state.open)
+  const loadSamples = useProjectStore((state) => state.loadSamples)
   const litLeds = useSimStore(
     (state) => Object.values(state.ledBrightness).filter((value) => value > 0.02).length
   )
@@ -51,7 +52,8 @@ export function App(): JSX.Element {
 
   useEffect(() => {
     void refreshToolchain()
-  }, [refreshToolchain])
+    void loadSamples()
+  }, [refreshToolchain, loadSamples])
 
   useEffect(() => {
     updateWindowTitle(projectName, projectDirty)

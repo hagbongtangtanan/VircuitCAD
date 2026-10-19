@@ -2,6 +2,8 @@ import type {
   ExportHexRequest,
   ExportSketchRequest,
   OpenFileResult,
+  OpenSampleRequest,
+  SampleEntry,
   SaveProjectRequest,
   SavedFile,
 } from './project'
@@ -25,6 +27,8 @@ export const IpcChannels = {
   saveProject: 'file:save-project',
   exportSketch: 'file:export-sketch',
   exportHex: 'file:export-hex',
+  listSamples: 'file:list-samples',
+  openSample: 'file:open-sample',
 } as const
 
 export type IpcChannel = (typeof IpcChannels)[keyof typeof IpcChannels]
@@ -44,6 +48,8 @@ export interface IpcContract {
   readonly [IpcChannels.saveProject]: IpcExchange<SaveProjectRequest, SavedFile | null>
   readonly [IpcChannels.exportSketch]: IpcExchange<ExportSketchRequest, SavedFile | null>
   readonly [IpcChannels.exportHex]: IpcExchange<ExportHexRequest, SavedFile | null>
+  readonly [IpcChannels.listSamples]: IpcExchange<undefined, readonly SampleEntry[]>
+  readonly [IpcChannels.openSample]: IpcExchange<OpenSampleRequest, OpenFileResult>
 }
 
 export type IpcRequest<Channel extends IpcChannel> = IpcContract[Channel]['request']
@@ -58,6 +64,8 @@ export interface CircuitApi {
   saveProject(request: SaveProjectRequest): Promise<SavedFile | null>
   exportSketch(request: ExportSketchRequest): Promise<SavedFile | null>
   exportHex(request: ExportHexRequest): Promise<SavedFile | null>
+  listSamples(): Promise<readonly SampleEntry[]>
+  openSample(request: OpenSampleRequest): Promise<OpenFileResult>
 }
 
 /** Property name under which `CircuitApi` is installed on `window`. */

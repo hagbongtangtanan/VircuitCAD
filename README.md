@@ -10,14 +10,14 @@ Built by BIT-CT students from CTU-San Francisco.
 
 Under active development.
 
-| Milestone | Scope                                                | State   |
-| --------- | ---------------------------------------------------- | ------- |
-| 1         | Scaffolding, secure shell, typed IPC ping, packaging | Done    |
-| 2         | Canvas, parts drawer, wiring, netlist, undo/redo     | Done    |
-| 3         | Editor, compiler, serial monitor                     | Done    |
-| 4         | avr8js simulation (LED, buzzer, input)               | Done    |
-| 5         | `.circuit` / `.ino` / `.hex` file flows              | Done    |
-| 6         | Packaging, docs, samples                             | Planned |
+| Milestone | Scope                                                | State |
+| --------- | ---------------------------------------------------- | ----- |
+| 1         | Scaffolding, secure shell, typed IPC ping, packaging | Done  |
+| 2         | Canvas, parts drawer, wiring, netlist, undo/redo     | Done  |
+| 3         | Editor, compiler, serial monitor                     | Done  |
+| 4         | avr8js simulation (LED, buzzer, input)               | Done  |
+| 5         | `.circuit` / `.ino` / `.hex` file flows              | Done  |
+| 6         | Packaging, docs, samples                             | Done  |
 
 ## Requirements
 
@@ -67,9 +67,37 @@ opening it always restores a runnable state.
 | Export `.hex` | toolbar (Code view) | writes the last compiled program                        |
 
 The window title gains a bullet while there are unsaved changes, and the status bar shows the
-project name plus an unsaved marker. Files are read and written in the main process; the
+project name plus an unsaved marker.
+
+### Samples
+
+The toolbar's sample picker ships two read-only examples from `resources/samples/`
+(`process.resourcesPath/samples` in packaged builds):
+
+| Sample        | Circuit                                       |
+| ------------- | --------------------------------------------- |
+| Blink led     | Uno, 220 Ω resistor and an LED on D13         |
+| Traffic light | Three LEDs with resistors on D11, D12 and D13 |
+
+Choosing one replaces the whole project, circuit and sketch. The sample file is read-only, so
+the first **Save** asks for a `.hucad` location instead of offering to overwrite the example. Files are read and written in the main process; the
 renderer only ever sees paths that came out of a native dialog, and a save can only reuse such
 a path, never invent one.
+
+## Packaging
+
+```bash
+npm run build:linux
+```
+
+produces `release/HuCAD Circuits-0.1.0.AppImage` (about 235 MB). The vendored toolchain and the
+samples are copied outside the asar into `resources/`, so the installed app compiles sketches
+and opens samples with no network and no system packages. `release/` is gitignored; the icon
+(`resources/icon.png`, 512×512) is committed. The NSIS target builds on Windows (or with wine):
+
+```bash
+npm run build:win
+```
 
 ## Verifying the running window
 
@@ -84,7 +112,8 @@ CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
 
 Set `EXPECT_CANVAS=1` to also drive the circuit editor end to end: the script places a part from
 the drawer, clicks two pins through the real Konva event path, and checks that a wire appeared
-and the two nets merged. Add `EXPECT_EDITOR=1` to switch to the Code view and compile the
+and the two nets merged. It then loads the bundled Blink sample and checks that the scene was
+replaced with three parts, three wires and the sample's project label. Add `EXPECT_EDITOR=1` to switch to the Code view and compile the
 default sketch through the vendored toolchain, asserting on the reported flash/RAM usage. Add
 `EXPECT_SIM=1` to run that sketch on the emulated AVR and wait for its `Serial` output in the
 monitor, then stop it again.
@@ -96,6 +125,11 @@ EXPECT_CANVAS=1 EXPECT_EDITOR=1 EXPECT_SIM=1 CDP_HOST=http://127.0.0.1:9222 npm 
 Native open/save dialogs cannot be driven over CDP, so the probe covers the file UI (buttons,
 project label, dirty marker) while `src/main/services/projectFiles.test.ts` exercises the
 read/write/validate paths against a temporary directory.
+
+The packaged AppImage can be probed the same way: `--appimage-extract`, launch
+`squashfs-root/AppRun --no-sandbox --remote-debugging-port=9222`, and point `CDP_HOST` at it.
+That run is what proves the compiler and samples resolve from `process.resourcesPath` rather
+than the repository.
 
 On a headless or containerised Linux box where the setuid `chrome-sandbox` helper is not
 installed, add `--no-sandbox` to the Electron flags. That disables the _process_ sandbox for

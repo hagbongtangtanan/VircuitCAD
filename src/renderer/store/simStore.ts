@@ -72,8 +72,15 @@ export const useSimStore = create<SimStore>()((set, get) => {
 
     const deltaSeconds = Math.min(MAX_FRAME_SECONDS, Math.max(0, (now - lastFrameTime) / 1000))
     lastFrameTime = now
-    simulation.runForCycles(Math.round(deltaSeconds * CLOCK_HZ))
-    publish(simulation.frame())
+    try {
+      simulation.runForCycles(Math.round(deltaSeconds * CLOCK_HZ))
+      publish(simulation.frame())
+    } catch (error) {
+      cancelLoop()
+      engine = null
+      set({ status: 'error', error: String(error) })
+      return
+    }
 
     frameHandle = requestAnimationFrame(tick)
   }

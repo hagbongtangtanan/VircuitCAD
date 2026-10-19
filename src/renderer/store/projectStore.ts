@@ -1,6 +1,12 @@
 import { create } from 'zustand'
 import { emptyCircuitDocument, type CircuitDocument } from '../../shared/circuit'
-import { createProject, fileBaseName } from '../../shared/project'
+import {
+  createProject,
+  fileBaseName,
+  sampleLabel,
+  type OpenFileResult,
+  type SampleEntry,
+} from '../../shared/project'
 import { useSerialStore } from '../serial/serialStore'
 import { useCircuitStore } from './circuitStore'
 import { useSimStore } from './simStore'
@@ -13,8 +19,11 @@ export interface ProjectStore {
   readonly dirty: boolean
   readonly busy: boolean
   readonly error: string | null
+  readonly samples: readonly SampleEntry[]
 
   open(): Promise<void>
+  loadSamples(): Promise<void>
+  openSample(name: string): Promise<void>
   newProject(): void
   save(): Promise<void>
   exportSketch(): Promise<void>
@@ -47,6 +56,22 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     updateWindowTitle(name, false)
   }
 
+  function applyOpened(opened: OpenFileResult, label?: string): void {
+    useSimStore.getState().stop()
+    if (opened.kind === 'project') {
+      useCircuitStore.getState().replaceDocument(opened.project.circuit)
+      useSketchStore.getState().setSource(opened.project.sketch)
+      useSketchStore.getState().clearBuild()
+      set({ path: opened.path })
+      markSaved(label ?? fileBaseName(opened.path))
+    } else {
+      useSketchStore.getState().setSource(opened.sketch)
+      useSketchStore.getState().clearBuild()
+      set({ path: null })
+      markSaved(label ?? fileBaseName(opened.path))
+    }
+  }
+
   function resetAll(): void {
     useSimStore.getState().stop()
     useSerialStore.getState().clear()
@@ -61,6 +86,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     dirty: false,
     busy: false,
     error: null,
+    samples: [],
 
     async open(): Promise<void> {
       if (get().busy) return
@@ -69,20 +95,30 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
         const opened = await window.api.openFile()
         if (opened === null) return
 
-        useSimStore.getState().stop()
-        if (opened.kind === 'project') {
-          useCircuitStore.getState().replaceDocument(opened.project.circuit)
-          useSketchStore.getState().setSource(opened.project.sketch)
-          useSketchStore.getState().clearBuild()
-          set({ path: opened.path })
-          markSaved(fileBaseName(opened.path))
-        } else {
-          useSketchStore.getState().setSource(opened.sketch)
-          useSketchStore.getState().clearBuild()
-          set({ path: null })
-          markSaved(fileBaseName(opened.path))
-        }
+        applyOpened(opened)
         set({ error: null })
+      } catch (error) {
+        set({ error: errorMessage(error) })
+      } finally {
+        set({ busy: false })
+      }
+    },
+
+    async loadSamples(): Promise<void> {
+      try {
+        set({ samples: await window.api.listSamples() })
+      } catch {
+        // Samples are optional; a missing folder is not worth an error banner.
+      }
+    },
+
+    async openSample(name: string): Promise<void> {
+      if (get().busy) return
+      set({ busy: true, error: null })
+      try {
+        applyOpened(await window.api.openSample({ name }), sampleLabel(name))
+        // The sample file itself is read-only: saving asks for a new location.
+        set({ path: null })
       } catch (error) {
         set({ error: errorMessage(error) })
       } finally {

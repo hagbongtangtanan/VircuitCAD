@@ -92,7 +92,7 @@ function send(method, params = {}) {
     const timer = setTimeout(() => {
       pending.delete(id)
       reject(new Error(`CDP call ${method} timed out`))
-    }, 20000)
+    }, 90000)
     pending.set(id, (payload) => {
       clearTimeout(timer)
       if (payload.error) reject(new Error(`${method}: ${payload.error.message}`))
@@ -207,6 +207,33 @@ if (EXPECT_CANVAS) {
   interaction.afterWire = wired.result.value
   console.log(`after wiring both led pins: ${interaction.afterWire}`)
   await sleep(500)
+
+  // Load a shipped sample so the rest of the run uses a known, wired circuit.
+  const sample = await send('Runtime.evaluate', {
+    expression: `(async () => {
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+      const text = (selector) => document.querySelector(selector)?.textContent ?? ''
+      const select = document.querySelector('[data-testid="samples"]')
+      if (!select) return { error: 'no samples picker' }
+      const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value')?.set
+      setter?.call(select, 'blink-led.hucad')
+      select.dispatchEvent(new Event('change', { bubbles: true }))
+
+      let counts = ''
+      for (let attempt = 0; attempt < 40; attempt += 1) {
+        await sleep(250)
+        counts = text('[data-testid="scene-counts"]')
+        if (counts.startsWith('3 parts')) break
+      }
+      window.__verifySample = true
+      return { counts, project: text('[data-testid="project-status"]') }
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  })
+  interaction.sample = sample.result.value
+  console.log('sample probe:', JSON.stringify(interaction.sample, null, 2))
+  await sleep(300)
 }
 
 let editor = null
@@ -298,7 +325,7 @@ if (EXPECT_SIM) {
 
       const running = await waitFor(
         () => text('[data-testid="sim-status"]').includes('simulating'),
-        240,
+        32,
         250
       )
       const serial = await waitFor(() => {
@@ -307,6 +334,15 @@ if (EXPECT_SIM) {
         )
         return lines.length >= 2 ? lines.slice(0, 4) : null
       }, 240, 250)
+      const lit = await waitFor(
+        () => {
+          const value = text('[data-testid="sim-readout"]')
+          const count = / ([0-9]+) LEDs? lit/.exec(value)
+          return count !== null && count[1] !== '0' ? value : null
+        },
+        40,
+        250
+      )
       const readout = text('[data-testid="sim-readout"]')
 
       simButton.click()
@@ -315,6 +351,8 @@ if (EXPECT_SIM) {
       return {
         running: running !== null,
         serial,
+        lit: lit !== null,
+        sampleLoaded: window.__verifySample === true,
         readout,
         stopped: text('[data-testid="sim-status"]'),
         error: text('[data-testid="sim-readout"]').includes('error'),
@@ -376,6 +414,23 @@ if (EXPECT_CANVAS) {
     }
     if (!interaction.hasFileButtons) failures.push('the file buttons did not render')
 
+    const sample = interaction.sample
+    if (sample === null || sample === undefined) {
+      failures.push('the sample probe did not run')
+    } else if (sample.error !== undefined) {
+      failures.push(`sample probe: ${sample.error}`)
+    } else {
+      if (!sample.counts.startsWith('3 parts')) {
+        failures.push(`loading the sample did not replace the circuit: ${sample.counts}`)
+      }
+      if (!sample.project.includes('Blink led')) {
+        failures.push(`unexpected project label after loading a sample: ${sample.project}`)
+      }
+      if (sample.project.includes('unsaved changes')) {
+        failures.push('loading a sample left the project dirty')
+      }
+    }
+
     const wired = parseCounts(interaction.afterWire)
     if (wired === null) {
       failures.push('scene counts disappeared after wiring')
@@ -419,6 +474,9 @@ if (EXPECT_SIM) {
     }
     if (!/running/.test(simulation.readout)) {
       failures.push(`unexpected simulation readout: ${simulation.readout}`)
+    }
+    if (simulation.sampleLoaded && !simulation.lit) {
+      failures.push('the blink sample never lit its LED')
     }
     if (!/stopped/.test(simulation.stopped)) {
       failures.push(`the simulation did not stop: ${simulation.stopped}`)

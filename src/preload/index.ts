@@ -4,6 +4,8 @@ import type {
   ExportHexRequest,
   ExportSketchRequest,
   OpenFileResult,
+  OpenSampleRequest,
+  SampleEntry,
   SaveProjectRequest,
   SavedFile,
 } from '../shared/project'
@@ -36,6 +38,12 @@ const api: CircuitApi = {
   },
   exportHex(request: ExportHexRequest): Promise<SavedFile | null> {
     return ipcRenderer.invoke(IpcChannels.exportHex, request) as Promise<SavedFile | null>
+  },
+  listSamples(): Promise<readonly SampleEntry[]> {
+    return ipcRenderer.invoke(IpcChannels.listSamples) as Promise<readonly SampleEntry[]>
+  },
+  openSample(request: OpenSampleRequest): Promise<OpenFileResult> {
+    return ipcRenderer.invoke(IpcChannels.openSample, request) as Promise<OpenFileResult>
   },
 }
 

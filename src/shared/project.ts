@@ -119,6 +119,25 @@ export const exportHexRequestSchema = z.strictObject({
 
 export const savedFileSchema = z.strictObject({ path: z.string().min(1) })
 
+/** Shipped examples; the name doubles as the file name and is never a path. */
+export const SAMPLE_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*\.hucad$/
+
+export const openSampleRequestSchema = z.strictObject({
+  name: z.string().regex(SAMPLE_NAME_PATTERN),
+})
+
+export interface SampleEntry {
+  readonly name: string
+  readonly label: string
+}
+
+export function sampleLabel(name: string): string {
+  const base = name.replace(/\.hucad$/, '').replace(/-/g, ' ')
+  return base.charAt(0).toUpperCase() + base.slice(1)
+}
+
+export type OpenSampleRequest = z.infer<typeof openSampleRequestSchema>
+
 export type SaveProjectRequest = z.infer<typeof saveProjectRequestSchema>
 export type ExportSketchRequest = z.infer<typeof exportSketchRequestSchema>
 export type ExportHexRequest = z.infer<typeof exportHexRequestSchema>

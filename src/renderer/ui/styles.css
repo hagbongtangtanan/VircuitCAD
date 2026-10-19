@@ -135,6 +135,12 @@ button.is-active {
   font-weight: 600;
 }
 
+.toolbar-samples {
+  max-width: 9.5rem;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.78rem;
+}
+
 .toolbar-run.is-active {
   border-color: var(--danger);
   background: #3a2430;

@@ -1,5 +1,8 @@
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import {
   BrowserWindow,
+  app,
   dialog,
   ipcMain,
   type IpcMainInvokeEvent,
@@ -13,8 +16,10 @@ import {
   HEX_EXTENSION,
   exportHexRequestSchema,
   exportSketchRequestSchema,
+  openSampleRequestSchema,
   saveProjectRequestSchema,
   withExtension,
+  type SampleEntry,
   type SavedFile,
 } from '../../shared/project'
 import {
@@ -26,6 +31,17 @@ import {
 } from '../../shared/schemas'
 import { compileSketch, readToolchainStatus } from '../services/compiler'
 import { openFile, writeHexFile, writeProjectFile, writeSketchFile } from '../services/projectFiles'
+import { listSamples, readSample } from '../services/sampleFiles'
+
+/** Example projects ship beside the app resources, not inside the asar. */
+function samplesDirectory(): string {
+  const candidates = [
+    join(process.resourcesPath, 'samples'),
+    join(app.getAppPath(), 'resources', 'samples'),
+    join(process.cwd(), 'resources', 'samples'),
+  ]
+  return candidates.find((candidate) => existsSync(candidate)) ?? candidates[1]!
+}
 
 /**
  * Paths the user picked in a dialog during this session. A save may only reuse
@@ -157,6 +173,15 @@ export function registerIpcHandlers(): void {
     }
   )
 
+  ipcMain.handle(IpcChannels.listSamples, (): Promise<readonly SampleEntry[]> => {
+    return listSamples(samplesDirectory())
+  })
+
+  ipcMain.handle(IpcChannels.openSample, async (_event, payload: unknown) => {
+    const request = openSampleRequestSchema.parse(payload)
+    return readSample(samplesDirectory(), request.name)
+  })
+
   ipcMain.handle(
     IpcChannels.exportHex,
     async (event, payload: unknown): Promise<SavedFile | null> => {
@@ -184,4 +209,6 @@ export function unregisterIpcHandlers(): void {
   ipcMain.removeHandler(IpcChannels.saveProject)
   ipcMain.removeHandler(IpcChannels.exportSketch)
   ipcMain.removeHandler(IpcChannels.exportHex)
+  ipcMain.removeHandler(IpcChannels.listSamples)
+  ipcMain.removeHandler(IpcChannels.openSample)
 }

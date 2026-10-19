@@ -19,6 +19,11 @@ extraResources:
     filter:
       - '**/*'
       - '!.cache/**'
+  # Read-only example projects, loaded from process.resourcesPath/samples.
+  - from: resources/samples
+    to: samples
+    filter:
+      - '**/*.hucad'
 
 asar: true
 npmRebuild: false
@@ -38,4 +43,5 @@ linux:
     - AppImage
   category: Development
   synopsis: Offline Arduino circuit simulator
+  syncDesktopName: true
   artifactName: ${productName}-${version}.${ext}
