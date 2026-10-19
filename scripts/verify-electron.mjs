@@ -147,6 +147,8 @@ if (EXPECT_CANVAS) {
         led = document.querySelector('[data-part-type="led"]')
       }
       const before = counts()
+      const projectBefore =
+        document.querySelector('[data-testid="project-status"]')?.textContent ?? ''
       if (!led) return { error: 'parts drawer did not render an led button' }
       led.click()
       await sleep(100)
@@ -166,6 +168,11 @@ if (EXPECT_CANVAS) {
       return {
         before,
         afterAdd,
+        projectBefore,
+        projectAfter: document.querySelector('[data-testid="project-status"]')?.textContent ?? '',
+        hasFileButtons: ['file-new', 'file-open', 'file-save'].every(
+          (id) => document.querySelector('[data-testid="' + id + '"]') !== null
+        ),
         pinTargets,
         canvasCount: document.querySelectorAll('.circuit-canvas canvas').length,
         canvasSize: rect ? { width: Math.round(rect.width), height: Math.round(rect.height) } : null,
@@ -361,6 +368,14 @@ if (EXPECT_CANVAS) {
         `placing a part did not add exactly one part: ${interaction.before} -> ${interaction.afterAdd}`
       )
     }
+    if (!interaction.projectBefore?.includes('untitled')) {
+      failures.push(`unexpected project label before editing: ${interaction.projectBefore}`)
+    }
+    if (!interaction.projectAfter?.includes('unsaved changes')) {
+      failures.push(`editing did not mark the project dirty: ${interaction.projectAfter}`)
+    }
+    if (!interaction.hasFileButtons) failures.push('the file buttons did not render')
+
     const wired = parseCounts(interaction.afterWire)
     if (wired === null) {
       failures.push('scene counts disappeared after wiring')

@@ -1,6 +1,13 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { API_NAMESPACE, IpcChannels, type CircuitApi } from '../shared/ipc'
 import type {
+  ExportHexRequest,
+  ExportSketchRequest,
+  OpenFileResult,
+  SaveProjectRequest,
+  SavedFile,
+} from '../shared/project'
+import type {
   CompileRequest,
   CompileResult,
   PingRequest,
@@ -17,6 +24,18 @@ const api: CircuitApi = {
   },
   toolchainStatus(): Promise<ToolchainStatus> {
     return ipcRenderer.invoke(IpcChannels.toolchainStatus) as Promise<ToolchainStatus>
+  },
+  openFile(): Promise<OpenFileResult | null> {
+    return ipcRenderer.invoke(IpcChannels.openFile) as Promise<OpenFileResult | null>
+  },
+  saveProject(request: SaveProjectRequest): Promise<SavedFile | null> {
+    return ipcRenderer.invoke(IpcChannels.saveProject, request) as Promise<SavedFile | null>
+  },
+  exportSketch(request: ExportSketchRequest): Promise<SavedFile | null> {
+    return ipcRenderer.invoke(IpcChannels.exportSketch, request) as Promise<SavedFile | null>
+  },
+  exportHex(request: ExportHexRequest): Promise<SavedFile | null> {
+    return ipcRenderer.invoke(IpcChannels.exportHex, request) as Promise<SavedFile | null>
   },
 }
 

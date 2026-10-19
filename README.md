@@ -16,7 +16,7 @@ Under active development.
 | 2         | Canvas, parts drawer, wiring, netlist, undo/redo     | Done    |
 | 3         | Editor, compiler, serial monitor                     | Done    |
 | 4         | avr8js simulation (LED, buzzer, input)               | Done    |
-| 5         | `.circuit` / `.ino` / `.hex` file flows              | Planned |
+| 5         | `.circuit` / `.ino` / `.hex` file flows              | Done    |
 | 6         | Packaging, docs, samples                             | Planned |
 
 ## Requirements
@@ -53,6 +53,24 @@ npm run build:linux # AppImage (electron-builder)
 npm run build:win   # NSIS installer (run on Windows or with wine)
 ```
 
+## Projects and files
+
+A project is one `.hucad` file (JSON) holding both the circuit document and the sketch, so
+opening it always restores a runnable state.
+
+| Action        | Where               | Notes                                                   |
+| ------------- | ------------------- | ------------------------------------------------------- |
+| New           | toolbar             | starts a clean circuit with the default Blink sketch    |
+| Open          | toolbar, `Ctrl+O`   | `.hucad` projects, plus `.ino` sketches into the editor |
+| Save          | toolbar, `Ctrl+S`   | asks for a location the first time                      |
+| Export `.ino` | toolbar (Code view) | writes the sketch alone                                 |
+| Export `.hex` | toolbar (Code view) | writes the last compiled program                        |
+
+The window title gains a bullet while there are unsaved changes, and the status bar shows the
+project name plus an unsaved marker. Files are read and written in the main process; the
+renderer only ever sees paths that came out of a native dialog, and a save can only reuse such
+a path, never invent one.
+
 ## Verifying the running window
 
 `scripts/verify-electron.mjs` drives a running build over the Chrome DevTools Protocol and
@@ -74,6 +92,10 @@ monitor, then stop it again.
 ```bash
 EXPECT_CANVAS=1 EXPECT_EDITOR=1 EXPECT_SIM=1 CDP_HOST=http://127.0.0.1:9222 npm run verify:electron
 ```
+
+Native open/save dialogs cannot be driven over CDP, so the probe covers the file UI (buttons,
+project label, dirty marker) while `src/main/services/projectFiles.test.ts` exercises the
+read/write/validate paths against a temporary directory.
 
 On a headless or containerised Linux box where the setuid `chrome-sandbox` helper is not
 installed, add `--no-sandbox` to the Electron flags. That disables the _process_ sandbox for

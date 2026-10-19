@@ -4,6 +4,7 @@ import { BuildOutput } from './editor/BuildOutput'
 import { SketchEditor } from './editor/SketchEditor'
 import { SerialMonitor } from './serial/SerialMonitor'
 import { useCircuitStore } from './store/circuitStore'
+import { updateWindowTitle, useProjectStore } from './store/projectStore'
 import { useSimStore } from './store/simStore'
 import { useSketchStore } from './store/sketchStore'
 import { buildNetlist } from './wiring/netlist'
@@ -36,6 +37,11 @@ export function App(): JSX.Element {
   const simStatus = useSimStore((state) => state.status)
   const simError = useSimStore((state) => state.error)
   const simElapsedMs = useSimStore((state) => state.elapsedMs)
+  const projectName = useProjectStore((state) => state.name)
+  const projectDirty = useProjectStore((state) => state.dirty)
+  const projectError = useProjectStore((state) => state.error)
+  const saveProject = useProjectStore((state) => state.save)
+  const openProject = useProjectStore((state) => state.open)
   const litLeds = useSimStore(
     (state) => Object.values(state.ledBrightness).filter((value) => value > 0.02).length
   )
@@ -48,6 +54,10 @@ export function App(): JSX.Element {
   }, [refreshToolchain])
 
   useEffect(() => {
+    updateWindowTitle(projectName, projectDirty)
+  }, [projectName, projectDirty])
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       const modifier = event.ctrlKey || event.metaKey
       const key = event.key.toLowerCase()
@@ -56,6 +66,16 @@ export function App(): JSX.Element {
         event.preventDefault()
         setView('code')
         void build()
+        return
+      }
+      if (modifier && key === 's') {
+        event.preventDefault()
+        void saveProject()
+        return
+      }
+      if (modifier && key === 'o') {
+        event.preventDefault()
+        void openProject()
         return
       }
       if (modifier && key === 'z') {
@@ -96,9 +116,11 @@ export function App(): JSX.Element {
   }, [
     build,
     duplicateSelected,
+    openProject,
     redo,
     removeSelected,
     rotateSelected,
+    saveProject,
     selectParts,
     selectWire,
     undo,
@@ -129,6 +151,11 @@ export function App(): JSX.Element {
       </main>
 
       <footer className="app-status">
+        <span data-testid="project-status" title={projectError ?? undefined}>
+          {projectName}
+          {projectDirty ? ' · unsaved changes' : ''}
+          {projectError === null ? '' : ` · ${projectError}`}
+        </span>
         <span data-testid="scene-counts">
           {document.parts.length} parts · {document.wires.length} wires · {netlist.netCount} nets
         </span>

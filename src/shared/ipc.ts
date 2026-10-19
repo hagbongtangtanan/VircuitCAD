@@ -1,4 +1,11 @@
 import type {
+  ExportHexRequest,
+  ExportSketchRequest,
+  OpenFileResult,
+  SaveProjectRequest,
+  SavedFile,
+} from './project'
+import type {
   CompileRequest,
   CompileResult,
   PingRequest,
@@ -14,6 +21,10 @@ export const IpcChannels = {
   ping: 'app:ping',
   compile: 'build:compile',
   toolchainStatus: 'build:toolchain-status',
+  openFile: 'file:open',
+  saveProject: 'file:save-project',
+  exportSketch: 'file:export-sketch',
+  exportHex: 'file:export-hex',
 } as const
 
 export type IpcChannel = (typeof IpcChannels)[keyof typeof IpcChannels]
@@ -29,6 +40,10 @@ export interface IpcContract {
   readonly [IpcChannels.compile]: IpcExchange<CompileRequest, CompileResult>
   /** No request payload; the status is read on demand. */
   readonly [IpcChannels.toolchainStatus]: IpcExchange<undefined, ToolchainStatus>
+  readonly [IpcChannels.openFile]: IpcExchange<undefined, OpenFileResult | null>
+  readonly [IpcChannels.saveProject]: IpcExchange<SaveProjectRequest, SavedFile | null>
+  readonly [IpcChannels.exportSketch]: IpcExchange<ExportSketchRequest, SavedFile | null>
+  readonly [IpcChannels.exportHex]: IpcExchange<ExportHexRequest, SavedFile | null>
 }
 
 export type IpcRequest<Channel extends IpcChannel> = IpcContract[Channel]['request']
@@ -39,6 +54,10 @@ export interface CircuitApi {
   ping(request: PingRequest): Promise<PingResponse>
   compile(request: CompileRequest): Promise<CompileResult>
   toolchainStatus(): Promise<ToolchainStatus>
+  openFile(): Promise<OpenFileResult | null>
+  saveProject(request: SaveProjectRequest): Promise<SavedFile | null>
+  exportSketch(request: ExportSketchRequest): Promise<SavedFile | null>
+  exportHex(request: ExportHexRequest): Promise<SavedFile | null>
 }
 
 /** Property name under which `CircuitApi` is installed on `window`. */

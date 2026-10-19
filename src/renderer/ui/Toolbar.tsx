@@ -1,5 +1,6 @@
 import type { JSX } from 'react'
 import { useCircuitStore } from '../store/circuitStore'
+import { useProjectStore } from '../store/projectStore'
 import { useSimStore } from '../store/simStore'
 import { useSketchStore } from '../store/sketchStore'
 
@@ -25,6 +26,14 @@ export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
 
   const phase = useSketchStore((state) => state.phase)
   const build = useSketchStore((state) => state.build)
+
+  const openProject = useProjectStore((state) => state.open)
+  const saveProject = useProjectStore((state) => state.save)
+  const newProject = useProjectStore((state) => state.newProject)
+  const exportSketch = useProjectStore((state) => state.exportSketch)
+  const exportHex = useProjectStore((state) => state.exportHex)
+  const projectBusy = useProjectStore((state) => state.busy)
+  const hasHex = useSketchStore((state) => state.hex !== null)
 
   const simStatus = useSimStore((state) => state.status)
   const elapsedMs = useSimStore((state) => state.elapsedMs)
@@ -55,6 +64,30 @@ export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
           onClick={() => onChangeView('code')}
         >
           Code
+        </button>
+      </div>
+
+      <div className="toolbar-group">
+        <button type="button" data-testid="file-new" onClick={newProject}>
+          New
+        </button>
+        <button
+          type="button"
+          data-testid="file-open"
+          disabled={projectBusy}
+          title="Open a .hucad project or .ino sketch (Ctrl+O)"
+          onClick={() => void openProject()}
+        >
+          Open
+        </button>
+        <button
+          type="button"
+          data-testid="file-save"
+          disabled={projectBusy}
+          title="Save the project (Ctrl+S)"
+          onClick={() => void saveProject()}
+        >
+          Save
         </button>
       </div>
 
@@ -110,6 +143,28 @@ export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
 
       <span className="toolbar-spacer" />
 
+      {view === 'code' && (
+        <div className="toolbar-group">
+          <button
+            type="button"
+            data-testid="export-sketch"
+            title="Write the sketch to an .ino file"
+            onClick={() => void exportSketch()}
+          >
+            Export .ino
+          </button>
+          <button
+            type="button"
+            data-testid="export-hex"
+            disabled={!hasHex}
+            title="Write the compiled program to a .hex file"
+            onClick={() => void exportHex()}
+          >
+            Export .hex
+          </button>
+        </div>
+      )}
+
       <button
         type="button"
         className="toolbar-build"
@@ -140,11 +195,6 @@ export function Toolbar({ view, onChangeView }: ToolbarProps): JSX.Element {
               : simStatus === 'stopped'
                 ? 'stopped'
                 : 'not simulating'}
-      </span>
-      <span className="toolbar-hint">
-        {view === 'circuit'
-          ? 'drag parts from the right · click two pins to wire them'
-          : 'Ctrl+B compiles the sketch'}
       </span>
     </header>
   )

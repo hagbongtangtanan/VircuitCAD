@@ -153,3 +153,22 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   a blink-plus-serial sketch generated once with the real avr-gcc; the toolchain integration
   tests cover the compiler, and the CDP probe covers the compile → run → serial path end to
   end.
+
+## 2026-10-19 — One project file, dialogs in the main process
+
+- **A project is a single `.hucad` JSON file containing both the circuit and the sketch.**
+  Splitting them would let a user open a circuit without its code (or the reverse) and end up
+  with a runnable-looking project that is not. The format has an explicit discriminator and
+  version, is validated with the same zod schemas the canvas uses, and parses in the renderer's
+  tests without touching the file system.
+- **The renderer never picks a path on its own.** The main process shows the dialog, reads or
+  writes the file, and remembers every path the user approved this session. A later save may
+  reuse an approved path; anything else goes back through a dialog. That keeps a compromised
+  renderer from overwriting arbitrary files while still allowing plain "save" to work after
+  the first save.
+- **Opening an `.ino` loads only the sketch.** The project path stays empty so the first save
+  asks for a `.hucad` location; the window title still shows the imported file name. Unknown
+  extensions are rejected instead of guessed at.
+- **Dirty state is a comparison, not a change counter.** The store keeps snapshots of the last
+  saved circuit document (reference equality) and sketch string. Any store update recomputes
+  the flag, so undoing back to the saved state correctly clears the unsaved marker.
