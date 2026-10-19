@@ -16,21 +16,23 @@ Built by BIT-CT students from CTU-San Francisco.
 
 Under active development.
 
-| Milestone | Scope                                                         | State       |
-| --------- | ------------------------------------------------------------- | ----------- |
-| 1         | Scaffolding, secure IPC, design system, full UI shell         | Done        |
-| 2         | Canvas, breadboard, curved wiring, undo/redo, notes           | In progress |
-| 3         | Core parts, inspector, property editing                       | In progress |
-| 4         | MNA solver, LED/resistor models, sim engine                   | Done        |
-| 5         | Compiler + text editor + serial (blocks engine still to come) | In progress |
-| 6         | Block editor (Blocks / Text / Blocks + Text)                  | Not started |
-| 7         | LED glow, burn-out, buzzer audio, multimeter, warnings        | Not started |
-| 8         | Extended parts and starter gallery                            | Not started |
-| 9         | Persistence, schematic view, PNG export, shortcuts            | Not started |
-| 10        | Windows-first installers, bundled toolchain, docs             | In progress |
+| Milestone | Scope                                                  | State       | Remaining                                                                 |
+| --------- | ------------------------------------------------------ | ----------- | ------------------------------------------------------------------------- |
+| 1         | Scaffolding, secure IPC, design system, full UI shell  | Done        | Schematic, blocks, notes and flip are labelled placeholders               |
+| 2         | Canvas, breadboard, wiring, undo/redo, notes           | In progress | Curved wire routing and the notes tool; breadboard and undo/redo are done |
+| 3         | Core parts, inspector, property editing                | Done        | Extended library is tracked under milestone 8                             |
+| 4         | MNA solver, LED/resistor models, sim engine            | Done        | —                                                                         |
+| 5         | Compiler, text editor, serial monitor                  | Done        | Block modes moved to milestone 6                                          |
+| 6         | Block editor (Blocks / Text / Blocks + Text)           | Not started | Whole milestone                                                           |
+| 7         | LED glow, burn-out, buzzer audio, multimeter, warnings | In progress | Burn-out, audio, multimeter and warnings; LED glow is done                |
+| 8         | Extended parts and starter gallery                     | In progress | Protocol parts and displays, servo/relay/stepper, more starter circuits   |
+| 9         | Persistence, schematic view, PNG export, shortcuts     | In progress | Schematic view and PNG export; persistence and shortcuts are done         |
+| 10        | Windows-first installers, bundled toolchain, docs      | In progress | Windows/macOS toolchains and verified builds on those platforms           |
 
-Milestones 2–5 are partially delivered by the earlier shell work; the remaining rows track the
-Tinkercad-fidelity programme rather than the original six-step plan.
+This table reflects the code rather than the original six-step plan. "Done" means implemented,
+tested and exercised by the CDP probe; "In progress" names exactly what is still missing. The
+milestone boundaries were tightened during the rebuild: block modes moved to milestone 6 and the
+extended part library is tracked under milestone 8.
 
 ## Download
 
