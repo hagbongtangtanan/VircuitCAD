@@ -151,7 +151,7 @@ Known modelling limits, chosen to keep the solver fast and predictable:
 npm run build:linux
 ```
 
-produces `release/HuCAD-0.1.0-linux-x86_64.AppImage` (about 234 MB). The `prebuild:linux`
+produces `release/HuCAD-0.2.0-linux-x86_64.AppImage` (about 234 MB). The `prebuild:linux`
 hook vendors the toolchain first (a no-op when it is already there), then electron-builder copies
 it and the samples outside the asar into `resources/`, so the installed app compiles sketches and
 opens samples with no network and no system packages. The packaged directory is smoke-tested with
