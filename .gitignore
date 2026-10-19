@@ -1,0 +1,25 @@
+# Dependencies
+node_modules
+
+# Build output
+out
+dist
+release
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.sw?
+
+# Local env
+.env
+.env.local
+*.local
