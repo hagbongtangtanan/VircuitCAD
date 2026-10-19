@@ -200,3 +200,28 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   expression is written as a JavaScript template literal, so `/\d+/` in the repository source
   reaches the page as `/d+/` and silently never matches. The LED check uses a character class
   (`[0-9]+`) to stay readable and immune to that trap.
+
+## 2026-10-19 — Releasing through GitHub Releases
+
+- **Artifact names are space-free on purpose.** GitHub rewrites spaces in uploaded asset names,
+  so `HuCAD Circuits-0.1.0.AppImage` would land as `HuCAD.Circuits-0.1.0.AppImage` while
+  `latest-linux.yml` kept pointing at the original name — silently breaking both the download
+  links and the updater. `artifactName` is now
+  `HuCAD-Circuits-<version>-<os>-<arch>.<ext>` on every platform.
+- **CI is the primary path; the script is the fallback.** `.github/workflows/release.yml`
+  builds on Linux, Windows and macOS for every `v*` tag and publishes with
+  `electron-builder --publish always`, while `scripts/release.mjs` publishes an already-built
+  `release/` directory for hotfixes. Both produce the same tag, notes and asset set.
+- **A tag publishes, it does not draft.** The GitHub provider creates drafts by default, which
+  would make a tag push look like nothing happened, so `publish.releaseType` is `release` and
+  the workflow sets `EP_PRE_RELEASE` from a `-suffix` in the tag to keep beta tags out of the
+  stable channel. `EP_GH_IGNORE_TIME` lets a re-run overwrite assets on a release older than
+  the publisher's two hour upload window.
+- **The release script prefers `gh` and falls back to the REST API.** `gh` supplies an
+  authenticated session for free; the fallback needs only `GH_TOKEN`/`GITHUB_TOKEN` and Node's
+  `fetch`, so the script stays dependency-free. The release is read from the API _before_ the
+  tag is created, so a token that cannot see the repository never leaves a tag behind.
+- **Windows and macOS packages currently ship without a compiler.** The vendored avr-gcc is
+  Linux-only and `fetch-toolchain.mjs` refuses to run elsewhere, so CI skips that step on those
+  runners and electron-builder only warns about the missing resource directory. The canvas,
+  wiring and simulator work there; compiling a sketch needs a matching toolchain first.

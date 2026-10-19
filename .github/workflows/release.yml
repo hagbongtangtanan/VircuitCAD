@@ -1,0 +1,88 @@
+# Primary release path: pushing a `v*` tag builds the installers on every
+# platform and uploads them to the matching GitHub Release. The manual
+# counterpart is `npm run release` (scripts/release.mjs), which publishes an
+# already-built `release/` directory from a workstation or for a hotfix.
+#
+# A manual `workflow_dispatch` run publishes the current package.json version.
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+# Creating a release and uploading assets needs write access to the repository.
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # A tag with a suffix (v0.2.0-beta.1) publishes as a pre-release; the
+      # local script applies the same rule to the version suffix.
+      EP_PRE_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') && contains(github.ref_name, '-') }}
+      # Re-running a release job must still overwrite assets on a release that
+      # is already older than the publisher's two hour upload window.
+      EP_GH_IGNORE_TIME: 'true'
+      # The builds are intentionally unsigned: no certificate is available yet.
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          # No engines field or .nvmrc in the repository; Vite 8 needs
+          # Node 20.19+, and the project is developed on Node 22.
+          node-version: 22
+          cache: npm
+
+      - name: Verify the tag matches package.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$version" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match package.json version ${version}"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The vendored avr-gcc is Linux-only, so the Windows and macOS packages
+      # are built without a compiler: electron-builder only warns about the
+      # missing resource directory, and the simulator still runs. Vendoring a
+      # compiler per platform is future work.
+      - name: Vendor the offline toolchain
+        if: runner.os == 'Linux'
+        run: npm run fetch:toolchain
+
+      - name: Build the app
+        run: npm run build
+
+      # No extra apt packages are needed: electron-builder downloads its own
+      # appimagetool, and libfuse2 is a runtime dependency of the generated
+      # AppImage rather than a build dependency.
+      #
+      # Each runner uploads its own installers to the release for the tag; the
+      # `publish` block in electron-builder.yml points at this repository.
+      - name: Package and publish
+        run: npx electron-builder --publish always

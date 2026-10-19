@@ -25,13 +25,25 @@ extraResources:
     filter:
       - '**/*.hucad'
 
+# GitHub replaces spaces in uploaded asset names, which would break the download
+# URLs embedded in latest-*.yml; every artifact name stays space-free.
+artifactName: HuCAD-Circuits-${version}-${os}-${arch}.${ext}
+
+# Publishing target for `electron-builder --publish always` (CI) and
+# `npm run release`. `releaseType: release` makes a tag build public instead of
+# the provider's default draft; the workflow switches pre-release tags over.
+publish:
+  provider: github
+  owner: hagbongtangtanan
+  repo: HuCAD
+  releaseType: release
+
 asar: true
 npmRebuild: false
 
 win:
   target:
     - nsis
-  artifactName: ${productName}-${version}-setup.${ext}
 
 nsis:
   oneClick: false
@@ -44,4 +56,3 @@ linux:
   category: Development
   synopsis: Offline Arduino circuit simulator
   syncDesktopName: true
-  artifactName: ${productName}-${version}.${ext}

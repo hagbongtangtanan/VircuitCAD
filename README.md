@@ -6,6 +6,8 @@ the sketch against an emulated AVR — with no account and no network access at 
 
 Built by BIT-CT students from CTU-San Francisco.
 
+[![Latest release](https://img.shields.io/github/v/release/hagbongtangtanan/HuCAD)](https://github.com/hagbongtangtanan/HuCAD/releases/latest)
+
 ## Status
 
 Under active development.
@@ -18,6 +20,21 @@ Under active development.
 | 4         | avr8js simulation (LED, buzzer, input)               | Done  |
 | 5         | `.circuit` / `.ino` / `.hex` file flows              | Done  |
 | 6         | Packaging, docs, samples                             | Done  |
+
+## Download
+
+Latest installers: **<https://github.com/hagbongtangtanan/HuCAD/releases/latest>**
+
+| Platform | Artifact                            | Install                                                     |
+| -------- | ----------------------------------- | ----------------------------------------------------------- |
+| Linux    | `HuCAD-Circuits-*-linux-*.AppImage` | `chmod +x` it, then run it                                  |
+| Windows  | `HuCAD-Circuits-*-win-*.exe`        | run the installer (SmartScreen: **More info → Run anyway**) |
+| macOS    | `HuCAD-Circuits-*-mac-*.dmg`        | drag to Applications (first open: right-click → **Open**)   |
+
+The Linux AppImage needs FUSE 2 (`sudo apt install libfuse2` on Ubuntu 22.04+); where FUSE is
+unavailable, run it as `./HuCAD-Circuits-*.AppImage --appimage-extract-and-run`. Compiling a
+sketch needs the vendored AVR toolchain, which currently ships for Linux only — the canvas,
+wiring and simulation work on every platform.
 
 ## Requirements
 
@@ -51,6 +68,9 @@ npm run format:check
 
 npm run build:linux # AppImage (electron-builder)
 npm run build:win   # NSIS installer (run on Windows or with wine)
+
+npm run release     # publish release/ to a GitHub Release (manual path)
+npm run release:dry # print the release plan without writing anything
 ```
 
 ## Projects and files
@@ -90,14 +110,52 @@ a path, never invent one.
 npm run build:linux
 ```
 
-produces `release/HuCAD Circuits-0.1.0.AppImage` (about 235 MB). The vendored toolchain and the
-samples are copied outside the asar into `resources/`, so the installed app compiles sketches
-and opens samples with no network and no system packages. `release/` is gitignored; the icon
-(`resources/icon.png`, 512×512) is committed. The NSIS target builds on Windows (or with wine):
+produces `release/HuCAD-Circuits-0.1.0-linux-x86_64.AppImage` (about 235 MB). The vendored toolchain
+and the samples are copied outside the asar into `resources/`, so the installed app compiles
+sketches and opens samples with no network and no system packages. `release/` is gitignored; the
+icon (`resources/icon.png`, 512×512) is committed. The NSIS target builds on Windows (or with
+wine):
 
 ```bash
 npm run build:win
 ```
+
+Artifact names are deliberately space-free (`HuCAD-Circuits-<version>-<os>-<arch>.<ext>`): GitHub
+rewrites spaces in uploaded asset names, which would break both the download links and the
+updater metadata in `latest-*.yml`.
+
+## Releasing
+
+CI is the primary path. Bump `version` in `package.json`, commit, and push a matching
+`v<version>` tag: `.github/workflows/release.yml` then builds the installers on Linux, Windows
+and macOS, verifies that the tag matches `package.json`, and uploads them (plus `latest-*.yml`
+and `SHA256SUMS.txt`) to the GitHub Release for that tag. Tags with a suffix, such as
+`v0.2.0-beta.1`, are published as pre-releases.
+
+```bash
+npm version 0.2.0 --no-git-tag-version   # or edit package.json by hand
+git commit -am "chore: release v0.2.0"
+git tag v0.2.0
+git push origin main v0.2.0
+```
+
+`scripts/release.mjs` is the manual/hotfix path: it publishes an already-built `release/`
+directory using the same naming and notes rules. It prefers an authenticated `gh` session and
+otherwise needs a token with `repo` scope in `GH_TOKEN` (or `GITHUB_TOKEN`); the token is never
+read from a file or committed.
+
+```bash
+export GH_TOKEN=ghp_...   # or: gh auth login
+npm run build:linux       # produce release/*.AppImage
+npm run release:dry       # print tag, assets, notes — writes nothing
+npm run release           # create or update the release, overwriting assets
+npm run release -- --draft --prerelease
+```
+
+The script is idempotent: an existing release for the tag is updated and its assets are
+clobbered, so a failed upload is re-run by invoking it again. It creates and pushes the
+annotated tag only when it is missing, and it refuses to run against a dirty working tree (or a
+remote that is not `hagbongtangtanan/HuCAD`) unless told otherwise.
 
 ## Verifying the running window
 
