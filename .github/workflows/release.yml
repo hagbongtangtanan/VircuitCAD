@@ -56,9 +56,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # `extraResources` looks for resources/toolchain/win, which does not exist
-      # yet (the vendored compiler is Linux-only for now). electron-builder logs
-      # a warning and the simulator still runs without a compiler.
+      # Vendors avr-gcc 7.3.0 for Windows and precompiles the Uno core, so the
+      # installer works offline on a machine with no Arduino IDE.
+      - name: Vendor the offline toolchain
+        run: npm run fetch:toolchain
+
+      - name: Verify the vendored toolchain
+        run: npm run toolchain:verify
+
       - name: Build the app
         run: npm run build
 

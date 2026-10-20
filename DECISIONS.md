@@ -320,3 +320,15 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 - **The Windows package currently has no compiler.** The vendored avr-gcc is Linux-only, so the
   Windows artifact ships without `resources/toolchain/win`; electron-builder warns and the
   simulator runs, but uploads are unavailable. A Windows toolchain remains Milestone 10 work.
+
+## 2026-10-20 — The Windows installer vendors its own toolchain
+
+- **`fetch-toolchain.mjs` gained a Windows path.** It downloads Arduino's pinned
+  `avr-gcc-7.3.0-atmel3.6.1-arduino7-i686-w64-mingw32.zip`, extracts the prefix to
+  `resources/toolchain/win`, precompiles the Uno core with the Windows compiler, and records the
+  versions in `manifest.json`. `prebuild:win` runs it, so a Windows build no longer ships an app
+  that cannot compile. The Linux path is unchanged and still serves local smoke tests.
+- **Platform directory names follow electron-builder, not Node.** `compiler.ts` now maps
+  `win32` to `win` and `darwin` to `mac` (previously it looked for `win32`, so even a packaged
+  Windows toolchain would have been ignored). `toolchainFromDir` takes the platform so tests can
+  assert the `.exe` names without running on Windows.

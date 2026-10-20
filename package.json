@@ -1,6 +1,6 @@
 {
   "name": "hucad",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "HuCAD: offline, local Tinkercad-style Arduino circuit simulator",
   "author": "BIT-CT, CTU-San Francisco",
@@ -26,7 +26,8 @@
     "test:watch": "vitest",
     "verify:electron": "node scripts/verify-electron.mjs",
     "toolchain:verify": "node scripts/fetch-toolchain.mjs --verify",
-    "prebuild:linux": "node scripts/fetch-toolchain.mjs"
+    "prebuild:linux": "node scripts/fetch-toolchain.mjs",
+    "prebuild:win": "node scripts/fetch-toolchain.mjs"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "6.0.3",

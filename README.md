@@ -155,16 +155,18 @@ HuCAD targets Windows; the NSIS installer is the shipped artifact:
 npm run build:win
 ```
 
-produces `release/HuCAD-0.2.1-win-x64.exe`. The installer is unsigned for now. The Linux build
+produces `release/HuCAD-0.2.2-win-x64.exe`. The installer is unsigned for now. A fresh checkout needs network access once so
+`prebuild:win` can vendor the toolchain (cached in `resources/toolchain/.cache`). The Linux build
 (`npm run build:linux`, about 234 MB AppImage) still exists for development and smoke tests on
 the machine the app is developed on: `prebuild:linux` vendors the toolchain, and electron-builder
 copies it and the samples outside the asar into `resources/`. The packaged directory is checked
 with the same CDP probe as the dev build (`CDP_HOST=... EXPECT_EDITOR=1 EXPECT_SIM=1`).
 `release/` is gitignored; the icon (`resources/icon.png`, 512×512) is committed.
 
-Windows packages currently ship without a compiler: the vendored avr-gcc is Linux-only and the
-Windows toolchain is still Milestone 10 work, so the simulator runs but sketch uploads are
-disabled there. Artifact names are deliberately space-free
+The installer carries its own AVR toolchain: `prebuild:win` downloads Arduino's Windows
+avr-gcc 7.3.0 package (52 MB, pinned by SHA-256), extracts it to `resources/toolchain/win`,
+precompiles the Uno core with it, and electron-builder ships the result. No Arduino IDE or
+network connection is needed on the target machine. Artifact names are deliberately space-free
 (`HuCAD-<version>-<os>-<arch>.<ext>`): GitHub rewrites spaces in uploaded asset names, which
 would break both the download links and the updater metadata in `latest.yml`.
 
@@ -177,10 +179,10 @@ the GitHub Release for that tag. Tags with a suffix, such as `v0.2.0-beta.1`, ar
 pre-releases. Releases intentionally contain Windows assets only.
 
 ```bash
-npm version 0.2.1 --no-git-tag-version   # or edit package.json by hand
-git commit -am "chore: release v0.2.1"
-git tag v0.2.1
-git push origin main v0.2.1
+npm version 0.2.2 --no-git-tag-version   # or edit package.json by hand
+git commit -am "chore: release v0.2.2"
+git tag v0.2.2
+git push origin main v0.2.2
 ```
 
 `scripts/release.mjs` is the manual/hotfix path: it publishes an already-built `release/`

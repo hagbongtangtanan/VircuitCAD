@@ -1,4 +1,6 @@
 import { existsSync } from 'node:fs'
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -84,6 +86,27 @@ describe.skipIf(!installed)('avr-gcc toolchain', () => {
     expect(status.available).toBe(true)
     expect(status.avrGcc).toContain('avr-g++ (GCC)')
     expect(status.arduinoCore).toBe('1.8.7')
+  })
+})
+
+describe('toolchain layout', () => {
+  it('resolves .exe executables and no host library path on Windows', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'hucad-toolchain-'))
+    try {
+      await mkdir(join(dir, 'bin'))
+      await writeFile(join(dir, 'bin', 'avr-g++.exe'), '')
+
+      const windows = toolchainFromDir(dir, 'win32')
+      expect(windows?.avrGxx).toBe(join(dir, 'bin', 'avr-g++.exe'))
+      expect(windows?.avrGcc).toBe(join(dir, 'bin', 'avr-gcc.exe'))
+      expect(windows?.avrObjcopy).toBe(join(dir, 'bin', 'avr-objcopy.exe'))
+      expect(windows?.avrSize).toBe(join(dir, 'bin', 'avr-size.exe'))
+      expect(windows?.hostLibs).toBe('')
+
+      expect(toolchainFromDir(dir, 'linux')).toBeNull()
+    } finally {
+      await rm(dir, { recursive: true, force: true })
+    }
   })
 })
 

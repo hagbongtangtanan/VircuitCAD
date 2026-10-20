@@ -7,10 +7,13 @@
 //   node scripts/fetch-toolchain.mjs --force   # rebuild from scratch
 //   node scripts/fetch-toolchain.mjs --verify  # offline check, exits 1 if missing
 //
-// What it installs on Linux:
-//   bin/, lib/         avr-gcc 14.3.0 + avr-libc 2.2.1 + binutils 2.43
-//   arduino/           Arduino AVR core sources (1.8.7)
-//   core/uno/core.a    the core precompiled for atmega328p
+// What it installs on Windows (the shipping platform):
+//   bin/, lib/, avr/, libexec/   avr-gcc 7.3.0 + avr-libc 2.0.0 (Arduino 7.3.0-atmel3.6.1)
+//   arduino/                     Arduino AVR core sources (1.8.7)
+//   core/uno/core.a              the core precompiled for atmega328p
+//
+// On Linux the same layout is assembled from Ubuntu packages (avr-gcc 14.2.0,
+// avr-libc 2.2.1, binutils 2.43) for local development.
 //
 // The result is self-contained: the app runs it with no network and no system
 // packages. `resources/toolchain/` is gitignored and is shipped by
@@ -29,10 +32,16 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const force = process.argv.includes('--force')
 const verifyOnly = process.argv.includes('--verify')
 
+const IS_WIN = process.platform === 'win32'
+// Matches electron-builder's `${os}` macro, which the extraResources rule and
+// the runtime both use.
+const PLATFORM_DIR = IS_WIN ? 'win' : process.platform === 'darwin' ? 'mac' : 'linux'
+const EXE = IS_WIN ? '.exe' : ''
+
 const UBUNTU = 'https://archive.ubuntu.com/ubuntu'
 const ARDUINO_CORE_VERSION = '1.8.7'
 
-const PACKAGES = [
+const LINUX_PACKAGES = [
   {
     file: 'gcc-avr_14.2.0-2build1_amd64.deb',
     url: `${UBUNTU}/pool/universe/g/gcc-avr/gcc-avr_14.2.0-2build1_amd64.deb`,
@@ -55,6 +64,15 @@ const PACKAGES = [
     sha256: 'a95c75b486f26fe8b140a632fd9e2883b7e2efc21f7586e155d27d2d2ff0ddc0',
   },
 ]
+
+// The toolchain Arduino IDE 1.8 used on Windows: GCC 7.3.0, avr-libc 2.0.0.
+// It is a prefix-style archive (everything under a top-level `avr/`) and the
+// MinGW runtime DLLs sit in `bin/`, next to the executables that need them.
+const WINDOWS_TOOLCHAIN = {
+  file: 'avr-gcc-7.3.0-atmel3.6.1-arduino7-i686-w64-mingw32.zip',
+  url: 'https://downloads.arduino.cc/tools/avr-gcc-7.3.0-atmel3.6.1-arduino7-i686-w64-mingw32.zip',
+  sha256: 'a54f64755fff4cb792a1495e5defdd789902a2a3503982e81b898299cf39800e',
+}
 
 const ARDUINO_CORE = {
   file: `ArduinoCore-avr-${ARDUINO_CORE_VERSION}.tar.gz`,
@@ -125,7 +143,8 @@ async function compileCore(toolchain) {
   await rm(objectsDir, { recursive: true, force: true })
   await mkdir(objectsDir, { recursive: true })
 
-  const env = { ...process.env, LD_LIBRARY_PATH: toolchain.hostLibs }
+  const env = { ...process.env }
+  if (toolchain.hostLibs !== '') env.LD_LIBRARY_PATH = toolchain.hostLibs
   const commonArgs = [
     `-mmcu=${BOARD.mcu}`,
     ...BOARD.defines,
@@ -143,7 +162,7 @@ async function compileCore(toolchain) {
   for (const name of sources) {
     const isC = /\.(c|S)$/.test(name)
     run(
-      join(toolchain.bin, isC ? 'avr-gcc' : 'avr-g++'),
+      join(toolchain.bin, isC ? `avr-gcc${EXE}` : `avr-g++${EXE}`),
       [
         ...commonArgs,
         ...(isC ? [] : ['-fno-exceptions', '-fno-threadsafe-statics']),
@@ -160,7 +179,7 @@ async function compileCore(toolchain) {
     .filter((name) => name.endsWith('.o'))
     .map((name) => join(objectsDir, name))
   const archive = join(objectsDir, 'core.a')
-  run(join(toolchain.bin, 'avr-ar'), ['rcs', archive, ...objects], { env })
+  run(join(toolchain.bin, `avr-ar${EXE}`), ['rcs', archive, ...objects], { env })
   log(`  ${objects.length} core objects archived into ${archive}`)
 }
 
@@ -172,22 +191,55 @@ async function compileCore(toolchain) {
 async function toolchainReady(target) {
   return (
     (await exists(join(target, 'manifest.json'))) &&
-    (await exists(join(target, 'bin', 'avr-g++'))) &&
-    (await exists(join(target, 'bin', 'avr-ar'))) &&
+    (await exists(join(target, 'bin', `avr-g++${EXE}`))) &&
+    (await exists(join(target, 'bin', `avr-ar${EXE}`))) &&
     (await exists(join(target, 'core', 'uno', 'core.a'))) &&
     (await exists(join(target, 'arduino', 'cores', 'arduino')))
   )
 }
 
+async function installLinux(root, cacheDir, target) {
+  log('Fetching AVR toolchain packages')
+  for (const spec of LINUX_PACKAGES) {
+    const deb = await fetchVerified(spec, cacheDir)
+    run('dpkg-deb', ['-x', deb, root])
+  }
+
+  await rm(join(target, 'bin'), { recursive: true, force: true })
+  await rm(join(target, 'lib'), { recursive: true, force: true })
+  await mkdir(target, { recursive: true })
+  // avr-gcc locates its headers and libraries relative to argv[0], so keeping
+  // `<target>/bin` next to `<target>/lib` is what makes the tree relocatable.
+  await rename(join(root, 'usr', 'bin'), join(target, 'bin'))
+  await rename(join(root, 'usr', 'lib'), join(target, 'lib'))
+}
+
+async function installWindows(cacheDir, staging, target) {
+  const archive = await fetchVerified(WINDOWS_TOOLCHAIN, cacheDir)
+
+  log('Extracting the Windows toolchain')
+  // Git for Windows and the Windows runners both provide bsdtar, which reads
+  // zip archives; no extra npm dependency is needed.
+  run('tar', ['-xf', archive, '-C', staging])
+  const root = join(staging, 'avr')
+  if (!(await exists(join(root, 'bin', 'avr-g++.exe')))) {
+    throw new Error(`Unexpected archive layout: ${join(root, 'bin', 'avr-g++.exe')} is missing`)
+  }
+
+  await rm(target, { recursive: true, force: true })
+  // The archive root is a complete prefix (bin, lib, avr, libexec, ...), so the
+  // whole directory becomes the relocatable toolchain.
+  await rename(root, target)
+}
+
 async function main() {
-  if (process.platform !== 'linux') {
+  if (process.platform !== 'linux' && !IS_WIN) {
     throw new Error(
-      `Only Linux toolchains are vendored today (running on ${process.platform}). ` +
-        'Add a matching package set before packaging for this platform.'
+      `No toolchain is vendored for ${process.platform}. Add a package set before packaging for it.`
     )
   }
 
-  const target = join(repoRoot, 'resources', 'toolchain', 'linux')
+  const target = join(repoRoot, 'resources', 'toolchain', PLATFORM_DIR)
   const cacheDir = join(repoRoot, 'resources', 'toolchain', '.cache')
 
   if (verifyOnly) {
@@ -211,24 +263,17 @@ async function main() {
   await rm(staging, { recursive: true, force: true })
   await mkdir(root, { recursive: true })
 
-  log('Fetching AVR toolchain packages')
-  for (const spec of PACKAGES) {
-    const deb = await fetchVerified(spec, cacheDir)
-    run('dpkg-deb', ['-x', deb, root])
+  if (IS_WIN) {
+    await installWindows(cacheDir, staging, target)
+  } else {
+    await installLinux(root, cacheDir, target)
   }
 
   log('Fetching the Arduino AVR core')
   const coreTarball = await fetchVerified(ARDUINO_CORE, cacheDir)
 
-  log(`Installing into ${target}`)
-  await rm(join(target, 'bin'), { recursive: true, force: true })
-  await rm(join(target, 'lib'), { recursive: true, force: true })
+  log(`Installing the Arduino core into ${target}`)
   await rm(join(target, 'arduino'), { recursive: true, force: true })
-  await mkdir(target, { recursive: true })
-  // avr-gcc locates its headers and libraries relative to argv[0], so keeping
-  // `<target>/bin` next to `<target>/lib` is what makes the tree relocatable.
-  await rename(join(root, 'usr', 'bin'), join(target, 'bin'))
-  await rename(join(root, 'usr', 'lib'), join(target, 'lib'))
   await mkdir(join(target, 'arduino'), { recursive: true })
   run('tar', ['-xzf', coreTarball, '-C', join(target, 'arduino'), '--strip-components=1'])
   await rm(staging, { recursive: true, force: true })
@@ -236,13 +281,16 @@ async function main() {
   const toolchain = {
     dir: target,
     bin: join(target, 'bin'),
-    hostLibs: join(target, 'lib', 'x86_64-linux-gnu'),
+    hostLibs: IS_WIN ? '' : join(target, 'lib', 'x86_64-linux-gnu'),
     arduino: join(target, 'arduino'),
   }
 
-  const avrGxx = join(toolchain.bin, 'avr-g++')
+  const avrGxx = join(toolchain.bin, `avr-g++${EXE}`)
   const version = run(avrGxx, ['--version'], {
-    env: { ...process.env, LD_LIBRARY_PATH: toolchain.hostLibs },
+    env:
+      toolchain.hostLibs === ''
+        ? process.env
+        : { ...process.env, LD_LIBRARY_PATH: toolchain.hostLibs },
   })
     .stdout.split('\n')[0]
     .trim()
@@ -254,13 +302,16 @@ async function main() {
     join(target, 'manifest.json'),
     `${JSON.stringify(
       {
-        platform: 'linux',
+        platform: PLATFORM_DIR,
         avrGcc: version,
-        avrLibc: '2.2.1',
-        binutils: '2.43.50',
+        avrLibc: IS_WIN ? '2.0.0' : '2.2.1',
+        binutils: IS_WIN ? '2.26' : '2.43.50',
         arduinoCore: ARDUINO_CORE_VERSION,
         board: BOARD.key,
-        packages: PACKAGES.map(({ file, sha256: hash }) => ({ file, sha256: hash })),
+        packages: (IS_WIN ? [WINDOWS_TOOLCHAIN] : LINUX_PACKAGES).map(({ file, sha256: hash }) => ({
+          file,
+          sha256: hash,
+        })),
       },
       null,
       2

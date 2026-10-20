@@ -15,9 +15,14 @@ import {
  * the platform's install locations and serialises concurrent builds.
  */
 
-/** Candidate roots, most specific first: packaged, then dev checkouts. */
+/**
+ * Candidate roots, most specific first: packaged, then dev checkouts. The
+ * directory names match electron-builder's `${os}` macro (`win`, `mac`,
+ * `linux`), not Node's `process.platform` values.
+ */
 function toolchainCandidates(): readonly string[] {
-  const platformDir = process.platform === 'darwin' ? 'darwin' : process.platform
+  const platformDir =
+    process.platform === 'win32' ? 'win' : process.platform === 'darwin' ? 'mac' : 'linux'
   return [
     join(process.resourcesPath, 'toolchain', platformDir),
     join(app.getAppPath(), 'resources', 'toolchain', platformDir),

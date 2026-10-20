@@ -44,21 +44,29 @@ interface CommandOutcome {
   readonly timedOut: boolean
 }
 
-/** Describes a toolchain directory, or null when it is not installed. */
-export function toolchainFromDir(dir: string): Toolchain | null {
+/**
+ * Describes a toolchain directory, or null when it is not installed. Windows
+ * toolchains use `.exe` executables and keep their runtime DLLs next to them,
+ * so only the Linux build needs the extra library search path.
+ */
+export function toolchainFromDir(
+  dir: string,
+  platform: NodeJS.Platform = process.platform
+): Toolchain | null {
   const bin = join(dir, 'bin')
-  const avrGxx = join(bin, 'avr-g++')
+  const exe = platform === 'win32' ? '.exe' : ''
+  const avrGxx = join(bin, `avr-g++${exe}`)
   if (!existsSync(avrGxx)) return null
   return {
     dir,
     bin,
-    hostLibs: join(dir, 'lib', 'x86_64-linux-gnu'),
+    hostLibs: platform === 'linux' ? join(dir, 'lib', 'x86_64-linux-gnu') : '',
     arduino: join(dir, 'arduino'),
     coreArchive: join(dir, 'core', 'uno', 'core.a'),
-    avrGcc: join(bin, 'avr-gcc'),
+    avrGcc: join(bin, `avr-gcc${exe}`),
     avrGxx,
-    avrObjcopy: join(bin, 'avr-objcopy'),
-    avrSize: join(bin, 'avr-size'),
+    avrObjcopy: join(bin, `avr-objcopy${exe}`),
+    avrSize: join(bin, `avr-size${exe}`),
   }
 }
 
@@ -89,7 +97,9 @@ function run(
 }
 
 function toolchainEnv(toolchain: Toolchain): NodeJS.ProcessEnv {
-  return { ...process.env, LD_LIBRARY_PATH: toolchain.hostLibs }
+  const env = { ...process.env }
+  if (toolchain.hostLibs !== '') env.LD_LIBRARY_PATH = toolchain.hostLibs
+  return env
 }
 
 async function readVersion(command: string, env: NodeJS.ProcessEnv): Promise<string> {
@@ -331,7 +341,7 @@ export async function toolchainStatusOf(toolchain: Toolchain): Promise<Toolchain
 export const MISSING_TOOLCHAIN_STATUS: ToolchainStatus = {
   available: false,
   detail:
-    'Not installed. Run "node scripts/fetch-toolchain.mjs" to vendor avr-gcc and the Arduino core.',
+    'Not installed. Reinstall HuCAD, or run "node scripts/fetch-toolchain.mjs" in a source checkout.',
   avrGcc: null,
   arduinoCore: null,
 }
@@ -345,7 +355,7 @@ export const MISSING_TOOLCHAIN_RESULT: CompileResult = {
       line: null,
       column: null,
       message:
-        'The Arduino toolchain is not installed. Run "node scripts/fetch-toolchain.mjs" in the project folder (or reinstall the app).',
+        'The Arduino toolchain is missing from this installation. Reinstall HuCAD, or run "node scripts/fetch-toolchain.mjs" in a source checkout.',
     },
   ],
   memory: null,
