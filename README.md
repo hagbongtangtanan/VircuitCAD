@@ -104,6 +104,27 @@ opening it always restores a runnable state.
 The window title gains a bullet while there are unsaved changes, and the status bar shows the
 project name plus an unsaved marker.
 
+### Wiring
+
+Press a pin and move: an orthogonal preview follows the pointer and turns green over a valid
+target. Left-click empty canvas to drop a bend and click another pin to finish; `Esc` or a
+right-click cancels, and `Backspace` removes the last bend. Wires snap to breadboard sockets.
+
+Click a wire to select it; pressing it again starts a branch from the end nearest the pointer.
+Drag the green endpoint handles to reconnect either end, drag the yellow diamonds to move a
+bend, double-click a diamond to remove it, and drag the blue midpoint handle to add one. Power
+leads are always red and ground leads black; other wires take the palette colour chosen in the
+inspector.
+
+### Schematics
+
+The **Schematic** tab is a read-only drawing derived from the circuit. Its toggle switches
+between **Simplified** cards, which keep each part in a labelled rounded box, and **Original**,
+an engineering sheet with white paper, a dot grid, a frame and a title block, rotated
+two-terminal symbols, reference designators and values. Wire colours follow the nets in
+Simplified and are black in Original. The choice is remembered on this machine, and **Export
+view as PNG** captures whichever style is showing.
+
 ### Samples
 
 The toolbar's sample picker ships two read-only examples from `resources/samples/`

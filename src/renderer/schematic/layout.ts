@@ -69,6 +69,15 @@ export interface SchematicLayout {
   readonly height: number
 }
 
+export interface SchematicLayoutOptions {
+  /**
+   * Rotated two-terminal symbols need both terminals 68 units apart, so the
+   * original style gives those nodes extra height. The simplified cards keep
+   * their compact layout.
+   */
+  readonly roomyTwoPin?: boolean
+}
+
 interface PinPlan {
   readonly part: PartInstance
   readonly board: boolean
@@ -178,22 +187,32 @@ function planPins(
   return chosen.map((pin) => ({ pinId: pin.id, label: pin.label, kind: pin.kind }))
 }
 
-function nodeHeight(pinCount: number): number {
+function nodeHeight(pinCount: number, options: SchematicLayoutOptions): number {
   if (pinCount <= 1) return 64
+  if (pinCount === 2 && options.roomyTwoPin === true) return 136
   return Math.max(72, PIN_TOP + PIN_BOTTOM + (pinCount - 1) * PIN_SPACING)
 }
 
-function buildNode(plan: PinPlan, x: number, y: number): SchematicPartNode {
+function buildNode(
+  plan: PinPlan,
+  x: number,
+  y: number,
+  options: SchematicLayoutOptions
+): SchematicPartNode {
   const definition = definitionOf(plan.part.type)
   const width = plan.board ? BOARD_WIDTH : LEAF_WIDTH
-  const height = nodeHeight(plan.pins.length)
+  const height = nodeHeight(plan.pins.length, options)
   const side = plan.board ? 'right' : 'left'
   const stubX = plan.board ? x + width + PIN_STUB : x - PIN_STUB
 
   const pins = plan.pins.map((pin, index) => {
     const span = height - PIN_TOP - PIN_BOTTOM
-    const offset =
-      plan.pins.length <= 1 ? height / 2 : PIN_TOP + (span * index) / (plan.pins.length - 1)
+    const centeredTwoPin = plan.pins.length === 2 && options.roomyTwoPin === true
+    const offset = centeredTwoPin
+      ? height / 2 - 34 + index * 68
+      : plan.pins.length <= 1
+        ? height / 2
+        : PIN_TOP + (span * index) / (plan.pins.length - 1)
     return {
       key: pinKey({ partId: plan.part.id, pinId: pin.pinId }),
       partId: plan.part.id,
@@ -263,7 +282,10 @@ function wireForNet(netId: number, anchors: readonly SchematicPin[]): SchematicW
   return { netId, paths, junctions }
 }
 
-export function layoutSchematic(document: CircuitDocument): SchematicLayout {
+export function layoutSchematic(
+  document: CircuitDocument,
+  options: SchematicLayoutOptions = {}
+): SchematicLayout {
   const netlist = buildNetlist(document)
   const anchors = anchorKeysByNet(document, netlist)
   const drawable = document.parts.filter((part) => !SKIPPED_TYPES.has(part.type))
@@ -275,7 +297,7 @@ export function layoutSchematic(document: CircuitDocument): SchematicLayout {
   let boardY = TOP
   for (const board of boards) {
     const pins = planPins(board, anchors, netlist)
-    const node = buildNode({ part: board, board: true, pins }, BOARD_X, boardY)
+    const node = buildNode({ part: board, board: true, pins }, BOARD_X, boardY, options)
     nodes.push(node)
     boardY += node.height + NODE_GAP
   }
@@ -283,7 +305,7 @@ export function layoutSchematic(document: CircuitDocument): SchematicLayout {
   let leafY = TOP
   for (const leaf of leaves) {
     const pins = planPins(leaf, anchors, netlist)
-    const node = buildNode({ part: leaf, board: false, pins }, LEAF_X, leafY)
+    const node = buildNode({ part: leaf, board: false, pins }, LEAF_X, leafY, options)
     nodes.push(node)
     leafY += node.height + NODE_GAP
   }

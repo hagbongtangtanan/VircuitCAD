@@ -386,3 +386,48 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 - **`prime()` solves once before the first instruction.** Setup code often calls `analogRead()`
   immediately; without a solve the channels would still read 0 V. The store calls `prime()` after
   installing `readInputs`, and the normal frame loop keeps the values fresh.
+
+## 2026-10-20 — Wires are drawn by pressing and clicking
+
+- **A draft starts on pointer-down, not on release.** `PinMarker` reports `onMouseDown`, so a
+  press on a pin begins a `WireDraft { start, waypoints }` immediately; a second press on another
+  pin finishes it. Clicks are not used because Konva fires a click only after mouse-up, which
+  would make the preview appear one gesture late and would let a drag start a pan first.
+- **Bends are stored as world-space waypoints on the wire.** The draft's clicks append
+  `snapPoint(world)` points, and `orthogonalRoute(start, end, waypoints)` recomputes the rounded
+  path every frame, so the preview and the committed wire use exactly the same geometry. Undo
+  simply restores the previous wire list; no routing state lives outside the document.
+- **Finishing is a pin press, not a click.** The target pin reuses the same press handler, so a
+  wire can end only on a terminal. Finishing over the start pin or an empty area cancels the
+  draft, which also makes `Esc` and right-click predictable escape hatches.
+- **Snapping is judged in screen pixels with a world cap.** The hit radius is `14 / scale` but
+  never more than 16 world units, so zooming out does not make a pin across the breadboard grab
+  the cursor; the endpoint drag uses `18 / scale` capped at 22.
+- **A branch is a wire from the nearest endpoint of the selected wire.** The document has no
+  junction objects; wires only connect pins, and the netlist already merges pins that share a
+  net. A second press on a selected wire therefore starts a new wire at whichever of that wire's
+  two pins is closer to the pointer rather than inventing a T-junction.
+- **Endpoint handles retarget in place.** Dragging the green handle runs the same
+  `setWireEndpoint` validation as creation (no self-loop, no duplicate pair), keeping the manual
+  bends while the route is recomputed. Dropping on empty space leaves the wire untouched.
+- **Power and ground colours are automatic.** `colorForWire` overrides the palette for `5V`,
+  `3V3`, `VIN` and `GND` pins so power rails stay visually consistent; only signal wires use the
+  selected palette colour.
+
+## 2026-10-20 — Two schematic styles
+
+- **The original style is a presentation of the same layout, not a second layout engine.**
+  Both modes consume `layoutSchematic`; `{ roomyTwoPin: true }` gives two-terminal nodes 136
+  units of height so the rotated symbols can span both pin anchors without changing channel
+  routing or the simplified cards.
+- **Symbol artwork is shared.** `GlyphBody` draws each path once; simplified cards show the
+  artwork horizontally and the original sheet rotates it 90° inside the leads. Three-or-more-pin
+  parts, including the Uno, stay module/IC boxes with named pins.
+- **Reference designators are document-order annotations.** `annotations.ts` prefixes each type
+  (R, C, D, SW, U…) and numbers per prefix; values use engineering units (10 kΩ). They are
+  derived, so the document schema and undo history are untouched.
+- **The style is view state, not project state.** It lives in `localStorage` under
+  `hucad.schematicMode`; switching styles must not mark a project dirty or enter undo.
+- **The original sheet is drawn inside the SVG.** A white paper rect, grid and title block
+  travel through `rasterizeSvgToPng`, so the PNG matches the screen instead of the app's dark
+  canvas backdrop.

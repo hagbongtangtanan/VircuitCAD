@@ -437,6 +437,10 @@ button:disabled {
   cursor: grabbing;
 }
 
+.circuit-canvas.is-routing {
+  cursor: crosshair;
+}
+
 .cb-canvas-toolbar {
   position: absolute;
   top: 12px;
@@ -1112,7 +1116,7 @@ button:disabled {
 
 .cb-schematic-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
   padding: 12px 16px 0;
 }
@@ -1271,4 +1275,167 @@ button:disabled {
 
 .app-status-error {
   color: var(--cb-stop);
+}
+
+.cb-sch-mode {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: auto;
+  padding: 2px;
+  background: var(--cb-surface-sunken);
+  border: 1px solid var(--cb-border);
+  border-radius: 999px;
+}
+
+.cb-sch-mode button {
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 11px;
+  color: var(--cb-text-muted);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+}
+
+.cb-sch-mode button:hover {
+  color: var(--cb-text);
+}
+
+.cb-sch-mode button.is-active {
+  color: var(--cb-text);
+  background: var(--cb-surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+}
+
+.cb-sch-mode button:focus-visible {
+  outline: 2px solid var(--cb-primary);
+  outline-offset: 1px;
+}
+
+.cb-sch-paper {
+  fill: #fcfbf4;
+}
+
+.cb-sch-paper-frame {
+  fill: none;
+  stroke: #2c2c2c;
+  stroke-width: 1.2;
+}
+
+.cb-sch-original-module {
+  fill: #fdfcf8;
+  stroke: #262626;
+  stroke-width: 1.2;
+}
+
+.cb-sch-original-board {
+  fill: #f3f0e6;
+}
+
+.cb-sch-original-lead,
+.cb-sch-original-pin {
+  stroke: #262626;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+}
+
+.cb-sch-original-pin-dot {
+  fill: #262626;
+}
+
+.cb-sch-original-symbol {
+  fill: none;
+  stroke: #1c1c1c;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cb-sch-original-symbol .cb-sch-glyph-fill {
+  fill: #1c1c1c;
+  stroke: none;
+}
+
+.cb-sch-original-symbol .cb-sch-glyph-text {
+  fill: #1c1c1c;
+  stroke: none;
+}
+
+.cb-sch-original-designator {
+  fill: #171717;
+  font-family: var(--cb-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cb-sch-original-value {
+  fill: #3a3a3a;
+  font-family: var(--cb-font-mono);
+  font-size: 9px;
+}
+
+.cb-sch-original-pin-name {
+  fill: #2b2b2b;
+  font-family: var(--cb-font-mono);
+  font-size: 9px;
+}
+
+.cb-sch-original-pin-power {
+  fill: #9a2c2c;
+}
+
+.cb-sch-original-pin-ground {
+  fill: #2b2b2b;
+  font-weight: 700;
+}
+
+.cb-sch-original-pin-number {
+  fill: #6a6a6a;
+  font-family: var(--cb-font-mono);
+  font-size: 8px;
+}
+
+.cb-sch-original-wire {
+  fill: none;
+  stroke: #20242a;
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cb-sch-original-junction {
+  fill: #20242a;
+}
+
+.cb-sch-titleblock rect {
+  fill: #fcfbf4;
+  stroke: #2c2c2c;
+  stroke-width: 1;
+}
+
+.cb-sch-titleblock line {
+  stroke: #8a857a;
+  stroke-width: 0.8;
+}
+
+.cb-sch-titleblock text {
+  font-family: var(--cb-font-sans);
+}
+
+.cb-sch-titleblock-name {
+  fill: #171717;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.cb-sch-titleblock-project {
+  fill: #333;
+  font-size: 9px;
+}
+
+.cb-sch-titleblock-sheet {
+  fill: #555;
+  font-size: 7px;
 }

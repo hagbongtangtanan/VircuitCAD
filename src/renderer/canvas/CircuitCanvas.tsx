@@ -13,11 +13,11 @@ import { useSimStore } from '../store/simStore'
 import { circuitContentBounds, fitViewport, useViewportStore } from '../store/viewportStore'
 import { canvasBackground, registerPngCapture } from '../export/pngCapture'
 import { PART_DRAG_MIME } from './dnd'
+import { findPinNear, nearestWirePin } from './pinHit'
 import {
   GRID_SIZE,
   insertWaypoint,
   orthogonalRoute,
-  polylineMidpoint,
   roundedPolylinePath,
   screenToWorld,
   snapPoint,
@@ -30,6 +30,29 @@ const GRID_AXIS_COLOR = '#202b3a'
 
 function refsEqual(a: PinRef | null, b: PinRef | null): boolean {
   return a !== null && b !== null && a.partId === b.partId && a.pinId === b.pinId
+}
+
+/** A wire that is being drawn: anchored to a pin with manual bends so far. */
+interface WireDraft {
+  readonly start: PinRef
+  readonly waypoints: readonly Point[]
+}
+
+/** Midpoint of the longest leg, so the add-bend handle stays clear of bends. */
+function addBendAnchor(points: readonly Point[]): Point | null {
+  let anchor: Point | null = null
+  let longest = -1
+  for (let index = 1; index < points.length; index += 1) {
+    const from = points[index - 1]
+    const to = points[index]
+    if (from === undefined || to === undefined) continue
+    const length = Math.hypot(to.x - from.x, to.y - from.y)
+    if (length > longest) {
+      longest = length
+      anchor = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 }
+    }
+  }
+  return anchor
 }
 
 /** Chooses a grid step that stays legible at the current zoom. */
@@ -50,19 +73,24 @@ interface PinMarkerProps {
   readonly showLabel: boolean
   /** Alternate rows avoid collisions where pins are 20 world units apart. */
   readonly labelRow?: 0 | 1
-  readonly state: 'idle' | 'hovered' | 'active'
+  readonly state: 'idle' | 'hovered' | 'active' | 'target'
   readonly onHover: (ref: PinRef | null) => void
-  readonly onClick: (ref: PinRef) => void
+  readonly onPointerDown: (ref: PinRef, event: KonvaEventObject<MouseEvent>) => void
 }
+
+const PIN_TARGET_FILL = '#46a758'
+const PIN_TARGET_RING = '#59d17a'
 
 function PinMarker(props: PinMarkerProps): JSX.Element {
   const ref: PinRef = { partId: props.partId, pinId: props.pinId }
   const fill =
     props.state === 'active'
       ? PIN_ACTIVE_FILL
-      : props.state === 'hovered'
-        ? PIN_HOVER_FILL
-        : PIN_FILL
+      : props.state === 'target'
+        ? PIN_TARGET_FILL
+        : props.state === 'hovered'
+          ? PIN_HOVER_FILL
+          : PIN_FILL
   // Pin dots and labels keep a constant on-screen size, like Tinkercad.
   const radius = 4 / props.scale
   const labelOffset = 5 / props.scale
@@ -73,10 +101,17 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
         <Circle
           x={props.position.x}
           y={props.position.y}
-          radius={radius * 2.6}
-          fill="transparent"
-          stroke={props.state === 'active' ? '#2f7df6' : '#f0a41b'}
-          strokeWidth={1.5 / props.scale}
+          radius={radius * (props.state === 'target' ? 3.4 : 2.6)}
+          fill={props.state === 'target' ? PIN_TARGET_RING : 'transparent'}
+          opacity={props.state === 'target' ? 0.18 : 1}
+          stroke={
+            props.state === 'active'
+              ? '#2f7df6'
+              : props.state === 'target'
+                ? PIN_TARGET_RING
+                : '#f0a41b'
+          }
+          strokeWidth={(props.state === 'target' ? 2.5 : 1.5) / props.scale}
           listening={false}
         />
       )}
@@ -90,10 +125,7 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
         onMouseLeave={() => props.onHover(null)}
         onMouseDown={(event) => {
           event.cancelBubble = true
-        }}
-        onClick={(event) => {
-          event.cancelBubble = true
-          props.onClick(ref)
+          props.onPointerDown(ref, event)
         }}
       />
       {props.showLabel && (
@@ -122,6 +154,7 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
 interface PartNodeProps {
   readonly partId: string
   readonly selected: boolean
+  readonly routing: boolean
 }
 
 function PartNode(props: PartNodeProps): JSX.Element | null {
@@ -165,7 +198,7 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
       offsetX={width / 2}
       offsetY={height / 2}
       rotation={part.rotation}
-      draggable
+      draggable={!props.routing}
       onDragStart={() => {
         beginTransientEdit()
       }}
@@ -178,7 +211,7 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
         commitTransientEdit()
       }}
       onMouseDown={(event) => {
-        if (event.evt.button !== 0) return
+        if (event.evt.button !== 0 || props.routing) return
         if (part.type === 'push-button') press(part.id)
         if (part.type === 'slide-switch') useInteractionStore.getState().toggleSwitch(part.id)
       }}
@@ -208,8 +241,9 @@ interface PartPinsProps {
   readonly scale: number
   readonly hoveredPin: PinRef | null
   readonly pendingPin: PinRef | null
+  readonly targetPin: PinRef | null
   readonly onHoverPin: (ref: PinRef | null) => void
-  readonly onClickPin: (ref: PinRef) => void
+  readonly onPointerDownPin: (ref: PinRef, event: KonvaEventObject<MouseEvent>) => void
 }
 
 /**
@@ -232,9 +266,11 @@ function PartPins(props: PartPinsProps): JSX.Element | null {
         const ref: PinRef = { partId: part.id, pinId: pin.id }
         const state = refsEqual(props.pendingPin, ref)
           ? 'active'
-          : refsEqual(props.hoveredPin, ref)
-            ? 'hovered'
-            : 'idle'
+          : refsEqual(props.targetPin, ref)
+            ? 'target'
+            : refsEqual(props.hoveredPin, ref)
+              ? 'hovered'
+              : 'idle'
         return (
           <PinMarker
             key={pin.id}
@@ -247,7 +283,7 @@ function PartPins(props: PartPinsProps): JSX.Element | null {
             labelRow={definition.pins.length > 20 && index % 2 === 1 ? 1 : 0}
             state={state}
             onHover={props.onHoverPin}
-            onClick={props.onClickPin}
+            onPointerDown={props.onPointerDownPin}
           />
         )
       })}
@@ -258,10 +294,18 @@ function PartPins(props: PartPinsProps): JSX.Element | null {
 interface WireNodeProps {
   readonly wireId: string
   readonly scale: number
+  readonly routing: boolean
   readonly onAddWaypoint: (wireId: string) => void
+  readonly onStartBranch: (wireId: string) => void
 }
 
-function WireNode({ wireId, scale, onAddWaypoint }: WireNodeProps): JSX.Element | null {
+function WireNode({
+  wireId,
+  scale,
+  routing,
+  onAddWaypoint,
+  onStartBranch,
+}: WireNodeProps): JSX.Element | null {
   const wire = useCircuitStore((state) => state.document.wires.find((w) => w.id === wireId))
   const parts = useCircuitStore((state) => state.document.parts)
   const selected = useCircuitStore((state) => state.selectedWireId === wireId)
@@ -289,11 +333,20 @@ function WireNode({ wireId, scale, onAddWaypoint }: WireNodeProps): JSX.Element 
         hitStrokeWidth={14 / scale}
         lineCap="round"
         lineJoin="round"
+        onMouseDown={(event) => {
+          // A second press on an already selected wire starts a branch from the
+          // endpoint closest to the pointer; the first click stays selection.
+          if (routing || !selected) return
+          event.cancelBubble = true
+          onStartBranch(wireId)
+        }}
         onClick={(event) => {
+          if (routing) return
           event.cancelBubble = true
           selectWire(wireId)
         }}
         onDblClick={(event) => {
+          if (routing) return
           event.cancelBubble = true
           onAddWaypoint(wireId)
         }}
@@ -333,10 +386,12 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
     state.document.wires.find((w) => w.id === state.selectedWireId)
   )
   const parts = useCircuitStore((state) => state.document.parts)
+  const setWireEndpoint = useCircuitStore((state) => state.setWireEndpoint)
   const setWireWaypoints = useCircuitStore((state) => state.setWireWaypoints)
   const dragWireWaypoints = useCircuitStore((state) => state.dragWireWaypoints)
   const beginTransientEdit = useCircuitStore((state) => state.beginTransientEdit)
   const commitTransientEdit = useCircuitStore((state) => state.commitTransientEdit)
+  const [draggedEnd, setDraggedEnd] = useState<{ end: 'from' | 'to'; point: Point } | null>(null)
 
   if (wire === undefined) return null
 
@@ -344,16 +399,44 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
   const toPart = parts.find((part) => part.id === wire.to.partId)
   if (fromPart === undefined || toPart === undefined) return null
 
-  const route = orthogonalRoute(
-    pinWorldPosition(fromPart, wire.from.pinId),
-    pinWorldPosition(toPart, wire.to.pinId),
-    wire.waypoints
-  )
-  const midpoint = polylineMidpoint(route)
+  const from = pinWorldPosition(fromPart, wire.from.pinId)
+  const to = pinWorldPosition(toPart, wire.to.pinId)
+  const previewFrom = draggedEnd?.end === 'from' ? draggedEnd.point : from
+  const previewTo = draggedEnd?.end === 'to' ? draggedEnd.point : to
+  const route = orthogonalRoute(previewFrom, previewTo, wire.waypoints)
+  const midpoint = addBendAnchor(route)
   const handleSize = 10 / scale
+  const snapTarget =
+    draggedEnd === null ? null : findPinNear(parts, draggedEnd.point, Math.min(22, 18 / scale))
+  const otherEnd = draggedEnd?.end === 'from' ? wire.to : wire.from
+  const validTarget =
+    snapTarget !== null && !refsEqual(snapTarget.ref, otherEnd) ? snapTarget : null
 
   return (
     <Group>
+      {draggedEnd !== null && (
+        <Path
+          data={roundedPolylinePath(route, 9)}
+          stroke="#4c8dff"
+          strokeWidth={2.5 / scale}
+          dash={[6 / scale, 4 / scale]}
+          lineCap="round"
+          lineJoin="round"
+          listening={false}
+        />
+      )}
+      {validTarget !== null && (
+        <Circle
+          x={validTarget.point.x}
+          y={validTarget.point.y}
+          radius={7 / scale}
+          fill="#46a758"
+          opacity={0.25}
+          stroke="#59d17a"
+          strokeWidth={2 / scale}
+          listening={false}
+        />
+      )}
       {wire.waypoints.map((waypoint, index) => (
         <Rect
           key={`waypoint-${index}`}
@@ -394,30 +477,64 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           }}
         />
       ))}
-      <Rect
-        x={midpoint.x}
-        y={midpoint.y}
-        width={handleSize}
-        height={handleSize}
-        offsetX={handleSize / 2}
-        offsetY={handleSize / 2}
-        cornerRadius={handleSize / 2}
-        fill="#4c8dff"
-        stroke="#0b1017"
-        strokeWidth={1.5 / scale}
-        draggable
-        onDragEnd={(event) => {
-          setWireWaypoints(
-            wire.id,
-            insertWaypoint(
-              pinWorldPosition(fromPart, wire.from.pinId),
-              pinWorldPosition(toPart, wire.to.pinId),
-              wire.waypoints,
-              snapPoint({ x: event.target.x(), y: event.target.y() })
+      {(
+        [
+          ['from', previewFrom],
+          ['to', previewTo],
+        ] as const
+      ).map(([end, point]) => (
+        <Circle
+          key={`endpoint-${end}`}
+          x={point.x}
+          y={point.y}
+          radius={5 / scale}
+          fill="#46a758"
+          stroke="#f2f6fc"
+          strokeWidth={1.5 / scale}
+          draggable
+          onDragMove={(event) => {
+            setDraggedEnd({ end, point: { x: event.target.x(), y: event.target.y() } })
+          }}
+          onDragEnd={(event) => {
+            const hit = findPinNear(
+              parts,
+              { x: event.target.x(), y: event.target.y() },
+              Math.min(22, 18 / scale)
             )
-          )
-        }}
-      />
+            const other = end === 'from' ? wire.to : wire.from
+            setDraggedEnd(null)
+            if (hit !== null && !refsEqual(hit.ref, other)) {
+              setWireEndpoint(wire.id, end, hit.ref)
+            }
+          }}
+        />
+      ))}
+      {midpoint !== null && (
+        <Rect
+          x={midpoint.x}
+          y={midpoint.y}
+          width={handleSize}
+          height={handleSize}
+          offsetX={handleSize / 2}
+          offsetY={handleSize / 2}
+          cornerRadius={handleSize / 2}
+          fill="#4c8dff"
+          stroke="#0b1017"
+          strokeWidth={1.5 / scale}
+          draggable
+          onDragEnd={(event) => {
+            setWireWaypoints(
+              wire.id,
+              insertWaypoint(
+                from,
+                to,
+                wire.waypoints,
+                snapPoint({ x: event.target.x(), y: event.target.y() })
+              )
+            )
+          }}
+        />
+      )}
     </Group>
   )
 }
@@ -428,7 +545,7 @@ export function CircuitCanvas(): JSX.Element {
 
   const [size, setSize] = useState<Size>({ width: 800, height: 600 })
   const [hoveredPin, setHoveredPin] = useState<PinRef | null>(null)
-  const [pendingPin, setPendingPin] = useState<PinRef | null>(null)
+  const [draft, setDraft] = useState<WireDraft | null>(null)
   const [pointerWorld, setPointerWorld] = useState<Point | null>(null)
   const [isSpaceDown, setIsSpaceDown] = useState(false)
   const [isPanning, setIsPanning] = useState(false)
@@ -468,7 +585,16 @@ export function CircuitCanvas(): JSX.Element {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.code === 'Space') setIsSpaceDown(true)
-      if (event.key === 'Escape') setPendingPin(null)
+      if (event.key === 'Escape') setDraft(null)
+      if (
+        draft !== null &&
+        (event.key === 'Backspace' || event.key === 'Delete') &&
+        draft.waypoints.length > 0
+      ) {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        setDraft({ ...draft, waypoints: draft.waypoints.slice(0, -1) })
+      }
     }
     const onKeyUp = (event: KeyboardEvent): void => {
       if (event.code === 'Space') setIsSpaceDown(false)
@@ -479,7 +605,7 @@ export function CircuitCanvas(): JSX.Element {
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('keyup', onKeyUp)
     }
-  }, [])
+  }, [draft])
 
   const pointerInWorld = useCallback((): Point | null => {
     const stage = stageRef.current
@@ -521,6 +647,32 @@ export function CircuitCanvas(): JSX.Element {
     (event: KonvaEventObject<MouseEvent>): void => {
       const stage = event.target.getStage()
       const isEmptyClick = stage !== null && event.target === stage
+      const point = pointerInWorld()
+
+      // While routing, every left press places a manual bend; right click
+      // cancels. Panning stays available with Space, middle or right drag once
+      // the draft is gone.
+      if (draft !== null && !isSpaceDown) {
+        if (event.evt.button === 2) {
+          event.evt.preventDefault()
+          setDraft(null)
+          return
+        }
+        if (event.evt.button === 0) {
+          event.evt.preventDefault()
+          if (point !== null) {
+            const target = findPinNear(parts, point, Math.min(16, 14 / viewport.scale))
+            if (target !== null && !refsEqual(target.ref, draft.start)) {
+              addWire(draft.start, target.ref, draft.waypoints)
+              setDraft(null)
+              return
+            }
+            setDraft({ ...draft, waypoints: [...draft.waypoints, snapPoint(point)] })
+          }
+          return
+        }
+      }
+
       // Left-dragging the empty canvas pans, which is what most people try
       // first. Middle/right drag and Space+left drag keep working as before.
       const wantsPan =
@@ -532,7 +684,7 @@ export function CircuitCanvas(): JSX.Element {
         if (isEmptyClick && event.evt.button === 0) {
           selectParts([])
           selectWire(null)
-          setPendingPin(null)
+          setDraft(null)
         }
         const pointer = stage?.getPointerPosition()
         if (pointer !== null && pointer !== undefined) {
@@ -543,7 +695,7 @@ export function CircuitCanvas(): JSX.Element {
         return
       }
     },
-    [isSpaceDown, selectParts, selectWire]
+    [addWire, draft, isSpaceDown, parts, pointerInWorld, selectParts, selectWire, viewport.scale]
   )
 
   const handleStageMouseMove = useCallback((): void => {
@@ -581,21 +733,61 @@ export function CircuitCanvas(): JSX.Element {
     [pointerInWorld, setWireWaypoints]
   )
 
-  const handleClickPin = useCallback(
-    (ref: PinRef): void => {
-      if (pendingPin === null) {
-        setPendingPin(ref)
+  const handlePointerDownPin = useCallback(
+    (ref: PinRef, event: KonvaEventObject<MouseEvent>): void => {
+      if (event.evt.button !== 0) return
+      setHoveredPin(ref)
+      if (draft === null) {
+        selectWire(null)
+        selectParts([])
+        setDraft({ start: ref, waypoints: [] })
         return
       }
-      if (refsEqual(pendingPin, ref)) {
-        setPendingPin(null)
+      if (refsEqual(draft.start, ref)) {
+        setDraft(null)
         return
       }
-      addWire(pendingPin, ref)
-      setPendingPin(null)
+      addWire(draft.start, ref, draft.waypoints)
+      setDraft(null)
     },
-    [addWire, pendingPin]
+    [addWire, draft, selectParts, selectWire]
   )
+
+  const handleStartBranch = useCallback(
+    (wireId: string): void => {
+      const point = pointerInWorld()
+      if (point === null) return
+      const { document } = useCircuitStore.getState()
+      const wire = document.wires.find((candidate) => candidate.id === wireId)
+      if (wire === undefined) return
+      const source = nearestWirePin(wire, document.parts, point)
+      if (source === null) return
+      selectWire(null)
+      selectParts([])
+      setDraft({ start: source, waypoints: [] })
+    },
+    [pointerInWorld, selectParts, selectWire]
+  )
+
+  const draftStart = useMemo(() => {
+    if (draft === null) return null
+    const part = parts.find((candidate) => candidate.id === draft.start.partId)
+    return part === undefined ? null : pinWorldPosition(part, draft.start.pinId)
+  }, [draft, parts])
+
+  const snapTarget = useMemo(() => {
+    if (draft === null || pointerWorld === null) return null
+    const hit = findPinNear(parts, pointerWorld, Math.min(16, 14 / viewport.scale))
+    if (hit === null || refsEqual(hit.ref, draft.start)) return null
+    return hit
+  }, [draft, parts, pointerWorld, viewport.scale])
+
+  const previewRoute = useMemo(() => {
+    if (draft === null || draftStart === null) return null
+    const end = snapTarget?.point ?? pointerWorld
+    if (end === null) return null
+    return orthogonalRoute(draftStart, end, draft.waypoints)
+  }, [draft, draftStart, pointerWorld, snapTarget])
 
   const handleDrop = useCallback(
     (event: DragEvent<HTMLDivElement>): void => {
@@ -686,24 +878,18 @@ export function CircuitCanvas(): JSX.Element {
     }
   }, [size.height, size.width, viewport])
 
-  const pendingPreview = useMemo(() => {
-    if (pendingPin === null || pointerWorld === null) return null
-    const part = parts.find((candidate) => candidate.id === pendingPin.partId)
-    if (part === undefined) return null
-    const start = pinWorldPosition(part, pendingPin.pinId)
-    const route = orthogonalRoute(start, pointerWorld)
-    const flat: number[] = []
-    for (const point of route) flat.push(point.x, point.y)
-    return flat
-  }, [pendingPin, pointerWorld, parts])
-
   return (
     <div
-      className={['circuit-canvas', isSpaceDown ? 'is-pannable' : '', isPanning ? 'is-panning' : '']
+      className={[
+        'circuit-canvas',
+        isSpaceDown ? 'is-pannable' : '',
+        isPanning ? 'is-panning' : '',
+        draft !== null ? 'is-routing' : '',
+      ]
         .filter(Boolean)
         .join(' ')}
       ref={containerRef}
-      title="Drag empty space to pan · Scroll to zoom · Double-click a wire to bend it"
+      title="Press a pin to start a wire · Click to place bends · Click a pin to finish · Esc cancels"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onContextMenu={(event) => event.preventDefault()}
@@ -750,7 +936,12 @@ export function CircuitCanvas(): JSX.Element {
           scaleY={viewport.scale}
         >
           {parts.map((part) => (
-            <PartNode key={part.id} partId={part.id} selected={selectedPartIds.includes(part.id)} />
+            <PartNode
+              key={part.id}
+              partId={part.id}
+              selected={selectedPartIds.includes(part.id)}
+              routing={draft !== null}
+            />
           ))}
         </Layer>
 
@@ -767,7 +958,9 @@ export function CircuitCanvas(): JSX.Element {
               key={wire.id}
               wireId={wire.id}
               scale={viewport.scale}
+              routing={draft !== null}
               onAddWaypoint={handleAddWaypoint}
+              onStartBranch={handleStartBranch}
             />
           ))}
         </Layer>
@@ -786,9 +979,10 @@ export function CircuitCanvas(): JSX.Element {
               partId={part.id}
               scale={viewport.scale}
               hoveredPin={hoveredPin}
-              pendingPin={pendingPin}
+              pendingPin={draft?.start ?? null}
+              targetPin={snapTarget?.ref ?? null}
               onHoverPin={setHoveredPin}
-              onClickPin={handleClickPin}
+              onPointerDownPin={handlePointerDownPin}
             />
           ))}
         </Layer>
@@ -800,14 +994,37 @@ export function CircuitCanvas(): JSX.Element {
           scaleY={viewport.scale}
         >
           <WaypointHandles scale={viewport.scale} />
-          {pendingPreview !== null && (
-            <Line
-              points={pendingPreview}
-              stroke="#e8a13a"
-              strokeWidth={2 / viewport.scale}
-              dash={[6 / viewport.scale, 4 / viewport.scale]}
-              listening={false}
-            />
+          {previewRoute !== null && draft !== null && (
+            <>
+              <Path
+                data={roundedPolylinePath(previewRoute, 9)}
+                stroke={snapTarget === null ? '#e8a13a' : '#46a758'}
+                strokeWidth={(snapTarget === null ? 2 : 2.5) / viewport.scale}
+                dash={[7 / viewport.scale, 5 / viewport.scale]}
+                lineCap="round"
+                lineJoin="round"
+                listening={false}
+              />
+              {draft.waypoints.map((waypoint, index) => (
+                <Circle
+                  key={`draft-bend-${index}`}
+                  x={waypoint.x}
+                  y={waypoint.y}
+                  radius={3.5 / viewport.scale}
+                  fill="#e8a13a"
+                  stroke="#0b1017"
+                  strokeWidth={1 / viewport.scale}
+                  listening={false}
+                />
+              ))}
+              <Circle
+                x={snapTarget?.point.x ?? pointerWorld?.x ?? 0}
+                y={snapTarget?.point.y ?? pointerWorld?.y ?? 0}
+                radius={(snapTarget === null ? 4 : 6) / viewport.scale}
+                fill={snapTarget === null ? '#e8a13a' : '#46a758'}
+                listening={false}
+              />
+            </>
           )}
         </Layer>
       </Stage>

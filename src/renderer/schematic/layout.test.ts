@@ -161,4 +161,21 @@ describe('layoutSchematic', () => {
     expect(layout.width).toBeGreaterThan(400)
     expect(layout.height).toBeGreaterThan(300)
   })
+
+  it('keeps the compact two-pin layout by default', () => {
+    const layout = layoutSchematic(documentOf([resistor]))
+    const node = layout.nodes[0]
+    expect(node?.height).toBe(78)
+    const pins = node?.pins ?? []
+    expect((pins[1]?.y ?? 0) - (pins[0]?.y ?? 0)).toBe(22)
+  })
+
+  it('gives two-pin parts room for rotated original symbols', () => {
+    const layout = layoutSchematic(documentOf([resistor]), { roomyTwoPin: true })
+    const node = layout.nodes[0]
+    expect(node?.height).toBe(136)
+    const pins = node?.pins ?? []
+    expect((pins[1]?.y ?? 0) - (pins[0]?.y ?? 0)).toBe(68)
+    expect((pins[0]?.y ?? 0) - (node?.y ?? 0)).toBe(34)
+  })
 })

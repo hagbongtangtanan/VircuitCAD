@@ -16,6 +16,8 @@ import { definitionOf } from '../parts/definitions'
 import { createHistory } from './history'
 
 export const DEFAULT_WIRE_COLOR = '#4f9cf9'
+const POWER_WIRE_COLOR = '#d64545'
+const GROUND_WIRE_COLOR = '#20242c'
 
 function createId(prefix: string): string {
   return `${prefix}-${crypto.randomUUID().slice(0, 8)}`
@@ -50,7 +52,8 @@ export interface CircuitStore {
   selectWire(id: string | null): void
   setWireColor(color: string): void
 
-  addWire(from: PinRef, to: PinRef): string | null
+  addWire(from: PinRef, to: PinRef, waypoints?: readonly Point[]): string | null
+  setWireEndpoint(id: string, end: 'from' | 'to', ref: PinRef): boolean
   setWireWaypoints(id: string, waypoints: readonly Point[]): void
   /** Live update during a handle drag; recorded by the transient edit. */
   dragWireWaypoints(id: string, waypoints: readonly Point[]): void
@@ -58,6 +61,43 @@ export interface CircuitStore {
   undo(): void
   redo(): void
   replaceDocument(document: CircuitDocument): void
+}
+
+function refsEqual(a: PinRef, b: PinRef): boolean {
+  return a.partId === b.partId && a.pinId === b.pinId
+}
+
+function hasWireBetween(
+  document: CircuitDocument,
+  from: PinRef,
+  to: PinRef,
+  ignoreId?: string
+): boolean {
+  return document.wires.some(
+    (wire) =>
+      wire.id !== ignoreId &&
+      ((refsEqual(wire.from, from) && refsEqual(wire.to, to)) ||
+        (refsEqual(wire.from, to) && refsEqual(wire.to, from)))
+  )
+}
+
+/** VCC and GND get conventional colours; everything else honours the palette. */
+function colorForWire(
+  document: CircuitDocument,
+  from: PinRef,
+  to: PinRef,
+  fallback: string
+): string {
+  const kindOf = (ref: PinRef): string | undefined => {
+    const part = document.parts.find((candidate) => candidate.id === ref.partId)
+    if (part === undefined) return undefined
+    return definitionOf(part.type).pins.find((pin) => pin.id === ref.pinId)?.kind
+  }
+
+  const kinds = [kindOf(from), kindOf(to)]
+  if (kinds.includes('ground')) return GROUND_WIRE_COLOR
+  if (kinds.includes('power')) return POWER_WIRE_COLOR
+  return fallback
 }
 
 export const useCircuitStore = create<CircuitStore>()((set, get) => {
@@ -243,26 +283,37 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       commit({ ...document, wires })
     },
 
-    addWire(from: PinRef, to: PinRef): string | null {
+    addWire(from: PinRef, to: PinRef, waypoints: readonly Point[] = []): string | null {
       const { document, wireColor } = get()
       if (from.partId === to.partId && from.pinId === to.pinId) return null
+      if (hasWireBetween(document, from, to)) return null
 
-      const alreadyExists = document.wires.some(
-        (wire) =>
-          (wire.from.partId === from.partId &&
-            wire.from.pinId === from.pinId &&
-            wire.to.partId === to.partId &&
-            wire.to.pinId === to.pinId) ||
-          (wire.from.partId === to.partId &&
-            wire.from.pinId === to.pinId &&
-            wire.to.partId === from.partId &&
-            wire.to.pinId === from.pinId)
-      )
-      if (alreadyExists) return null
-
-      const wire: Wire = { id: createId('wire'), from, to, color: wireColor, waypoints: [] }
+      const wire: Wire = {
+        id: createId('wire'),
+        from,
+        to,
+        color: colorForWire(document, from, to, wireColor),
+        waypoints: [...waypoints],
+      }
       commit({ ...document, wires: [...document.wires, wire] })
       return wire.id
+    },
+
+    setWireEndpoint(id: string, end: 'from' | 'to', ref: PinRef): boolean {
+      const { document } = get()
+      const wire = document.wires.find((candidate) => candidate.id === id)
+      if (wire === undefined) return false
+
+      if (refsEqual(ref, end === 'from' ? wire.from : wire.to)) return true
+      const other = end === 'from' ? wire.to : wire.from
+      if (refsEqual(ref, other)) return false
+      if (hasWireBetween(document, ref, other, id)) return false
+
+      const wires = document.wires.map((candidate) =>
+        candidate.id === id ? { ...candidate, [end]: ref } : candidate
+      )
+      commit({ ...document, wires })
+      return true
     },
 
     setWireWaypoints(id: string, waypoints: readonly Point[]): void {

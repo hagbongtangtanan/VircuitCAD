@@ -186,7 +186,8 @@ export function InspectorPanel(): JSX.Element | null {
             ))}
           </div>
           <p className="cb-placeholder">
-            Drag the blue handle on a wire to add a bend; drag a yellow handle to move one.
+            Drag a yellow handle to move a bend, double-click it to remove it, or drag the blue
+            handle to add one. Green endpoint handles reconnect a wire; press Delete to remove it.
           </p>
         </div>
       )}
