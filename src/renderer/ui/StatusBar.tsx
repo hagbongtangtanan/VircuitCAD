@@ -23,6 +23,7 @@ export function StatusBar(): JSX.Element {
     (state) => Object.values(state.ledBrightness).filter((value) => value > 0.02).length
   )
   const toolchain = useSketchStore((state) => state.toolchain)
+  const wireSelected = useCircuitStore((state) => state.selectedWireId !== null)
 
   const netlist = useMemo(() => buildNetlist(document), [document])
 
@@ -42,6 +43,11 @@ export function StatusBar(): JSX.Element {
         {document.wires.length} wire{document.wires.length === 1 ? '' : 's'} · {netlist.netCount}{' '}
         net{netlist.netCount === 1 ? '' : 's'}
       </span>
+      {wireSelected && (
+        <span className="cb-status-item" data-testid="wire-hint">
+          Double-click the wire to add a bend · double-click a bend to remove it
+        </span>
+      )}
       <span className="cb-status-item" data-testid="sim-readout">
         {simStatus === 'running'
           ? `Sim: running · ${(simElapsedMs / 1000).toFixed(1)} s · ${litLeds} LED${litLeds === 1 ? '' : 's'} lit`

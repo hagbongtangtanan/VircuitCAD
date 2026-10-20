@@ -1,40 +1,43 @@
 /*
  * Design tokens for the HuCAD shell.
  *
- * Light, friendly and rounded, in the spirit of block-based circuit canvases:
- * a white surface floating on a soft grey page, one blue accent for
- * interaction, green for "run" and red for "stop".
+ * Dark by default: a near-black page, raised slate surfaces and a bright blue
+ * accent, so the canvas and the parts stay the focal point. The canvas grid
+ * values are mirrored by GRID_COLOR / GRID_AXIS_COLOR in CircuitCanvas.tsx
+ * because Konva cannot read CSS variables.
  */
 :root {
+  color-scheme: dark;
+
   /* Surfaces */
-  --cb-page: #eef1f6;
-  --cb-surface: #ffffff;
-  --cb-surface-sunken: #f5f7fb;
-  --cb-surface-hover: #eaeef6;
+  --cb-page: #0d1219;
+  --cb-surface: #161d28;
+  --cb-surface-sunken: #111823;
+  --cb-surface-hover: #1f2937;
 
   /* Lines */
-  --cb-border: #dde3ee;
-  --cb-border-strong: #c4cddd;
+  --cb-border: #263140;
+  --cb-border-strong: #3a475a;
 
   /* Text */
-  --cb-text: #1d2635;
-  --cb-text-muted: #6d7889;
-  --cb-text-faint: #98a2b3;
+  --cb-text: #e7eef8;
+  --cb-text-muted: #9aa7b8;
+  --cb-text-faint: #6f7c8f;
 
   /* Brand + semantic */
-  --cb-primary: #2f7df6;
-  --cb-primary-hover: #1f6be4;
-  --cb-primary-soft: #e6efff;
-  --cb-run: #23a55a;
-  --cb-run-hover: #1d8f4d;
-  --cb-stop: #e0523d;
-  --cb-stop-hover: #c9432f;
-  --cb-warn: #d99311;
+  --cb-primary: #4c8dff;
+  --cb-primary-hover: #6aa2ff;
+  --cb-primary-soft: #1b2b45;
+  --cb-run: #2fbf71;
+  --cb-run-hover: #37d07e;
+  --cb-stop: #ff6b57;
+  --cb-stop-hover: #ff8574;
+  --cb-warn: #e8a13a;
 
   /* Canvas */
-  --cb-canvas: #fbfcfe;
-  --cb-canvas-grid: #e7ecf5;
-  --cb-canvas-grid-strong: #d3dbe9;
+  --cb-canvas: #0b1017;
+  --cb-canvas-grid: #151d27;
+  --cb-canvas-grid-strong: #202b3a;
 
   /* Radii */
   --cb-radius-sm: 6px;
@@ -43,9 +46,9 @@
   --cb-radius-pill: 999px;
 
   /* Elevation */
-  --cb-shadow-sm: 0 1px 2px rgba(24, 35, 54, 0.08);
-  --cb-shadow-md: 0 4px 16px rgba(24, 35, 54, 0.1);
-  --cb-shadow-lg: 0 18px 48px rgba(24, 35, 54, 0.18);
+  --cb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --cb-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --cb-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.55);
 
   /* Spacing scale */
   --cb-space-1: 4px;

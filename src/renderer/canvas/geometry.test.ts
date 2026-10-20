@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
   GRID_SIZE,
+  insertWaypoint,
   orthogonalRoute,
+  pruneSpikes,
   panBy,
   polylineLength,
   polylineMidpoint,
   rotateOffset,
+  roundedPolylinePath,
   screenToWorld,
   snapPoint,
   snapToGrid,
@@ -169,5 +172,91 @@ describe('polyline helpers', () => {
       { x: 80, y: 20 },
     ])
     expect(midpoint).toEqual({ x: 50, y: 0 })
+  })
+})
+
+describe('roundedPolylinePath', () => {
+  it('rounds an interior elbow instead of drawing a hard corner', () => {
+    const path = roundedPolylinePath([
+      { x: 0, y: 0 },
+      { x: 100, y: 0 },
+      { x: 100, y: 100 },
+    ])
+    expect(path.startsWith('M 0 0')).toBe(true)
+    expect(path).toContain('Q 100 0')
+    expect(path.endsWith('L 100 100')).toBe(true)
+  })
+
+  it('keeps the endpoints unchanged and clamps the radius on short segments', () => {
+    const path = roundedPolylinePath(
+      [
+        { x: 0, y: 0 },
+        { x: 4, y: 0 },
+        { x: 4, y: 40 },
+      ],
+      9
+    )
+    expect(path).toContain('M 0 0')
+    expect(path).toContain('L 2 0')
+    expect(path).toContain('Q 4 0 4 2')
+  })
+
+  it('returns a plain move command for a single point', () => {
+    expect(roundedPolylinePath([{ x: 5, y: 6 }])).toBe('M 5 6')
+    expect(roundedPolylinePath([])).toBe('')
+  })
+})
+
+describe('insertWaypoint', () => {
+  it('inserts a bend on the segment closest to the pointer', () => {
+    const from = { x: 0, y: 0 }
+    const to = { x: 200, y: 100 }
+    const corners = [
+      { x: 0, y: 100 },
+      { x: 200, y: 100 },
+    ]
+    const next = insertWaypoint(from, to, corners, { x: 0, y: 50 })
+    expect(next[0]).toEqual({ x: 0, y: 50 })
+    expect(next).toHaveLength(3)
+  })
+
+  it('appends when the closest segment is the last one', () => {
+    const next = insertWaypoint({ x: 0, y: 0 }, { x: 100, y: 0 }, [{ x: 40, y: 0 }], {
+      x: 90,
+      y: 0,
+    })
+    expect(next).toEqual([
+      { x: 40, y: 0 },
+      { x: 90, y: 0 },
+    ])
+  })
+})
+
+describe('pruneSpikes', () => {
+  it('removes a bend that the route doubles back over', () => {
+    const from = { x: 630, y: 180 }
+    const to = { x: 180, y: 320 }
+    const next = pruneSpikes(
+      from,
+      to,
+      [
+        { x: 630, y: 520 },
+        { x: 480, y: 450 },
+        { x: 180, y: 520 },
+      ],
+      1
+    )
+    expect(next).toEqual([
+      { x: 630, y: 520 },
+      { x: 480, y: 450 },
+    ])
+  })
+
+  it('keeps ordinary corners', () => {
+    const waypoints = [
+      { x: 180, y: 520 },
+      { x: 630, y: 520 },
+    ]
+    expect(pruneSpikes({ x: 180, y: 320 }, { x: 630, y: 180 }, waypoints)).toEqual(waypoints)
   })
 })

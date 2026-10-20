@@ -52,6 +52,8 @@ export interface CircuitStore {
 
   addWire(from: PinRef, to: PinRef): string | null
   setWireWaypoints(id: string, waypoints: readonly Point[]): void
+  /** Live update during a handle drag; recorded by the transient edit. */
+  dragWireWaypoints(id: string, waypoints: readonly Point[]): void
 
   undo(): void
   redo(): void
@@ -269,6 +271,14 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
         wire.id === id ? { ...wire, waypoints: [...waypoints] } : wire
       )
       commit({ ...document, wires })
+    },
+
+    dragWireWaypoints(id: string, waypoints: readonly Point[]): void {
+      const { document } = get()
+      const wires = document.wires.map((wire) =>
+        wire.id === id ? { ...wire, waypoints: [...waypoints] } : wire
+      )
+      set({ document: { ...document, wires } })
     },
 
     undo(): void {

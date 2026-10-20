@@ -1,7 +1,7 @@
 import type { KonvaEventObject } from 'konva/lib/Node'
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent, type JSX } from 'react'
 import type Konva from 'konva'
-import { Circle, Group, Layer, Line, Rect, Stage, Text } from 'react-konva'
+import { Circle, Group, Layer, Line, Path, Rect, Stage, Text } from 'react-konva'
 import { partTypeSchema, type PartType, type PinRef, type Point } from '../../shared/circuit'
 import { definitionOf, pinWorldPosition } from '../parts/definitions'
 import { PartBody } from '../parts/renderers'
@@ -14,16 +14,18 @@ import { useViewportStore } from '../store/viewportStore'
 import { PART_DRAG_MIME } from './dnd'
 import {
   GRID_SIZE,
+  insertWaypoint,
   orthogonalRoute,
   polylineMidpoint,
+  roundedPolylinePath,
   screenToWorld,
   snapPoint,
   type Size,
 } from './geometry'
 
 /** Konva needs concrete colours, so canvas chrome is mirrored from tokens.css. */
-const GRID_COLOR = '#e7ecf5'
-const GRID_AXIS_COLOR = '#d3dbe9'
+const GRID_COLOR = '#151d27'
+const GRID_AXIS_COLOR = '#202b3a'
 
 function refsEqual(a: PinRef | null, b: PinRef | null): boolean {
   return a !== null && b !== null && a.partId === b.partId && a.pinId === b.pinId
@@ -45,6 +47,8 @@ interface PinMarkerProps {
   readonly position: Point
   readonly scale: number
   readonly showLabel: boolean
+  /** Alternate rows avoid collisions where pins are 20 world units apart. */
+  readonly labelRow?: 0 | 1
   readonly state: 'idle' | 'hovered' | 'active'
   readonly onHover: (ref: PinRef | null) => void
   readonly onClick: (ref: PinRef) => void
@@ -59,8 +63,8 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
         ? PIN_HOVER_FILL
         : PIN_FILL
   // Pin dots and labels keep a constant on-screen size, like Tinkercad.
-  const radius = 3.5 / props.scale
-  const labelOffset = 6 / props.scale
+  const radius = 4 / props.scale
+  const labelOffset = 5 / props.scale
 
   return (
     <Group>
@@ -94,10 +98,19 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
       {props.showLabel && (
         <Text
           x={props.position.x + labelOffset}
-          y={props.position.y - labelOffset - 4 / props.scale}
+          y={
+            props.position.y -
+            labelOffset -
+            10 / props.scale -
+            (props.labelRow === 1 ? 11 / props.scale : 0)
+          }
           text={props.label}
-          fontSize={8 / props.scale}
-          fill="#6d7889"
+          fontSize={10 / props.scale}
+          fontStyle="bold"
+          fill="#dce6f4"
+          stroke="#0b1017"
+          strokeWidth={2.5 / props.scale}
+          fillAfterStrokeEnabled
           listening={false}
         />
       )}
@@ -108,11 +121,6 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
 interface PartNodeProps {
   readonly partId: string
   readonly selected: boolean
-  readonly scale: number
-  readonly hoveredPin: PinRef | null
-  readonly pendingPin: PinRef | null
-  readonly onHoverPin: (ref: PinRef | null) => void
-  readonly onClickPin: (ref: PinRef) => void
 }
 
 function PartNode(props: PartNodeProps): JSX.Element | null {
@@ -148,7 +156,6 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
 
   const definition = definitionOf(part.type)
   const { width, height } = definition.size
-  const showPinLabels = definition.pins.length <= 30 && props.scale >= 0.6
 
   return (
     <Group
@@ -191,10 +198,40 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
         channels={channels}
         spin={spin}
       />
-      {definition.pins.map((pin) => {
-        const state = refsEqual(props.pendingPin, { partId: part.id, pinId: pin.id })
+    </Group>
+  )
+}
+
+interface PartPinsProps {
+  readonly partId: string
+  readonly scale: number
+  readonly hoveredPin: PinRef | null
+  readonly pendingPin: PinRef | null
+  readonly onHoverPin: (ref: PinRef | null) => void
+  readonly onClickPin: (ref: PinRef) => void
+}
+
+/**
+ * Pin dots and labels live in their own layer above the wires, so a wire cannot
+ * steal the click that starts the next connection. Labels stay upright even
+ * when the part is rotated, which also keeps them readable.
+ */
+function PartPins(props: PartPinsProps): JSX.Element | null {
+  const part = useCircuitStore((state) =>
+    state.document.parts.find((candidate) => candidate.id === props.partId)
+  )
+  if (part === undefined) return null
+
+  const definition = definitionOf(part.type)
+  const showLabels = definition.pins.length <= 30 && props.scale >= 0.45
+
+  return (
+    <>
+      {definition.pins.map((pin, index) => {
+        const ref: PinRef = { partId: part.id, pinId: pin.id }
+        const state = refsEqual(props.pendingPin, ref)
           ? 'active'
-          : refsEqual(props.hoveredPin, { partId: part.id, pinId: pin.id })
+          : refsEqual(props.hoveredPin, ref)
             ? 'hovered'
             : 'idle'
         return (
@@ -203,25 +240,27 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
             partId={part.id}
             pinId={pin.id}
             label={pin.label}
-            position={pin.position}
+            position={pinWorldPosition(part, pin.id)}
             scale={props.scale}
-            showLabel={showPinLabels}
+            showLabel={showLabels}
+            labelRow={definition.pins.length > 20 && index % 2 === 1 ? 1 : 0}
             state={state}
             onHover={props.onHoverPin}
             onClick={props.onClickPin}
           />
         )
       })}
-    </Group>
+    </>
   )
 }
 
 interface WireNodeProps {
   readonly wireId: string
   readonly scale: number
+  readonly onAddWaypoint: (wireId: string) => void
 }
 
-function WireNode({ wireId, scale }: WireNodeProps): JSX.Element | null {
+function WireNode({ wireId, scale, onAddWaypoint }: WireNodeProps): JSX.Element | null {
   const wire = useCircuitStore((state) => state.document.wires.find((w) => w.id === wireId))
   const parts = useCircuitStore((state) => state.document.parts)
   const selected = useCircuitStore((state) => state.selectedWireId === wireId)
@@ -236,26 +275,26 @@ function WireNode({ wireId, scale }: WireNodeProps): JSX.Element | null {
   const from = pinWorldPosition(fromPart, wire.from.pinId)
   const to = pinWorldPosition(toPart, wire.to.pinId)
   const route = orthogonalRoute(from, to, wire.waypoints)
-  const flat: number[] = []
-  for (const point of route) {
-    flat.push(point.x, point.y)
-  }
 
-  const stroke = selected ? '#2f7df6' : wire.color
+  const stroke = selected ? '#4c8dff' : wire.color
   const knotRadius = 3 / scale
 
   return (
     <Group>
-      <Line
-        points={flat}
+      <Path
+        data={roundedPolylinePath(route, 9)}
         stroke={stroke}
         strokeWidth={(selected ? 4 : 2.5) / scale}
-        hitStrokeWidth={12 / scale}
+        hitStrokeWidth={14 / scale}
         lineCap="round"
         lineJoin="round"
         onClick={(event) => {
           event.cancelBubble = true
           selectWire(wireId)
+        }}
+        onDblClick={(event) => {
+          event.cancelBubble = true
+          onAddWaypoint(wireId)
         }}
       />
       {[from, to].map((point, index) => (
@@ -294,6 +333,9 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
   )
   const parts = useCircuitStore((state) => state.document.parts)
   const setWireWaypoints = useCircuitStore((state) => state.setWireWaypoints)
+  const dragWireWaypoints = useCircuitStore((state) => state.dragWireWaypoints)
+  const beginTransientEdit = useCircuitStore((state) => state.beginTransientEdit)
+  const commitTransientEdit = useCircuitStore((state) => state.commitTransientEdit)
 
   if (wire === undefined) return null
 
@@ -307,7 +349,7 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
     wire.waypoints
   )
   const midpoint = polylineMidpoint(route)
-  const handleSize = 8 / scale
+  const handleSize = 10 / scale
 
   return (
     <Group>
@@ -320,17 +362,34 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           height={handleSize}
           offsetX={handleSize / 2}
           offsetY={handleSize / 2}
+          cornerRadius={2 / scale}
           fill="#f6c445"
-          stroke="#5a6474"
-          strokeWidth={1 / scale}
+          stroke="#0b1017"
+          strokeWidth={1.5 / scale}
           draggable
-          onDragEnd={(event) => {
+          onDragStart={() => {
+            beginTransientEdit()
+          }}
+          onDragMove={(event) => {
             const next = wire.waypoints.map((existing, existingIndex) =>
-              existingIndex === index
-                ? snapPoint({ x: event.target.x(), y: event.target.y() })
-                : existing
+              existingIndex === index ? { x: event.target.x(), y: event.target.y() } : existing
             )
-            setWireWaypoints(wire.id, next)
+            dragWireWaypoints(wire.id, next)
+          }}
+          onDragEnd={(event) => {
+            const target = snapPoint({ x: event.target.x(), y: event.target.y() })
+            const next = wire.waypoints.map((existing, existingIndex) =>
+              existingIndex === index ? target : existing
+            )
+            dragWireWaypoints(wire.id, next)
+            commitTransientEdit()
+          }}
+          onDblClick={(event) => {
+            event.cancelBubble = true
+            setWireWaypoints(
+              wire.id,
+              wire.waypoints.filter((_, existingIndex) => existingIndex !== index)
+            )
           }}
         />
       ))}
@@ -341,15 +400,21 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
         height={handleSize}
         offsetX={handleSize / 2}
         offsetY={handleSize / 2}
-        fill="#2f7df6"
-        stroke="#5a6474"
-        strokeWidth={1 / scale}
+        cornerRadius={handleSize / 2}
+        fill="#4c8dff"
+        stroke="#0b1017"
+        strokeWidth={1.5 / scale}
         draggable
         onDragEnd={(event) => {
-          setWireWaypoints(wire.id, [
-            ...wire.waypoints,
-            snapPoint({ x: event.target.x(), y: event.target.y() }),
-          ])
+          setWireWaypoints(
+            wire.id,
+            insertWaypoint(
+              pinWorldPosition(fromPart, wire.from.pinId),
+              pinWorldPosition(toPart, wire.to.pinId),
+              wire.waypoints,
+              snapPoint({ x: event.target.x(), y: event.target.y() })
+            )
+          )
         }}
       />
     </Group>
@@ -380,6 +445,7 @@ export function CircuitCanvas(): JSX.Element {
   const addWire = useCircuitStore((state) => state.addWire)
   const selectParts = useCircuitStore((state) => state.selectParts)
   const selectWire = useCircuitStore((state) => state.selectWire)
+  const setWireWaypoints = useCircuitStore((state) => state.setWireWaypoints)
 
   useEffect(() => {
     const element = containerRef.current
@@ -454,10 +520,19 @@ export function CircuitCanvas(): JSX.Element {
     (event: KonvaEventObject<MouseEvent>): void => {
       const stage = event.target.getStage()
       const isEmptyClick = stage !== null && event.target === stage
+      // Left-dragging the empty canvas pans, which is what most people try
+      // first. Middle/right drag and Space+left drag keep working as before.
       const wantsPan =
-        event.evt.button === 1 || event.evt.button === 2 || (isSpaceDown && event.evt.button === 0)
+        event.evt.button === 1 ||
+        event.evt.button === 2 ||
+        (event.evt.button === 0 && (isSpaceDown || isEmptyClick))
 
       if (wantsPan) {
+        if (isEmptyClick && event.evt.button === 0) {
+          selectParts([])
+          selectWire(null)
+          setPendingPin(null)
+        }
         const pointer = stage?.getPointerPosition()
         if (pointer !== null && pointer !== undefined) {
           panStart.current = { pointer, offsetX: 0, offsetY: 0 }
@@ -465,12 +540,6 @@ export function CircuitCanvas(): JSX.Element {
           event.evt.preventDefault()
         }
         return
-      }
-
-      if (isEmptyClick) {
-        selectParts([])
-        selectWire(null)
-        setPendingPin(null)
       }
     },
     [isSpaceDown, selectParts, selectWire]
@@ -487,6 +556,29 @@ export function CircuitCanvas(): JSX.Element {
     }
     setPointerWorld(pointerInWorld())
   }, [panBy, pointerInWorld])
+
+  const handleAddWaypoint = useCallback(
+    (wireId: string): void => {
+      const point = pointerInWorld()
+      if (point === null) return
+      const { document } = useCircuitStore.getState()
+      const wire = document.wires.find((entry) => entry.id === wireId)
+      if (wire === undefined) return
+      const fromPart = document.parts.find((part) => part.id === wire.from.partId)
+      const toPart = document.parts.find((part) => part.id === wire.to.partId)
+      if (fromPart === undefined || toPart === undefined) return
+      setWireWaypoints(
+        wireId,
+        insertWaypoint(
+          pinWorldPosition(fromPart, wire.from.pinId),
+          pinWorldPosition(toPart, wire.to.pinId),
+          wire.waypoints,
+          snapPoint(point)
+        )
+      )
+    },
+    [pointerInWorld, setWireWaypoints]
+  )
 
   const handleClickPin = useCallback(
     (ref: PinRef): void => {
@@ -569,6 +661,7 @@ export function CircuitCanvas(): JSX.Element {
         .filter(Boolean)
         .join(' ')}
       ref={containerRef}
+      title="Drag empty space to pan · Scroll to zoom · Double-click a wire to bend it"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onContextMenu={(event) => event.preventDefault()}
@@ -614,14 +707,41 @@ export function CircuitCanvas(): JSX.Element {
           scaleX={viewport.scale}
           scaleY={viewport.scale}
         >
-          {wires.map((wire) => (
-            <WireNode key={wire.id} wireId={wire.id} scale={viewport.scale} />
-          ))}
           {parts.map((part) => (
-            <PartNode
+            <PartNode key={part.id} partId={part.id} selected={selectedPartIds.includes(part.id)} />
+          ))}
+        </Layer>
+
+        {/* Wires are drawn above the parts, like Tinkercad, so a connection is
+            never hidden behind the board it plugs into. */}
+        <Layer
+          x={viewport.offsetX}
+          y={viewport.offsetY}
+          scaleX={viewport.scale}
+          scaleY={viewport.scale}
+        >
+          {wires.map((wire) => (
+            <WireNode
+              key={wire.id}
+              wireId={wire.id}
+              scale={viewport.scale}
+              onAddWaypoint={handleAddWaypoint}
+            />
+          ))}
+        </Layer>
+
+        {/* Pins sit above the wires: their dots stay clickable even when a wire
+            ends on them, and their labels are never covered. */}
+        <Layer
+          x={viewport.offsetX}
+          y={viewport.offsetY}
+          scaleX={viewport.scale}
+          scaleY={viewport.scale}
+        >
+          {parts.map((part) => (
+            <PartPins
               key={part.id}
               partId={part.id}
-              selected={selectedPartIds.includes(part.id)}
               scale={viewport.scale}
               hoveredPin={hoveredPin}
               pendingPin={pendingPin}
@@ -629,11 +749,19 @@ export function CircuitCanvas(): JSX.Element {
               onClickPin={handleClickPin}
             />
           ))}
+        </Layer>
+
+        <Layer
+          x={viewport.offsetX}
+          y={viewport.offsetY}
+          scaleX={viewport.scale}
+          scaleY={viewport.scale}
+        >
           <WaypointHandles scale={viewport.scale} />
           {pendingPreview !== null && (
             <Line
               points={pendingPreview}
-              stroke="#d99311"
+              stroke="#e8a13a"
               strokeWidth={2 / viewport.scale}
               dash={[6 / viewport.scale, 4 / viewport.scale]}
               listening={false}
