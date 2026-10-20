@@ -14,7 +14,9 @@ import {
   PROJECT_EXTENSION,
   SKETCH_EXTENSION,
   HEX_EXTENSION,
+  PNG_EXTENSION,
   exportHexRequestSchema,
+  exportPngRequestSchema,
   exportSketchRequestSchema,
   openSampleRequestSchema,
   saveProjectRequestSchema,
@@ -30,7 +32,13 @@ import {
   type ToolchainStatus,
 } from '../../shared/schemas'
 import { compileSketch, readToolchainStatus } from '../services/compiler'
-import { openFile, writeHexFile, writeProjectFile, writeSketchFile } from '../services/projectFiles'
+import {
+  openFile,
+  writeHexFile,
+  writePngFile,
+  writeProjectFile,
+  writeSketchFile,
+} from '../services/projectFiles'
 import { listSamples, readSample } from '../services/sampleFiles'
 
 /** Example projects ship beside the app resources, not inside the asar. */
@@ -173,6 +181,27 @@ export function registerIpcHandlers(): void {
     }
   )
 
+  ipcMain.handle(
+    IpcChannels.exportPng,
+    async (event, payload: unknown): Promise<SavedFile | null> => {
+      const request = exportPngRequestSchema.parse(payload)
+      const baseName = request.name
+        .replace(/[^a-z0-9._-]+/gi, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 80)
+      const path = await resolveSavePath(event, request.path, PNG_EXTENSION, {
+        title: 'Export PNG',
+        defaultPath: `${baseName === '' ? 'circuit' : baseName}.${PNG_EXTENSION}`,
+        filters: [{ name: 'PNG image', extensions: [PNG_EXTENSION] }],
+      })
+      if (path === null) return null
+
+      await writePngFile(path, request.dataUrl)
+      approvedPaths.add(path)
+      return { path }
+    }
+  )
+
   ipcMain.handle(IpcChannels.listSamples, (): Promise<readonly SampleEntry[]> => {
     return listSamples(samplesDirectory())
   })
@@ -209,6 +238,7 @@ export function unregisterIpcHandlers(): void {
   ipcMain.removeHandler(IpcChannels.saveProject)
   ipcMain.removeHandler(IpcChannels.exportSketch)
   ipcMain.removeHandler(IpcChannels.exportHex)
+  ipcMain.removeHandler(IpcChannels.exportPng)
   ipcMain.removeHandler(IpcChannels.listSamples)
   ipcMain.removeHandler(IpcChannels.openSample)
 }

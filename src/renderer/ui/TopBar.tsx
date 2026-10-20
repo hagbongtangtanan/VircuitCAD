@@ -25,6 +25,7 @@ function FileMenu(): JSX.Element {
   const saveProject = useProjectStore((state) => state.save)
   const exportSketch = useProjectStore((state) => state.exportSketch)
   const exportHex = useProjectStore((state) => state.exportHex)
+  const exportPng = useProjectStore((state) => state.exportPng)
   const hasHex = useSketchStore((state) => state.hex !== null)
 
   useEffect(() => {
@@ -106,6 +107,15 @@ function FileMenu(): JSX.Element {
             onClick={() => run(exportHex)}
           >
             Export program (.hex)
+          </button>
+          <span className="cb-menu-separator" role="separator" />
+          <button
+            type="button"
+            role="menuitem"
+            data-testid="export-png"
+            onClick={() => run(exportPng)}
+          >
+            Export view as PNG…
           </button>
         </div>
       )}

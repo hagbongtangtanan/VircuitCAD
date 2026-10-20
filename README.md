@@ -26,7 +26,7 @@ Under active development.
 | 6         | Block editor (Blocks / Text / Blocks + Text)           | Not started | Whole milestone                                                           |
 | 7         | LED glow, burn-out, buzzer audio, multimeter, warnings | In progress | Burn-out, audio, multimeter and warnings; LED glow is done                |
 | 8         | Extended parts and starter gallery                     | In progress | Protocol parts and displays, servo/relay/stepper, more starter circuits   |
-| 9         | Persistence, schematic view, PNG export, shortcuts     | In progress | PNG export; persistence, schematic view and shortcuts are done            |
+| 9         | Persistence, schematic view, PNG export, shortcuts     | Done        | —                                                                         |
 | 10        | Windows-first installers, bundled toolchain, docs      | In progress | Windows/macOS toolchains and verified builds on those platforms           |
 
 This table reflects the code rather than the original six-step plan. "Done" means implemented,

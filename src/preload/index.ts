@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { API_NAMESPACE, IpcChannels, type CircuitApi } from '../shared/ipc'
 import type {
   ExportHexRequest,
+  ExportPngRequest,
   ExportSketchRequest,
   OpenFileResult,
   OpenSampleRequest,
@@ -38,6 +39,9 @@ const api: CircuitApi = {
   },
   exportHex(request: ExportHexRequest): Promise<SavedFile | null> {
     return ipcRenderer.invoke(IpcChannels.exportHex, request) as Promise<SavedFile | null>
+  },
+  exportPng(request: ExportPngRequest): Promise<SavedFile | null> {
+    return ipcRenderer.invoke(IpcChannels.exportPng, request) as Promise<SavedFile | null>
   },
   listSamples(): Promise<readonly SampleEntry[]> {
     return ipcRenderer.invoke(IpcChannels.listSamples) as Promise<readonly SampleEntry[]>

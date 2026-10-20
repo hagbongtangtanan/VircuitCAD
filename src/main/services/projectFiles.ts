@@ -15,6 +15,9 @@ import {
  */
 
 const MAX_FILE_BYTES = 4 * 1024 * 1024
+const MAX_PNG_BYTES = 32 * 1024 * 1024
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+const PNG_DATA_URL = /^data:image\/png;base64,([A-Za-z0-9+/=]+)$/
 
 async function readText(path: string): Promise<string> {
   const buffer = await readFile(path)
@@ -48,6 +51,24 @@ export async function openFile(path: string): Promise<OpenFileResult> {
 
 export async function writeSketchFile(path: string, sketch: string): Promise<void> {
   await writeFile(path, parseSketchText(sketch), 'utf8')
+}
+
+/** Writes a PNG captured by the renderer. The data URL is validated here, not trusted. */
+export async function writePngFile(path: string, dataUrl: string): Promise<void> {
+  const payload = PNG_DATA_URL.exec(dataUrl)?.[1]
+  if (payload === undefined) {
+    throw new ProjectFileError('The image data is not a PNG.')
+  }
+
+  const buffer = Buffer.from(payload, 'base64')
+  if (buffer.byteLength > MAX_PNG_BYTES) {
+    throw new ProjectFileError('The image is too large to export.')
+  }
+  if (buffer.byteLength < PNG_SIGNATURE.length || !buffer.subarray(0, 8).equals(PNG_SIGNATURE)) {
+    throw new ProjectFileError('The image data is not a PNG.')
+  }
+
+  await writeFile(path, buffer)
 }
 
 export async function writeHexFile(path: string, hex: string): Promise<void> {

@@ -347,3 +347,22 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   parallel routes through the channel distinguishable without a legend.
 - **Unconnected components still appear.** A part with no connections shows up to six of its pins
   under its label, so it is visible that the part exists and is simply not wired yet.
+
+## 2026-10-20 — PNG export captures whichever view is mounted
+
+- **Each view rasterises itself.** The circuit captures the Konva stage with
+  `toCanvas({ pixelRatio: 2 })`; the schematic serialises its SVG and draws it onto a canvas. A
+  small registry lets the File menu ask "the active view" for a data URL without either view
+  owning menu state.
+- **The circuit export fits the whole document, then restores the user's view.** Exporting only
+  the current framing would ship a cropped picture; the capture temporarily fits the content,
+  clears the selection so handles and highlights stay out of the file, waits for two frames, and
+  restores the viewport and selection afterwards. The schematic's SVG already has a stable
+  viewBox, so it needs no viewport changes.
+- **Computed styles are inlined into the serialised SVG.** An SVG loaded through an `<img>` cannot
+  see the app's stylesheet or CSS variables, so every element's fill, stroke, font and spacing is
+  copied from `getComputedStyle` before rasterising. This keeps the PNG identical to the screen
+  without duplicating the palette.
+- **The main process validates the PNG and owns the path.** The renderer sends a
+  `data:image/png;base64,…` payload; `writePngFile` checks the data-URL shape and the PNG
+  signature, and the save path still comes from a native dialog, like every other export.

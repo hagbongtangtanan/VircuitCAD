@@ -8,6 +8,7 @@ import {
   openFile,
   readProjectFile,
   writeHexFile,
+  writePngFile,
   writeProjectFile,
   writeSketchFile,
 } from './projectFiles'
@@ -73,6 +74,27 @@ describe('project files on disk', () => {
 
   it('rejects an export with no HEX payload', async () => {
     await expect(writeHexFile(join(directory, 'empty.hex'), '')).rejects.toThrow(/no compiled HEX/)
+  })
+
+  it('writes a validated PNG data URL', async () => {
+    const path = join(directory, 'circuit.png')
+    const pixel =
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+    await writePngFile(path, `data:image/png;base64,${pixel}`)
+
+    const bytes = await readFile(path)
+    expect(bytes.subarray(0, 8)).toEqual(
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+    )
+  })
+
+  it('rejects image data that is not a PNG', async () => {
+    await expect(
+      writePngFile(join(directory, 'fake.png'), 'data:image/png;base64,bm90IGEgcG5n')
+    ).rejects.toThrow(/not a PNG/)
+    await expect(
+      writePngFile(join(directory, 'fake.png'), 'data:image/jpeg;base64,abcd')
+    ).rejects.toThrow(/not a PNG/)
   })
 
   it('keeps the serialized project stable for diffing', async () => {

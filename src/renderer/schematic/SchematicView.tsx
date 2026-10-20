@@ -1,4 +1,6 @@
-import { useMemo, type JSX } from 'react'
+import { useCallback, useEffect, useMemo, useRef, type JSX } from 'react'
+import { registerPngCapture } from '../export/pngCapture'
+import { rasterizeSvgToPng } from '../export/svgPng'
 import { useCircuitStore } from '../store/circuitStore'
 import { layoutSchematic, type SchematicPartNode } from './layout'
 
@@ -169,6 +171,15 @@ export function SchematicView(): JSX.Element {
   const document = useCircuitStore((state) => state.document)
   const layout = useMemo(() => layoutSchematic(document), [document])
   const empty = layout.nodes.length === 0
+  const svgRef = useRef<SVGSVGElement | null>(null)
+
+  const capturePng = useCallback(async (): Promise<string | null> => {
+    const svg = svgRef.current
+    if (svg === null) return null
+    return rasterizeSvgToPng(svg, layout.width, layout.height, 2)
+  }, [layout.height, layout.width])
+
+  useEffect(() => registerPngCapture(capturePng), [capturePng])
 
   return (
     <section className="cb-schematic" data-testid="schematic-view" aria-label="Schematic">
@@ -193,6 +204,7 @@ export function SchematicView(): JSX.Element {
       ) : (
         <div className="cb-schematic-canvas">
           <svg
+            ref={svgRef}
             className="cb-schematic-svg"
             viewBox={`0 0 ${layout.width} ${layout.height}`}
             role="img"

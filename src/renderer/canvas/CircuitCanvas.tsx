@@ -10,7 +10,8 @@ import { useCircuitStore } from '../store/circuitStore'
 import { useShallow } from 'zustand/react/shallow'
 import { useInteractionStore } from '../store/interactionStore'
 import { useSimStore } from '../store/simStore'
-import { useViewportStore } from '../store/viewportStore'
+import { circuitContentBounds, fitViewport, useViewportStore } from '../store/viewportStore'
+import { canvasBackground, registerPngCapture } from '../export/pngCapture'
 import { PART_DRAG_MIME } from './dnd'
 import {
   GRID_SIZE,
@@ -620,6 +621,47 @@ export function CircuitCanvas(): JSX.Element {
     event.preventDefault()
     event.dataTransfer.dropEffect = 'copy'
   }, [])
+
+  const capturePng = useCallback(async (): Promise<string | null> => {
+    const stage = stageRef.current
+    const bounds = circuitContentBounds()
+    if (stage === null || bounds === null) return null
+
+    const viewportState = useViewportStore.getState()
+    const selection = useCircuitStore.getState()
+    const previousSelection = {
+      partIds: selection.selectedPartIds,
+      wireId: selection.selectedWireId,
+    }
+
+    useViewportStore.getState().setViewport(fitViewport(viewportState.size, bounds))
+    useCircuitStore.setState({ selectedPartIds: [], selectedWireId: null })
+
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+
+    try {
+      const source = stage.toCanvas({ pixelRatio: 2 })
+      const output = document.createElement('canvas')
+      output.width = source.width
+      output.height = source.height
+      const context = output.getContext('2d')
+      if (context === null) return null
+
+      context.fillStyle = canvasBackground()
+      context.fillRect(0, 0, output.width, output.height)
+      context.drawImage(source, 0, 0)
+      return output.toDataURL('image/png')
+    } finally {
+      useViewportStore.getState().setViewport(viewportState.viewport)
+      useCircuitStore.setState({
+        selectedPartIds: previousSelection.partIds,
+        selectedWireId: previousSelection.wireId,
+      })
+    }
+  }, [])
+
+  useEffect(() => registerPngCapture(capturePng), [capturePng])
 
   const grid = useMemo(() => {
     const topLeft = screenToWorld({ x: 0, y: 0 }, viewport)

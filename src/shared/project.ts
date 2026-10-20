@@ -11,6 +11,7 @@ export const PROJECT_VERSION = 1
 export const PROJECT_EXTENSION = 'hucad'
 export const SKETCH_EXTENSION = 'ino'
 export const HEX_EXTENSION = 'hex'
+export const PNG_EXTENSION = 'png'
 
 export const projectFileSchema = z.strictObject({
   format: z.literal(PROJECT_FORMAT),
@@ -119,6 +120,15 @@ export const exportHexRequestSchema = z.strictObject({
 
 export const savedFileSchema = z.strictObject({ path: z.string().min(1) })
 
+const PNG_DATA_URL_PATTERN = /^data:image\/png;base64,[A-Za-z0-9+/=]+$/
+
+export const exportPngRequestSchema = z.strictObject({
+  dataUrl: z.string().min(32).max(32_000_000).regex(PNG_DATA_URL_PATTERN),
+  /** Base name used for the save dialog; the main process strips path characters. */
+  name: z.string().min(1).max(120),
+  path: z.string().min(1).nullable(),
+})
+
 /** Shipped examples; the name doubles as the file name and is never a path. */
 export const SAMPLE_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*\.hucad$/
 
@@ -141,4 +151,5 @@ export type OpenSampleRequest = z.infer<typeof openSampleRequestSchema>
 export type SaveProjectRequest = z.infer<typeof saveProjectRequestSchema>
 export type ExportSketchRequest = z.infer<typeof exportSketchRequestSchema>
 export type ExportHexRequest = z.infer<typeof exportHexRequestSchema>
+export type ExportPngRequest = z.infer<typeof exportPngRequestSchema>
 export type SavedFile = z.infer<typeof savedFileSchema>

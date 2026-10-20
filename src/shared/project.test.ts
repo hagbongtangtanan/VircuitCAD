@@ -3,6 +3,7 @@ import { emptyCircuitDocument } from './circuit'
 import {
   ProjectFileError,
   createProject,
+  exportPngRequestSchema,
   fileBaseName,
   fileExtension,
   openKindForPath,
@@ -55,5 +56,24 @@ describe('project files', () => {
   it('caps imported sketches', () => {
     expect(parseSketchText('void setup() {}')).toBe('void setup() {}')
     expect(() => parseSketchText('x'.repeat(200_001))).toThrow(/larger/)
+  })
+})
+
+describe('PNG export requests', () => {
+  const valid = {
+    dataUrl: `data:image/png;base64,${'A'.repeat(48)}`,
+    name: 'Blink led',
+    path: null,
+  }
+
+  it('accepts a PNG data URL and a plain name', () => {
+    expect(exportPngRequestSchema.parse(valid)).toEqual(valid)
+  })
+
+  it('rejects other image types and suspicious names', () => {
+    expect(() =>
+      exportPngRequestSchema.parse({ ...valid, dataUrl: 'data:image/jpeg;base64,AAAA' })
+    ).toThrow()
+    expect(() => exportPngRequestSchema.parse({ ...valid, name: '' })).toThrow()
   })
 })

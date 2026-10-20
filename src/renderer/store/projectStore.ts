@@ -8,6 +8,7 @@ import {
   type OpenFileResult,
   type SampleEntry,
 } from '../../shared/project'
+import { captureActiveViewPng } from '../export/pngCapture'
 import { useSerialStore } from '../serial/serialStore'
 import { useCircuitStore } from './circuitStore'
 import { useSimStore } from './simStore'
@@ -30,6 +31,7 @@ export interface ProjectStore {
   save(): Promise<void>
   exportSketch(): Promise<void>
   exportHex(): Promise<void>
+  exportPng(): Promise<void>
   dismissError(): void
 }
 
@@ -168,6 +170,20 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       set({ error: null })
       try {
         await window.api.exportSketch({ sketch: useSketchStore.getState().source, path: null })
+      } catch (error) {
+        set({ error: errorMessage(error) })
+      }
+    },
+
+    async exportPng(): Promise<void> {
+      set({ error: null })
+      try {
+        const dataUrl = await captureActiveViewPng()
+        if (dataUrl === null) {
+          set({ error: 'There is nothing to export yet.' })
+          return
+        }
+        await window.api.exportPng({ dataUrl, name: get().name, path: null })
       } catch (error) {
         set({ error: errorMessage(error) })
       }

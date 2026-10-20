@@ -24,7 +24,7 @@ export interface ViewportStore {
 }
 
 /** Axis-aligned world bounds of every part and wire anchor, or null when empty. */
-function contentBounds(): { min: Point; max: Point } | null {
+export function circuitContentBounds(): { min: Point; max: Point } | null {
   const { parts } = useCircuitStore.getState().document
   if (parts.length === 0) return null
 
@@ -51,6 +51,24 @@ function contentBounds(): { min: Point; max: Point } | null {
 
   if (!Number.isFinite(minX)) return null
   return { min: { x: minX, y: minY }, max: { x: maxX, y: maxY } }
+}
+
+/** Centre-fit a world bounds rectangle inside a viewport of the given size. */
+export function fitViewport(
+  size: Size,
+  bounds: { readonly min: Point; readonly max: Point }
+): Viewport {
+  const width = Math.max(1, bounds.max.x - bounds.min.x)
+  const height = Math.max(1, bounds.max.y - bounds.min.y)
+  const usableWidth = Math.max(1, size.width - FIT_PADDING * 2)
+  const usableHeight = Math.max(1, size.height - FIT_PADDING * 2)
+  const scale = clamp(Math.min(usableWidth / width, usableHeight / height), MIN_SCALE, MAX_SCALE)
+
+  return {
+    scale,
+    offsetX: (size.width - width * scale) / 2 - bounds.min.x * scale,
+    offsetY: (size.height - height * scale) / 2 - bounds.min.y * scale,
+  }
 }
 
 export const useViewportStore = create<ViewportStore>()((set, get) => {
@@ -100,29 +118,12 @@ export const useViewportStore = create<ViewportStore>()((set, get) => {
 
     fitToContent(): void {
       const { size } = get()
-      const bounds = contentBounds()
+      const bounds = circuitContentBounds()
       if (bounds === null) {
         set({ viewport: INITIAL_VIEWPORT })
         return
       }
-
-      const width = Math.max(1, bounds.max.x - bounds.min.x)
-      const height = Math.max(1, bounds.max.y - bounds.min.y)
-      const usableWidth = Math.max(1, size.width - FIT_PADDING * 2)
-      const usableHeight = Math.max(1, size.height - FIT_PADDING * 2)
-      const scale = clamp(
-        Math.min(usableWidth / width, usableHeight / height),
-        MIN_SCALE,
-        MAX_SCALE
-      )
-
-      set({
-        viewport: {
-          scale,
-          offsetX: (size.width - width * scale) / 2 - bounds.min.x * scale,
-          offsetY: (size.height - height * scale) / 2 - bounds.min.y * scale,
-        },
-      })
+      set({ viewport: fitViewport(size, bounds) })
     },
 
     reset(): void {
