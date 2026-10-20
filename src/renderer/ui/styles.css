@@ -1102,12 +1102,125 @@ button:disabled {
   padding: 6px;
 }
 
-.cb-schematic-placeholder {
+.cb-schematic {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  background: var(--cb-canvas);
+}
+
+.cb-schematic-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px 0;
+}
+
+.cb-schematic-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.cb-schematic-hint {
+  font-size: 11px;
+  color: var(--cb-text-faint);
+}
+
+.cb-schematic-canvas {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px 18px 18px;
+  overflow: auto;
+}
+
+.cb-schematic-svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.cb-schematic-empty {
   display: grid;
   place-items: center;
   min-width: 0;
   min-height: 0;
   padding: 24px;
+}
+
+.cb-sch-node {
+  fill: var(--cb-surface);
+  stroke: var(--cb-border-strong);
+  stroke-width: 1.25;
+}
+
+.cb-sch-node-board {
+  fill: var(--cb-surface-sunken);
+}
+
+.cb-sch-node-label {
+  fill: var(--cb-text);
+  font-family: var(--cb-font-sans);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cb-sch-glyph {
+  fill: none;
+  stroke: var(--cb-text-muted);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cb-sch-glyph-fill {
+  fill: var(--cb-text-muted);
+  stroke: none;
+}
+
+.cb-sch-glyph-text {
+  fill: var(--cb-text-muted);
+  stroke: none;
+  font-family: var(--cb-font-mono);
+  font-size: 12px;
+}
+
+.cb-sch-pin {
+  stroke: var(--cb-border-strong);
+  stroke-width: 1.5;
+}
+
+.cb-sch-pin-dot {
+  fill: var(--cb-text-faint);
+}
+
+.cb-sch-pin-label {
+  fill: var(--cb-text-muted);
+  font-family: var(--cb-font-mono);
+  font-size: 11px;
+}
+
+.cb-sch-pin-power {
+  fill: var(--cb-warn);
+}
+
+.cb-sch-pin-ground {
+  fill: var(--cb-primary-hover);
+}
+
+.cb-sch-wire {
+  fill: none;
+  stroke: var(--cb-schematic-wire);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cb-sch-junction {
+  fill: var(--cb-schematic-wire);
 }
 
 .cb-placeholder-card {

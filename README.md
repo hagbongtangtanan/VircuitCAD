@@ -18,7 +18,7 @@ Under active development.
 
 | Milestone | Scope                                                  | State       | Remaining                                                                 |
 | --------- | ------------------------------------------------------ | ----------- | ------------------------------------------------------------------------- |
-| 1         | Scaffolding, secure IPC, design system, full UI shell  | Done        | Schematic, blocks, notes and flip are labelled placeholders               |
+| 1         | Scaffolding, secure IPC, design system, full UI shell  | Done        | Blocks, notes and flip are labelled placeholders                          |
 | 2         | Canvas, breadboard, wiring, undo/redo, notes           | In progress | Curved wire routing and the notes tool; breadboard and undo/redo are done |
 | 3         | Core parts, inspector, property editing                | Done        | Extended library is tracked under milestone 8                             |
 | 4         | MNA solver, LED/resistor models, sim engine            | Done        | —                                                                         |
@@ -26,7 +26,7 @@ Under active development.
 | 6         | Block editor (Blocks / Text / Blocks + Text)           | Not started | Whole milestone                                                           |
 | 7         | LED glow, burn-out, buzzer audio, multimeter, warnings | In progress | Burn-out, audio, multimeter and warnings; LED glow is done                |
 | 8         | Extended parts and starter gallery                     | In progress | Protocol parts and displays, servo/relay/stepper, more starter circuits   |
-| 9         | Persistence, schematic view, PNG export, shortcuts     | In progress | Schematic view and PNG export; persistence and shortcuts are done         |
+| 9         | Persistence, schematic view, PNG export, shortcuts     | In progress | PNG export; persistence, schematic view and shortcuts are done            |
 | 10        | Windows-first installers, bundled toolchain, docs      | In progress | Windows/macOS toolchains and verified builds on those platforms           |
 
 This table reflects the code rather than the original six-step plan. "Done" means implemented,

@@ -332,3 +332,18 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   `win32` to `win` and `darwin` to `mac` (previously it looked for `win32`, so even a packaged
   Windows toolchain would have been ignored). `toolchainFromDir` takes the platform so tests can
   assert the `.exe` names without running on Windows.
+
+## 2026-10-20 — Schematic view derived from the netlist
+
+- **The schematic is connectivity, not a copy of the canvas.** It runs the same `buildNetlist`
+  the simulator uses, lays the parts out on its own grid and routes each net through a shared
+  vertical channel. Moving a part or bending a wire on the circuit canvas therefore cannot break
+  the schematic, and the two views never disagree about what is connected.
+- **Breadboards are left out on purpose.** A breadboard is prototyping hardware, not a schematic
+  symbol; drawing 830 holes would bury the circuit. A net that only exists on breadboard strips
+  disappears, and a net that also reaches a real component is drawn between those components.
+- **One colour per net, not per wire.** Wires can be recoloured individually on the canvas, but a
+  schematic is about nets. Colouring by net (and cycling a fixed six-colour palette) keeps
+  parallel routes through the channel distinguishable without a legend.
+- **Unconnected components still appear.** A part with no connections shows up to six of its pins
+  under its label, so it is visible that the part exists and is simply not wired yet.

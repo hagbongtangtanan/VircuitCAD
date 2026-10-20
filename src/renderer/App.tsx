@@ -5,6 +5,7 @@ import { CanvasToolbar } from './ui/CanvasToolbar'
 import { CodePanel } from './ui/CodePanel'
 import { InspectorPanel } from './ui/InspectorPanel'
 import { PartsPanel } from './ui/PartsPanel'
+import { SchematicView } from './schematic/SchematicView'
 import { SerialDrawer } from './ui/SerialDrawer'
 import { StatusBar } from './ui/StatusBar'
 import { TopBar, type WorkspaceView } from './ui/TopBar'
@@ -17,21 +18,6 @@ function isTextEntry(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false
   const tag = target.tagName
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable
-}
-
-/** Placeholder surface until the schematic view lands in a later milestone. */
-function SchematicPlaceholder(): JSX.Element {
-  return (
-    <div className="cb-schematic-placeholder" data-testid="schematic-view">
-      <div className="cb-placeholder-card">
-        <h2>Schematic view</h2>
-        <p>
-          A readable schematic of the same circuit arrives in Milestone 9. The circuit canvas keeps
-          working in the meantime.
-        </p>
-      </div>
-    </div>
-  )
 }
 
 export function App(): JSX.Element {
@@ -148,7 +134,7 @@ export function App(): JSX.Element {
               <InspectorPanel />
             </>
           ) : (
-            <SchematicPlaceholder />
+            <SchematicView />
           )}
           <SerialDrawer />
         </div>
