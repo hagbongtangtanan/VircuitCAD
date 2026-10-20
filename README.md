@@ -149,33 +149,32 @@ Known modelling limits, chosen to keep the solver fast and predictable:
 
 ## Packaging
 
-```bash
-npm run build:linux
-```
-
-produces `release/HuCAD-0.2.1-linux-x86_64.AppImage` (about 234 MB). The `prebuild:linux`
-hook vendors the toolchain first (a no-op when it is already there), then electron-builder copies
-it and the samples outside the asar into `resources/`, so the installed app compiles sketches and
-opens samples with no network and no system packages. The packaged directory is smoke-tested with
-the same CDP probe as the dev build (`CDP_HOST=... EXPECT_EDITOR=1 EXPECT_SIM=1`). `release/` is gitignored; the
-icon (`resources/icon.png`, 512×512) is committed. The NSIS target builds on Windows (or with
-wine):
+HuCAD targets Windows; the NSIS installer is the shipped artifact:
 
 ```bash
 npm run build:win
 ```
 
-Artifact names are deliberately space-free (`HuCAD-<version>-<os>-<arch>.<ext>`): GitHub
-rewrites spaces in uploaded asset names, which would break both the download links and the
-updater metadata in `latest-*.yml`.
+produces `release/HuCAD-0.2.1-win-x64.exe`. The installer is unsigned for now. The Linux build
+(`npm run build:linux`, about 234 MB AppImage) still exists for development and smoke tests on
+the machine the app is developed on: `prebuild:linux` vendors the toolchain, and electron-builder
+copies it and the samples outside the asar into `resources/`. The packaged directory is checked
+with the same CDP probe as the dev build (`CDP_HOST=... EXPECT_EDITOR=1 EXPECT_SIM=1`).
+`release/` is gitignored; the icon (`resources/icon.png`, 512×512) is committed.
+
+Windows packages currently ship without a compiler: the vendored avr-gcc is Linux-only and the
+Windows toolchain is still Milestone 10 work, so the simulator runs but sketch uploads are
+disabled there. Artifact names are deliberately space-free
+(`HuCAD-<version>-<os>-<arch>.<ext>`): GitHub rewrites spaces in uploaded asset names, which
+would break both the download links and the updater metadata in `latest.yml`.
 
 ## Releasing
 
 CI is the primary path. Bump `version` in `package.json`, commit, and push a matching
-`v<version>` tag: `.github/workflows/release.yml` then builds the installers on Linux, Windows
-and macOS, verifies that the tag matches `package.json`, and uploads them (plus `latest-*.yml`
-and `SHA256SUMS.txt`) to the GitHub Release for that tag. Tags with a suffix, such as
-`v0.2.0-beta.1`, are published as pre-releases.
+`v<version>` tag: `.github/workflows/release.yml` builds the Windows installer, verifies that
+the tag matches `package.json`, and uploads the `.exe` (plus `latest.yml` and its blockmap) to
+the GitHub Release for that tag. Tags with a suffix, such as `v0.2.0-beta.1`, are published as
+pre-releases. Releases intentionally contain Windows assets only.
 
 ```bash
 npm version 0.2.1 --no-git-tag-version   # or edit package.json by hand
@@ -191,7 +190,7 @@ read from a file or committed.
 
 ```bash
 export GH_TOKEN=ghp_...   # or: gh auth login
-npm run build:linux       # produce release/*.AppImage
+npm run build:win         # produce release/*.exe
 npm run release:dry       # print tag, assets, notes — writes nothing
 npm run release           # create or update the release, overwriting assets
 npm run release -- --draft --prerelease

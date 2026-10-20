@@ -1,12 +1,10 @@
-# Primary release path: pushing a `v*` tag builds the installers on every
-# platform, keeps them as workflow artifacts, and publishes them to the matching
-# GitHub Release from a single final job.
+# Primary release path: pushing a `v*` tag builds the Windows installer, keeps
+# it as a workflow artifact, and publishes it to the matching GitHub Release.
 #
-# Publishing used to happen from each runner independently. That races when two
-# platforms finish at the same time (the second publisher tries to create a
-# release that the first one just created) and it makes a failed platform look
-# like a missing asset with no fallback. Building first and publishing once from
-# the collected artifacts removes both failure modes.
+# HuCAD ships on Windows only, so this workflow deliberately does not build
+# Linux or macOS packages. Build first and publish once: the upload no longer
+# runs from the same job that compiled the installer, and a failed publish still
+# leaves a downloadable .exe behind in the run.
 #
 # A manual `workflow_dispatch` run publishes the current package.json version.
 
@@ -27,17 +25,10 @@ concurrency:
 
 jobs:
   build:
-    name: build (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
+    name: build (windows)
+    runs-on: windows-latest
     env:
-      # The builds are intentionally unsigned: no certificate is available yet.
+      # The installer is intentionally unsigned: no certificate is available yet.
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
     steps:
       - name: Check out the repository
@@ -65,44 +56,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # The vendored avr-gcc is Linux-only, so the Windows and macOS packages
-      # are built without a compiler: electron-builder only warns about the
-      # missing resource directory, and the simulator still runs.
-      - name: Vendor the offline toolchain
-        if: runner.os == 'Linux'
-        run: npm run fetch:toolchain
-
-      - name: Verify the vendored toolchain
-        if: runner.os == 'Linux'
-        run: npm run toolchain:verify
-
+      # `extraResources` looks for resources/toolchain/win, which does not exist
+      # yet (the vendored compiler is Linux-only for now). electron-builder logs
+      # a warning and the simulator still runs without a compiler.
       - name: Build the app
         run: npm run build
 
-      - name: Package the installers
-        run: npx electron-builder --publish never
+      - name: Package the installer
+        run: npx electron-builder --win --publish never
 
-      # Even a platform whose publish fails in the final job leaves a complete,
-      # downloadable installer behind in the run.
-      - name: Keep the installers as workflow artifacts
+      - name: Keep the installer as a workflow artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: installers-${{ runner.os }}
+          name: installers-windows
           path: |
-            release/*.AppImage
             release/*.exe
-            release/*.dmg
-            release/*.zip
             release/*.blockmap
-            release/latest*.yml
+            release/latest.yml
           if-no-files-found: ignore
 
   publish:
     name: publish release
     needs: build
-    # Publish whatever built, even when one platform failed: a partial release
-    # plus the workflow artifacts is better than losing the working installers.
+    # Publish even after a failed build so a re-run can replace the assets.
     if: always() && needs.build.result != 'cancelled'
     runs-on: ubuntu-latest
     steps:

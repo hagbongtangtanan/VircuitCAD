@@ -310,3 +310,13 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 - **Only user-facing identity changed.** The `.hucad` project extension, `hucad-project` format
   id and drag MIME are unchanged because they are internal/file-format contracts; the two
   CircuitBench paragraphs above are left as history rather than rewritten.
+
+## 2026-10-20 — Releases are Windows-only
+
+- **CI builds and publishes only the Windows NSIS installer.** HuCAD is a Windows product, so
+  the release matrix was collapsed to `windows-latest`; the Linux AppImage remains a local
+  development/smoke-test build and is not published. Beating the concurrent-publish race is
+  still handled by packaging on the runner and uploading from a separate job.
+- **The Windows package currently has no compiler.** The vendored avr-gcc is Linux-only, so the
+  Windows artifact ships without `resources/toolchain/win`; electron-builder warns and the
+  simulator runs, but uploads are unavailable. A Windows toolchain remains Milestone 10 work.
