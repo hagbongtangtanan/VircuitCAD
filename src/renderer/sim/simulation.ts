@@ -1,9 +1,11 @@
 import {
+  AVRADC,
   AVRIOPort,
   AVRTimer,
   AVRUSART,
   CPU,
   PinState,
+  adcConfig,
   avrInstruction,
   portBConfig,
   portCConfig,
@@ -31,6 +33,10 @@ import {
 } from './unoPins'
 
 export const CLOCK_HZ = 16_000_000
+/** A0-A5 are ADC channels 0-5 on the ATmega328P (port C). */
+const ANALOG_PIN_IDS = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5'] as const
+/** TTL-ish threshold: anything above this reads as a digital 1. */
+const DIGITAL_INPUT_HIGH_VOLTS = 2.5
 /** Nominal current for a fully lit LED; 20 mA is the usual "bright" LED. */
 const LED_FULL_BRIGHTNESS_AMPS = 0.02
 /** 5 V across a 20 Ω motor draws 250 mA; treat that as full speed. */
@@ -62,6 +68,7 @@ export class ArduinoSimulation {
   /** Timers have to stay alive so delay()/millis() and PWM behave. */
   readonly timers: readonly AVRTimer[]
   readonly usart: AVRUSART
+  private readonly adc: AVRADC
   private readonly document: CircuitDocument
   private readonly netlist: ReturnType<typeof buildNetlist>
   private lastDriversSignature = ''
@@ -85,6 +92,7 @@ export class ArduinoSimulation {
       new AVRTimer(this.cpu, timer1Config),
       new AVRTimer(this.cpu, timer2Config),
     ]
+    this.adc = new AVRADC(this.cpu, adcConfig)
     this.usart = new AVRUSART(this.cpu, usart0Config, CLOCK_HZ)
     this.usart.onByteTransmit = (byte) => {
       this.onSerialByte?.(byte)
@@ -159,6 +167,39 @@ export class ArduinoSimulation {
     return { drivers, pinVoltages }
   }
 
+  /**
+   * Feeds the solved net voltages back into the CPU: analog channels drive
+   * analogRead(), and input pins read the level the external circuit imposes.
+   * The ADC conversion itself happens while the sketch runs, so readings are
+   * one animation frame behind the wiper; that is far below human perception.
+   */
+  private syncInputs(): void {
+    const uno = this.document.parts.find((part) => part.type === 'arduino-uno')
+    if (uno === undefined) return
+
+    for (const [channel, pinId] of ANALOG_PIN_IDS.entries()) {
+      const net = this.netlist.netIdOf({ partId: uno.id, pinId })
+      const volts = net === undefined ? 0 : (this.lastSolve?.netVoltages.get(net) ?? 0)
+      this.adc.channelValues[channel] = Math.min(5, Math.max(0, volts))
+    }
+
+    for (const pinId of UNO_IO_PIN_IDS) {
+      const spec = unoPinSpec(pinId)
+      if (spec?.kind !== 'io') continue
+      const port = this.ports[spec.port]
+      const state = port.pinState(spec.bit)
+      if (state === PinState.High || state === PinState.Low) continue
+      const net = this.netlist.netIdOf({ partId: uno.id, pinId })
+      const volts = net === undefined ? 0 : (this.lastSolve?.netVoltages.get(net) ?? 0)
+      port.setPin(spec.bit, volts > DIGITAL_INPUT_HIGH_VOLTS)
+    }
+  }
+
+  /** Solves without advancing the CPU, so the first analogRead has real data. */
+  prime(): void {
+    this.frame()
+  }
+
   /** Reads the pin registers, solves the circuit and reports the visible state. */
   frame(): SimulationFrame {
     const { drivers, pinVoltages } = this.drivers()
@@ -171,10 +212,19 @@ export class ArduinoSimulation {
       .map(([partId, value]) => `${partId}=${value.toFixed(3)}`)
       .sort()
       .join(',')
-    signature += `|pressed:${pressed}|pots:${pots}`
+    const switches = [...(inputs.switchStates ?? [])]
+      .map(([partId, value]) => `${partId}=${value ? 1 : 0}`)
+      .sort()
+      .join(',')
+    const sensors = [...(inputs.sensorLevels ?? [])]
+      .map(([partId, value]) => `${partId}=${value.toFixed(3)}`)
+      .sort()
+      .join(',')
+    signature += `|pressed:${pressed}|pots:${pots}|switches:${switches}|sensors:${sensors}`
     if (signature !== this.lastDriversSignature) {
       this.lastSolve = solveCircuit(this.document, this.netlist, drivers, inputs)
       this.lastDriversSignature = signature
+      this.syncInputs()
     }
 
     const ledBrightness = new Map<string, number>()

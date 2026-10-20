@@ -366,3 +366,23 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 - **The main process validates the PNG and owns the path.** The renderer sends a
   `data:image/png;base64,…` payload; `writePngFile` checks the data-URL shape and the PNG
   signature, and the save path still comes from a native dialog, like every other export.
+
+## 2026-10-20 — Solved voltages feed the emulated inputs
+
+- **The ADC had no peripheral at all.** `ArduinoSimulation` created the GPIO ports, timers and
+  UART but never an `AVRADC`, so `analogRead()` waited for a conversion that could never finish
+  and the potentiometer and LDR were dead ends. The simulation now owns an `AVRADC`; after each
+  solve it copies the A0-A5 net voltages into the ADC channels. The values used during a run are
+  therefore one animation frame old, which is well below what a person can notice on a slider.
+- **External circuits can pull digital pins.** In output modes the CPU drives the net; in input
+  modes the solved net voltage is written back with `AVRIOPort.setPin()`, so a pressed button or
+  closed switch reaches `digitalRead()`. The threshold is 2.5 V, and floating inputs read low
+  unless the sketch enabled the internal pull-up, which the solver already models as a 30 kΩ
+  source.
+- **The solve signature now covers every runtime input.** It included pressed buttons and
+  potentiometers but not slide switches or photoresistor levels, so those controls changed the
+  options passed to `solveCircuit` without ever invalidating the cached result. All four maps are
+  folded into the signature.
+- **`prime()` solves once before the first instruction.** Setup code often calls `analogRead()`
+  immediately; without a solve the channels would still read 0 V. The store calls `prime()` after
+  installing `readInputs`, and the normal frame loop keeps the values fresh.

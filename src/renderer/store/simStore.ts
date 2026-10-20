@@ -139,6 +139,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
           useSerialStore.getState().appendBytes(Uint8Array.of(byte))
         }
         simulation.readInputs = currentSolveOptions
+        simulation.prime()
         engine = simulation
         lastFrameTime = performance.now()
         lastPublishTime = 0

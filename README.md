@@ -139,6 +139,9 @@ a painted effect.
 
 Known modelling limits, chosen to keep the solver fast and predictable:
 
+- The Uno's ADC reads the solved net voltage on A0-A5, so the potentiometer and LDR drive
+  `analogRead()`; external buttons and switches likewise drive `digitalRead()`. Inputs are
+  sampled once per animation frame and do not raise pin-change or external interrupts.
 - Capacitors are open circuits and inductors are 50 mΩ shorts; there is no transient/AC analysis.
 - The LDR is driven by the inspector's light slider, not by an LED shining on it.
 - The DC motor is a 20 Ω load: it spins up whenever it has voltage, there is no back-EMF or
@@ -286,9 +289,8 @@ from the solved current, and the emulated UART feeds the serial monitor.
 
 [avr8js]: https://github.com/wokwi/avr8js
 
-Modelling notes and current gaps (buttons and the potentiometer are selectable but not yet
-interactive, PWM is sampled rather than averaged, the buzzer has no audio) live in
-`DECISIONS.md`.
+Modelling notes and current gaps (PWM is sampled rather than averaged, the buzzer has no
+audio) live in `DECISIONS.md`.
 
 ## License
 
