@@ -2,10 +2,14 @@ import type { JSX } from 'react'
 import { Circle, Ellipse, Group, Line, Rect, Text } from 'react-konva'
 import type { PartInstance } from '../../shared/circuit'
 import { BREADBOARD_COLUMNS, BREADBOARD_LAYOUT, definitionOf } from './definitions'
-import { LED_COLORS, PART_BODY_FILL, PART_BODY_STROKE, PART_SELECTED_STROKE } from './partColors'
+import {
+  LED_COLORS,
+  PART_BODY_FILL,
+  PART_BODY_STROKE,
+  PART_SELECTED_STROKE,
+  mixRgbGlow,
+} from './partColors'
 import { resistorBands } from './resistorBands'
-
-const SEGMENT_PINS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp'] as const
 
 export interface PartBodyProps {
   readonly part: PartInstance
@@ -186,42 +190,113 @@ export function PartBody({
       )
 
     case 'capacitor':
+      // Radial electrolytic can: silver top, blue sleeve, polarity stripe.
       return (
         <>
           <Line points={[10, 40, 10, 30]} stroke={PART_BODY_STROKE} strokeWidth={2} />
-          <Line points={[30, 24, 30, 40]} stroke={PART_BODY_STROKE} strokeWidth={2} />
-          <Line points={[5, 30, 35, 30]} stroke={outline} strokeWidth={2.5} />
-          <Line points={[5, 24, 35, 24]} stroke={outline} strokeWidth={2.5} />
-          <Text x={14} y={36} text="+" fontSize={10} fill="#6d7889" />
+          <Line points={[30, 40, 30, 23]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Ellipse
+            x={20}
+            y={28}
+            radiusX={14}
+            radiusY={4}
+            fill="#244b73"
+            stroke={outline}
+            strokeWidth={outlineWidth}
+          />
+          <Rect
+            x={6}
+            y={5}
+            width={28}
+            height={23}
+            fill="#2f5d8a"
+            stroke={outline}
+            strokeWidth={outlineWidth}
+          />
+          <Ellipse
+            x={20}
+            y={5}
+            radiusX={14}
+            radiusY={4.5}
+            fill="#cfd7e3"
+            stroke={outline}
+            strokeWidth={outlineWidth}
+          />
+          <Rect x={8} y={5} width={5.5} height={23} fill="#e8eef6" opacity={0.9} />
+          <Text x={9} y={9} text="−" fontSize={8} fill="#2f5d8a" fontStyle="bold" />
+          <Text x={9} y={18} text="−" fontSize={8} fill="#2f5d8a" fontStyle="bold" />
+          <Text x={25} y={21} text="+" fontSize={9} fill="#eef3fa" fontStyle="bold" />
+          <Line
+            points={[26, 8, 26, 25]}
+            stroke="#ffffff"
+            opacity={0.18}
+            strokeWidth={2}
+            listening={false}
+          />
         </>
       )
 
     case 'diode':
+      // Axial package with the silver cathode band on the right.
       return (
         <>
           <Line points={[0, 12, 14, 12]} stroke={PART_BODY_STROKE} strokeWidth={2} />
-          <Line points={[34, 12, 50, 12]} stroke={PART_BODY_STROKE} strokeWidth={2} />
-          <Line
-            points={[14, 3, 14, 21, 34, 12, 14, 3]}
+          <Line points={[36, 12, 50, 12]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Rect
+            x={14}
+            y={4}
+            width={22}
+            height={16}
+            cornerRadius={4}
+            fill="#232833"
             stroke={outline}
-            strokeWidth={1.5}
-            closed
-            fill="#2b3243"
+            strokeWidth={outlineWidth}
           />
-          <Line points={[34, 3, 34, 21]} stroke={outline} strokeWidth={2.5} />
+          <Rect x={31} y={4} width={5} height={16} fill="#c9d0da" />
+          <Line
+            points={[17, 7, 17, 17]}
+            stroke="#ffffff"
+            opacity={0.16}
+            strokeWidth={2}
+            listening={false}
+          />
         </>
       )
 
     case 'inductor':
+      // Axial choke: dark ferrite core with copper windings around it.
       return (
         <>
           <Line points={[0, 13, 12, 13]} stroke={PART_BODY_STROKE} strokeWidth={2} />
           <Line points={[48, 13, 60, 13]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Rect
+            x={12}
+            y={5}
+            width={36}
+            height={16}
+            cornerRadius={6}
+            fill="#3a2f28"
+            stroke={outline}
+            strokeWidth={outlineWidth}
+          />
+          {[0, 1, 2, 3, 4, 5].map((index) => (
+            <Ellipse
+              key={`winding-${index}`}
+              x={15 + index * 6}
+              y={13}
+              radiusX={2.4}
+              radiusY={8}
+              stroke="#c8864a"
+              strokeWidth={2}
+              listening={false}
+            />
+          ))}
           <Line
-            points={[12, 13, 15, 5, 21, 5, 24, 13, 27, 5, 33, 5, 36, 13, 39, 5, 45, 5, 48, 13]}
-            stroke="#b9895a"
-            strokeWidth={2.5}
-            tension={0.6}
+            points={[16, 7, 44, 7]}
+            stroke="#ffffff"
+            opacity={0.16}
+            strokeWidth={1.5}
+            listening={false}
           />
         </>
       )
@@ -280,22 +355,16 @@ export function PartBody({
     case 'rgb-led': {
       const blend = (channel: 'red' | 'green' | 'blue'): number =>
         Math.min(1, Math.max(0, channels[channel] ?? 0))
-      const glow = Math.max(blend('red'), blend('green'), blend('blue'))
+      const levels = { red: blend('red'), green: blend('green'), blue: blend('blue') }
+      const mixed = mixRgbGlow(levels)
+      const lit = mixed.strength > 0.01
+      const dies: readonly { channel: 'red' | 'green' | 'blue'; x: number; y: number }[] = [
+        { channel: 'red', x: 16, y: 17 },
+        { channel: 'green', x: 22, y: 14 },
+        { channel: 'blue', x: 28, y: 17 },
+      ]
       return (
         <>
-          {(['red', 'green', 'blue'] as const).map((channel) =>
-            blend(channel) > 0.01 ? (
-              <Circle
-                key={channel}
-                x={22}
-                y={16}
-                radius={12 + 8 * blend(channel)}
-                fill={LED_COLORS[channel].glow}
-                opacity={0.35 * blend(channel)}
-                listening={false}
-              />
-            ) : null
-          )}
           {[8, 18, 28, 38].map((x) => (
             <Line
               key={`leg-${x}`}
@@ -304,6 +373,19 @@ export function PartBody({
               strokeWidth={2}
             />
           ))}
+          {lit && (
+            <Circle
+              x={22}
+              y={17}
+              radius={13 + 10 * mixed.strength}
+              fill={mixed.color}
+              opacity={0.35 * mixed.strength}
+              shadowColor={mixed.color}
+              shadowBlur={22 * mixed.strength}
+              shadowOpacity={0.8 * mixed.strength}
+              listening={false}
+            />
+          )}
           <Rect
             x={4}
             y={4}
@@ -313,9 +395,44 @@ export function PartBody({
             fill="#e9edf5"
             stroke={outline}
             strokeWidth={outlineWidth}
-            opacity={0.95}
           />
-          <Circle x={22} y={16} radius={9} fill="#ffffff" opacity={glow > 0.01 ? 0.2 : 0.55} />
+          {lit && (
+            <Rect
+              x={4}
+              y={4}
+              width={36}
+              height={26}
+              cornerRadius={12}
+              fill={mixed.color}
+              opacity={0.55 * mixed.strength}
+              listening={false}
+            />
+          )}
+          {dies.map(({ channel, x, y }) => {
+            const level = levels[channel]
+            return (
+              <Circle
+                key={channel}
+                x={x}
+                y={y}
+                radius={3.1}
+                fill={LED_COLORS[channel].body}
+                opacity={0.3 + 0.7 * level}
+                stroke={level > 0.02 ? LED_COLORS[channel].glow : undefined}
+                strokeWidth={level > 0.02 ? 1 : 0}
+                listening={false}
+              />
+            )
+          })}
+          <Ellipse
+            x={18}
+            y={11}
+            radiusX={4}
+            radiusY={2.4}
+            fill="#ffffff"
+            opacity={lit ? 0.35 : 0.6}
+            listening={false}
+          />
         </>
       )
     }
@@ -336,11 +453,11 @@ export function PartBody({
         <>
           <Rect
             x={0}
-            y={0}
+            y={6}
             width={70}
-            height={88}
+            height={78}
             cornerRadius={6}
-            fill="#23262f"
+            fill="#1b1e26"
             stroke={outline}
             strokeWidth={outlineWidth}
           />
@@ -348,21 +465,23 @@ export function PartBody({
             <Line
               key={segment}
               points={points}
-              stroke={lit(segment) ? palette.glow : '#3a3f4b'}
+              stroke={lit(segment) ? palette.glow : '#4d5565'}
               strokeWidth={5}
               lineCap="round"
             />
           ))}
-          <Circle x={64} y={78} radius={3} fill={lit('dp') ? palette.glow : '#3a3f4b'} />
-          {SEGMENT_PINS.map((segment, index) => (
-            <Line
-              key={`pin-${segment}`}
-              points={[8 + index * 8, 88, 8 + index * 8, 82]}
-              stroke={PART_BODY_STROKE}
-              strokeWidth={2}
-            />
-          ))}
-          <Line points={[4, 88, 4, 82]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Circle x={64} y={78} radius={3} fill={lit('dp') ? palette.glow : '#4d5565'} />
+          {definitionOf('seven-segment').pins.map((lead) => {
+            const top = lead.position.y === 0
+            return (
+              <Line
+                key={`pin-${lead.id}`}
+                points={[lead.position.x, top ? 0 : 90, lead.position.x, top ? 8 : 82]}
+                stroke={PART_BODY_STROKE}
+                strokeWidth={2}
+              />
+            )
+          })}
         </>
       )
     }

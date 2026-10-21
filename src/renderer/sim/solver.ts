@@ -12,6 +12,12 @@ import type { Netlist } from '../wiring/netlist'
 export interface PinDriver {
   readonly volts: number
   readonly resistanceOhms: number
+  /**
+   * PWM duty cycle, 0 to 1. The driver voltage is the high level; branch
+   * currents are computed there and scaled by duty so a diode keeps its
+   * forward voltage instead of seeing an average voltage below its knee.
+   */
+  readonly duty?: number
 }
 
 /** Pin key (`partId:pinId`) to the source pushing that net around. */
@@ -257,6 +263,87 @@ export function solveCircuit(
 
   const netOf = (partId: string, pinId: string): number | undefined =>
     netlist.netIdOf({ partId, pinId })
+
+  const dutyByNet = new Map<number, number>()
+  const fixedNets = new Set<number>()
+  for (const [key, driver] of drivers) {
+    const separator = key.lastIndexOf(':')
+    const net = netOf(key.slice(0, separator), key.slice(separator + 1))
+    if (net === undefined) continue
+    if (driver.duty === undefined) {
+      fixedNets.add(net)
+      continue
+    }
+    const duty = Math.min(1, Math.max(0, driver.duty))
+    dutyByNet.set(net, Math.max(dutyByNet.get(net) ?? 0, duty))
+  }
+
+  // A PWM pin is nearly always separated from an LED by a series resistor, so
+  // the duty has to travel through passive parts to reach the diode branch.
+  // Fixed rails stop the flood: the average at a 5V/GND net is not the pin's
+  // duty, and a static source would dominate a PWM one anyway.
+  const links: [number, number][] = []
+  const link = (a: number | undefined, b: number | undefined): void => {
+    if (a !== undefined && b !== undefined && a !== b) links.push([a, b])
+  }
+  for (const part of document.parts) {
+    switch (part.type) {
+      case 'resistor':
+        link(netOf(part.id, 'lead1'), netOf(part.id, 'lead2'))
+        break
+      case 'inductor':
+        link(netOf(part.id, '1'), netOf(part.id, '2'))
+        break
+      case 'ldr':
+        link(netOf(part.id, '1'), netOf(part.id, '2'))
+        break
+      case 'potentiometer':
+        link(netOf(part.id, '1'), netOf(part.id, '2'))
+        link(netOf(part.id, '2'), netOf(part.id, '3'))
+        break
+      case 'push-button':
+        if (pressed.has(part.id)) link(netOf(part.id, '1'), netOf(part.id, '2'))
+        break
+      case 'slide-switch':
+        if (switches.get(part.id) === true) link(netOf(part.id, '1'), netOf(part.id, '2'))
+        break
+      default:
+        break
+    }
+  }
+
+  let spread = true
+  while (spread) {
+    spread = false
+    for (const [a, b] of links) {
+      const aDuty = dutyByNet.get(a)
+      const bDuty = dutyByNet.get(b)
+      if (aDuty !== undefined && !fixedNets.has(b) && aDuty > (bDuty ?? -1)) {
+        dutyByNet.set(b, aDuty)
+        spread = true
+      }
+      if (bDuty !== undefined && !fixedNets.has(a) && bDuty > (aDuty ?? -1)) {
+        dutyByNet.set(a, bDuty)
+        spread = true
+      }
+    }
+  }
+
+  /**
+   * Time-weighted average of a branch driven by one or two PWM pins. With a
+   * steady anode and a PWM cathode (common-anode wiring) the factor becomes
+   * 1 - duty; with PWM on both sides it is the duty difference.
+   */
+  const pwmFactor = (anodeNet: number, cathodeNet: number): number => {
+    const anodeDuty = dutyByNet.get(anodeNet)
+    const cathodeDuty = dutyByNet.get(cathodeNet)
+    if (anodeDuty === undefined && cathodeDuty === undefined) return 1
+    if (anodeDuty !== undefined && cathodeDuty !== undefined) {
+      return Math.min(1, Math.max(0, anodeDuty - cathodeDuty))
+    }
+    if (anodeDuty !== undefined) return anodeDuty
+    return Math.min(1, Math.max(0, 1 - (cathodeDuty ?? 0)))
+  }
 
   const diodeBranches: DiodeBranch[] = []
   const addBranch = (branch: DiodeBranch): void => {
@@ -507,7 +594,8 @@ export function solveCircuit(
   const ledCurrentsByPart = new Map<string, number>()
   for (const [index, branch] of diodeBranches.entries()) {
     if (!branch.emitsLight) continue
-    ledCurrentsByPart.set(branch.key, Math.max(0, branchCurrents[index] ?? 0))
+    const current = Math.max(0, branchCurrents[index] ?? 0)
+    ledCurrentsByPart.set(branch.key, current * pwmFactor(branch.anodeNet, branch.cathodeNet))
   }
 
   const buzzerCurrents = new Map<string, number>()
@@ -517,7 +605,7 @@ export function solveCircuit(
     const minus = netOf(part.id, 'minus')
     if (plus === undefined || minus === undefined) continue
     const volts = (netVoltages.get(plus) ?? 0) - (netVoltages.get(minus) ?? 0)
-    buzzerCurrents.set(part.id, Math.abs(volts) / BUZZER_RESISTANCE_OHMS)
+    buzzerCurrents.set(part.id, (Math.abs(volts) / BUZZER_RESISTANCE_OHMS) * pwmFactor(plus, minus))
   }
 
   const motorCurrents = new Map<string, number>()
@@ -527,7 +615,7 @@ export function solveCircuit(
     const minus = netOf(part.id, 'minus')
     if (plus === undefined || minus === undefined) continue
     const volts = (netVoltages.get(plus) ?? 0) - (netVoltages.get(minus) ?? 0)
-    motorCurrents.set(part.id, Math.abs(volts) / MOTOR_RESISTANCE_OHMS)
+    motorCurrents.set(part.id, (Math.abs(volts) / MOTOR_RESISTANCE_OHMS) * pwmFactor(plus, minus))
   }
 
   return { ledCurrents: ledCurrentsByPart, buzzerCurrents, motorCurrents, netVoltages }

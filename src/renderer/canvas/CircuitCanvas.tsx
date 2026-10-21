@@ -558,6 +558,10 @@ export function CircuitCanvas(): JSX.Element {
 
   const parts = useCircuitStore((state) => state.document.parts)
   const wires = useCircuitStore((state) => state.document.wires)
+  // Breadboards are the mounting surface: their body and holes sit below every
+  // component, so a part dropped on top is never hidden by the hole markers.
+  const breadboards = parts.filter((part) => part.type === 'breadboard')
+  const components = parts.filter((part) => part.type !== 'breadboard')
   const selectedPartIds = useCircuitStore((state) => state.selectedPartIds)
   const addPart = useCircuitStore((state) => state.addPart)
   const addWire = useCircuitStore((state) => state.addWire)
@@ -929,13 +933,52 @@ export function CircuitCanvas(): JSX.Element {
           ))}
         </Layer>
 
+        {/* Breadboard bodies form the mounting surface. */}
         <Layer
           x={viewport.offsetX}
           y={viewport.offsetY}
           scaleX={viewport.scale}
           scaleY={viewport.scale}
         >
-          {parts.map((part) => (
+          {breadboards.map((part) => (
+            <PartNode
+              key={part.id}
+              partId={part.id}
+              selected={selectedPartIds.includes(part.id)}
+              routing={draft !== null}
+            />
+          ))}
+        </Layer>
+
+        {/* Holes stay below the components, so a part lies on top of the board
+            instead of appearing underneath its pin holes. */}
+        <Layer
+          x={viewport.offsetX}
+          y={viewport.offsetY}
+          scaleX={viewport.scale}
+          scaleY={viewport.scale}
+        >
+          {breadboards.map((part) => (
+            <PartPins
+              key={part.id}
+              partId={part.id}
+              scale={viewport.scale}
+              hoveredPin={hoveredPin}
+              pendingPin={draft?.start ?? null}
+              targetPin={snapTarget?.ref ?? null}
+              onHoverPin={setHoveredPin}
+              onPointerDownPin={handlePointerDownPin}
+            />
+          ))}
+        </Layer>
+
+        <Layer
+          x={viewport.offsetX}
+          y={viewport.offsetY}
+          scaleX={viewport.scale}
+          scaleY={viewport.scale}
+        >
+          {components.map((part) => (
             <PartNode
               key={part.id}
               partId={part.id}
@@ -965,15 +1008,15 @@ export function CircuitCanvas(): JSX.Element {
           ))}
         </Layer>
 
-        {/* Pins sit above the wires: their dots stay clickable even when a wire
-            ends on them, and their labels are never covered. */}
+        {/* Component pins sit above the wires: their dots stay clickable even
+            when a wire ends on them, and their labels are never covered. */}
         <Layer
           x={viewport.offsetX}
           y={viewport.offsetY}
           scaleX={viewport.scale}
           scaleY={viewport.scale}
         >
-          {parts.map((part) => (
+          {components.map((part) => (
             <PartPins
               key={part.id}
               partId={part.id}

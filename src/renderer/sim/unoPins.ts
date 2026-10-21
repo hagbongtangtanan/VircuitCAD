@@ -50,6 +50,32 @@ export function isDigitalPin(pinId: string): boolean {
 
 export const UNO_IO_PIN_IDS: readonly string[] = Object.keys(UNO_PIN_SPECS).filter(isDigitalPin)
 
+/** The six digital pins wired to an ATmega328P timer output compare channel. */
+export const UNO_PWM_PIN_IDS = ['D3', 'D5', 'D6', 'D9', 'D10', 'D11'] as const
+export type UnoPwmPinId = (typeof UNO_PWM_PIN_IDS)[number]
+
+export interface UnoPwmRoute {
+  readonly timer: 0 | 1 | 2
+  readonly channel: 'A' | 'B'
+}
+
+/**
+ * Physical PWM routing of the Uno R3. D3 and D11 are timer 2, D5/D6 are timer
+ * 0, and D9/D10 are the two channels of 16-bit timer 1.
+ */
+export const UNO_PWM_ROUTES: Readonly<Record<UnoPwmPinId, UnoPwmRoute>> = {
+  D3: { timer: 2, channel: 'B' },
+  D5: { timer: 0, channel: 'B' },
+  D6: { timer: 0, channel: 'A' },
+  D9: { timer: 1, channel: 'A' },
+  D10: { timer: 1, channel: 'B' },
+  D11: { timer: 2, channel: 'A' },
+}
+
+export function isPwmPin(pinId: string): pinId is UnoPwmPinId {
+  return UNO_PWM_PIN_IDS.includes(pinId as UnoPwmPinId)
+}
+
 export type UnoPinKind = PinKind
 
 /** Output resistance of an AVR I/O pin: close enough to the datasheet curves. */

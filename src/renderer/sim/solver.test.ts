@@ -154,6 +154,40 @@ describe('solveCircuit', () => {
     expect(turned.ledCurrents.get('led1') ?? 0).toBeLessThan(1e-6)
   })
 
+  it('scales an LED by the PWM duty cycle at the pin', () => {
+    const document = circuit()
+    const wired = circuitDocumentSchema.parse({
+      ...document,
+      wires: document.wires.map((wire) =>
+        wire.from.pinId === '5V' ? { ...wire, from: { ...wire.from, pinId: 'D6' } } : wire
+      ),
+    })
+    const netlist = buildNetlist(wired)
+    const driven = (duty: number): Map<string, PinDriver> =>
+      new Map([
+        ['uno:D6', { volts: 5, resistanceOhms: 25, duty }],
+        ['uno:GND', { volts: 0, resistanceOhms: 0.1 }],
+        ['uno:GND2', { volts: 0, resistanceOhms: 0.1 }],
+      ])
+
+    const full = solveCircuit(wired, netlist, driven(1)).ledCurrents.get('led1') ?? 0
+    const half = solveCircuit(wired, netlist, driven(0.5)).ledCurrents.get('led1') ?? 0
+    const off =
+      solveCircuit(
+        wired,
+        netlist,
+        new Map([
+          ['uno:D6', { volts: 0, resistanceOhms: 25, duty: 0 }],
+          ['uno:GND', { volts: 0, resistanceOhms: 0.1 }],
+          ['uno:GND2', { volts: 0, resistanceOhms: 0.1 }],
+        ])
+      ).ledCurrents.get('led1') ?? 0
+
+    expect(full).toBeGreaterThan(0.01)
+    expect(half).toBeCloseTo(full * 0.5, 6)
+    expect(off).toBeLessThan(1e-6)
+  })
+
   it('handles two LEDs in series', () => {
     const document = circuit()
     const two = circuitDocumentSchema.parse({

@@ -173,6 +173,41 @@ describe('multi-element and power parts', () => {
     expect(result.ledCurrents.get('rgb:blue') ?? 0).toBe(0)
   })
 
+  it('drives red and blue RGB channels together for mixed colours', () => {
+    const document = parse({
+      parts: [
+        UNO,
+        {
+          id: 'rRed',
+          type: 'resistor',
+          position: { x: 400, y: 0 },
+          rotation: 0,
+          props: { resistanceOhms: 220 },
+        },
+        {
+          id: 'rBlue',
+          type: 'resistor',
+          position: { x: 400, y: 60 },
+          rotation: 0,
+          props: { resistanceOhms: 220 },
+        },
+        { id: 'rgb', type: 'rgb-led', position: { x: 500, y: 0 }, rotation: 0, props: {} },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', '5V'], to: ['rRed', 'lead1'] },
+        { id: 'w2', from: ['rRed', 'lead2'], to: ['rgb', 'red'] },
+        { id: 'w3', from: ['uno', '5V'], to: ['rBlue', 'lead1'] },
+        { id: 'w4', from: ['rBlue', 'lead2'], to: ['rgb', 'blue'] },
+        { id: 'w5', from: ['rgb', 'cathode'], to: ['uno', 'GND'] },
+      ],
+    })
+    const result = solve(document, { '5V': 5, GND: 0, GND2: 0 })
+
+    expect(result.ledCurrents.get('rgb:red') ?? 0).toBeGreaterThan(0.012)
+    expect(result.ledCurrents.get('rgb:blue') ?? 0).toBeGreaterThan(0.006)
+    expect(result.ledCurrents.get('rgb:green') ?? 0).toBe(0)
+  })
+
   it('lights individual seven-segment cathodes', () => {
     const document = parse({
       parts: [

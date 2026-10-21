@@ -215,7 +215,21 @@ export const rgbLedDefinition: PartDefinition<'rgb-led'> = {
   propFields: [],
 }
 
-const SEVEN_SEGMENT_PINS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp'] as const
+/** A real 10-pin display has five leads on each edge, not nine in one row. */
+const SEVEN_SEGMENT_TOP_PINS = ['a', 'b', 'c', 'd', 'e'] as const
+const SEVEN_SEGMENT_BOTTOM_PINS = ['f', 'g', 'dp', 'common', 'common2'] as const
+
+function sevenSegmentPinLabel(id: string): string {
+  if (id === 'common' || id === 'common2') return 'CC'
+  if (id === 'dp') return 'DP'
+  return id
+}
+
+function sevenSegmentPins(): readonly PartPin[] {
+  const edge = (pins: readonly string[], y: number): readonly PartPin[] =>
+    pins.map((id, index) => pin(id, sevenSegmentPinLabel(id), { x: 7 + index * 14, y }))
+  return [...edge(SEVEN_SEGMENT_TOP_PINS, 0), ...edge(SEVEN_SEGMENT_BOTTOM_PINS, 90)]
+}
 
 export const sevenSegmentDefinition: PartDefinition<'seven-segment'> = {
   type: 'seven-segment',
@@ -223,12 +237,8 @@ export const sevenSegmentDefinition: PartDefinition<'seven-segment'> = {
   category: 'outputs',
   size: { width: 70, height: 90 },
   defaultProps: { color: 'red' },
-  pins: [
-    ...SEVEN_SEGMENT_PINS.map((segment, index) =>
-      pin(segment, segment, { x: 8 + index * 8, y: 90 })
-    ),
-    pin('common', 'CC', { x: 4, y: 90 }),
-  ],
+  pins: sevenSegmentPins(),
+  internalNets: [['common', 'common2']],
   propFields: [
     {
       kind: 'select',
@@ -279,6 +289,9 @@ export const powerSupplyDefinition: PartDefinition<'power-supply'> = {
   propFields: [],
 }
 
+/** Uno R3 pins wired to a timer output; the board prints them with a leading ~. */
+const UNO_PWM_PINS = new Set(['D3', 'D5', 'D6', 'D9', 'D10', 'D11'])
+
 const UNO_DIGITAL_PINS = [
   'D13',
   'D12',
@@ -312,7 +325,15 @@ const UNO_POWER_ANALOG_PINS: readonly { id: string; kind: PinKind }[] = [
 
 function buildUnoPins(): readonly PartPin[] {
   const digital = UNO_DIGITAL_PINS.map((id, index) =>
-    pin(id, id.replace('D', ''), { x: 20 + index * 20, y: 0 }, 'digital')
+    pin(
+      id,
+      `${UNO_PWM_PINS.has(id) ? '~' : ''}${id.replace('D', '')}`,
+      {
+        x: 20 + index * 20,
+        y: 0,
+      },
+      'digital'
+    )
   )
 
   const powerAndAnalog = UNO_POWER_ANALOG_PINS.map((entry, index) =>

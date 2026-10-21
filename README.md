@@ -305,13 +305,15 @@ The **Run** button compiles the sketch if needed and executes it on [avr8js] in 
 Every animation frame advances the emulated ATmega328P by the elapsed wall time, reads the
 PORT/PIN/DDR registers, and re-solves the wired circuit: wires and breadboard strips define
 connectivity, resistors and potentiometers are conductances, LEDs are a forward voltage plus a
-small series resistance, and the Uno's 5V/GND/IO pins are Thevenin sources. LED brightness comes
-from the solved current, and the emulated UART feeds the serial monitor.
+small series resistance, and the Uno's 5V/GND/IO pins are Thevenin sources. PWM pins are read
+from their timer registers and averaged by duty cycle, so `analogWrite()` dims LEDs and mixes
+RGB channels. LED brightness comes from the solved current, and the emulated UART feeds the
+serial monitor.
 
 [avr8js]: https://github.com/wokwi/avr8js
 
-Modelling notes and current gaps (PWM is sampled rather than averaged, the buzzer has no
-audio) live in `DECISIONS.md`.
+Modelling notes and current gaps (PWM is averaged by duty cycle, the buzzer has no audio)
+live in `DECISIONS.md`.
 
 ## License
 

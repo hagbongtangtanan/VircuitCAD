@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { circuitDocumentSchema, type CircuitDocument } from '../../shared/circuit'
-import { ANALOG_READ_HEX, DIGITAL_INPUT_HEX, SIMULATION_HEX } from './fixtures'
+import { ANALOG_READ_HEX, DIGITAL_INPUT_HEX, PWM_HEX, SIMULATION_HEX } from './fixtures'
 import { CLOCK_HZ, ArduinoSimulation } from './simulation'
 
 function blinkCircuit(): CircuitDocument {
@@ -49,6 +49,87 @@ function blinkCircuit(): CircuitDocument {
   })
 }
 
+function pwmCircuit(): CircuitDocument {
+  return circuitDocumentSchema.parse({
+    version: 1,
+    parts: [
+      { id: 'uno', type: 'arduino-uno', position: { x: 0, y: 0 }, rotation: 0, props: {} },
+      {
+        id: 'r6',
+        type: 'resistor',
+        position: { x: 400, y: 0 },
+        rotation: 0,
+        props: { resistanceOhms: 220 },
+      },
+      {
+        id: 'led6',
+        type: 'led',
+        position: { x: 500, y: 0 },
+        rotation: 0,
+        props: { color: 'red' },
+      },
+      {
+        id: 'r3',
+        type: 'resistor',
+        position: { x: 400, y: 80 },
+        rotation: 0,
+        props: { resistanceOhms: 220 },
+      },
+      {
+        id: 'led3',
+        type: 'led',
+        position: { x: 500, y: 80 },
+        rotation: 0,
+        props: { color: 'red' },
+      },
+    ],
+    wires: [
+      {
+        id: 'w1',
+        from: { partId: 'uno', pinId: 'D6' },
+        to: { partId: 'r6', pinId: 'lead1' },
+        color: '#4f9cf9',
+        waypoints: [],
+      },
+      {
+        id: 'w2',
+        from: { partId: 'r6', pinId: 'lead2' },
+        to: { partId: 'led6', pinId: 'anode' },
+        color: '#4f9cf9',
+        waypoints: [],
+      },
+      {
+        id: 'w3',
+        from: { partId: 'led6', pinId: 'cathode' },
+        to: { partId: 'uno', pinId: 'GND' },
+        color: '#4f9cf9',
+        waypoints: [],
+      },
+      {
+        id: 'w4',
+        from: { partId: 'uno', pinId: 'D3' },
+        to: { partId: 'r3', pinId: 'lead1' },
+        color: '#4f9cf9',
+        waypoints: [],
+      },
+      {
+        id: 'w5',
+        from: { partId: 'r3', pinId: 'lead2' },
+        to: { partId: 'led3', pinId: 'anode' },
+        color: '#4f9cf9',
+        waypoints: [],
+      },
+      {
+        id: 'w6',
+        from: { partId: 'led3', pinId: 'cathode' },
+        to: { partId: 'uno', pinId: 'GND' },
+        color: '#4f9cf9',
+        waypoints: [],
+      },
+    ],
+  })
+}
+
 describe('ArduinoSimulation', () => {
   it('runs Blink and lights the LED only while the pin is high', () => {
     const simulation = new ArduinoSimulation(SIMULATION_HEX, blinkCircuit())
@@ -73,6 +154,24 @@ describe('ArduinoSimulation', () => {
     simulation.runForCycles(CLOCK_HZ / 20)
 
     expect(String.fromCharCode(...bytes)).toContain('hello sim\r\n')
+  })
+
+  it('dims LEDs from analogWrite on both timer 0 and timer 2 pins', () => {
+    const simulation = new ArduinoSimulation(PWM_HEX, pwmCircuit())
+    simulation.runForCycles(CLOCK_HZ / 100)
+
+    const frame = simulation.frame()
+    // analogWrite(6, 64) on fast-PWM timer 0 and analogWrite(3, 192) on
+    // phase-correct timer 2; pin voltages are the time-weighted averages.
+    expect(frame.pinVoltages.get('uno:D6')).toBeCloseTo(1.25, 1)
+    expect(frame.pinVoltages.get('uno:D3')).toBeCloseTo(3.76, 1)
+
+    const dim = frame.ledBrightness.get('led6') ?? 0
+    const bright = frame.ledBrightness.get('led3') ?? 0
+    expect(dim).toBeGreaterThan(0.1)
+    expect(dim).toBeLessThan(0.45)
+    expect(bright).toBeGreaterThan(0.5)
+    expect(bright).toBeLessThan(0.8)
   })
 })
 

@@ -288,6 +288,27 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   are all "forward voltage plus series resistance" branches solved iteratively until the on/off
   set is stable. Branch keys are `partId` for single-die parts and `partId:channel` for multi-die
   parts, which lets one brightness map feed the canvas without special cases in the store.
+- **RGB mixing uses saturated primaries plus a separate strength.** Summing the pastel lens
+  colours washed red + blue toward white, so the additive mix uses saturated channel colours
+  while opacity and glow radius follow the summed intensity. The lens is tinted with the result,
+  making a mixed colour visible even when the individual dice are small.
+- **The seven-segment display has ten leads, five per edge.** The definition exposes a–e on the
+  top and f, g, dp, common, common2 on the bottom, with the two commons tied as an internal net.
+  The renderer insets the body between the two pin rows so the leads stay outside the display
+  instead of drawing stubs across the segments.
+- **PWM pins are averaged by duty, not sampled by pin state.** `avr8js` exposes the timer
+  compare and control registers, so the simulation reads COM/WGM/OCR directly. The solve runs
+  at the high level and scales LED, buzzer and motor current by the duty cycle; this keeps a
+  blue LED lit at 50% instead of letting an averaged 2.5 V fall below its 3 V forward voltage.
+  Duty is flooded through series resistors, inductors and closed switches so the common
+  resistor-plus-LED wiring dims correctly, and a PWM cathode is treated as `1 - duty` for
+  common-anode parts. It is an average model: there is no per-cycle waveform or inductor ripple.
+- **Breadboards are a mounting surface, not a peer of the parts.** Their bodies and hole
+  markers render in their own layers below the components, so a resistor dropped on the board
+  is drawn on top of the holes. Wires and component pins stay above everything for
+  clickability. The first implementation drew every part in document order and every pin in one
+  top layer, which made a breadboard placed later cover earlier components and all holes cover
+  the parts' bodies.
 - **Batteries and supplies are Thevenin sources inside the solver.** They need no Uno driver, so
   a battery + motor + LED circuit solves on its own; an ideal source would make parallel grounds
   singular, hence the small series resistance (0.5 Ω AA, 1 Ω 9V, 0.1 Ω supply).
