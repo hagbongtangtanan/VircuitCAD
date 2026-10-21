@@ -416,3 +416,512 @@ describe('input and power parts', () => {
     expect(motor.motorCurrents.get('motor') ?? 0).toBeLessThan(0.08)
   })
 })
+
+describe('expanded component library', () => {
+  const pins = (): Map<string, PinDriver> => drivers({ '5V': 5, GND: 0, GND2: 0 })
+
+  it('clamps a reverse-biased zener near its breakdown voltage', () => {
+    const document = parse({
+      parts: [
+        { id: 'bat', type: 'battery-9v', position: { x: 0, y: 0 }, rotation: 0, props: {} },
+        {
+          id: 'r1',
+          type: 'resistor',
+          position: { x: 200, y: 0 },
+          rotation: 0,
+          props: { resistanceOhms: 1_000 },
+        },
+        {
+          id: 'z1',
+          type: 'zener-diode',
+          position: { x: 400, y: 0 },
+          rotation: 0,
+          props: { zenerVoltage: 5.1 },
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['bat', 'plus'], to: ['r1', 'lead1'] },
+        { id: 'w2', from: ['r1', 'lead2'], to: ['z1', 'cathode'] },
+        { id: 'w3', from: ['z1', 'anode'], to: ['bat', 'minus'] },
+      ],
+    })
+    const netlist = buildNetlist(document)
+    const result = solveCircuit(document, netlist, new Map())
+    const cathode = netlist.netIdOf({ partId: 'z1', pinId: 'cathode' }) ?? -1
+    const anode = netlist.netIdOf({ partId: 'z1', pinId: 'anode' }) ?? -1
+
+    expect(
+      (result.netVoltages.get(cathode) ?? 0) - (result.netVoltages.get(anode) ?? 0)
+    ).toBeCloseTo(5.1, 0)
+  })
+
+  it('drives a light bulb and reports its current', () => {
+    const document = parse({
+      parts: [
+        UNO,
+        {
+          id: 'bulb',
+          type: 'light-bulb',
+          position: { x: 400, y: 0 },
+          rotation: 0,
+          props: { ratedVolts: 5, resistanceOhms: 100 },
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', '5V'], to: ['bulb', '1'] },
+        { id: 'w2', from: ['bulb', '2'], to: ['uno', 'GND'] },
+      ],
+    })
+
+    expect(solve(document, { '5V': 5, GND: 0 }).ledCurrents.get('bulb') ?? 0).toBeCloseTo(0.05, 2)
+  })
+
+  it('models a TMP36 output as 10 mV per degree Celsius', () => {
+    const document = parse({
+      parts: [
+        { id: 'bat', type: 'battery-9v', position: { x: 0, y: 0 }, rotation: 0, props: {} },
+        {
+          id: 'temp',
+          type: 'tmp36',
+          position: { x: 300, y: 0 },
+          rotation: 0,
+          props: {},
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['bat', 'plus'], to: ['temp', 'vcc'] },
+        { id: 'w2', from: ['temp', 'gnd'], to: ['bat', 'minus'] },
+      ],
+    })
+    const netlist = buildNetlist(document)
+    const level = 65 / 165
+    const result = solveCircuit(document, netlist, new Map(), {
+      sensorLevels: new Map([['temp', level]]),
+    })
+    const out = netlist.netIdOf({ partId: 'temp', pinId: 'vout' }) ?? -1
+    const ground = netlist.netIdOf({ partId: 'temp', pinId: 'gnd' }) ?? -1
+
+    expect((result.netVoltages.get(out) ?? 0) - (result.netVoltages.get(ground) ?? 0)).toBeCloseTo(
+      0.75,
+      2
+    )
+  })
+
+  it('closes only the selected DIP switch contacts', () => {
+    const document = parse({
+      parts: [
+        UNO,
+        {
+          id: 'dip',
+          type: 'dip-switch-4',
+          position: { x: 300, y: 0 },
+          rotation: 0,
+          props: {},
+        },
+        {
+          id: 'r1',
+          type: 'resistor',
+          position: { x: 500, y: 0 },
+          rotation: 0,
+          props: { resistanceOhms: 220 },
+        },
+        {
+          id: 'led',
+          type: 'led',
+          position: { x: 600, y: 0 },
+          rotation: 0,
+          props: { color: 'red' },
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', '5V'], to: ['dip', 'top1'] },
+        { id: 'w2', from: ['dip', 'bottom1'], to: ['r1', 'lead1'] },
+        { id: 'w3', from: ['r1', 'lead2'], to: ['led', 'anode'] },
+        { id: 'w4', from: ['led', 'cathode'], to: ['uno', 'GND'] },
+      ],
+    })
+    const netlist = buildNetlist(document)
+    const open = solveCircuit(document, netlist, pins())
+    const closed = solveCircuit(document, netlist, pins(), {
+      dipBits: new Map([['dip', [true, false, false, false]]]),
+    })
+
+    expect(open.ledCurrents.get('led') ?? 0).toBeLessThan(1e-6)
+    expect(closed.ledCurrents.get('led') ?? 0).toBeGreaterThan(0.01)
+  })
+
+  it('regulates 9 V down to 5 V and 3.3 V', () => {
+    const build = (type: 'lm7805' | 'ld1117v33'): CircuitDocument =>
+      parse({
+        parts: [
+          { id: 'bat', type: 'battery-9v', position: { x: 0, y: 0 }, rotation: 0, props: {} },
+          { id: 'reg', type, position: { x: 300, y: 0 }, rotation: 0, props: {} },
+        ],
+        wires: [
+          { id: 'w1', from: ['bat', 'plus'], to: ['reg', 'in'] },
+          { id: 'w2', from: ['reg', 'gnd'], to: ['bat', 'minus'] },
+        ],
+      })
+    for (const [type, expected] of [
+      ['lm7805', 5],
+      ['ld1117v33', 3.3],
+    ] as const) {
+      const document = build(type)
+      const netlist = buildNetlist(document)
+      const result = solveCircuit(document, netlist, new Map())
+      const out = netlist.netIdOf({ partId: 'reg', pinId: 'out' }) ?? -1
+      const ground = netlist.netIdOf({ partId: 'reg', pinId: 'gnd' }) ?? -1
+      expect(
+        (result.netVoltages.get(out) ?? 0) - (result.netVoltages.get(ground) ?? 0)
+      ).toBeCloseTo(expected, 1)
+    }
+  })
+
+  it('powers a motor from a coin cell and a gear motor from 5 V', () => {
+    const coin = parse({
+      parts: [
+        { id: 'bat', type: 'coin-cell', position: { x: 0, y: 0 }, rotation: 0, props: {} },
+        {
+          id: 'motor',
+          type: 'vibration-motor',
+          position: { x: 300, y: 0 },
+          rotation: 0,
+          props: {},
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['bat', 'plus'], to: ['motor', 'plus'] },
+        { id: 'w2', from: ['motor', 'minus'], to: ['bat', 'minus'] },
+      ],
+    })
+    const coinResult = solveCircuit(coin, buildNetlist(coin), new Map())
+    expect(coinResult.motorCurrents.get('motor') ?? 0).toBeGreaterThan(0.05)
+
+    const gear = parse({
+      parts: [
+        UNO,
+        { id: 'motor', type: 'gear-motor', position: { x: 300, y: 0 }, rotation: 0, props: {} },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', '5V'], to: ['motor', 'plus'] },
+        { id: 'w2', from: ['motor', 'minus'], to: ['uno', 'GND'] },
+      ],
+    })
+    expect(solve(gear, { '5V': 5, GND: 0 }).motorCurrents.get('motor') ?? 0).toBeGreaterThan(0.07)
+  })
+
+  it('maps soil moisture and solar light levels to analog voltages', () => {
+    const soil = parse({
+      parts: [
+        { id: 'bat', type: 'battery-9v', position: { x: 0, y: 0 }, rotation: 0, props: {} },
+        {
+          id: 'soil',
+          type: 'soil-moisture',
+          position: { x: 300, y: 0 },
+          rotation: 0,
+          props: {},
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['bat', 'plus'], to: ['soil', 'vcc'] },
+        { id: 'w2', from: ['soil', 'gnd'], to: ['bat', 'minus'] },
+      ],
+    })
+    const soilNetlist = buildNetlist(soil)
+    const soilAt = (level: number): number => {
+      const result = solveCircuit(soil, soilNetlist, new Map(), {
+        sensorLevels: new Map([['soil', level]]),
+      })
+      const sig = soilNetlist.netIdOf({ partId: 'soil', pinId: 'sig' }) ?? -1
+      const gnd = soilNetlist.netIdOf({ partId: 'soil', pinId: 'gnd' }) ?? -1
+      return (result.netVoltages.get(sig) ?? 0) - (result.netVoltages.get(gnd) ?? 0)
+    }
+    expect(soilAt(0)).toBeCloseTo(0, 1)
+    expect(soilAt(1)).toBeCloseTo(5, 1)
+
+    const solar = parse({
+      parts: [
+        {
+          id: 'cell',
+          type: 'solar-cell',
+          position: { x: 0, y: 0 },
+          rotation: 0,
+          props: {},
+        },
+      ],
+      wires: [],
+    })
+    const solarNetlist = buildNetlist(solar)
+    const solarAt = (level: number): number => {
+      const result = solveCircuit(solar, solarNetlist, new Map(), {
+        sensorLevels: new Map([['cell', level]]),
+      })
+      const plus = solarNetlist.netIdOf({ partId: 'cell', pinId: 'plus' }) ?? -1
+      const minus = solarNetlist.netIdOf({ partId: 'cell', pinId: 'minus' }) ?? -1
+      return (result.netVoltages.get(plus) ?? 0) - (result.netVoltages.get(minus) ?? 0)
+    }
+    expect(solarAt(1)).toBeCloseTo(0.6, 2)
+  })
+
+  it('makes a tilt sensor conduct past its threshold', () => {
+    const document = parse({
+      parts: [
+        UNO,
+        {
+          id: 'tilt',
+          type: 'tilt-sensor',
+          position: { x: 300, y: 0 },
+          rotation: 0,
+          props: {},
+        },
+        {
+          id: 'r1',
+          type: 'resistor',
+          position: { x: 500, y: 0 },
+          rotation: 0,
+          props: { resistanceOhms: 220 },
+        },
+        {
+          id: 'led',
+          type: 'led',
+          position: { x: 600, y: 0 },
+          rotation: 0,
+          props: { color: 'red' },
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', '5V'], to: ['tilt', '1'] },
+        { id: 'w2', from: ['tilt', '2'], to: ['r1', 'lead1'] },
+        { id: 'w3', from: ['r1', 'lead2'], to: ['led', 'anode'] },
+        { id: 'w4', from: ['led', 'cathode'], to: ['uno', 'GND'] },
+      ],
+    })
+    const netlist = buildNetlist(document)
+    const upright = solveCircuit(document, netlist, pins(), {
+      sensorLevels: new Map([['tilt', 0.2]]),
+    })
+    const tilted = solveCircuit(document, netlist, pins(), {
+      sensorLevels: new Map([['tilt', 0.8]]),
+    })
+
+    expect(upright.ledCurrents.get('led') ?? 0).toBeLessThan(1e-6)
+    expect(tilted.ledCurrents.get('led') ?? 0).toBeGreaterThan(0.01)
+  })
+})
+
+describe('module and instrument models', () => {
+  const pinDrivers = (): Map<string, PinDriver> => drivers({ '5V': 5, GND: 0, GND2: 0 })
+
+  it('drives PIR and ultrasonic outputs from their UI levels', () => {
+    const pir = parse({
+      parts: [{ id: 'pir', type: 'pir-sensor', position: { x: 0, y: 0 }, rotation: 0, props: {} }],
+      wires: [],
+    })
+    const pirNetlist = buildNetlist(pir)
+    const pirResult = solveCircuit(pir, pirNetlist, new Map(), {
+      sensorLevels: new Map([['pir', 1]]),
+    })
+    const out = pirNetlist.netIdOf({ partId: 'pir', pinId: 'out' }) ?? -1
+    const ground = pirNetlist.netIdOf({ partId: 'pir', pinId: 'gnd' }) ?? -1
+    expect(
+      (pirResult.netVoltages.get(out) ?? 0) - (pirResult.netVoltages.get(ground) ?? 0)
+    ).toBeCloseTo(5, 1)
+
+    const ultrasonic = parse({
+      parts: [
+        { id: 'us', type: 'ultrasonic-3pin', position: { x: 0, y: 0 }, rotation: 0, props: {} },
+      ],
+      wires: [],
+    })
+    const usNetlist = buildNetlist(ultrasonic)
+    const usResult = solveCircuit(ultrasonic, usNetlist, new Map(), {
+      sensorLevels: new Map([['us', 0.4]]),
+    })
+    const sig = usNetlist.netIdOf({ partId: 'us', pinId: 'sig' }) ?? -1
+    const usGround = usNetlist.netIdOf({ partId: 'us', pinId: 'gnd' }) ?? -1
+    expect(
+      (usResult.netVoltages.get(sig) ?? 0) - (usResult.netVoltages.get(usGround) ?? 0)
+    ).toBeCloseTo(2, 1)
+  })
+
+  it('applies the function generator DC offset', () => {
+    const document = parse({
+      parts: [
+        {
+          id: 'fg',
+          type: 'function-generator',
+          position: { x: 0, y: 0 },
+          rotation: 0,
+          props: { waveform: 'sine', frequencyHz: 1000, amplitudeVolts: 5, offsetVolts: 2.5 },
+        },
+      ],
+      wires: [],
+    })
+    const netlist = buildNetlist(document)
+    const result = solveCircuit(document, netlist, new Map())
+    const plus = netlist.netIdOf({ partId: 'fg', pinId: 'plus' }) ?? -1
+    const minus = netlist.netIdOf({ partId: 'fg', pinId: 'minus' }) ?? -1
+    expect((result.netVoltages.get(plus) ?? 0) - (result.netVoltages.get(minus) ?? 0)).toBeCloseTo(
+      2.5,
+      1
+    )
+  })
+
+  it('switches a transistor and an SPDT relay', () => {
+    const transistor = parse({
+      parts: [
+        UNO,
+        { id: 'q1', type: 'transistor-npn', position: { x: 300, y: 0 }, rotation: 0, props: {} },
+        {
+          id: 'led',
+          type: 'led',
+          position: { x: 500, y: 0 },
+          rotation: 0,
+          props: { color: 'red' },
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', 'D2'], to: ['q1', 'base'] },
+        { id: 'w2', from: ['uno', '5V'], to: ['led', 'anode'] },
+        { id: 'w3', from: ['led', 'cathode'], to: ['q1', 'collector'] },
+        { id: 'w4', from: ['q1', 'emitter'], to: ['uno', 'GND'] },
+      ],
+    })
+    const transistorNetlist = buildNetlist(transistor)
+    const baseOn = solveCircuit(
+      transistor,
+      transistorNetlist,
+      drivers({ D2: 5, '5V': 5, GND: 0, GND2: 0 })
+    )
+    const baseOff = solveCircuit(
+      transistor,
+      transistorNetlist,
+      drivers({ D2: 0, '5V': 5, GND: 0, GND2: 0 })
+    )
+    expect(baseOn.ledCurrents.get('led') ?? 0).toBeGreaterThan(0.01)
+    expect(baseOff.ledCurrents.get('led') ?? 0).toBeLessThan(1e-5)
+
+    const relay = parse({
+      parts: [
+        UNO,
+        { id: 'k1', type: 'relay-spdt', position: { x: 300, y: 0 }, rotation: 0, props: {} },
+        {
+          id: 'led',
+          type: 'led',
+          position: { x: 500, y: 0 },
+          rotation: 0,
+          props: { color: 'red' },
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', 'D2'], to: ['k1', 'coil1'] },
+        { id: 'w2', from: ['k1', 'coil2'], to: ['uno', 'GND'] },
+        { id: 'w3', from: ['uno', '5V'], to: ['k1', 'com'] },
+        { id: 'w4', from: ['k1', 'no'], to: ['led', 'anode'] },
+        { id: 'w5', from: ['led', 'cathode'], to: ['uno', 'GND'] },
+      ],
+    })
+    const relayNetlist = buildNetlist(relay)
+    const coilOn = solveCircuit(relay, relayNetlist, drivers({ D2: 5, '5V': 5, GND: 0, GND2: 0 }))
+    const coilOff = solveCircuit(relay, relayNetlist, drivers({ D2: 0, '5V': 5, GND: 0, GND2: 0 }))
+    expect(coilOn.ledCurrents.get('led') ?? 0).toBeGreaterThan(0.01)
+    expect(coilOff.ledCurrents.get('led') ?? 0).toBeLessThan(1e-5)
+  })
+
+  it('evaluates a 74HC00 NAND gate', () => {
+    const build = (): CircuitDocument =>
+      parse({
+        parts: [
+          UNO,
+          { id: 'u1', type: '74hc00', position: { x: 300, y: 0 }, rotation: 0, props: {} },
+          {
+            id: 'led',
+            type: 'led',
+            position: { x: 500, y: 0 },
+            rotation: 0,
+            props: { color: 'red' },
+          },
+        ],
+        wires: [
+          { id: 'w0a', from: ['uno', 'D2'], to: ['u1', '1'] },
+          { id: 'w0b', from: ['uno', 'D3'], to: ['u1', '2'] },
+          { id: 'w1', from: ['uno', 'GND'], to: ['u1', '7'] },
+          { id: 'w2', from: ['u1', '3'], to: ['led', 'anode'] },
+          { id: 'w3', from: ['led', 'cathode'], to: ['uno', 'GND'] },
+        ],
+      })
+    const document = build()
+    const lit = solveCircuit(
+      document,
+      buildNetlist(document),
+      drivers({ D2: 5, D3: 0, GND: 0, GND2: 0 })
+    )
+    const offDocument = build()
+    const off = solveCircuit(
+      offDocument,
+      buildNetlist(offDocument),
+      drivers({ D2: 5, D3: 5, GND: 0, GND2: 0 })
+    )
+
+    expect(lit.ledCurrents.get('led') ?? 0).toBeGreaterThan(0.005)
+    expect(off.ledCurrents.get('led') ?? 0).toBeLessThan(1e-6)
+  })
+
+  it('shorts the selected keypad row and column', () => {
+    const document = parse({
+      parts: [
+        UNO,
+        { id: 'kp', type: 'keypad-4x4', position: { x: 300, y: 0 }, rotation: 0, props: {} },
+        {
+          id: 'r1',
+          type: 'resistor',
+          position: { x: 500, y: 0 },
+          rotation: 0,
+          props: { resistanceOhms: 220 },
+        },
+        {
+          id: 'led',
+          type: 'led',
+          position: { x: 600, y: 0 },
+          rotation: 0,
+          props: { color: 'red' },
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', '5V'], to: ['kp', 'r1'] },
+        { id: 'w2', from: ['kp', 'c1'], to: ['r1', 'lead1'] },
+        { id: 'w3', from: ['r1', 'lead2'], to: ['led', 'anode'] },
+        { id: 'w4', from: ['led', 'cathode'], to: ['uno', 'GND'] },
+      ],
+    })
+    const netlist = buildNetlist(document)
+    const open = solveCircuit(document, netlist, pinDrivers())
+    const pressed = solveCircuit(document, netlist, pinDrivers(), {
+      keypadKeys: new Map([['kp', 0]]),
+    })
+
+    expect(open.ledCurrents.get('led') ?? 0).toBeLessThan(1e-6)
+    expect(pressed.ledCurrents.get('led') ?? 0).toBeGreaterThan(0.005)
+  })
+
+  it('drives an encoder motor as a normal DC load', () => {
+    const document = parse({
+      parts: [
+        UNO,
+        {
+          id: 'motor',
+          type: 'encoder-motor',
+          position: { x: 300, y: 0 },
+          rotation: 0,
+          props: {},
+        },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', '5V'], to: ['motor', 'plus'] },
+        { id: 'w2', from: ['motor', 'minus'], to: ['uno', 'GND'] },
+      ],
+    })
+    const result = solveCircuit(document, buildNetlist(document), pinDrivers())
+    expect(result.motorCurrents.get('motor') ?? 0).toBeGreaterThan(0.2)
+  })
+})

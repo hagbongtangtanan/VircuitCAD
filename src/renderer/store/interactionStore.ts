@@ -15,6 +15,10 @@ export interface InteractionStore {
   readonly pots: Readonly<Record<string, number>>
   /** Ambient level for sensors such as the photoresistor, 0 (dark) to 1 (bright). */
   readonly sensors: Readonly<Record<string, number>>
+  /** Per-bit state for DIP switch banks. */
+  readonly dipBits: Readonly<Record<string, readonly boolean[]>>
+  /** Pressed key index (0-15) for matrix keypads. */
+  readonly keypadKeys: Readonly<Record<string, number>>
 
   press(partId: string): void
   release(partId: string): void
@@ -23,6 +27,9 @@ export interface InteractionStore {
   toggleSwitch(partId: string): void
   setPot(partId: string, value: number): void
   setSensor(partId: string, value: number): void
+  setDipBit(partId: string, bit: number, on: boolean): void
+  toggleDipBit(partId: string, bit: number): void
+  setKeypadKey(partId: string, key: number | null): void
   reset(): void
 }
 
@@ -31,6 +38,8 @@ export const useInteractionStore = create<InteractionStore>()((set, get) => ({
   switches: {},
   pots: {},
   sensors: {},
+  dipBits: {},
+  keypadKeys: {},
 
   press(partId: string): void {
     if (get().pressed[partId] === true) return
@@ -72,14 +81,37 @@ export const useInteractionStore = create<InteractionStore>()((set, get) => ({
     }))
   },
 
+  setDipBit(partId: string, bit: number, on: boolean): void {
+    set((state) => {
+      const current = state.dipBits[partId] ?? []
+      const next = [...current]
+      next[bit] = on
+      return { dipBits: { ...state.dipBits, [partId]: next } }
+    })
+  },
+
+  toggleDipBit(partId: string, bit: number): void {
+    const bits = get().dipBits[partId] ?? []
+    get().setDipBit(partId, bit, bits[bit] !== true)
+  },
+
+  setKeypadKey(partId: string, key: number | null): void {
+    set((state) => {
+      const next = { ...state.keypadKeys }
+      if (key === null) delete next[partId]
+      else next[partId] = key
+      return { keypadKeys: next }
+    })
+  },
+
   reset(): void {
-    set({ pressed: {}, switches: {}, pots: {}, sensors: {} })
+    set({ pressed: {}, switches: {}, pots: {}, sensors: {}, dipBits: {}, keypadKeys: {} })
   },
 }))
 
 /** Snapshot in the shape the solver expects; cheap enough to build per frame. */
 export function currentSolveOptions(): SolveOptions {
-  const { pressed, pots, switches, sensors } = useInteractionStore.getState()
+  const { pressed, pots, switches, sensors, dipBits, keypadKeys } = useInteractionStore.getState()
   return {
     pressedParts: new Set(
       Object.entries(pressed)
@@ -93,5 +125,7 @@ export function currentSolveOptions(): SolveOptions {
     sensorLevels: new Map(
       Object.entries(sensors).map(([partId, value]) => [partId, value] as const)
     ),
+    dipBits: new Map(Object.entries(dipBits)),
+    keypadKeys: new Map(Object.entries(keypadKeys)),
   }
 }

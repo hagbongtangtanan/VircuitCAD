@@ -775,6 +775,24 @@ button:disabled {
   accent-color: var(--cb-primary);
 }
 
+.cb-dip-bits {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cb-dip-bit {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 3px 6px;
+  font-size: 11px;
+  color: var(--cb-text);
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-border);
+  border-radius: 6px;
+}
+
 .cb-swatches {
   display: flex;
   gap: 6px;

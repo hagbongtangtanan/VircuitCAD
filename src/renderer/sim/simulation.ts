@@ -276,7 +276,15 @@ export class ArduinoSimulation {
       .map(([partId, value]) => `${partId}=${value.toFixed(3)}`)
       .sort()
       .join(',')
-    signature += `|pressed:${pressed}|pots:${pots}|switches:${switches}|sensors:${sensors}`
+    const dipBits = [...(inputs.dipBits ?? [])]
+      .map(([partId, bits]) => `${partId}=${bits.map((bit) => (bit ? 1 : 0)).join('')}`)
+      .sort()
+      .join(',')
+    const keypadKeys = [...(inputs.keypadKeys ?? [])]
+      .map(([partId, key]) => `${partId}=${key}`)
+      .sort()
+      .join(',')
+    signature += `|pressed:${pressed}|pots:${pots}|switches:${switches}|sensors:${sensors}|dip:${dipBits}|keys:${keypadKeys}`
     if (signature !== this.lastDriversSignature) {
       this.lastSolve = solveCircuit(this.document, this.netlist, drivers, inputs)
       this.lastDriversSignature = signature

@@ -151,6 +151,8 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
   )
 }
 
+const EMPTY_DIP_BITS: readonly boolean[] = []
+
 interface PartNodeProps {
   readonly partId: string
   readonly selected: boolean
@@ -168,6 +170,7 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
   const potPosition = useInteractionStore((state) => state.pots[props.partId] ?? 0.5)
   const switchOn = useInteractionStore((state) => state.switches[props.partId] === true)
   const sensorLevel = useInteractionStore((state) => state.sensors[props.partId] ?? 0.5)
+  const dipBits = useInteractionStore((state) => state.dipBits[props.partId] ?? EMPTY_DIP_BITS)
   const press = useInteractionStore((state) => state.press)
   const release = useInteractionStore((state) => state.release)
   const motorSpeed = useSimStore((state) => state.motorSpeed[props.partId] ?? 0)
@@ -231,6 +234,7 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
         switchOn={switchOn}
         channels={channels}
         spin={spin}
+        dipBits={dipBits}
       />
     </Group>
   )

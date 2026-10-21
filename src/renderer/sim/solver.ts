@@ -1,6 +1,7 @@
-import type { CircuitDocument, LedColor } from '../../shared/circuit'
+import type { CircuitDocument, LedColor, PartType } from '../../shared/circuit'
 import { pinKey } from '../../shared/circuit'
 import type { Netlist } from '../wiring/netlist'
+import { GATE_TOPOLOGY } from '../parts/definitions'
 
 /**
  * A tiny piecewise-linear circuit solver. It is not SPICE: LEDs are a forward
@@ -30,8 +31,12 @@ export interface SolveOptions {
   readonly potPositions?: ReadonlyMap<string, number>
   /** Latched on/off state for slide switches. */
   readonly switchStates?: ReadonlyMap<string, boolean>
-  /** Photosensor illumination, 0 (dark) to 1 (bright). */
+  /** Photosensor and other analog sensor levels, normalised 0 to 1. */
   readonly sensorLevels?: ReadonlyMap<string, number>
+  /** Per-bit state for DIP switch banks, index 0 is the first switch. */
+  readonly dipBits?: ReadonlyMap<string, readonly boolean[]>
+  /** Pressed matrix-keypad key index, row-major from 0 to 15. */
+  readonly keypadKeys?: ReadonlyMap<string, number>
 }
 
 export interface SolveResult {
@@ -63,8 +68,89 @@ const DIODE_FORWARD_VOLTS = 0.65
 const DIODE_SERIES_RESISTANCE_OHMS = 1.5
 const INDUCTOR_RESISTANCE_OHMS = 0.05
 const MOTOR_RESISTANCE_OHMS = 20
+const VIBRATION_MOTOR_RESISTANCE_OHMS = 30
+const GEAR_MOTOR_RESISTANCE_OHMS = 60
+const GAS_HEATER_RESISTANCE_OHMS = 30
+const NEOPIXEL_LOAD_RESISTANCE_OHMS = 50
+const LCD_LOAD_RESISTANCE_OHMS = 220
+const SERVO_LOAD_RESISTANCE_OHMS = 100
+const RELAY_COIL_RESISTANCE_OHMS = 200
+const METER_RESISTANCE_OHMS = 10_000_000
+const SCOPE_RESISTANCE_OHMS = 1_000_000
+const MODULE_OUTPUT_RESISTANCE_OHMS = 1_000
 /** Closed mechanical contacts; low enough to behave like a wire. */
 const CLOSED_SWITCH_RESISTANCE_OHMS = 0.5
+
+function sensorResistance(type: PartType, rawLevel: number): number {
+  const level = Math.min(1, Math.max(0, rawLevel))
+  switch (type) {
+    case 'thermistor':
+      return 10_000 * Math.pow(10, (0.5 - level) * 2)
+    case 'flex-sensor':
+      return 10_000 + 20_000 * level
+    case 'force-sensor':
+      return 1_000 + 999_000 * (1 - level)
+    case 'photodiode':
+      return 10_000 + 990_000 * (1 - level)
+    case 'phototransistor':
+      return 1_000 + 999_000 * (1 - level)
+    case 'soil-moisture':
+      return 1_000 * Math.pow(1_000, 1 - level)
+    case 'gas-sensor':
+      return 1_000 * Math.pow(100, 1 - level)
+    case 'ldr':
+      return 1_000 * Math.pow(1_000, 1 - level)
+    default:
+      return 1_000_000
+  }
+}
+
+function sourceVoltage(type: PartType, level: number): number | null {
+  switch (type) {
+    case 'coin-cell':
+      return 3
+    case 'potato-battery':
+      return 0.9
+    case 'solar-cell':
+      return 0.6 * level
+    case 'lm7805':
+      return 5
+    case 'ld1117v33':
+      return 3.3
+    case 'tmp36': {
+      const temperature = -40 + level * 165
+      return 0.5 + temperature * 0.01
+    }
+    case 'soil-moisture':
+    case 'ultrasonic-3pin':
+    case 'ultrasonic-hcsr04':
+      return 5 * level
+    case 'pir-sensor':
+      return level > 0.5 ? 5 : 0
+    default:
+      return null
+  }
+}
+
+function sourceResistance(type: PartType): number {
+  switch (type) {
+    case 'coin-cell':
+      return 20
+    case 'potato-battery':
+      return 1_000
+    case 'solar-cell':
+      return 10
+    case 'lm7805':
+    case 'ld1117v33':
+      return 0.2
+    case 'tmp36':
+      return 10
+    case 'soil-moisture':
+      return 1_000
+    default:
+      return 1
+  }
+}
 
 /**
  * Modified nodal analysis over netlist nets. Index 0 is the reference node;
@@ -259,6 +345,11 @@ export function solveCircuit(
   const pots = options.potPositions ?? new Map<string, number>()
   const switches = options.switchStates ?? new Map<string, boolean>()
   const sensors = options.sensorLevels ?? new Map<string, number>()
+  const dipBits = options.dipBits ?? new Map<string, readonly boolean[]>()
+  const keypadKeys = options.keypadKeys ?? new Map<string, number>()
+  const gateStates = new Map<string, boolean[]>()
+  const relayStates = new Map<string, boolean>()
+  const transistorStates = new Map<string, boolean>()
   const groundNets = findGroundNets(document, netlist, drivers)
 
   const netOf = (partId: string, pinId: string): number | undefined =>
@@ -294,13 +385,50 @@ export function solveCircuit(
       case 'inductor':
         link(netOf(part.id, '1'), netOf(part.id, '2'))
         break
+      case 'light-bulb':
+        link(netOf(part.id, '1'), netOf(part.id, '2'))
+        break
+      case 'thermistor':
+      case 'flex-sensor':
+      case 'force-sensor':
+        link(netOf(part.id, '1'), netOf(part.id, '2'))
+        break
+      case 'photodiode':
+        link(netOf(part.id, 'anode'), netOf(part.id, 'cathode'))
+        break
+      case 'phototransistor':
+        link(netOf(part.id, 'collector'), netOf(part.id, 'emitter'))
+        break
+      case 'gas-sensor':
+        link(netOf(part.id, 'a1'), netOf(part.id, 'b1'))
+        break
       case 'ldr':
         link(netOf(part.id, '1'), netOf(part.id, '2'))
         break
+      case 'tilt-sensor':
+        if ((sensors.get(part.id) ?? 0.5) > 0.5) link(netOf(part.id, '1'), netOf(part.id, '2'))
+        break
+      case 'dip-switch-4':
+      case 'dip-switch-6': {
+        const bits = dipBits.get(part.id) ?? []
+        for (let bit = 0; bit < bits.length; bit += 1) {
+          if (bits[bit] === true) {
+            link(netOf(part.id, `top${bit + 1}`), netOf(part.id, `bottom${bit + 1}`))
+          }
+        }
+        break
+      }
       case 'potentiometer':
         link(netOf(part.id, '1'), netOf(part.id, '2'))
         link(netOf(part.id, '2'), netOf(part.id, '3'))
         break
+      case 'keypad-4x4': {
+        const key = keypadKeys.get(part.id)
+        if (key !== undefined) {
+          link(netOf(part.id, `r${Math.floor(key / 4) + 1}`), netOf(part.id, `c${(key % 4) + 1}`))
+        }
+        break
+      }
       case 'push-button':
         if (pressed.has(part.id)) link(netOf(part.id, '1'), netOf(part.id, '2'))
         break
@@ -368,7 +496,8 @@ export function solveCircuit(
         })
         break
       }
-      case 'diode': {
+      case 'diode':
+      case 'zener-diode': {
         const anodeNet = netOf(part.id, 'anode')
         const cathodeNet = netOf(part.id, 'cathode')
         if (anodeNet === undefined || cathodeNet === undefined) break
@@ -382,6 +511,18 @@ export function solveCircuit(
           emitsLight: false,
           on: false,
         })
+        if (part.type === 'zener-diode') {
+          addBranch({
+            partId: part.id,
+            key: `${part.id}:zener`,
+            anodeNet: cathodeNet,
+            cathodeNet: anodeNet,
+            forwardVolts: part.props.zenerVoltage,
+            seriesOhms: DIODE_SERIES_RESISTANCE_OHMS,
+            emitsLight: false,
+            on: false,
+          })
+        }
         break
       }
       case 'rgb-led': {
@@ -444,6 +585,18 @@ export function solveCircuit(
     }
 
     for (const part of document.parts) {
+      const gates = GATE_TOPOLOGY[part.type]
+      if (gates !== undefined) {
+        const ground = mna.indexOfNet(netOf(part.id, '7'))
+        const states = gateStates.get(part.id) ?? gates.map(() => false)
+        for (const [index, gate] of gates.entries()) {
+          const output = mna.indexOfNet(netOf(part.id, gate.output))
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, ground, states[index] === true ? 5 : 0)
+          mna.addConductance(hidden, output, 1 / 100)
+        }
+        continue
+      }
       switch (part.type) {
         case 'resistor': {
           const a = mna.indexOfNet(netOf(part.id, 'lead1'))
@@ -458,6 +611,7 @@ export function solveCircuit(
           break
         }
         case 'capacitor':
+        case 'electrolytic-capacitor':
           // DC model: a capacitor blocks steady current, so it is an open circuit.
           break
         case 'inductor': {
@@ -466,8 +620,75 @@ export function solveCircuit(
           mna.addConductance(a, b, 1 / INDUCTOR_RESISTANCE_OHMS)
           break
         }
-        case 'diode': {
+        case 'diode':
+        case 'zener-diode': {
           // The branch table below handles conduction; nothing to add here.
+          break
+        }
+        case 'light-bulb': {
+          const a = mna.indexOfNet(netOf(part.id, '1'))
+          const b = mna.indexOfNet(netOf(part.id, '2'))
+          mna.addConductance(a, b, 1 / part.props.resistanceOhms)
+          break
+        }
+        case 'thermistor':
+        case 'flex-sensor':
+        case 'force-sensor':
+        case 'photodiode':
+        case 'phototransistor':
+        case 'ldr': {
+          const terminals =
+            part.type === 'photodiode'
+              ? ['anode', 'cathode']
+              : part.type === 'phototransistor'
+                ? ['collector', 'emitter']
+                : ['1', '2']
+          const a = mna.indexOfNet(netOf(part.id, terminals[0] ?? ''))
+          const b = mna.indexOfNet(netOf(part.id, terminals[1] ?? ''))
+          mna.addConductance(a, b, 1 / sensorResistance(part.type, sensors.get(part.id) ?? 0.5))
+          break
+        }
+        case 'tilt-sensor': {
+          const a = mna.indexOfNet(netOf(part.id, '1'))
+          const b = mna.indexOfNet(netOf(part.id, '2'))
+          const closed = (sensors.get(part.id) ?? 0.5) > 0.5
+          mna.addConductance(
+            a,
+            b,
+            1 / (closed ? CLOSED_SWITCH_RESISTANCE_OHMS : OPEN_RESISTANCE_OHMS)
+          )
+          break
+        }
+        case 'dip-switch-4':
+        case 'dip-switch-6': {
+          const bits = dipBits.get(part.id) ?? []
+          for (let bit = 0; bit < bits.length; bit += 1) {
+            const a = mna.indexOfNet(netOf(part.id, `top${bit + 1}`))
+            const b = mna.indexOfNet(netOf(part.id, `bottom${bit + 1}`))
+            const closed = bits[bit] === true
+            mna.addConductance(
+              a,
+              b,
+              1 / (closed ? CLOSED_SWITCH_RESISTANCE_OHMS : OPEN_RESISTANCE_OHMS)
+            )
+          }
+          break
+        }
+        case 'keypad-4x4': {
+          const key = keypadKeys.get(part.id)
+          if (key === undefined) break
+          const row = mna.indexOfNet(netOf(part.id, `r${Math.floor(key / 4) + 1}`))
+          const column = mna.indexOfNet(netOf(part.id, `c${(key % 4) + 1}`))
+          mna.addConductance(row, column, 1 / CLOSED_SWITCH_RESISTANCE_OHMS)
+          break
+        }
+        case 'gas-sensor': {
+          const heaterA = mna.indexOfNet(netOf(part.id, 'h1'))
+          const heaterB = mna.indexOfNet(netOf(part.id, 'h2'))
+          mna.addConductance(heaterA, heaterB, 1 / GAS_HEATER_RESISTANCE_OHMS)
+          const a = mna.indexOfNet(netOf(part.id, 'a1'))
+          const b = mna.indexOfNet(netOf(part.id, 'b1'))
+          mna.addConductance(a, b, 1 / sensorResistance(part.type, sensors.get(part.id) ?? 0.5))
           break
         }
         case 'slide-switch': {
@@ -481,19 +702,18 @@ export function solveCircuit(
           )
           break
         }
-        case 'ldr': {
-          const a = mna.indexOfNet(netOf(part.id, '1'))
-          const b = mna.indexOfNet(netOf(part.id, '2'))
-          const level = Math.min(1, Math.max(0, sensors.get(part.id) ?? 0.5))
-          // 1 kΩ in bright light up to 1 MΩ in the dark.
-          const resistance = 1_000 * Math.pow(1_000, 1 - level)
-          mna.addConductance(a, b, 1 / resistance)
-          break
-        }
-        case 'dc-motor': {
+        case 'dc-motor':
+        case 'vibration-motor':
+        case 'gear-motor': {
           const plus = mna.indexOfNet(netOf(part.id, 'plus'))
           const minus = mna.indexOfNet(netOf(part.id, 'minus'))
-          mna.addConductance(plus, minus, 1 / MOTOR_RESISTANCE_OHMS)
+          const resistance =
+            part.type === 'vibration-motor'
+              ? VIBRATION_MOTOR_RESISTANCE_OHMS
+              : part.type === 'gear-motor'
+                ? GEAR_MOTOR_RESISTANCE_OHMS
+                : MOTOR_RESISTANCE_OHMS
+          mna.addConductance(plus, minus, 1 / resistance)
           break
         }
         case 'battery-aa':
@@ -510,6 +730,212 @@ export function solveCircuit(
           const hidden = mna.newNode()
           mna.addVoltageSource(hidden, minus, spec.volts)
           mna.addConductance(hidden, plus, 1 / spec.resistanceOhms)
+          break
+        }
+        case 'coin-cell':
+        case 'solar-cell':
+        case 'potato-battery': {
+          const plus = mna.indexOfNet(netOf(part.id, 'plus'))
+          const minus = mna.indexOfNet(netOf(part.id, 'minus'))
+          const volts = sourceVoltage(part.type, sensors.get(part.id) ?? 0.5) ?? 0
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, minus, volts)
+          mna.addConductance(hidden, plus, 1 / sourceResistance(part.type))
+          break
+        }
+        case 'tmp36': {
+          const out = mna.indexOfNet(netOf(part.id, 'vout'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          const volts = sourceVoltage(part.type, sensors.get(part.id) ?? 0.5) ?? 0
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, ground, volts)
+          mna.addConductance(hidden, out, 1 / sourceResistance(part.type))
+          break
+        }
+        case 'soil-moisture': {
+          const out = mna.indexOfNet(netOf(part.id, 'sig'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          const volts = sourceVoltage(part.type, sensors.get(part.id) ?? 0.5) ?? 0
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, ground, volts)
+          mna.addConductance(hidden, out, 1 / sourceResistance(part.type))
+          break
+        }
+        case 'lm7805':
+        case 'ld1117v33': {
+          const out = mna.indexOfNet(netOf(part.id, 'out'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          const volts = sourceVoltage(part.type, 1) ?? 0
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, ground, volts)
+          mna.addConductance(hidden, out, 1 / sourceResistance(part.type))
+          break
+        }
+        case 'ultrasonic-3pin': {
+          const out = mna.indexOfNet(netOf(part.id, 'sig'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          const hidden = mna.newNode()
+          mna.addVoltageSource(
+            hidden,
+            ground,
+            sourceVoltage(part.type, sensors.get(part.id) ?? 0.5) ?? 0
+          )
+          mna.addConductance(hidden, out, 1 / MODULE_OUTPUT_RESISTANCE_OHMS)
+          break
+        }
+        case 'ultrasonic-hcsr04': {
+          const out = mna.indexOfNet(netOf(part.id, 'echo'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          const hidden = mna.newNode()
+          mna.addVoltageSource(
+            hidden,
+            ground,
+            sourceVoltage(part.type, sensors.get(part.id) ?? 0.5) ?? 0
+          )
+          mna.addConductance(hidden, out, 1 / MODULE_OUTPUT_RESISTANCE_OHMS)
+          break
+        }
+        case 'pir-sensor': {
+          const out = mna.indexOfNet(netOf(part.id, 'out'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          const hidden = mna.newNode()
+          mna.addVoltageSource(
+            hidden,
+            ground,
+            sourceVoltage(part.type, sensors.get(part.id) ?? 0.5) ?? 0
+          )
+          mna.addConductance(hidden, out, 1 / MODULE_OUTPUT_RESISTANCE_OHMS)
+          break
+        }
+        case 'neopixel-strip':
+        case 'neopixel-ring': {
+          const supply = mna.indexOfNet(netOf(part.id, 'vdd'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          mna.addConductance(supply, ground, 1 / NEOPIXEL_LOAD_RESISTANCE_OHMS)
+          break
+        }
+        case 'encoder-motor': {
+          const plus = mna.indexOfNet(netOf(part.id, 'plus'))
+          const minus = mna.indexOfNet(netOf(part.id, 'minus'))
+          mna.addConductance(plus, minus, 1 / MOTOR_RESISTANCE_OHMS)
+          break
+        }
+        case 'servo': {
+          const supply = mna.indexOfNet(netOf(part.id, 'vcc'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          mna.addConductance(supply, ground, 1 / SERVO_LOAD_RESISTANCE_OHMS)
+          break
+        }
+        case 'lcd-16x2': {
+          const supply = mna.indexOfNet(netOf(part.id, 'vdd'))
+          const ground = mna.indexOfNet(netOf(part.id, 'vss'))
+          mna.addConductance(supply, ground, 1 / LCD_LOAD_RESISTANCE_OHMS)
+          break
+        }
+        case 'lcd-16x2-i2c':
+        case 'seven-segment-clock': {
+          const supply = mna.indexOfNet(netOf(part.id, 'vcc'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          mna.addConductance(supply, ground, 1 / LCD_LOAD_RESISTANCE_OHMS)
+          break
+        }
+        case 'microbit': {
+          const out = mna.indexOfNet(netOf(part.id, 'p3v'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, ground, 3.3)
+          mna.addConductance(hidden, out, 1 / 10)
+          break
+        }
+        case 'multimeter': {
+          const plus = mna.indexOfNet(netOf(part.id, 'plus'))
+          const minus = mna.indexOfNet(netOf(part.id, 'minus'))
+          mna.addConductance(plus, minus, 1 / METER_RESISTANCE_OHMS)
+          break
+        }
+        case 'oscilloscope': {
+          const plus = mna.indexOfNet(netOf(part.id, 'plus'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          mna.addConductance(plus, ground, 1 / SCOPE_RESISTANCE_OHMS)
+          break
+        }
+        case 'function-generator': {
+          const plus = mna.indexOfNet(netOf(part.id, 'plus'))
+          const minus = mna.indexOfNet(netOf(part.id, 'minus'))
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, minus, part.props.offsetVolts)
+          mna.addConductance(hidden, plus, 1 / 50)
+          break
+        }
+        case 'transistor-npn':
+        case 'transistor-pnp':
+        case 'tip120':
+        case 'mosfet-n':
+        case 'mosfet-p': {
+          const isMosfet = part.type === 'mosfet-n' || part.type === 'mosfet-p'
+          const controlA = isMosfet ? 'gate' : 'base'
+          const controlB = isMosfet ? 'source' : 'emitter'
+          const a = mna.indexOfNet(netOf(part.id, 'collector'))
+          const b = mna.indexOfNet(netOf(part.id, 'emitter'))
+          const drain = mna.indexOfNet(netOf(part.id, 'drain'))
+          const source = mna.indexOfNet(netOf(part.id, 'source'))
+          const control = mna.indexOfNet(netOf(part.id, controlA))
+          const reference = mna.indexOfNet(netOf(part.id, controlB))
+          const on = transistorStates.get(part.id) === true
+          mna.addConductance(control, reference, 1 / (isMosfet ? OPEN_RESISTANCE_OHMS : 10_000))
+          const first = isMosfet ? drain : a
+          const second = isMosfet ? source : b
+          mna.addConductance(first, second, 1 / (on ? 5 : OPEN_RESISTANCE_OHMS))
+          break
+        }
+        case 'relay-spdt': {
+          const coilA = mna.indexOfNet(netOf(part.id, 'coil1'))
+          const coilB = mna.indexOfNet(netOf(part.id, 'coil2'))
+          mna.addConductance(coilA, coilB, 1 / RELAY_COIL_RESISTANCE_OHMS)
+          const common = mna.indexOfNet(netOf(part.id, 'com'))
+          const nc = mna.indexOfNet(netOf(part.id, 'nc'))
+          const no = mna.indexOfNet(netOf(part.id, 'no'))
+          const closed = relayStates.get(part.id) === true
+          mna.addConductance(
+            common,
+            nc,
+            1 / (closed ? OPEN_RESISTANCE_OHMS : CLOSED_SWITCH_RESISTANCE_OHMS)
+          )
+          mna.addConductance(
+            common,
+            no,
+            1 / (closed ? CLOSED_SWITCH_RESISTANCE_OHMS : OPEN_RESISTANCE_OHMS)
+          )
+          break
+        }
+        case 'relay-dpdt': {
+          const coilA = mna.indexOfNet(netOf(part.id, 'coil1'))
+          const coilB = mna.indexOfNet(netOf(part.id, 'coil2'))
+          mna.addConductance(coilA, coilB, 1 / RELAY_COIL_RESISTANCE_OHMS)
+          const closed = relayStates.get(part.id) === true
+          for (const channel of ['1', '2'] as const) {
+            const common = mna.indexOfNet(netOf(part.id, `com${channel}`))
+            const nc = mna.indexOfNet(netOf(part.id, `nc${channel}`))
+            const no = mna.indexOfNet(netOf(part.id, `no${channel}`))
+            mna.addConductance(
+              common,
+              nc,
+              1 / (closed ? OPEN_RESISTANCE_OHMS : CLOSED_SWITCH_RESISTANCE_OHMS)
+            )
+            mna.addConductance(
+              common,
+              no,
+              1 / (closed ? CLOSED_SWITCH_RESISTANCE_OHMS : OPEN_RESISTANCE_OHMS)
+            )
+          }
+          break
+        }
+        case 'usb-a': {
+          const supply = mna.indexOfNet(netOf(part.id, 'vbus'))
+          const ground = mna.indexOfNet(netOf(part.id, 'gnd'))
+          const hidden = mna.newNode()
+          mna.addVoltageSource(hidden, ground, 5)
+          mna.addConductance(hidden, supply, 1 / 0.1)
           break
         }
         case 'potentiometer': {
@@ -574,6 +1000,70 @@ export function solveCircuit(
         }
       }
     }
+    const voltsAt = (netId: number | undefined): number => {
+      if (netId === undefined) return 0
+      return solution?.[netIndices.get(netId) ?? 0] ?? 0
+    }
+    for (const part of document.parts) {
+      const gates = GATE_TOPOLOGY[part.type]
+      if (gates === undefined) continue
+      const previous = gateStates.get(part.id) ?? gates.map(() => false)
+      const next = gates.map((gate) => {
+        const values = gate.inputs.map((pinId) => voltsAt(netOf(part.id, pinId)) > 2.5)
+        const high = values.filter(Boolean).length
+        switch (gate.op) {
+          case 'nand':
+            return !values.every(Boolean)
+          case 'nor':
+            return !values.some(Boolean)
+          case 'and':
+            return values.every(Boolean)
+          case 'or':
+            return values.some(Boolean)
+          case 'xor':
+            return high % 2 === 1
+          case 'not':
+            return !(values[0] ?? false)
+          default:
+            return false
+        }
+      })
+      if (next.some((value, index) => value !== previous[index])) {
+        gateStates.set(part.id, next)
+        changed = true
+      }
+    }
+    for (const part of document.parts) {
+      if (part.type !== 'relay-spdt' && part.type !== 'relay-dpdt') continue
+      const coil = Math.abs(voltsAt(netOf(part.id, 'coil1')) - voltsAt(netOf(part.id, 'coil2')))
+      const next = coil > 2.5
+      if (next !== (relayStates.get(part.id) ?? false)) {
+        relayStates.set(part.id, next)
+        changed = true
+      }
+    }
+    for (const part of document.parts) {
+      let next: boolean | null = null
+      if (
+        part.type === 'transistor-npn' ||
+        part.type === 'transistor-pnp' ||
+        part.type === 'tip120'
+      ) {
+        const base = voltsAt(netOf(part.id, 'base'))
+        const emitter = voltsAt(netOf(part.id, 'emitter'))
+        const forward = part.type === 'transistor-pnp' ? emitter - base : base - emitter
+        next = forward > (part.type === 'tip120' ? 1.2 : 0.7)
+      } else if (part.type === 'mosfet-n' || part.type === 'mosfet-p') {
+        const gate = voltsAt(netOf(part.id, 'gate'))
+        const source = voltsAt(netOf(part.id, 'source'))
+        const forward = part.type === 'mosfet-p' ? source - gate : gate - source
+        next = forward > 2
+      }
+      if (next !== null && next !== (transistorStates.get(part.id) ?? false)) {
+        transistorStates.set(part.id, next)
+        changed = true
+      }
+    }
     if (!changed) break
   }
 
@@ -598,6 +1088,15 @@ export function solveCircuit(
     ledCurrentsByPart.set(branch.key, current * pwmFactor(branch.anodeNet, branch.cathodeNet))
   }
 
+  for (const part of document.parts) {
+    if (part.type !== 'light-bulb') continue
+    const a = netOf(part.id, '1')
+    const b = netOf(part.id, '2')
+    if (a === undefined || b === undefined) continue
+    const volts = Math.abs((netVoltages.get(a) ?? 0) - (netVoltages.get(b) ?? 0))
+    ledCurrentsByPart.set(part.id, (volts / part.props.resistanceOhms) * pwmFactor(a, b))
+  }
+
   const buzzerCurrents = new Map<string, number>()
   for (const part of document.parts) {
     if (part.type !== 'buzzer') continue
@@ -610,12 +1109,25 @@ export function solveCircuit(
 
   const motorCurrents = new Map<string, number>()
   for (const part of document.parts) {
-    if (part.type !== 'dc-motor') continue
+    if (
+      part.type !== 'dc-motor' &&
+      part.type !== 'vibration-motor' &&
+      part.type !== 'gear-motor' &&
+      part.type !== 'encoder-motor'
+    ) {
+      continue
+    }
     const plus = netOf(part.id, 'plus')
     const minus = netOf(part.id, 'minus')
     if (plus === undefined || minus === undefined) continue
     const volts = (netVoltages.get(plus) ?? 0) - (netVoltages.get(minus) ?? 0)
-    motorCurrents.set(part.id, (Math.abs(volts) / MOTOR_RESISTANCE_OHMS) * pwmFactor(plus, minus))
+    const resistance =
+      part.type === 'vibration-motor'
+        ? VIBRATION_MOTOR_RESISTANCE_OHMS
+        : part.type === 'gear-motor'
+          ? GEAR_MOTOR_RESISTANCE_OHMS
+          : MOTOR_RESISTANCE_OHMS
+    motorCurrents.set(part.id, (Math.abs(volts) / resistance) * pwmFactor(plus, minus))
   }
 
   return { ledCurrents: ledCurrentsByPart, buzzerCurrents, motorCurrents, netVoltages }

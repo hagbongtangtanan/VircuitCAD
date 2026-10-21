@@ -142,21 +142,6 @@ function GlyphBody({
           <circle cx={10} cy={-14} r={3} />
         </>
       )
-    case 'dc-motor':
-      return (
-        <>
-          <circle cx={0} cy={0} r={18} />
-          <text
-            className="cb-sch-glyph-text"
-            x={0}
-            y={4}
-            textAnchor="middle"
-            transform={vertical ? 'rotate(-90)' : undefined}
-          >
-            M
-          </text>
-        </>
-      )
     case 'seven-segment':
       return (
         <>
@@ -173,8 +158,171 @@ function GlyphBody({
           <path d="M -7 0 H 7 M 0 -7 V 7" />
         </>
       )
+
+    case 'electrolytic-capacitor':
+      return (
+        <>
+          <path d="M -34 0 H -6 M 6 0 H 34" />
+          <path d="M -6 -14 V 14" />
+          <path d="M 6 -14 V 14 M 12 -18 H 20 M 16 -22 V -14" />
+        </>
+      )
+    case 'zener-diode':
+      return (
+        <>
+          <path d="M -34 0 H -8" />
+          <path className="cb-sch-glyph-fill" d="M -8 10 L -8 -10 L 10 0 Z" />
+          <path d="M 10 -14 V 12 M 6 -10 L 10 -14 L 14 -10 M 10 0 H 34" />
+        </>
+      )
+    case 'light-bulb':
+      return (
+        <>
+          <path d="M -34 0 H -14 M 14 0 H 34" />
+          <circle cx={0} cy={0} r={14} />
+          <path d="M -8 -8 L 8 8 M 8 -8 L -8 8" />
+        </>
+      )
+    case 'vibration-motor':
+    case 'gear-motor':
+    case 'dc-motor':
+      return (
+        <>
+          <circle cx={0} cy={0} r={18} />
+          <text
+            className="cb-sch-glyph-text"
+            x={0}
+            y={4}
+            textAnchor="middle"
+            transform={vertical ? 'rotate(-90)' : undefined}
+          >
+            {type === 'gear-motor' ? 'G' : type === 'vibration-motor' ? 'V' : 'M'}
+          </text>
+        </>
+      )
+    case 'thermistor':
+      return (
+        <>
+          <path d="M -34 0 H -24 L -18 -10 L -10 10 L -2 -10 L 6 10 L 12 0 H 24 M 24 0 H 34" />
+          <path d="M -8 -22 L 12 -2 M -8 -22 L -8 -16 M -8 -22 L -2 -22" />
+          <text className="cb-sch-glyph-text" x={-10} y={-22} textAnchor="middle">
+            θ
+          </text>
+        </>
+      )
+    case 'flex-sensor':
+      return (
+        <>
+          <path d="M -34 0 H -24" />
+          <path d="M -24 0 q 12 -20 24 0 q 12 20 24 0" />
+          <path d="M 24 0 H 34" />
+          <path d="M -18 -6 L -22 -12 M 18 -6 L 22 -12" />
+        </>
+      )
+    case 'force-sensor':
+      return (
+        <>
+          <path d="M -34 0 H -20 L -14 -10 L -6 10 L 2 -10 L 10 10 L 16 0 H 20 M 20 0 H 34" />
+          <path d="M 0 -26 V -16 M -6 -22 L 0 -16 L 6 -22" />
+        </>
+      )
+    case 'photodiode':
+      return (
+        <>
+          <path d="M -34 0 H -8" />
+          <path className="cb-sch-glyph-fill" d="M -8 10 L -8 -10 L 10 0 Z" />
+          <path d="M 10 -12 V 12 M 10 0 H 34" />
+          <path d="M -2 -18 L 8 -8 M -8 -22 L 2 -12 M 4 -14 L 10 -20" />
+        </>
+      )
+    case 'phototransistor':
+      return (
+        <>
+          <path d="M -34 0 H -14 M -14 0 V -12 M 14 0 H 34 M 14 0 V 12" />
+          <path d="M -14 -8 L 8 0 L -14 8 Z" />
+          <path d="M 8 0 L 14 12" />
+          <path d="M -8 -20 L 4 -10 M -2 -24 L 10 -14 M 8 -14 L 14 -20" />
+        </>
+      )
+    case 'tilt-sensor':
+      return (
+        <>
+          <path d="M -34 0 H -14 M 14 0 H 34" />
+          <circle cx={-14} cy={0} r={3} />
+          <circle cx={14} cy={0} r={3} />
+          <path d="M -14 0 L 10 -12" />
+          <circle cx={10} cy={-12} r={4} />
+        </>
+      )
+    case 'soil-moisture':
+      return (
+        <>
+          <path d="M -34 0 H -24 L -18 -10 L -10 10 L -2 -10 L 6 10 L 12 0 H 22 M 22 0 H 34" />
+          <path d="M 0 -24 q 8 8 0 14 q -8 -6 0 -14 Z" />
+        </>
+      )
+    case 'gas-sensor':
+      return (
+        <>
+          <circle cx={0} cy={0} r={18} />
+          <text className="cb-sch-glyph-text" x={0} y={4} textAnchor="middle">
+            G
+          </text>
+          <path d="M -26 0 H -18 M 18 0 H 26" />
+        </>
+      )
+    case 'tmp36':
+      return (
+        <>
+          <rect x={-16} y={-18} width={32} height={36} rx={4} />
+          <text className="cb-sch-glyph-text" x={0} y={4} textAnchor="middle">
+            T
+          </text>
+        </>
+      )
+    case 'coin-cell':
+    case 'solar-cell':
+    case 'potato-battery':
+      return (
+        <>
+          <path d="M -34 0 H -8 M 8 0 H 34" />
+          <path d="M -8 -14 V 14 M 0 -8 V 8" />
+          <text className="cb-sch-glyph-text" x={0} y={-22} textAnchor="middle">
+            {type === 'coin-cell' ? '3V' : type === 'solar-cell' ? 'PV' : '0.9V'}
+          </text>
+        </>
+      )
+    case 'dip-switch-4':
+    case 'dip-switch-6':
+      return (
+        <>
+          <path d="M -34 0 H -20 M 20 0 H 34" />
+          <rect x={-20} y={-14} width={40} height={28} rx={3} />
+          {[0, 1, 2, 3].map((index) => (
+            <path key={index} d={`M ${-12 + index * 8} -6 V 6`} />
+          ))}
+        </>
+      )
+    case 'lm7805':
+    case 'ld1117v33':
+      return (
+        <>
+          <path d="M -34 0 H -18 M 18 0 H 34" />
+          <rect x={-18} y={-16} width={36} height={32} rx={3} />
+          <text className="cb-sch-glyph-text" x={0} y={4} textAnchor="middle">
+            {type === 'lm7805' ? '5V' : '3V3'}
+          </text>
+        </>
+      )
     default:
-      return null
+      return (
+        <>
+          <rect x={-24} y={-18} width={48} height={36} rx={3} />
+          <text className="cb-sch-glyph-text" x={0} y={4} textAnchor="middle">
+            {type.split('-')[0]?.slice(0, 4).toUpperCase()}
+          </text>
+        </>
+      )
   }
 }
 
@@ -343,7 +491,9 @@ function OriginalBoard({ node, designator }: OriginalPartProps): JSX.Element {
 
 function OriginalPart({ node, designator, value }: OriginalPartProps): JSX.Element {
   if (node.board) return <OriginalBoard node={node} designator={designator} value={value} />
-  const twoTerminal = definitionOf(node.type).pins.length === 2
+  const moduleOnly =
+    node.type === 'multimeter' || node.type === 'function-generator' || node.type === 'oscilloscope'
+  const twoTerminal = !moduleOnly && definitionOf(node.type).pins.length === 2
   if (twoTerminal && node.pins.length === 2) {
     return <OriginalTwoPin node={node} designator={designator} value={value} />
   }
