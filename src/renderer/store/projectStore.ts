@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { APP_NAME, DEFAULT_PROJECT_NAME } from '../../shared/app'
+import { APP_NAME, DEFAULT_PROJECT_NAME, normalizeProjectName } from '../../shared/app'
 import { emptyCircuitDocument, type CircuitDocument } from '../../shared/circuit'
 import {
   createProject,
@@ -170,8 +170,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     },
 
     rename(name: string): void {
-      const trimmed = name.trim()
-      const next = trimmed === '' ? DEFAULT_PROJECT_NAME : trimmed
+      const next = normalizeProjectName(name)
       if (next === get().name) return
       // A different name means the document no longer matches what is on disk.
       set({ name: next, dirty: true })

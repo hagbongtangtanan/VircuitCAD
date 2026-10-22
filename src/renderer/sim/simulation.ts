@@ -262,7 +262,12 @@ export class ArduinoSimulation {
     const inputs = this.readInputs?.() ?? {}
 
     let signature = ''
-    for (const [key, driver] of drivers) signature += `${key}=${driver.volts};`
+    for (const [key, driver] of drivers) {
+      // PWM pins stay at the high voltage while their duty changes, so the
+      // duty has to be part of the cache key or brightness freezes between
+      // analogWrite() calls.
+      signature += `${key}=${driver.volts}:${driver.duty ?? 'steady'};`
+    }
     const pressed = [...(inputs.pressedParts ?? [])].sort().join(',')
     const pots = [...(inputs.potPositions ?? [])]
       .map(([partId, value]) => `${partId}=${value.toFixed(3)}`)

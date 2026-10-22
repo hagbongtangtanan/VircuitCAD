@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type JSX } from 'react'
-import { APP_NAME } from '../../shared/app'
+import { APP_NAME, normalizeProjectName } from '../../shared/app'
 import { Icon } from './Icon'
 import { useProjectStore } from '../store/projectStore'
 import { useSimStore } from '../store/simStore'
@@ -174,6 +174,17 @@ export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarPro
   const name = useProjectStore((state) => state.name)
   const dirty = useProjectStore((state) => state.dirty)
   const rename = useProjectStore((state) => state.rename)
+  const [titleDraft, setTitleDraft] = useState(name)
+
+  useEffect(() => {
+    setTitleDraft(name)
+  }, [name])
+
+  const commitTitle = (value: string): void => {
+    const next = normalizeProjectName(value)
+    setTitleDraft(next)
+    rename(next)
+  }
 
   const phase = useSketchStore((state) => state.phase)
   const build = useSketchStore((state) => state.build)
@@ -192,10 +203,21 @@ export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarPro
         <input
           className="cb-title-input"
           data-testid="project-title"
-          value={name}
+          value={titleDraft}
           spellCheck={false}
-          style={{ width: `${Math.max(name.length, 8) + 2}ch` }}
-          onChange={(event) => rename(event.target.value)}
+          style={{ width: `${Math.max(titleDraft.length, 8) + 2}ch` }}
+          onChange={(event) => {
+            const value = event.target.value
+            setTitleDraft(value)
+            if (value.trim() !== '') rename(value)
+          }}
+          onBlur={(event) => commitTitle(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault()
+              event.currentTarget.blur()
+            }
+          }}
         />
         {dirty && <span className="cb-dirty-dot" title="Unsaved changes" aria-hidden="true" />}
       </label>

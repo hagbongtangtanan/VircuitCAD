@@ -1,3 +1,4 @@
+import { timer0Config } from 'avr8js'
 import { describe, expect, it } from 'vitest'
 import { circuitDocumentSchema, type CircuitDocument } from '../../shared/circuit'
 import { ANALOG_READ_HEX, DIGITAL_INPUT_HEX, PWM_HEX, SIMULATION_HEX } from './fixtures'
@@ -145,6 +146,28 @@ describe('ArduinoSimulation', () => {
     const second = simulation.frame()
     expect(second.pinVoltages.get('uno:D13')).toBe(0)
     expect(second.ledBrightness.get('led1') ?? 0).toBe(0)
+  })
+
+  it('updates brightness when analogWrite changes duty without changing pin state', () => {
+    const simulation = new ArduinoSimulation(PWM_HEX, pwmCircuit())
+    simulation.runForCycles(CLOCK_HZ / 100)
+
+    const before = simulation.frame()
+    const beforeBrightness = before.ledBrightness.get('led6') ?? 0
+    expect(before.pinVoltages.get('uno:D6')).toBeCloseTo(1.25, 1)
+
+    // D6 is timer 0 channel A. Raising OCR while the pin stays high models the
+    // next analogWrite() value in a fade.
+    const data = (
+      simulation as unknown as {
+        cpu: { data: Uint8Array }
+      }
+    ).cpu.data
+    data[timer0Config.OCRA] = 128
+
+    const after = simulation.frame()
+    expect(after.pinVoltages.get('uno:D6')).toBeCloseTo(2.5, 1)
+    expect(after.ledBrightness.get('led6') ?? 0).toBeGreaterThan(beforeBrightness + 0.1)
   })
 
   it('delivers Serial output to the byte callback', () => {
