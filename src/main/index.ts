@@ -64,7 +64,7 @@ function createWindow(): BrowserWindow {
     minWidth: 1024,
     minHeight: 640,
     show: false,
-    backgroundColor: '#eef1f6',
+    backgroundColor: '#050d1a',
     title: APP_NAME,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),

@@ -64,10 +64,10 @@ export function mixRgbGlow(channels: Readonly<Record<RgbChannel, number>>): RgbG
   }
 }
 
-export const PART_BODY_FILL = '#343c4e'
-export const PART_BODY_STROKE = '#5b6a82'
-export const PART_SELECTED_STROKE = '#2f7df6'
-/** Pins sit on the dark canvas, so they read as a light grey rather than near-white. */
-export const PIN_FILL = '#a8b4c6'
-export const PIN_HOVER_FILL = '#2f7df6'
-export const PIN_ACTIVE_FILL = '#d99311'
+export const PART_BODY_FILL = '#223b5a'
+export const PART_BODY_STROKE = '#5f86ad'
+export const PART_SELECTED_STROKE = '#ffc928'
+/** Pins sit on the dark canvas, so they read as a light blue rather than near-white. */
+export const PIN_FILL = '#b7d2ef'
+export const PIN_HOVER_FILL = '#6fb3ff'
+export const PIN_ACTIVE_FILL = '#ffc928'

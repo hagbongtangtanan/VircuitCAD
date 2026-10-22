@@ -17,7 +17,7 @@ import {
 let directory = ''
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'hucad-project-'))
+  directory = await mkdtemp(join(tmpdir(), 'vircuitcad-project-'))
 })
 
 afterEach(async () => {
@@ -31,13 +31,13 @@ const project = createProject({
 
 describe('project files on disk', () => {
   it('writes and reads a project', async () => {
-    const path = join(directory, 'demo.hucad')
+    const path = join(directory, 'demo.vircuit')
     await writeProjectFile(path, project)
     expect(await readProjectFile(path)).toEqual(project)
   })
 
   it('opens a project through the extension dispatcher', async () => {
-    const path = join(directory, 'demo.hucad')
+    const path = join(directory, 'demo.vircuit')
     await writeProjectFile(path, project)
     const opened = await openFile(path)
     expect(opened.kind).toBe('project')
@@ -58,9 +58,9 @@ describe('project files on disk', () => {
   })
 
   it('surfaces a corrupt project as a readable error', async () => {
-    const path = join(directory, 'broken.hucad')
+    const path = join(directory, 'broken.vircuit')
     await writeFile(path, '{"format":"nope"}')
-    await expect(readProjectFile(path)).rejects.toThrow(/not a HuCAD project/)
+    await expect(readProjectFile(path)).rejects.toThrow(/not a VircuitCAD project/)
   })
 
   it('writes sketches verbatim and HEX with a trailing newline', async () => {
@@ -114,7 +114,7 @@ describe('project files on disk', () => {
   })
 
   it('keeps the serialized project stable for diffing', async () => {
-    const path = join(directory, 'demo.hucad')
+    const path = join(directory, 'demo.vircuit')
     await writeProjectFile(path, project)
     expect(await readFile(path, 'utf8')).toBe(serializeProject(project))
   })

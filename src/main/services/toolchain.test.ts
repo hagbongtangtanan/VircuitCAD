@@ -91,7 +91,7 @@ describe.skipIf(!installed)('avr-gcc toolchain', () => {
 
 describe('toolchain layout', () => {
   it('resolves .exe executables and no host library path on Windows', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'hucad-toolchain-'))
+    const dir = await mkdtemp(join(tmpdir(), 'vircuitcad-toolchain-'))
     try {
       await mkdir(join(dir, 'bin'))
       await writeFile(join(dir, 'bin', 'avr-g++.exe'), '')

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type JSX } from 'react'
-import { APP_NAME, normalizeProjectName } from '../../shared/app'
+import { APP_AUTHOR, APP_NAME, APP_TAGLINE, normalizeProjectName } from '../../shared/app'
 import { Icon } from './Icon'
 import { useProjectStore } from '../store/projectStore'
 import { useSimStore } from '../store/simStore'
@@ -169,12 +169,59 @@ function SimulationControls(): JSX.Element {
   )
 }
 
+interface AboutDialogProps {
+  readonly onClose: () => void
+}
+
+function AboutDialog({ onClose }: AboutDialogProps): JSX.Element {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [onClose])
+
+  return (
+    <div
+      className="cb-modal-backdrop"
+      data-testid="about-dialog"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose()
+      }}
+    >
+      <section className="cb-about" role="dialog" aria-modal="true" aria-labelledby="about-title">
+        <button
+          type="button"
+          className="cb-icon-button cb-about-close"
+          aria-label="Close About"
+          onClick={onClose}
+        >
+          <Icon name="close" />
+        </button>
+        <span className="cb-brand-mark cb-brand-mark-large" aria-hidden="true">
+          <span className="cb-brand-pin" />
+        </span>
+        <h2 id="about-title" className="cb-about-title">
+          {APP_NAME}
+        </h2>
+        <p className="cb-about-tagline">{APP_TAGLINE}</p>
+        <p className="cb-about-version">Version {__APP_VERSION__}</p>
+        <div className="cb-about-rule" />
+        <p className="cb-about-meta">Designed and built by {APP_AUTHOR}</p>
+        <p className="cb-about-meta">Copyright © 2026 {APP_AUTHOR}</p>
+      </section>
+    </div>
+  )
+}
+
 /** Application chrome: brand, project name, view tabs, file/build/run actions. */
 export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarProps): JSX.Element {
   const name = useProjectStore((state) => state.name)
   const dirty = useProjectStore((state) => state.dirty)
   const rename = useProjectStore((state) => state.rename)
   const [titleDraft, setTitleDraft] = useState(name)
+  const [aboutOpen, setAboutOpen] = useState(false)
 
   useEffect(() => {
     setTitleDraft(name)
@@ -192,10 +239,18 @@ export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarPro
   return (
     <header className="cb-topbar">
       <div className="cb-topbar-section cb-topbar-brand">
-        <span className="cb-brand-mark" aria-hidden="true">
-          <span className="cb-brand-pin" />
-        </span>
-        <span className="cb-brand-name">{APP_NAME}</span>
+        <button
+          type="button"
+          className="cb-brand-button"
+          title={`About ${APP_NAME}`}
+          aria-label={`About ${APP_NAME}`}
+          onClick={() => setAboutOpen(true)}
+        >
+          <span className="cb-brand-mark" aria-hidden="true">
+            <span className="cb-brand-pin" />
+          </span>
+          <span className="cb-brand-name">{APP_NAME}</span>
+        </button>
       </div>
 
       <label className="cb-title">
@@ -269,6 +324,7 @@ export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarPro
         </button>
         <SimulationControls />
       </div>
+      {aboutOpen && <AboutDialog onClose={() => setAboutOpen(false)} />}
     </header>
   )
 }

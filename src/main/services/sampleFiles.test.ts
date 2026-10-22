@@ -16,7 +16,7 @@ const installed = toolchain !== null && existsSync(toolchain.coreArchive)
 let directory = ''
 
 beforeAll(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'hucad-samples-'))
+  directory = await mkdtemp(join(tmpdir(), 'vircuitcad-samples-'))
 })
 
 afterAll(async () => {
@@ -26,24 +26,27 @@ afterAll(async () => {
 describe('sample projects', () => {
   it('lists the shipped samples with readable labels', async () => {
     const samples = await listSamples(samplesDir)
-    expect(samples.map((sample) => sample.name)).toEqual(['blink-led.hucad', 'traffic-light.hucad'])
+    expect(samples.map((sample) => sample.name)).toEqual([
+      'blink-led.vircuit',
+      'traffic-light.vircuit',
+    ])
     expect(samples[0]?.label).toBe('Blink led')
   })
 
   it('ignores unrelated files and missing directories', async () => {
     await writeFile(join(directory, 'notes.txt'), 'ignore me')
-    await writeFile(join(directory, 'Bad Name.hucad'), '{}')
+    await writeFile(join(directory, 'Bad Name.vircuit'), '{}')
     expect(await listSamples(directory)).toEqual([])
     expect(await listSamples(join(directory, 'missing'))).toEqual([])
   })
 
   it('refuses names that could escape the folder', async () => {
-    await expect(readSample(directory, '../secrets.hucad')).rejects.toThrow(/Unknown sample/)
-    await expect(readSample(directory, 'sub/dir.hucad')).rejects.toThrow(/Unknown sample/)
+    await expect(readSample(directory, '../secrets.vircuit')).rejects.toThrow(/Unknown sample/)
+    await expect(readSample(directory, 'sub/dir.vircuit')).rejects.toThrow(/Unknown sample/)
   })
 
   it('loads every shipped sample as a valid project', async () => {
-    for (const name of ['blink-led.hucad', 'traffic-light.hucad']) {
+    for (const name of ['blink-led.vircuit', 'traffic-light.vircuit']) {
       const opened = await readSample(samplesDir, name)
       expect(opened.kind).toBe('project')
       if (opened.kind !== 'project') continue

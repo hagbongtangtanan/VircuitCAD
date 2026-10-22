@@ -34,8 +34,8 @@ import {
 } from './geometry'
 
 /** Konva needs concrete colours, so canvas chrome is mirrored from tokens.css. */
-const GRID_COLOR = '#151d27'
-const GRID_AXIS_COLOR = '#202b3a'
+const GRID_COLOR = '#10233a'
+const GRID_AXIS_COLOR = '#1a3b5d'
 
 /** Every breadboard size is a mounting surface, never an ordinary component. */
 const BREADBOARD_TYPES: ReadonlySet<PartType> = new Set<PartType>([
@@ -94,8 +94,8 @@ interface PinMarkerProps {
   readonly onPointerDown: (ref: PinRef, event: KonvaEventObject<MouseEvent>) => void
 }
 
-const PIN_TARGET_FILL = '#46a758'
-const PIN_TARGET_RING = '#59d17a'
+const PIN_TARGET_FILL = '#ffc928'
+const PIN_TARGET_RING = '#ffe27a'
 
 function PinMarker(props: PinMarkerProps): JSX.Element {
   const ref: PinRef = { partId: props.partId, pinId: props.pinId }
@@ -124,10 +124,10 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
           opacity={props.state === 'target' ? 0.18 : 1}
           stroke={
             props.state === 'active'
-              ? '#2f7df6'
+              ? '#ffc928'
               : props.state === 'target'
                 ? PIN_TARGET_RING
-                : '#f0a41b'
+                : '#6fb3ff'
           }
           strokeWidth={(props.state === 'target' ? 2.5 : 1.5) / props.scale}
           listening={false}
@@ -158,8 +158,8 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
           align="center"
           verticalAlign="middle"
           wrap="none"
-          fill="#dce6f4"
-          stroke="#0b1017"
+          fill="#eaf4ff"
+          stroke="#040b16"
           strokeWidth={2.5 / props.scale}
           fillAfterStrokeEnabled
           listening={false}
@@ -342,7 +342,7 @@ function WireNode({ wireId, scale, routing, onAddWaypoint }: WireNodeProps): JSX
   const to = pinWorldPosition(toPart, wire.to.pinId)
   const route = wireRoute(from, to, wire.waypoints)
 
-  const stroke = selected ? '#4c8dff' : wire.color
+  const stroke = selected ? '#ffc928' : wire.color
   const knotRadius = 3 / scale
 
   return (
@@ -382,7 +382,7 @@ function WireNode({ wireId, scale, routing, onAddWaypoint }: WireNodeProps): JSX
           y={point.y}
           radius={knotRadius}
           fill={stroke}
-          stroke="#93a0b4"
+          stroke="#7da4c9"
           strokeWidth={1 / scale}
           listening={false}
         />
@@ -436,7 +436,7 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
       {draggedEnd !== null && (
         <Path
           data={roundedPolylinePath(route, 9)}
-          stroke="#4c8dff"
+          stroke="#6fb3ff"
           strokeWidth={2.5 / scale}
           dash={[6 / scale, 4 / scale]}
           lineCap="round"
@@ -449,9 +449,9 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           x={validTarget.point.x}
           y={validTarget.point.y}
           radius={7 / scale}
-          fill="#46a758"
-          opacity={0.25}
-          stroke="#59d17a"
+          fill="#ffc928"
+          opacity={0.22}
+          stroke="#ffe27a"
           strokeWidth={2 / scale}
           listening={false}
         />
@@ -466,8 +466,8 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           offsetX={handleSize / 2}
           offsetY={handleSize / 2}
           cornerRadius={2 / scale}
-          fill="#f6c445"
-          stroke="#0b1017"
+          fill="#6fb3ff"
+          stroke="#040b16"
           strokeWidth={1.5 / scale}
           draggable
           onDragStart={() => {
@@ -516,8 +516,8 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           x={point.x}
           y={point.y}
           radius={5 / scale}
-          fill="#46a758"
-          stroke="#f2f6fc"
+          fill="#ffc928"
+          stroke="#f4f9ff"
           strokeWidth={1.5 / scale}
           draggable
           onDragMove={(event) => {
@@ -546,8 +546,8 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           offsetX={handleSize / 2}
           offsetY={handleSize / 2}
           cornerRadius={handleSize / 2}
-          fill="#4c8dff"
-          stroke="#0b1017"
+          fill="#2f7df6"
+          stroke="#040b16"
           strokeWidth={1.5 / scale}
           draggable
           onDragEnd={(event) => {
@@ -1100,7 +1100,7 @@ export function CircuitCanvas(): JSX.Element {
             <>
               <Path
                 data={roundedPolylinePath(previewRoute, 9)}
-                stroke={snapTarget === null ? '#e8a13a' : '#46a758'}
+                stroke="#ffc928"
                 strokeWidth={(snapTarget === null ? 2 : 2.5) / viewport.scale}
                 dash={[7 / viewport.scale, 5 / viewport.scale]}
                 lineCap="round"
@@ -1113,8 +1113,8 @@ export function CircuitCanvas(): JSX.Element {
                   x={waypoint.x}
                   y={waypoint.y}
                   radius={3.5 / viewport.scale}
-                  fill="#e8a13a"
-                  stroke="#0b1017"
+                  fill="#ffc928"
+                  stroke="#040b16"
                   strokeWidth={1 / viewport.scale}
                   listening={false}
                 />
@@ -1123,7 +1123,7 @@ export function CircuitCanvas(): JSX.Element {
                 x={snapTarget?.point.x ?? pointerWorld?.x ?? 0}
                 y={snapTarget?.point.y ?? pointerWorld?.y ?? 0}
                 radius={(snapTarget === null ? 4 : 6) / viewport.scale}
-                fill={snapTarget === null ? '#e8a13a' : '#46a758'}
+                fill="#ffc928"
                 listening={false}
               />
             </>

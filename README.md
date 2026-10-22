@@ -1,14 +1,14 @@
-# HuCAD
+# VircuitCAD
 
-HuCAD is an **offline, local-first, Tinkercad Circuits-style Arduino simulator** desktop
+VircuitCAD is an **offline, local-first, Tinkercad Circuits-style Arduino simulator** desktop
 app. Drag parts onto a canvas, wire them up, write Arduino C++ side by side, and run the sketch
 against an emulated AVR — with no account and no network access at any point.
 
-The product name is a single constant, `APP_NAME` in `src/shared/app.ts`. The npm package,
-windows, user-data directory, desktop entry, installer artifact names and the git repository are
-all `HuCAD`.
+The product name is a single constant, `APP_NAME` in `src/shared/app.ts`. The product name, npm package,
+windows, user-data directory, desktop entry and installer artifact names all use `VircuitCAD`.
+The GitHub repository keeps its existing slug for download continuity.
 
-Built by BIT-CT students from CTU-San Francisco.
+Designed and built by Kheil27.
 
 [![Latest release](https://img.shields.io/github/v/release/hagbongtangtanan/HuCAD)](https://github.com/hagbongtangtanan/HuCAD/releases/latest)
 
@@ -38,14 +38,14 @@ extended part library is tracked under milestone 8.
 
 Latest installers: **<https://github.com/hagbongtangtanan/HuCAD/releases/latest>**
 
-| Platform | Artifact                   | Install                                                     |
-| -------- | -------------------------- | ----------------------------------------------------------- |
-| Linux    | `HuCAD-*-linux-*.AppImage` | `chmod +x` it, then run it                                  |
-| Windows  | `HuCAD-*-win-*.exe`        | run the installer (SmartScreen: **More info → Run anyway**) |
-| macOS    | `HuCAD-*-mac-*.dmg`        | drag to Applications (first open: right-click → **Open**)   |
+| Platform | Artifact                        | Install                                                     |
+| -------- | ------------------------------- | ----------------------------------------------------------- |
+| Linux    | `VircuitCAD-*-linux-*.AppImage` | `chmod +x` it, then run it                                  |
+| Windows  | `VircuitCAD-*-win-*.exe`        | run the installer (SmartScreen: **More info → Run anyway**) |
+| macOS    | `VircuitCAD-*-mac-*.dmg`        | drag to Applications (first open: right-click → **Open**)   |
 
 The Linux AppImage needs FUSE 2 (`sudo apt install libfuse2` on Ubuntu 22.04+); where FUSE is
-unavailable, run it as `./HuCAD-*.AppImage --appimage-extract-and-run`. Compiling a
+unavailable, run it as `./VircuitCAD-*.AppImage --appimage-extract-and-run`. Compiling a
 sketch needs the vendored AVR toolchain, which currently ships for Linux only — the canvas,
 wiring and simulation work on every platform.
 
@@ -90,30 +90,30 @@ npm run release:dry # print the release plan without writing anything
 
 ## Projects and files
 
-A project is one `.hucad` file (JSON) holding both the circuit document and the sketch, so
+A project is one `.vircuit` file (JSON) holding both the circuit document and the sketch, so
 opening it always restores a runnable state.
 
-| Action        | Where               | Notes                                                   |
-| ------------- | ------------------- | ------------------------------------------------------- |
-| New           | toolbar             | starts a clean circuit with the default Blink sketch    |
-| Open          | toolbar, `Ctrl+O`   | `.hucad` projects, plus `.ino` sketches into the editor |
-| Save          | toolbar, `Ctrl+S`   | asks for a location the first time                      |
-| Export `.ino` | toolbar (Code view) | writes the sketch alone                                 |
-| Export `.hex` | toolbar (Code view) | writes the last compiled program                        |
+| Action        | Where               | Notes                                                     |
+| ------------- | ------------------- | --------------------------------------------------------- |
+| New           | toolbar             | starts a clean circuit with the default Blink sketch      |
+| Open          | toolbar, `Ctrl+O`   | `.vircuit` projects, plus `.ino` sketches into the editor |
+| Save          | toolbar, `Ctrl+S`   | asks for a location the first time                        |
+| Export `.ino` | toolbar (Code view) | writes the sketch alone                                   |
+| Export `.hex` | toolbar (Code view) | writes the last compiled program                          |
 
 The window title gains a bullet while there are unsaved changes, and the status bar shows the
 project name plus an unsaved marker.
 
 ### Wiring
 
-Press a pin and move: an orthogonal preview follows the pointer and turns green over a valid
+Press a pin and move: an orthogonal preview follows the pointer and turns yellow over a valid
 target. Left-click empty canvas to drop a bend and click another pin to finish; `Esc` or a
 right-click cancels, and `Backspace` removes the last bend. Wires snap to breadboard sockets.
 
 Click a wire to select it; pressing it again starts a branch from the end nearest the pointer.
-Drag the green endpoint handles to reconnect either end, drag the yellow diamonds to move a
-bend, double-click a diamond to remove it, and drag the blue midpoint handle to add one. Power
-leads are always red and ground leads black; other wires take the palette colour chosen in the
+Drag the yellow endpoint handles to reconnect either end, drag the blue diamonds to move a
+bend, double-click a diamond to remove it, and drag the round blue midpoint handle to add one.
+Power leads are yellow and ground leads blue; other wires take the palette colour chosen in the
 inspector.
 
 ### Schematics
@@ -136,7 +136,7 @@ The toolbar's sample picker ships two read-only examples from `resources/samples
 | Traffic light | Three LEDs with resistors on D11, D12 and D13 |
 
 Choosing one replaces the whole project, circuit and sketch. The sample file is read-only, so
-the first **Save** asks for a `.hucad` location instead of offering to overwrite the example. Files are read and written in the main process; the
+the first **Save** asks for a `.vircuit` location instead of offering to overwrite the example. Files are read and written in the main process; the
 renderer only ever sees paths that came out of a native dialog, and a save can only reuse such
 a path, never invent one.
 
@@ -173,13 +173,13 @@ Known modelling limits, chosen to keep the solver fast and predictable:
 
 ## Packaging
 
-HuCAD targets Windows; the NSIS installer is the shipped artifact:
+VircuitCAD targets Windows; the NSIS installer is the shipped artifact:
 
 ```bash
 npm run build:win
 ```
 
-produces `release/HuCAD-0.2.2-win-x64.exe`. The installer is unsigned for now. A fresh checkout needs network access once so
+produces `release/VircuitCAD-0.3.0-win-x64.exe`. The installer is unsigned for now. A fresh checkout needs network access once so
 `prebuild:win` can vendor the toolchain (cached in `resources/toolchain/.cache`). The Linux build
 (`npm run build:linux`, about 234 MB AppImage) still exists for development and smoke tests on
 the machine the app is developed on: `prebuild:linux` vendors the toolchain, and electron-builder
@@ -191,7 +191,7 @@ The installer carries its own AVR toolchain: `prebuild:win` downloads Arduino's 
 avr-gcc 7.3.0 package (52 MB, pinned by SHA-256), extracts it to `resources/toolchain/win`,
 precompiles the Uno core with it, and electron-builder ships the result. No Arduino IDE or
 network connection is needed on the target machine. Artifact names are deliberately space-free
-(`HuCAD-<version>-<os>-<arch>.<ext>`): GitHub rewrites spaces in uploaded asset names, which
+(`VircuitCAD-<version>-<os>-<arch>.<ext>`): GitHub rewrites spaces in uploaded asset names, which
 would break both the download links and the updater metadata in `latest.yml`.
 
 ## Releasing
@@ -203,10 +203,10 @@ the GitHub Release for that tag. Tags with a suffix, such as `v0.2.0-beta.1`, ar
 pre-releases. Releases intentionally contain Windows assets only.
 
 ```bash
-npm version 0.2.2 --no-git-tag-version   # or edit package.json by hand
-git commit -am "chore: release v0.2.2"
-git tag v0.2.2
-git push origin main v0.2.2
+npm version 0.3.0 --no-git-tag-version   # or edit package.json by hand
+git commit -am "chore: release v0.3.0"
+git tag v0.3.0
+git push origin main v0.3.0
 ```
 
 `scripts/release.mjs` is the manual/hotfix path: it publishes an already-built `release/`

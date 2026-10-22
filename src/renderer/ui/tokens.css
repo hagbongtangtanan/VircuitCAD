@@ -1,44 +1,50 @@
 /*
- * Design tokens for the HuCAD shell.
+ * Design tokens for the VircuitCAD shell.
  *
- * Dark by default: a near-black page, raised slate surfaces and a bright blue
- * accent, so the canvas and the parts stay the focal point. The canvas grid
- * values are mirrored by GRID_COLOR / GRID_AXIS_COLOR in CircuitCanvas.tsx
+ * Deep navy surfaces keep the canvas and components in focus, while a bright
+ * yellow marks every primary action, active state and selection. The canvas
+ * grid values are mirrored by GRID_COLOR / GRID_AXIS_COLOR in CircuitCanvas.tsx
  * because Konva cannot read CSS variables.
  */
 :root {
   color-scheme: dark;
 
   /* Surfaces */
-  --cb-page: #0d1219;
-  --cb-surface: #161d28;
-  --cb-surface-sunken: #111823;
-  --cb-surface-hover: #1f2937;
+  --cb-page: #050d1a;
+  --cb-surface: #0a1a2e;
+  --cb-surface-sunken: #071426;
+  --cb-surface-hover: #112b49;
 
   /* Lines */
-  --cb-border: #263140;
-  --cb-border-strong: #3a475a;
+  --cb-border: #193553;
+  --cb-border-strong: #2b5178;
 
   /* Text */
-  --cb-text: #e7eef8;
-  --cb-text-muted: #9aa7b8;
-  --cb-text-faint: #6f7c8f;
+  --cb-text: #edf6ff;
+  --cb-text-muted: #9db6d5;
+  --cb-text-faint: #6b87a8;
 
   /* Brand + semantic */
-  --cb-primary: #4c8dff;
-  --cb-primary-hover: #6aa2ff;
-  --cb-primary-soft: #1b2b45;
-  --cb-run: #2fbf71;
-  --cb-run-hover: #37d07e;
+  --cb-primary: #ffc928;
+  --cb-primary-hover: #ffd95e;
+  --cb-primary-soft: #2d260d;
+  --cb-on-primary: #07111f;
+  --cb-run: #ffc928;
+  --cb-run-hover: #ffd95e;
   --cb-stop: #ff6b57;
-  --cb-stop-hover: #ff8574;
-  --cb-warn: #e8a13a;
+  --cb-stop-hover: #ff8777;
+  --cb-stop-soft: #351d1d;
+  --cb-warn: #ffc928;
+  --cb-warn-soft: #2d260d;
+  --cb-warn-border: #5a4a18;
 
   /* Canvas */
-  --cb-canvas: #0b1017;
-  --cb-canvas-grid: #151d27;
-  --cb-canvas-grid-strong: #202b3a;
-  --cb-schematic-wire: #7fa9e0;
+  --cb-canvas: #040b16;
+  --cb-canvas-grid: #10233a;
+  --cb-canvas-grid-strong: #1a3b5d;
+  --cb-schematic-wire: #6fb3ff;
+  --cb-overlay: rgba(7, 20, 38, 0.94);
+  --cb-backdrop: rgba(2, 7, 14, 0.72);
 
   /* Radii */
   --cb-radius-sm: 6px;
@@ -47,9 +53,9 @@
   --cb-radius-pill: 999px;
 
   /* Elevation */
-  --cb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --cb-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
-  --cb-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.55);
+  --cb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --cb-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --cb-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.6);
 
   /* Spacing scale */
   --cb-space-1: 4px;

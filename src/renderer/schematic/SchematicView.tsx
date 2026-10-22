@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type JSX } from 'react'
+import { APP_NAME } from '../../shared/app'
 import { registerPdfCapture } from '../export/pdfCapture'
 import { registerPngCapture } from '../export/pngCapture'
 import { svgToPdfBase64 } from '../export/svgPdf'
@@ -16,8 +17,8 @@ import {
 
 type SchematicMode = 'simplified' | 'original'
 
-const MODE_STORAGE_KEY = 'hucad.schematicMode'
-const PAPER_STORAGE_KEY = 'hucad.schematicPaper'
+const MODE_STORAGE_KEY = 'vircuitcad.schematicMode'
+const PAPER_STORAGE_KEY = 'vircuitcad.schematicPaper'
 
 function readStoredMode(): SchematicMode {
   try {
@@ -525,7 +526,7 @@ function TitleBlock({ x, y, project, paper }: TitleBlockProps): JSX.Element {
     <g className="cb-sch-titleblock" data-testid="schematic-title-block">
       <rect x={x} y={y} width={230} height={54} />
       <text className="cb-sch-titleblock-name" x={x + 10} y={y + 19}>
-        HuCAD
+        {APP_NAME}
       </text>
       <text className="cb-sch-titleblock-project" x={x + 10} y={y + 35}>
         {project}

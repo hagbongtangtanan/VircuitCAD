@@ -1,9 +1,9 @@
 {
-  "name": "hucad",
-  "version": "0.2.11",
+  "name": "vircuitcad",
+  "version": "0.3.0",
   "private": true,
-  "description": "HuCAD: offline, local Tinkercad-style Arduino circuit simulator",
-  "author": "BIT-CT, CTU-San Francisco",
+  "description": "VircuitCAD: offline Arduino circuit simulator by Kheil27",
+  "author": "Kheil27",
   "license": "MIT",
   "main": "out/main/index.js",
   "scripts": {
@@ -60,5 +60,7 @@
     "vite": "8.3.4",
     "vitest": "5.0.5"
   },
-  "desktopName": "hucad.desktop"
+  "desktopName": "vircuitcad.desktop",
+  "productName": "VircuitCAD",
+  "copyright": "Copyright (c) 2026 Kheil27"
 }

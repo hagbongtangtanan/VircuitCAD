@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import { Circle, Ellipse, Group, Line, Rect, Text } from 'react-konva'
+import { Circle, Ellipse, Group, Line, Rect, Shape, Text } from 'react-konva'
 import type { PartInstance } from '../../shared/circuit'
 import { BREADBOARD_COLUMNS, BREADBOARD_LAYOUT, definitionOf } from './definitions'
 import {
@@ -143,6 +143,14 @@ export function PartBody({
             opacity={glow > 0.01 ? 0.35 + 0.6 * glow : 0.85}
           />
           <Line points={[28, 24, 33, 28]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Line
+            points={[29, 31, 35, 31]}
+            stroke={palette.glow}
+            strokeWidth={1.5}
+            opacity={0.9}
+            listening={false}
+          />
+          <Text x={31} y={32} text="+" fontSize={5} fill="#dce8f5" listening={false} />
         </>
       )
     }
@@ -600,8 +608,11 @@ export function PartBody({
             stroke={outline}
             strokeWidth={outlineWidth}
           />
-          <Rect x={56} y={10} width={8} height={10} fill="#c9ced8" />
+          <Rect x={56} y={10} width={8} height={10} rx={1.5} fill="#c9ced8" />
+          <Rect x={2} y={10} width={4} height={10} rx={1} fill="#c9ced8" />
           <Text x={10} y={11} text="1.5 V" fontSize={9} fill="#e6e9f0" />
+          <Text x={8} y={23} text="−" fontSize={8} fill="#9db6d5" fontWeight="bold" />
+          <Text x={58} y={23} text="+" fontSize={8} fill="#ffc928" fontWeight="bold" />
         </>
       )
 
@@ -618,9 +629,11 @@ export function PartBody({
             stroke={outline}
             strokeWidth={outlineWidth}
           />
-          <Rect x={16} y={2} width={8} height={6} fill="#c9ced8" />
-          <Rect x={36} y={2} width={8} height={6} fill="#c9ced8" />
+          <Rect x={16} y={2} width={8} height={6} rx={1} fill="#c9ced8" />
+          <Rect x={36} y={2} width={8} height={6} rx={1} fill="#c9ced8" />
           <Text x={16} y={18} text="9 V" fontSize={10} fill="#e6e9f0" />
+          <Text x={17} y={15} text="+" fontSize={7} fill="#ffc928" fontWeight="bold" />
+          <Text x={37} y={15} text="−" fontSize={7} fill="#9db6d5" fontWeight="bold" />
         </>
       )
 
@@ -656,10 +669,78 @@ export function PartBody({
             stroke={outline}
             strokeWidth={outlineWidth}
           />
-          <Rect x={18} y={70} width={34} height={44} cornerRadius={3} fill="#c9ced8" />
-          <Rect x={18} y={132} width={34} height={32} cornerRadius={3} fill="#11131a" />
-          <Rect x={70} y={70} width={56} height={56} cornerRadius={4} fill="#1b1f29" />
+          <Rect x={size.width - 116} y={6} width={100} height={13} rx={2} fill="#18212d" />
+          {Array.from({ length: 10 }, (_unused, index) => (
+            <Rect
+              key={`header-top-${index}`}
+              x={size.width - 111 + index * 9.5}
+              y={9}
+              width={5}
+              height={7}
+              rx={1}
+              fill="#d6b45b"
+            />
+          ))}
+          <Rect
+            x={size.width - 116}
+            y={size.height - 19}
+            width={100}
+            height={13}
+            rx={2}
+            fill="#18212d"
+          />
+          {Array.from({ length: 10 }, (_unused, index) => (
+            <Rect
+              key={`header-bottom-${index}`}
+              x={size.width - 111 + index * 9.5}
+              y={size.height - 16}
+              width={5}
+              height={7}
+              rx={1}
+              fill="#d6b45b"
+            />
+          ))}
+          <Rect
+            x={18}
+            y={70}
+            width={34}
+            height={44}
+            cornerRadius={3}
+            fill="#c9ced8"
+            stroke="#7e8da0"
+          />
+          <Rect x={22} y={74} width={26} height={36} rx={1} fill="#1b2836" />
+          <Rect
+            x={18}
+            y={132}
+            width={34}
+            height={32}
+            cornerRadius={3}
+            fill="#11131a"
+            stroke="#3f5065"
+          />
+          <Rect
+            x={70}
+            y={70}
+            width={56}
+            height={56}
+            cornerRadius={4}
+            fill="#1b1f29"
+            stroke="#3f5065"
+          />
+          <Rect
+            x={size.width - 22}
+            y={54}
+            width={18}
+            height={18}
+            rx={5}
+            fill="#1c2836"
+            stroke="#4d657d"
+          />
+          <Circle x={size.width - 13} y={63} radius={4} fill="#c9ced8" />
           <Text x={150} y={95} text="UNO R3" fontSize={18} fill="#e6e9f0" fontStyle="bold" />
+          <Text x={22} y={128} text="DIGITAL" fontSize={5.5} fill="#bfe7ef" />
+          <Text x={size.width - 108} y={27} text="POWER" fontSize={5.5} fill="#bfe7ef" />
         </>
       )
 
@@ -710,6 +791,30 @@ export function PartBody({
               />
             ))
           )}
+          <Shape
+            listening={false}
+            fill="#948f83"
+            sceneFunc={(context, shape) => {
+              const hole = 1.5
+              for (let column = 0; column < BREADBOARD_COLUMNS; column += 1) {
+                const x = firstColumnX + column * columnPitch
+                for (const half of halves) {
+                  for (let row = 0; row < 5; row += 1) {
+                    context.beginPath()
+                    context.arc(x, half.top + 8 + row * 10, hole, 0, Math.PI * 2)
+                    context.closePath()
+                    context.fillStrokeShape(shape)
+                  }
+                }
+                for (const rail of rails) {
+                  context.beginPath()
+                  context.arc(x, rail.y, hole, 0, Math.PI * 2)
+                  context.closePath()
+                  context.fillStrokeShape(shape)
+                }
+              }
+            }}
+          />
         </>
       )
     }
@@ -1522,7 +1627,7 @@ export function PartBody({
           <Text
             x={12}
             y={16}
-            text="Hello, HuCAD!"
+            text="VircuitCAD!"
             fontSize={part.type === 'lcd-16x2' ? 11 : 9}
             fill="#1e3a24"
             fontFamily="monospace"

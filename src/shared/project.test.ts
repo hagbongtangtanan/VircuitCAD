@@ -28,7 +28,7 @@ describe('project files', () => {
   })
 
   it('rejects JSON that is not a project', () => {
-    expect(() => parseProjectText('{"hello":1}')).toThrow(/not a HuCAD project/)
+    expect(() => parseProjectText('{"hello":1}')).toThrow(/not a VircuitCAD project/)
     expect(() => parseProjectText(JSON.stringify({ ...project, version: 99 }))).toThrow(
       ProjectFileError
     )
@@ -41,7 +41,7 @@ describe('project files', () => {
   })
 
   it('maps extensions to open behaviour', () => {
-    expect(openKindForPath('/tmp/demo.hucad')).toBe('project')
+    expect(openKindForPath('/tmp/demo.vircuit')).toBe('project')
     expect(openKindForPath('/tmp/demo.json')).toBe('project')
     expect(openKindForPath('/tmp/blink.ino')).toBe('sketch')
     expect(openKindForPath('/tmp/blink.hex')).toBeNull()
@@ -53,7 +53,7 @@ describe('project files', () => {
     expect(fileExtension('/home/me/no-extension')).toBe('')
     expect(fileBaseName('/home/me/Blink.ino')).toBe('Blink.ino')
     expect(fileStem('/home/me/Blink.ino')).toBe('Blink')
-    expect(fileStem('/home/me/traffic-light.hucad')).toBe('traffic-light')
+    expect(fileStem('/home/me/traffic-light.vircuit')).toBe('traffic-light')
     expect(fileStem('/home/me/no-extension')).toBe('no-extension')
   })
 

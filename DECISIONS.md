@@ -156,7 +156,7 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 
 ## 2026-10-19 — One project file, dialogs in the main process
 
-- **A project is a single `.hucad` JSON file containing both the circuit and the sketch.**
+- **A project is a single `.vircuit` JSON file containing both the circuit and the sketch.**
   Splitting them would let a user open a circuit without its code (or the reverse) and end up
   with a runnable-looking project that is not. The format has an explicit discriminator and
   version, is validated with the same zod schemas the canvas uses, and parses in the renderer's
@@ -167,7 +167,7 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   renderer from overwriting arbitrary files while still allowing plain "save" to work after
   the first save.
 - **Opening an `.ino` loads only the sketch.** The project path stays empty so the first save
-  asks for a `.hucad` location; the window title still shows the imported file name. Unknown
+  asks for a `.vircuit` location; the window title still shows the imported file name. Unknown
   extensions are rejected instead of guessed at.
 - **Dirty state is a comparison, not a change counter.** The store keeps snapshots of the last
   saved circuit document (reference equality) and sketch string. Any store update recomputes
@@ -204,10 +204,10 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 ## 2026-10-19 — Releasing through GitHub Releases
 
 - **Artifact names are space-free on purpose.** GitHub rewrites spaces in uploaded asset names,
-  so `HuCAD Circuits-0.1.0.AppImage` would land as `HuCAD.Circuits-0.1.0.AppImage` while
+  so `VircuitCAD Circuits-0.1.0.AppImage` would land as `VircuitCAD.Circuits-0.1.0.AppImage` while
   `latest-linux.yml` kept pointing at the original name — silently breaking both the download
   links and the updater. `artifactName` is now
-  `HuCAD-Circuits-<version>-<os>-<arch>.<ext>` on every platform.
+  `VircuitCAD-Circuits-<version>-<os>-<arch>.<ext>` on every platform.
 - **CI is the primary path; the script is the fallback.** `.github/workflows/release.yml`
   builds on Linux, Windows and macOS for every `v*` tag and publishes with
   `electron-builder --publish always`, while `scripts/release.mjs` publishes an already-built
@@ -226,11 +226,11 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   runners and electron-builder only warns about the missing resource directory. The canvas,
   wiring and simulator work there; compiling a sketch needs a matching toolchain first.
 
-## 2026-10-20 — CircuitBench UI shell
+## 2026-10-20 — VircuitCAD UI shell
 
 - **The product name is a constant, not a rename.** `APP_NAME` in `src/shared/app.ts` feeds the
   window title, the top bar, the HTML title and the document title. The npm package, repository
-  and installer artifact names stay `HuCAD Circuits` for now: renaming them changes download
+  and installer artifact names stay `VircuitCAD Circuits` for now: renaming them changes download
   URLs, the updater's `latest*.yml` and the GitHub release identity, which belongs to the
   packaging milestone rather than the shell.
 - **Light theme with a token layer.** `ui/tokens.css` owns every colour, radius, shadow and
@@ -260,14 +260,14 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   on the body rather than unmounting, so the monitor keeps its buffer and scroll position and
   the CDP probe can assert its presence without racing the auto-open behaviour.
 
-## 2026-10-20 — CircuitBench identity, interactive inputs, wider part library
+## 2026-10-20 — VircuitCAD identity, interactive inputs, wider part library
 
-- **This supersedes the "names stay HuCAD" note above.** The npm package is now `circuitbench`,
-  the desktop entry is `circuitbench.desktop`, the app id is `com.circuitbench.app` and artifacts
-  are `CircuitBench-<version>-<os>-<arch>.<ext>`. The GitHub repository stays `HuCAD` because
+- **This supersedes the "names stay VircuitCAD" note above.** The npm package is now `vircuitcad`,
+  the desktop entry is `vircuitcad.desktop`, the app id is `com.vircuitcad.app` and artifacts
+  are `VircuitCAD-<version>-<os>-<arch>.<ext>`. The GitHub repository stays `VircuitCAD` because
   existing releases, badges and clone URLs point at it; `publish.repo` therefore still says
-  `HuCAD`. The Electron user-data directory follows the package name, so the packaged app writes
-  to `~/.config/circuitbench`. The `.hucad` project extension and `hucad-project` format id are
+  `VircuitCAD`. The Electron user-data directory follows the package name, so the packaged app writes
+  to `~/.config/vircuitcad`. The `.vircuit` project extension and `vircuit-project` format id are
   kept as the on-disk format because changing them would invalidate every saved project and
   sample for no user-visible gain.
 - **Runtime input is separate from the document.** `store/interactionStore.ts` holds held
@@ -321,20 +321,20 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   cannot produce a compiler-less AppImage, and the release workflow runs `toolchain:verify` as an
   explicit gate. Windows and macOS still ship without a compiler (unchanged).
 
-## 2026-10-20 — Product name reverted to HuCAD
+## 2026-10-20 — Product name reverted to VircuitCAD
 
-- **`APP_NAME` is `HuCAD` again, and every derived identity follows it.** The npm package is
-  `hucad`, the desktop entry is `hucad.desktop`, the app id is `com.hucad.app`, artifacts are
-  `HuCAD-<version>-<os>-<arch>.<ext>`, and the packaged app writes to `~/.config/hucad`. This
-  supersedes both earlier naming entries; the repository was already `HuCAD`, so releases and
+- **`APP_NAME` is `VircuitCAD` again, and every derived identity follows it.** The npm package is
+  `vircuitcad`, the desktop entry is `vircuitcad.desktop`, the app id is `com.vircuit.app`, artifacts are
+  `VircuitCAD-<version>-<os>-<arch>.<ext>`, and the packaged app writes to `~/.config/vircuitcad`. This
+  supersedes both earlier naming entries; the repository was already `VircuitCAD`, so releases and
   clone URLs stay valid.
-- **Only user-facing identity changed.** The `.hucad` project extension, `hucad-project` format
+- **Only user-facing identity changed.** The `.vircuit` project extension, `vircuit-project` format
   id and drag MIME are unchanged because they are internal/file-format contracts; the two
-  CircuitBench paragraphs above are left as history rather than rewritten.
+  VircuitCAD paragraphs above are left as history rather than rewritten.
 
 ## 2026-10-20 — Releases are Windows-only
 
-- **CI builds and publishes only the Windows NSIS installer.** HuCAD is a Windows product, so
+- **CI builds and publishes only the Windows NSIS installer.** VircuitCAD is a Windows product, so
   the release matrix was collapsed to `windows-latest`; the Linux AppImage remains a local
   development/smoke-test build and is not published. Beating the concurrent-publish race is
   still handled by packaging on the runner and uploading from a separate job.
@@ -428,12 +428,12 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   junction objects; wires only connect pins, and the netlist already merges pins that share a
   net. A second press on a selected wire therefore starts a new wire at whichever of that wire's
   two pins is closer to the pointer rather than inventing a T-junction.
-- **Endpoint handles retarget in place.** Dragging the green handle runs the same
+- **Endpoint handles retarget in place.** Dragging the yellow handle runs the same
   `setWireEndpoint` validation as creation (no self-loop, no duplicate pair), keeping the manual
   bends while the route is recomputed. Dropping on empty space leaves the wire untouched.
 - **Power and ground colours are automatic.** `colorForWire` overrides the palette for `5V`,
-  `3V3`, `VIN` and `GND` pins so power rails stay visually consistent; only signal wires use the
-  selected palette colour.
+  `3V3`, `VIN` and `GND` pins: power is yellow and ground is blue, so rails stay visually
+  consistent; only signal wires use the selected palette colour.
 
 ## 2026-10-20 — Two schematic styles
 
@@ -448,7 +448,23 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   (R, C, D, SW, U…) and numbers per prefix; values use engineering units (10 kΩ). They are
   derived, so the document schema and undo history are untouched.
 - **The style is view state, not project state.** It lives in `localStorage` under
-  `hucad.schematicMode`; switching styles must not mark a project dirty or enter undo.
+  `vircuitcad.schematicMode`; switching styles must not mark a project dirty or enter undo.
 - **The original sheet is drawn inside the SVG.** A white paper rect, grid and title block
   travel through `rasterizeSvgToPng`, so the PNG matches the screen instead of the app's dark
   canvas backdrop.
+
+## 2026-10-23 — VircuitCAD rebrand and blue/yellow identity
+
+- **The product is now VircuitCAD by Kheil27.** `APP_NAME`, package metadata, app id,
+  desktop entry, installer artifact names, the About panel and release notes all follow the
+  new brand. The GitHub repository keeps its existing slug so downloads and remotes continue
+  to resolve.
+- **The native project extension is `.vircuit` and the format id is `vircuit-project`.** New
+  saves use the new extension; the JSON project structure and version are unchanged.
+- **Blue and yellow are the only interface accents.** Deep navy surfaces carry the workspace,
+  while yellow marks primary actions, active tabs, focus rings, selection outlines and
+  positive/build states. Green UI accents were removed; red remains reserved for stop and
+  error semantics.
+- **Part previews are drawn as recognisable physical components.** The library and canvas
+  share the same visual language: resistor colour bands, LED lenses and polarity marks, IC
+  notches and pins, battery terminals, breadboard sockets and switch actuators.

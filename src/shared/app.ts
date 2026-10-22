@@ -3,7 +3,12 @@
  * from here so a rename is a single-line change; `package.json` metadata is the
  * only other place the name appears.
  */
-export const APP_NAME = 'HuCAD'
+export const APP_NAME = 'VircuitCAD'
+
+/** Publisher shown in the About panel, installer metadata and copyright line. */
+export const APP_AUTHOR = 'Kheil27'
+
+export const APP_TAGLINE = 'Offline Arduino circuit simulator'
 
 /** Default project name shown until the user renames or opens a project. */
 export const DEFAULT_PROJECT_NAME = 'untitled'

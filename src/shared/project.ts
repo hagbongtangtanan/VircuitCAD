@@ -6,9 +6,9 @@ import { MAX_SKETCH_LENGTH } from './schemas'
  * The on-disk project format. A project is a circuit plus the sketch it runs;
  * keeping both in one file means "open" always restores a runnable state.
  */
-export const PROJECT_FORMAT = 'hucad-project'
+export const PROJECT_FORMAT = 'vircuit-project'
 export const PROJECT_VERSION = 1
-export const PROJECT_EXTENSION = 'hucad'
+export const PROJECT_EXTENSION = 'vircuit'
 export const SKETCH_EXTENSION = 'ino'
 export const HEX_EXTENSION = 'hex'
 export const PNG_EXTENSION = 'png'
@@ -61,7 +61,7 @@ export function parseProjectText(text: string): ProjectFile {
     const [issue] = result.error.issues
     const location = issue?.path.join('.') ?? 'document'
     throw new ProjectFileError(
-      `This is not a HuCAD project: ${location} — ${issue?.message ?? 'invalid data'}`
+      `This is not a VircuitCAD project: ${location} — ${issue?.message ?? 'invalid data'}`
     )
   }
   return result.data
@@ -146,7 +146,7 @@ export const exportPdfRequestSchema = z.strictObject({
 })
 
 /** Shipped examples; the name doubles as the file name and is never a path. */
-export const SAMPLE_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*\.hucad$/
+export const SAMPLE_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*\.vircuit$/
 
 export const openSampleRequestSchema = z.strictObject({
   name: z.string().regex(SAMPLE_NAME_PATTERN),
@@ -158,7 +158,7 @@ export interface SampleEntry {
 }
 
 export function sampleLabel(name: string): string {
-  const base = name.replace(/\.hucad$/, '').replace(/-/g, ' ')
+  const base = name.replace(/\.vircuit$/, '').replace(/-/g, ' ')
   return base.charAt(0).toUpperCase() + base.slice(1)
 }
 

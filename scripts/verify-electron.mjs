@@ -237,7 +237,7 @@ if (EXPECT_CANVAS) {
       let starter = null
       for (let attempt = 0; attempt < 40 && starter === null; attempt += 1) {
         await sleep(100)
-        starter = document.querySelector('[data-sample="blink-led.hucad"]')
+        starter = document.querySelector('[data-sample="blink-led.vircuit"]')
       }
       if (starter === null) return { error: 'the starters list did not render' }
       starter.click()
@@ -411,7 +411,7 @@ if (EXPECT_CANVAS) {
     if (!interaction.hasTopBar) failures.push('top bar missing')
     if (!interaction.hasToolbar) failures.push('canvas toolbar missing')
     if (!interaction.hasStatusBar) failures.push('status bar missing')
-    if (!/HuCAD/.test(interaction.title ?? '')) {
+    if (!/VircuitCAD/.test(interaction.title ?? '')) {
       failures.push(`window title does not use APP_NAME: ${interaction.title}`)
     }
     if (interaction.canvasCount < 1) failures.push('circuit canvas missing')

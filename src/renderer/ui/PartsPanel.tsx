@@ -5,6 +5,7 @@ import { screenToWorld, snapPoint } from '../canvas/geometry'
 import { useCircuitStore } from '../store/circuitStore'
 import { useProjectStore } from '../store/projectStore'
 import { useViewportStore } from '../store/viewportStore'
+import { PartPreview } from './PartPreview'
 
 /** Curated starting set, closest to what a beginner reaches for first. */
 const BASIC_TYPES = [
@@ -33,62 +34,6 @@ const SECTION_LABELS: Record<PanelSection, string> = {
   basic: 'Basic',
   all: 'All parts',
   starters: 'Starters',
-}
-
-const PART_COLORS: Record<string, [string, string]> = {
-  'arduino-uno': ['#0f8ea8', '#0b6d82'],
-  breadboard: ['#f2efe7', '#cdc7b8'],
-  led: ['#e5484d', '#b33236'],
-  resistor: ['#e0cfa4', '#bda875'],
-  'push-button': ['#4a5468', '#333a49'],
-  potentiometer: ['#586374', '#3d4557'],
-  buzzer: ['#3b4252', '#272d3a'],
-  capacitor: ['#5b6472', '#3d4557'],
-  diode: ['#3b4252', '#272d3a'],
-  inductor: ['#b9895a', '#8d6339'],
-  'slide-switch': ['#586374', '#3d4557'],
-  ldr: ['#e0c26b', '#b99b45'],
-  'rgb-led': ['#e5484d', '#2f7df6'],
-  'seven-segment': ['#2b2f3a', '#14171e'],
-  'dc-motor': ['#6b7488', '#464e60'],
-  'battery-aa': ['#3b4252', '#272d3a'],
-  'battery-9v': ['#3b4252', '#272d3a'],
-  'power-supply': ['#4a5468', '#333a49'],
-  'electrolytic-capacitor': ['#35678f', '#1f4260'],
-  'zener-diode': ['#3b4252', '#272d3a'],
-  'light-bulb': ['#f2cf6b', '#b58f2e'],
-  'vibration-motor': ['#6b7488', '#464e60'],
-  'gear-motor': ['#7b8497', '#525b6d'],
-  thermistor: ['#d9784a', '#9c4c28'],
-  'flex-sensor': ['#3b4252', '#272d3a'],
-  'force-sensor': ['#4a5468', '#333a49'],
-  photodiode: ['#3b4252', '#272d3a'],
-  phototransistor: ['#6b7488', '#464e60'],
-  'tilt-sensor': ['#59637a', '#3d4557'],
-  'soil-moisture': ['#2b5e3a', '#173d24'],
-  'gas-sensor': ['#6b7488', '#464e60'],
-  tmp36: ['#3b4252', '#272d3a'],
-  'coin-cell': ['#c9ced8', '#8d96a6'],
-  'solar-cell': ['#244b73', '#17365c'],
-  'potato-battery': ['#9c7a4b', '#6e5432'],
-  'dip-switch-4': ['#b53a3a', '#7d2626'],
-  'dip-switch-6': ['#b53a3a', '#7d2626'],
-  lm7805: ['#3b4252', '#272d3a'],
-  ld1117v33: ['#3b4252', '#272d3a'],
-}
-
-/** Flat two-tone glyph so a part is recognisable at a glance without art. */
-function PartThumbnail({ type }: { readonly type: string }): JSX.Element {
-  const [top, bottom] = PART_COLORS[type] ?? ['#586374', '#3d4557']
-  return (
-    <span
-      className="cb-part-thumb"
-      aria-hidden="true"
-      style={{ background: `linear-gradient(160deg, ${top}, ${bottom})` }}
-    >
-      <span className={`cb-part-glyph cb-part-glyph-${type}`} />
-    </span>
-  )
 }
 
 export function PartsPanel(): JSX.Element {
@@ -287,7 +232,7 @@ function PartCard({ definition, onDragStart, onClick }: PartCardProps): JSX.Elem
       onDragStart={(event) => onDragStart(event, definition)}
       onClick={() => onClick(definition)}
     >
-      <PartThumbnail type={definition.type} />
+      <PartPreview type={definition.type} />
       <span className="cb-part-card-label">{definition.label}</span>
     </button>
   )

@@ -72,7 +72,7 @@ describe('addWire', () => {
     store.addWire({ partId: 'led', pinId: 'cathode' }, { partId: 'uno', pinId: 'GND' })
 
     const wires = useCircuitStore.getState().document.wires
-    expect(wires.find((wire) => wire.from.pinId === '5V')?.color).toBe('#d64545')
+    expect(wires.find((wire) => wire.from.pinId === '5V')?.color).toBe('#ffc928')
     expect(wires.find((wire) => wire.to.pinId === 'GND')?.color).toBe('#2f7df6')
     expect(wires.find((wire) => wire.from.pinId === 'lead2')?.color).toBe(DEFAULT_WIRE_COLOR)
   })

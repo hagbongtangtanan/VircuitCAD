@@ -1,6 +1,6 @@
-appId: com.hucad.app
-productName: HuCAD
-copyright: Copyright (c) 2026 BIT-CT, CTU-San Francisco
+appId: com.kheil27.vircuitcad
+productName: VircuitCAD
+copyright: Copyright (c) 2026 Kheil27
 
 directories:
   buildResources: resources
@@ -25,11 +25,11 @@ extraResources:
   - from: resources/samples
     to: samples
     filter:
-      - '**/*.hucad'
+      - '**/*.vircuit'
 
 # GitHub replaces spaces in uploaded asset names, which would break the download
 # URLs embedded in latest-*.yml; every artifact name stays space-free.
-artifactName: HuCAD-${version}-${os}-${arch}.${ext}
+artifactName: VircuitCAD-${version}-${os}-${arch}.${ext}
 
 # Publishing target for `electron-builder --publish always` (CI) and
 # `npm run release`. `releaseType: release` makes a tag build public instead of
@@ -44,10 +44,10 @@ asar: true
 npmRebuild: false
 
 fileAssociations:
-  - ext: hucad
-    name: HuCAD Project
-    description: HuCAD circuit project
-    mimeType: application/x-hucad
+  - ext: vircuit
+    name: VircuitCAD Project
+    description: VircuitCAD circuit project
+    mimeType: application/x-vircuitcad
     role: Editor
 
 win:
@@ -63,5 +63,5 @@ linux:
   target:
     - AppImage
   category: Development
-  synopsis: Offline Arduino circuit simulator
+  synopsis: Offline Arduino circuit simulator by Kheil27
   syncDesktopName: true

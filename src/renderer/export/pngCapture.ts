@@ -21,7 +21,7 @@ export async function captureActiveViewPng(): Promise<string | null> {
 
 /** Solid backdrop behind the transparent Konva/SVG drawings. */
 export function canvasBackground(): string {
-  if (typeof document === 'undefined') return '#0b1017'
+  if (typeof document === 'undefined') return '#040b16'
   const value = getComputedStyle(document.documentElement).getPropertyValue('--cb-canvas').trim()
-  return value === '' ? '#0b1017' : value
+  return value === '' ? '#040b16' : value
 }

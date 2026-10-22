@@ -154,8 +154,8 @@ export async function compileWithToolchain(
 ): Promise<CompileResult> {
   const startedAt = Date.now()
   const env = toolchainEnv(toolchain)
-  const buildDir = await mkdtemp(join(tmpdir(), 'hucad-build-'))
-  const keepBuild = process.env.HUCAD_KEEP_BUILD === '1'
+  const buildDir = await mkdtemp(join(tmpdir(), 'vircuitcad-build-'))
+  const keepBuild = process.env.VIRCUITCAD_KEEP_BUILD === '1'
   const diagnostics: Diagnostic[] = []
 
   try {
@@ -341,7 +341,7 @@ export async function toolchainStatusOf(toolchain: Toolchain): Promise<Toolchain
 export const MISSING_TOOLCHAIN_STATUS: ToolchainStatus = {
   available: false,
   detail:
-    'Not installed. Reinstall HuCAD, or run "node scripts/fetch-toolchain.mjs" in a source checkout.',
+    'Not installed. Reinstall VircuitCAD, or run "node scripts/fetch-toolchain.mjs" in a source checkout.',
   avrGcc: null,
   arduinoCore: null,
 }
@@ -355,7 +355,7 @@ export const MISSING_TOOLCHAIN_RESULT: CompileResult = {
       line: null,
       column: null,
       message:
-        'The Arduino toolchain is missing from this installation. Reinstall HuCAD, or run "node scripts/fetch-toolchain.mjs" in a source checkout.',
+        'The Arduino toolchain is missing from this installation. Reinstall VircuitCAD, or run "node scripts/fetch-toolchain.mjs" in a source checkout.',
     },
   ],
   memory: null,

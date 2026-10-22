@@ -6,12 +6,12 @@ import { useInteractionStore } from '../store/interactionStore'
 import { Icon } from './Icon'
 
 const WIRE_PALETTE = [
-  { color: '#d64545', label: 'Positive (red)' },
+  { color: '#ffc928', label: 'Positive (yellow)' },
   { color: '#2f7df6', label: 'Negative / ground (blue)' },
-  { color: '#1f9d55', label: 'Signal (green)' },
-  { color: '#d99311', label: 'Signal (amber)' },
-  { color: '#7c5cff', label: 'Signal (purple)' },
-  { color: '#20242c', label: 'Signal (black)' },
+  { color: '#6fb3ff', label: 'Signal (sky)' },
+  { color: '#2e78c7', label: 'Signal (blue)' },
+  { color: '#b9d9ff', label: 'Signal (ice)' },
+  { color: '#101a27', label: 'Signal (ink)' },
 ] as const
 const EMPTY_DIP_BITS: readonly boolean[] = []
 const KEYPAD_KEYS = ['1', '2', '3', 'A', '4', '5', '6', 'B', '7', '8', '9', 'C', '*', '0', '#', 'D']
@@ -270,8 +270,8 @@ export function InspectorPanel(): JSX.Element | null {
             ))}
           </div>
           <p className="cb-placeholder">
-            Drag a yellow handle to move a bend, double-click it to remove it, or drag the blue
-            handle to add one. Green endpoint handles reconnect a wire; press Delete to remove it.
+            Drag a blue handle to move a bend, double-click it to remove it, or drag the round blue
+            handle to add one. Yellow endpoint handles reconnect a wire; press Delete to remove it.
           </p>
         </div>
       )}

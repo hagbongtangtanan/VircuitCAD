@@ -2,10 +2,10 @@ import { existsSync } from 'node:fs'
 import { extname } from 'node:path'
 
 /**
- * File types the OS may hand to HuCAD through argv or macOS `open-file`.
+ * File types the OS may hand to VircuitCAD through argv or macOS `open-file`.
  * Keep this in step with the file association in electron-builder.yml.
  */
-const LAUNCH_EXTENSIONS = new Set(['.hucad', '.ino', '.json'])
+const LAUNCH_EXTENSIONS = new Set(['.vircuit', '.ino', '.json'])
 
 /**
  * Finds the project/sketch path in a process argument list. Windows and Linux

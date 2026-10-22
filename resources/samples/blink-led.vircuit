@@ -1,5 +1,5 @@
 {
-  "format": "hucad-project",
+  "format": "vircuit-project",
   "version": 1,
   "circuit": {
     "version": 1,
@@ -50,7 +50,7 @@
           "partId": "r1",
           "pinId": "lead1"
         },
-        "color": "#4f9cf9",
+        "color": "#6fb3ff",
         "waypoints": [
           {
             "x": 200,
@@ -76,7 +76,7 @@
           "partId": "led1",
           "pinId": "anode"
         },
-        "color": "#4f9cf9",
+        "color": "#6fb3ff",
         "waypoints": [
           {
             "x": 575,
@@ -102,7 +102,7 @@
           "partId": "uno",
           "pinId": "GND"
         },
-        "color": "#4f9cf9",
+        "color": "#6fb3ff",
         "waypoints": [
           {
             "x": 630,

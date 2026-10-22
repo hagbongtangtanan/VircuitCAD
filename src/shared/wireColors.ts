@@ -1,8 +1,8 @@
-/** Conventional defaults for the two supply nets. */
-export const POWER_WIRE_COLOR = '#d64545'
+/** Supply defaults use the VircuitCAD yellow/blue identity. */
+export const POWER_WIRE_COLOR = '#ffc928'
 export const GROUND_WIRE_COLOR = '#2f7df6'
-/** Signal wires keep a distinct colour so power and ground remain obvious. */
-export const DEFAULT_WIRE_COLOR = '#1f9d55'
+/** Signal wires use a lighter blue so power and ground remain obvious. */
+export const DEFAULT_WIRE_COLOR = '#6fb3ff'
 
 export type WireKind = 'power' | 'ground' | 'signal'
 
