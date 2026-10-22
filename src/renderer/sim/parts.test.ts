@@ -173,6 +173,62 @@ describe('multi-element and power parts', () => {
     expect(result.ledCurrents.get('rgb:blue') ?? 0).toBe(0)
   })
 
+  it('drives every RGB channel when all three anodes are powered', () => {
+    const document = parse({
+      parts: [
+        UNO,
+        ...['red', 'green', 'blue'].map((channel, index) => ({
+          id: `r${channel}`,
+          type: 'resistor',
+          position: { x: 400, y: index * 60 },
+          rotation: 0,
+          props: { resistanceOhms: 220 },
+        })),
+        { id: 'rgb', type: 'rgb-led', position: { x: 500, y: 0 }, rotation: 0, props: {} },
+      ],
+      wires: [
+        ...['red', 'green', 'blue'].flatMap((channel, index) => [
+          {
+            id: `w${index}a`,
+            from: ['uno', '5V'] as [string, string],
+            to: [`r${channel}`, 'lead1'] as [string, string],
+          },
+          {
+            id: `w${index}b`,
+            from: [`r${channel}`, 'lead2'] as [string, string],
+            to: ['rgb', channel] as [string, string],
+          },
+        ]),
+        { id: 'wc', from: ['rgb', 'cathode'], to: ['uno', 'GND'] },
+      ],
+    })
+    const result = solve(document, { '5V': 5, GND: 0, GND2: 0 })
+
+    expect(result.ledCurrents.get('rgb:red') ?? 0).toBeGreaterThan(0.012)
+    expect(result.ledCurrents.get('rgb:green') ?? 0).toBeGreaterThan(0.012)
+    expect(result.ledCurrents.get('rgb:blue') ?? 0).toBeGreaterThan(0.006)
+  })
+
+  it('lights all RGB channels when their anodes share the 5V rail', () => {
+    const document = parse({
+      parts: [
+        UNO,
+        { id: 'rgb', type: 'rgb-led', position: { x: 500, y: 0 }, rotation: 0, props: {} },
+      ],
+      wires: [
+        { id: 'w1', from: ['uno', '5V'], to: ['rgb', 'red'] },
+        { id: 'w2', from: ['uno', '5V'], to: ['rgb', 'green'] },
+        { id: 'w3', from: ['uno', '5V'], to: ['rgb', 'blue'] },
+        { id: 'w4', from: ['rgb', 'cathode'], to: ['uno', 'GND'] },
+      ],
+    })
+    const result = solve(document, { '5V': 5, GND: 0, GND2: 0 })
+
+    expect(result.ledCurrents.get('rgb:red') ?? 0).toBeGreaterThan(0.001)
+    expect(result.ledCurrents.get('rgb:green') ?? 0).toBeGreaterThan(0.001)
+    expect(result.ledCurrents.get('rgb:blue') ?? 0).toBeGreaterThan(0.001)
+  })
+
   it('drives red and blue RGB channels together for mixed colours', () => {
     const document = parse({
       parts: [

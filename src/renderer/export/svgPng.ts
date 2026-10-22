@@ -34,18 +34,26 @@ function inlineComputedStyles(source: SVGSVGElement, clone: SVGSVGElement): void
   }
 }
 
+export function prepareSvgForExport(
+  svg: SVGSVGElement,
+  width: number,
+  height: number
+): SVGSVGElement {
+  const clone = svg.cloneNode(true) as SVGSVGElement
+  inlineComputedStyles(svg, clone)
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+  clone.setAttribute('width', String(width))
+  clone.setAttribute('height', String(height))
+  return clone
+}
+
 export async function rasterizeSvgToPng(
   svg: SVGSVGElement,
   width: number,
   height: number,
   pixelRatio = 2
 ): Promise<string | null> {
-  const clone = svg.cloneNode(true) as SVGSVGElement
-  inlineComputedStyles(svg, clone)
-  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-  clone.setAttribute('width', String(width))
-  clone.setAttribute('height', String(height))
-
+  const clone = prepareSvgForExport(svg, width, height)
   const markup = new XMLSerializer().serializeToString(clone)
   const url = URL.createObjectURL(new Blob([markup], { type: 'image/svg+xml;charset=utf-8' }))
 

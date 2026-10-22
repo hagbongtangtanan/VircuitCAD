@@ -36,13 +36,24 @@ export function App(): JSX.Element {
   const projectDirty = useProjectStore((state) => state.dirty)
   const saveProject = useProjectStore((state) => state.save)
   const openProject = useProjectStore((state) => state.open)
+  const openLaunch = useProjectStore((state) => state.openLaunch)
+  const receiveOpened = useProjectStore((state) => state.receiveOpened)
+  const reportError = useProjectStore((state) => state.reportError)
   const loadSamples = useProjectStore((state) => state.loadSamples)
   const fitToContent = useViewportStore((state) => state.fitToContent)
 
   useEffect(() => {
     void refreshToolchain()
     void loadSamples()
-  }, [refreshToolchain, loadSamples])
+    void openLaunch()
+
+    const stopOpened = window.api.onFileOpened((opened) => receiveOpened(opened))
+    const stopError = window.api.onFileOpenError((message) => reportError(message))
+    return () => {
+      stopOpened()
+      stopError()
+    }
+  }, [loadSamples, openLaunch, receiveOpened, refreshToolchain, reportError])
 
   useEffect(() => {
     updateWindowTitle(projectName, projectDirty)

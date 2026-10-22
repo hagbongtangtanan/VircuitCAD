@@ -1,25 +1,23 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type JSX } from 'react'
+import { registerPdfCapture } from '../export/pdfCapture'
 import { registerPngCapture } from '../export/pngCapture'
+import { svgToPdfBase64 } from '../export/svgPdf'
 import { rasterizeSvgToPng } from '../export/svgPng'
 import { definitionOf } from '../parts/definitions'
 import { useCircuitStore } from '../store/circuitStore'
 import { useProjectStore } from '../store/projectStore'
-import { partValue, referenceDesignators } from './annotations'
-import { layoutSchematic, type SchematicPartNode } from './layout'
-
-/**
- * One colour per net, so wires that share a channel stay distinguishable even
- * when their routes run side by side.
- */
-const NET_COLORS = ['#6ea8ff', '#63d3a6', '#e8a13a', '#c58cff', '#ff8f9c', '#61d4e0'] as const
+import {
+  fitSchematicToPaper,
+  layoutSchematic,
+  PAPER_PRESETS,
+  type SchematicPaper,
+  type SchematicPartNode,
+} from './layout'
 
 type SchematicMode = 'simplified' | 'original'
 
 const MODE_STORAGE_KEY = 'hucad.schematicMode'
-
-function netColor(netId: number): string {
-  return NET_COLORS[netId % NET_COLORS.length] ?? NET_COLORS[0]
-}
+const PAPER_STORAGE_KEY = 'hucad.schematicPaper'
 
 function readStoredMode(): SchematicMode {
   try {
@@ -27,6 +25,21 @@ function readStoredMode(): SchematicMode {
   } catch {
     return 'simplified'
   }
+}
+
+function readStoredPaper(): SchematicPaper {
+  try {
+    const value = localStorage.getItem(PAPER_STORAGE_KEY)
+    return value === 'letter' || value === 'legal' ? value : 'a4'
+  } catch {
+    return 'a4'
+  }
+}
+
+/** Truncates on-screen labels that would otherwise leave their symbol box. */
+function fittedLabel(text: string, width: number, fontSize: number): string {
+  const maxCharacters = Math.max(4, Math.floor((width - 20) / (fontSize * 0.6)))
+  return text.length <= maxCharacters ? text : `${text.slice(0, maxCharacters - 1)}…`
 }
 
 /** Symbol artwork shared by the compact cards and the engineering sheet. */
@@ -332,7 +345,7 @@ function GlyphFor({ node }: { readonly node: SchematicPartNode }): JSX.Element |
   const body = <GlyphBody type={node.type} />
   if (body === null) return null
 
-  const cx = node.x + 116
+  const cx = node.x + node.width / 2
   const cy = node.y + node.height / 2
 
   return (
@@ -504,9 +517,10 @@ interface TitleBlockProps {
   readonly x: number
   readonly y: number
   readonly project: string
+  readonly paper: string
 }
 
-function TitleBlock({ x, y, project }: TitleBlockProps): JSX.Element {
+function TitleBlock({ x, y, project, paper }: TitleBlockProps): JSX.Element {
   return (
     <g className="cb-sch-titleblock" data-testid="schematic-title-block">
       <rect x={x} y={y} width={230} height={54} />
@@ -518,7 +532,7 @@ function TitleBlock({ x, y, project }: TitleBlockProps): JSX.Element {
       </text>
       <line x1={x + 10} y1={y + 41} x2={x + 220} y2={y + 41} />
       <text className="cb-sch-titleblock-sheet" x={x + 220} y={y + 50} textAnchor="end">
-        Schematic · Sheet 1/1
+        {paper} · Sheet 1/1
       </text>
     </g>
   )
@@ -551,24 +565,20 @@ export function SchematicView(): JSX.Element {
   const document = useCircuitStore((state) => state.document)
   const projectName = useProjectStore((state) => state.name)
   const [mode, setMode] = useState<SchematicMode>(readStoredMode)
+  const [paperSize, setPaperSize] = useState<SchematicPaper>(readStoredPaper)
   const layout = useMemo(
     () => layoutSchematic(document, mode === 'original' ? { roomyTwoPin: true } : {}),
     [document, mode]
   )
-  const designators = useMemo(() => {
-    const byId = new Map(document.parts.map((part) => [part.id, part]))
-    return referenceDesignators(
-      layout.nodes.flatMap((node) => {
-        const part = byId.get(node.id)
-        return part === undefined ? [] : [part]
-      })
-    )
-  }, [document.parts, layout.nodes])
   const empty = layout.nodes.length === 0
   const svgRef = useRef<SVGSVGElement | null>(null)
   const original = mode === 'original'
-  const drawWidth = layout.width
-  const drawHeight = original ? layout.height + 84 : layout.height
+  const paper = PAPER_PRESETS[paperSize]
+
+  const sheet = useMemo(() => fitSchematicToPaper(layout, paperSize), [layout, paperSize])
+
+  const drawWidth = original ? paper.width : layout.width
+  const drawHeight = original ? paper.height : layout.height
 
   useEffect(() => {
     try {
@@ -578,13 +588,138 @@ export function SchematicView(): JSX.Element {
     }
   }, [mode])
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(PAPER_STORAGE_KEY, paperSize)
+    } catch {
+      // Persistence is a convenience; the drawing still works without it.
+    }
+  }, [paperSize])
+
   const capturePng = useCallback(async (): Promise<string | null> => {
     const svg = svgRef.current
     if (svg === null) return null
     return rasterizeSvgToPng(svg, drawWidth, drawHeight, 2)
   }, [drawHeight, drawWidth])
 
+  const capturePdf = useCallback(async (): Promise<string | null> => {
+    const svg = svgRef.current
+    if (!original || svg === null) return null
+    return svgToPdfBase64(svg, drawWidth, drawHeight)
+  }, [drawHeight, drawWidth, original])
+
   useEffect(() => registerPngCapture(capturePng), [capturePng])
+
+  useEffect(() => {
+    if (!original) return undefined
+    return registerPdfCapture(capturePdf)
+  }, [capturePdf, original])
+
+  const wires = (
+    <g className="cb-sch-wires">
+      {layout.wires.map((wire) => (
+        <g key={wire.netId} data-testid="schematic-wire" data-net-id={wire.netId}>
+          {wire.paths.map((points, index) => (
+            <polyline
+              key={index}
+              className={original ? 'cb-sch-original-wire' : 'cb-sch-wire'}
+              style={{ stroke: wire.color }}
+              points={points.map((point) => `${point.x},${point.y}`).join(' ')}
+            />
+          ))}
+          {wire.junctions.map((point, index) => (
+            <circle
+              key={`junction-${index}`}
+              className={original ? 'cb-sch-original-junction' : 'cb-sch-junction'}
+              style={{ fill: wire.color }}
+              cx={point.x}
+              cy={point.y}
+              r={3.2}
+            />
+          ))}
+        </g>
+      ))}
+    </g>
+  )
+
+  const nodes = original ? (
+    <g className="cb-sch-original-nodes">
+      {layout.nodes.map((node) => (
+        <g
+          key={node.id}
+          className="cb-sch-original-part"
+          data-testid="schematic-part"
+          data-part-id={node.id}
+          data-part-type={node.type}
+        >
+          <title>{node.label}</title>
+          <OriginalPart node={node} designator={node.designator} value={node.value} />
+        </g>
+      ))}
+    </g>
+  ) : (
+    <g className="cb-sch-nodes">
+      {layout.nodes.map((node) => {
+        const labelX = node.board ? node.x + 10 : node.x + 10
+        const labelAnchor = 'start'
+        return (
+          <g
+            key={node.id}
+            data-testid="schematic-part"
+            data-part-id={node.id}
+            data-part-type={node.type}
+          >
+            <title>{`${node.designator} · ${node.label}${node.value === null ? '' : ` · ${node.value}`}`}</title>
+            <rect
+              className={node.board ? 'cb-sch-node cb-sch-node-board' : 'cb-sch-node'}
+              x={node.x}
+              y={node.y}
+              width={node.width}
+              height={node.height}
+              rx={7}
+            />
+            <text className="cb-sch-node-label" x={labelX} y={node.y + 17}>
+              {fittedLabel(node.label, node.width - 48, 12)}
+            </text>
+            <text
+              className="cb-sch-designator"
+              x={node.x + node.width - 10}
+              y={node.y + 17}
+              textAnchor="end"
+            >
+              {node.designator}
+            </text>
+            {node.value === null ? null : (
+              <text className="cb-sch-value" x={labelX} y={node.y + node.height - 7}>
+                {fittedLabel(node.value, node.width - 20, 9)}
+              </text>
+            )}
+            <GlyphFor node={node} />
+            {node.pins.map((pin) => (
+              <g key={pin.key} data-pin={pin.key}>
+                <line
+                  className="cb-sch-pin"
+                  x1={pin.side === 'right' ? node.x + node.width : node.x}
+                  y1={pin.y}
+                  x2={pin.x}
+                  y2={pin.y}
+                />
+                <circle className="cb-sch-pin-dot" cx={pin.x} cy={pin.y} r={2.2} />
+                <text
+                  className={`cb-sch-pin-label cb-sch-pin-${pin.kind}`}
+                  x={labelX}
+                  y={pin.y + 4}
+                  textAnchor={labelAnchor}
+                >
+                  {fittedLabel(pin.label, node.width - 20, 11)}
+                </text>
+              </g>
+            ))}
+          </g>
+        )
+      })}
+    </g>
+  )
 
   return (
     <section className="cb-schematic" data-testid="schematic-view" aria-label="Schematic">
@@ -592,8 +727,27 @@ export function SchematicView(): JSX.Element {
         <span className="cb-schematic-title">Schematic</span>
         <span className="cb-schematic-hint">
           Read-only · {layout.nodes.length} {layout.nodes.length === 1 ? 'part' : 'parts'} ·{' '}
-          {layout.wires.length} {layout.wires.length === 1 ? 'net' : 'nets'}
+          {layout.wires.length} schematic {layout.wires.length === 1 ? 'net' : 'nets'}
         </span>
+        <label className="cb-sch-paper-picker">
+          <span>Page</span>
+          <select
+            value={paperSize}
+            data-testid="schematic-paper"
+            onChange={(event) => setPaperSize(event.target.value as SchematicPaper)}
+          >
+            {(
+              Object.entries(PAPER_PRESETS) as [
+                SchematicPaper,
+                (typeof PAPER_PRESETS)[SchematicPaper],
+              ][]
+            ).map(([value, preset]) => (
+              <option key={value} value={value}>
+                {preset.label}
+              </option>
+            ))}
+          </select>
+        </label>
         <div className="cb-sch-mode" role="group" aria-label="Schematic style">
           <button
             type="button"
@@ -636,142 +790,27 @@ export function SchematicView(): JSX.Element {
             aria-label="Schematic of the current circuit"
             data-testid="schematic-svg"
             data-schematic-mode={mode}
+            data-schematic-paper={original ? paperSize : 'none'}
             preserveAspectRatio="xMidYMid meet"
           >
             {original ? (
               <>
                 <Paper width={drawWidth} height={drawHeight} />
-                <g className="cb-sch-wires">
-                  {layout.wires.map((wire) => (
-                    <g key={wire.netId} data-testid="schematic-wire" data-net-id={wire.netId}>
-                      {wire.paths.map((points, index) => (
-                        <polyline
-                          key={index}
-                          className="cb-sch-original-wire"
-                          points={points.map((point) => `${point.x},${point.y}`).join(' ')}
-                        />
-                      ))}
-                      {wire.junctions.map((point, index) => (
-                        <circle
-                          key={`junction-${index}`}
-                          className="cb-sch-original-junction"
-                          cx={point.x}
-                          cy={point.y}
-                          r={3.2}
-                        />
-                      ))}
-                    </g>
-                  ))}
+                <g transform={`translate(${sheet.x} ${sheet.y}) scale(${sheet.scale})`}>
+                  {wires}
+                  {nodes}
                 </g>
-
-                <g className="cb-sch-original-nodes">
-                  {layout.nodes.map((node) => {
-                    const part = document.parts.find((candidate) => candidate.id === node.id)
-                    const designator = designators.get(node.id) ?? '?'
-                    return (
-                      <g
-                        key={node.id}
-                        className="cb-sch-original-part"
-                        data-testid="schematic-part"
-                        data-part-id={node.id}
-                        data-part-type={node.type}
-                      >
-                        <title>{node.label}</title>
-                        <OriginalPart
-                          node={node}
-                          designator={designator}
-                          value={part === undefined ? null : partValue(part)}
-                        />
-                      </g>
-                    )
-                  })}
-                </g>
-
-                <TitleBlock x={drawWidth - 242} y={drawHeight - 66} project={projectName} />
+                <TitleBlock
+                  x={drawWidth - 242}
+                  y={drawHeight - 66}
+                  project={projectName}
+                  paper={paper.label}
+                />
               </>
             ) : (
               <>
-                <g className="cb-sch-wires">
-                  {layout.wires.map((wire) => {
-                    const color = netColor(wire.netId)
-                    return (
-                      <g key={wire.netId} data-testid="schematic-wire" data-net-id={wire.netId}>
-                        {wire.paths.map((points, index) => (
-                          <polyline
-                            key={index}
-                            className="cb-sch-wire"
-                            style={{ stroke: color }}
-                            points={points.map((point) => `${point.x},${point.y}`).join(' ')}
-                          />
-                        ))}
-                        {wire.junctions.map((point, index) => (
-                          <circle
-                            key={`junction-${index}`}
-                            className="cb-sch-junction"
-                            style={{ fill: color }}
-                            cx={point.x}
-                            cy={point.y}
-                            r={3.2}
-                          />
-                        ))}
-                      </g>
-                    )
-                  })}
-                </g>
-
-                <g className="cb-sch-nodes">
-                  {layout.nodes.map((node) => {
-                    const labelX = node.board ? node.x + node.width - 10 : node.x + 10
-                    const labelAnchor = node.board ? 'end' : 'start'
-                    return (
-                      <g
-                        key={node.id}
-                        data-testid="schematic-part"
-                        data-part-id={node.id}
-                        data-part-type={node.type}
-                      >
-                        <title>{node.label}</title>
-                        <rect
-                          className={node.board ? 'cb-sch-node cb-sch-node-board' : 'cb-sch-node'}
-                          x={node.x}
-                          y={node.y}
-                          width={node.width}
-                          height={node.height}
-                          rx={7}
-                        />
-                        <text
-                          className="cb-sch-node-label"
-                          x={node.board ? node.x + 12 : node.x + node.width - 12}
-                          y={node.y + 19}
-                          textAnchor={node.board ? 'start' : 'end'}
-                        >
-                          {node.label}
-                        </text>
-                        <GlyphFor node={node} />
-                        {node.pins.map((pin) => (
-                          <g key={pin.key} data-pin={pin.key}>
-                            <line
-                              className="cb-sch-pin"
-                              x1={pin.side === 'right' ? node.x + node.width : node.x}
-                              y1={pin.y}
-                              x2={pin.x}
-                              y2={pin.y}
-                            />
-                            <circle className="cb-sch-pin-dot" cx={pin.x} cy={pin.y} r={2.2} />
-                            <text
-                              className={`cb-sch-pin-label cb-sch-pin-${pin.kind}`}
-                              x={labelX}
-                              y={pin.y + 4}
-                              textAnchor={labelAnchor}
-                            >
-                              {pin.label}
-                            </text>
-                          </g>
-                        ))}
-                      </g>
-                    )
-                  })}
-                </g>
+                {wires}
+                {nodes}
               </>
             )}
           </svg>

@@ -58,8 +58,13 @@ export const LED_FORWARD_VOLTAGE: Readonly<Record<LedColor, number>> = {
   white: 3,
 }
 
-/** The forward voltage never has a truly vertical knee; this keeps the matrix sane. */
-const LED_SERIES_RESISTANCE_OHMS = 0.5
+/**
+ * Dynamic resistance past the LED knee. A higher value than SPICE's near-zero
+ * slope keeps parallel dice on the same supply from clamping the rail to the
+ * lowest forward voltage, so an RGB package with R, G and B powered can mix
+ * white even when its anodes share one terminal.
+ */
+const LED_SERIES_RESISTANCE_OHMS = 6
 /** Leak from every node to the reference, so floating nets have a defined 0 V. */
 const NODE_LEAK_CONDUCTANCE = 1e-9
 const OPEN_RESISTANCE_OHMS = 1e9

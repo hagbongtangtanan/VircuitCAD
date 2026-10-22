@@ -5,6 +5,7 @@ import {
   createProject,
   exportPngRequestSchema,
   fileBaseName,
+  fileStem,
   fileExtension,
   openKindForPath,
   parseProjectText,
@@ -51,6 +52,9 @@ describe('project files', () => {
     expect(fileExtension('/home/me/Blink.INO')).toBe('ino')
     expect(fileExtension('/home/me/no-extension')).toBe('')
     expect(fileBaseName('/home/me/Blink.ino')).toBe('Blink.ino')
+    expect(fileStem('/home/me/Blink.ino')).toBe('Blink')
+    expect(fileStem('/home/me/traffic-light.hucad')).toBe('traffic-light')
+    expect(fileStem('/home/me/no-extension')).toBe('no-extension')
   })
 
   it('caps imported sketches', () => {

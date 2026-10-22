@@ -26,6 +26,7 @@ function FileMenu(): JSX.Element {
   const exportSketch = useProjectStore((state) => state.exportSketch)
   const exportHex = useProjectStore((state) => state.exportHex)
   const exportPng = useProjectStore((state) => state.exportPng)
+  const exportPdf = useProjectStore((state) => state.exportPdf)
   const hasHex = useSketchStore((state) => state.hex !== null)
 
   useEffect(() => {
@@ -116,6 +117,14 @@ function FileMenu(): JSX.Element {
             onClick={() => run(exportPng)}
           >
             Export view as PNG…
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            data-testid="export-pdf"
+            onClick={() => run(exportPdf)}
+          >
+            Save schematic as PDF…
           </button>
         </div>
       )}

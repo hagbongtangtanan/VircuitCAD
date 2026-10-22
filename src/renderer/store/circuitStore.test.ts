@@ -41,6 +41,30 @@ describe('addWire', () => {
     expect(useCircuitStore.getState().document.wires).toHaveLength(1)
   })
 
+  it('gives every terminal at most one wire', () => {
+    const store = useCircuitStore.getState()
+    expect(
+      store.addWire({ partId: 'uno', pinId: 'D13' }, { partId: 'r1', pinId: 'lead1' })
+    ).not.toBeNull()
+    expect(
+      useCircuitStore
+        .getState()
+        .addWire({ partId: 'uno', pinId: 'D13' }, { partId: 'led', pinId: 'anode' })
+    ).toBeNull()
+    expect(
+      useCircuitStore
+        .getState()
+        .addWire({ partId: 'uno', pinId: '5V' }, { partId: 'r1', pinId: 'lead1' })
+    ).toBeNull()
+    expect(useCircuitStore.getState().document.wires).toHaveLength(1)
+
+    expect(
+      useCircuitStore
+        .getState()
+        .addWire({ partId: 'uno', pinId: '5V' }, { partId: 'r1', pinId: 'lead2' })
+    ).not.toBeNull()
+  })
+
   it('colours power and ground leads conventionally', () => {
     const store = useCircuitStore.getState()
     store.addWire({ partId: 'uno', pinId: '5V' }, { partId: 'r1', pinId: 'lead1' })
@@ -49,7 +73,7 @@ describe('addWire', () => {
 
     const wires = useCircuitStore.getState().document.wires
     expect(wires.find((wire) => wire.from.pinId === '5V')?.color).toBe('#d64545')
-    expect(wires.find((wire) => wire.to.pinId === 'GND')?.color).toBe('#20242c')
+    expect(wires.find((wire) => wire.to.pinId === 'GND')?.color).toBe('#2f7df6')
     expect(wires.find((wire) => wire.from.pinId === 'lead2')?.color).toBe(DEFAULT_WIRE_COLOR)
   })
 
@@ -95,6 +119,20 @@ describe('setWireEndpoint', () => {
       useCircuitStore.getState().setWireEndpoint(second, 'from', { partId: 'uno', pinId: 'D13' })
     ).toBe(false)
 
+    expect(
+      useCircuitStore.getState().setWireEndpoint(second, 'from', { partId: 'r1', pinId: 'lead2' })
+    ).toBe(true)
+  })
+
+  it('will not move a wire onto a terminal that already has one', () => {
+    const store = useCircuitStore.getState()
+    const first = store.addWire({ partId: 'uno', pinId: 'D13' }, { partId: 'r1', pinId: 'lead1' })
+    const second = store.addWire({ partId: 'uno', pinId: '5V' }, { partId: 'led', pinId: 'anode' })
+    if (first === null || second === null) throw new Error('wires were not created')
+
+    expect(
+      useCircuitStore.getState().setWireEndpoint(second, 'from', { partId: 'r1', pinId: 'lead1' })
+    ).toBe(false)
     expect(
       useCircuitStore.getState().setWireEndpoint(second, 'from', { partId: 'r1', pinId: 'lead2' })
     ).toBe(true)

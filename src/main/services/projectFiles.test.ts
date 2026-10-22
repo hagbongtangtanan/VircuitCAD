@@ -8,6 +8,7 @@ import {
   openFile,
   readProjectFile,
   writeHexFile,
+  writePdfFile,
   writePngFile,
   writeProjectFile,
   writeSketchFile,
@@ -95,6 +96,21 @@ describe('project files on disk', () => {
     await expect(
       writePngFile(join(directory, 'fake.png'), 'data:image/jpeg;base64,abcd')
     ).rejects.toThrow(/not a PNG/)
+  })
+
+  it('writes a validated PDF payload', async () => {
+    const path = join(directory, 'schematic.pdf')
+    const data = Buffer.from('%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF\n').toString('base64')
+    await writePdfFile(path, data)
+
+    const bytes = await readFile(path)
+    expect(bytes.subarray(0, 5).toString('ascii')).toBe('%PDF-')
+  })
+
+  it('rejects a payload that is not a PDF', async () => {
+    await expect(
+      writePdfFile(join(directory, 'fake.pdf'), Buffer.from('not a pdf').toString('base64'))
+    ).rejects.toThrow(/not a PDF/)
   })
 
   it('keeps the serialized project stable for diffing', async () => {

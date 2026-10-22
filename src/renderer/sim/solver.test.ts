@@ -64,7 +64,7 @@ describe('solveCircuit', () => {
     const result = solveCircuit(document, netlist, driversFor({ '5V': 5, GND: 0, GND2: 0 }))
 
     const current = result.ledCurrents.get('led1') ?? 0
-    // (5 - 1.8) / (220 + 0.5 source + 0.5 LED + 0.1 ground)
+    // (5 - 1.8) / (220 + 0.5 source + 6 LED + 0.1 ground)
     expect(current).toBeGreaterThan(0.014)
     expect(current).toBeLessThan(0.015)
   })
@@ -230,7 +230,7 @@ describe('solveCircuit', () => {
       ])
     )
 
-    // (5 - 3.6) / (220 + 1.0 ohms of LED drops + 0.6 of sources)
+    // (5 - 3.6) / (220 + 12 ohms of LED drops + 0.6 of sources)
     expect(result.ledCurrents.get('led1') ?? 0).toBeGreaterThan(0.006)
     expect(result.ledCurrents.get('led1') ?? 0).toBeLessThan(0.007)
     expect(result.ledCurrents.get('led2')).toBeCloseTo(result.ledCurrents.get('led1') ?? 0, 6)

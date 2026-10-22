@@ -395,3 +395,18 @@ export function emptyCircuitDocument(): CircuitDocument {
 export function pinKey(ref: PinRef): string {
   return `${ref.partId}:${ref.pinId}`
 }
+
+export function pinRefEquals(a: PinRef, b: PinRef): boolean {
+  return a.partId === b.partId && a.pinId === b.pinId
+}
+
+/**
+ * A physical terminal accepts exactly one wire. `ignoreWireId` lets a wire keep
+ * its own endpoints while it is being edited.
+ */
+export function pinHasWire(wires: readonly Wire[], ref: PinRef, ignoreWireId?: string): boolean {
+  return wires.some(
+    (wire) =>
+      wire.id !== ignoreWireId && (pinRefEquals(wire.from, ref) || pinRefEquals(wire.to, ref))
+  )
+}

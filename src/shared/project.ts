@@ -12,6 +12,7 @@ export const PROJECT_EXTENSION = 'hucad'
 export const SKETCH_EXTENSION = 'ino'
 export const HEX_EXTENSION = 'hex'
 export const PNG_EXTENSION = 'png'
+export const PDF_EXTENSION = 'pdf'
 
 export const projectFileSchema = z.strictObject({
   format: z.literal(PROJECT_FORMAT),
@@ -82,6 +83,13 @@ export function fileBaseName(path: string): string {
   return path.slice(path.lastIndexOf('/') + 1)
 }
 
+/** Human-facing document name: the basename without its extension. */
+export function fileStem(path: string): string {
+  const base = fileBaseName(path)
+  const extension = fileExtension(path)
+  return extension === '' ? base : base.slice(0, -(extension.length + 1))
+}
+
 /** Chooses how an opened file is interpreted from its extension. */
 export function openKindForPath(path: string): OpenFileKind | null {
   const extension = fileExtension(path)
@@ -121,9 +129,17 @@ export const exportHexRequestSchema = z.strictObject({
 export const savedFileSchema = z.strictObject({ path: z.string().min(1) })
 
 const PNG_DATA_URL_PATTERN = /^data:image\/png;base64,[A-Za-z0-9+/=]+$/
+const PDF_BASE64_PATTERN = /^[A-Za-z0-9+/=]+$/
 
 export const exportPngRequestSchema = z.strictObject({
   dataUrl: z.string().min(32).max(32_000_000).regex(PNG_DATA_URL_PATTERN),
+  /** Base name used for the save dialog; the main process strips path characters. */
+  name: z.string().min(1).max(120),
+  path: z.string().min(1).nullable(),
+})
+
+export const exportPdfRequestSchema = z.strictObject({
+  data: z.string().min(32).max(48_000_000).regex(PDF_BASE64_PATTERN),
   /** Base name used for the save dialog; the main process strips path characters. */
   name: z.string().min(1).max(120),
   path: z.string().min(1).nullable(),
@@ -152,4 +168,5 @@ export type SaveProjectRequest = z.infer<typeof saveProjectRequestSchema>
 export type ExportSketchRequest = z.infer<typeof exportSketchRequestSchema>
 export type ExportHexRequest = z.infer<typeof exportHexRequestSchema>
 export type ExportPngRequest = z.infer<typeof exportPngRequestSchema>
+export type ExportPdfRequest = z.infer<typeof exportPdfRequestSchema>
 export type SavedFile = z.infer<typeof savedFileSchema>

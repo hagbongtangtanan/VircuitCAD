@@ -5,7 +5,14 @@ import { useCircuitStore } from '../store/circuitStore'
 import { useInteractionStore } from '../store/interactionStore'
 import { Icon } from './Icon'
 
-const WIRE_PALETTE = ['#2f7df6', '#1f9d55', '#d64545', '#d99311', '#7c5cff', '#20242c'] as const
+const WIRE_PALETTE = [
+  { color: '#d64545', label: 'Positive (red)' },
+  { color: '#2f7df6', label: 'Negative / ground (blue)' },
+  { color: '#1f9d55', label: 'Signal (green)' },
+  { color: '#d99311', label: 'Signal (amber)' },
+  { color: '#7c5cff', label: 'Signal (purple)' },
+  { color: '#20242c', label: 'Signal (black)' },
+] as const
 const EMPTY_DIP_BITS: readonly boolean[] = []
 const KEYPAD_KEYS = ['1', '2', '3', 'A', '4', '5', '6', 'B', '7', '8', '9', 'C', '*', '0', '#', 'D']
 
@@ -243,20 +250,22 @@ export function InspectorPanel(): JSX.Element | null {
             />
           </label>
           <div className="cb-swatches" role="group" aria-label="Wire color palette">
-            {WIRE_PALETTE.map((color) => (
+            {WIRE_PALETTE.map((swatch) => (
               <button
-                key={color}
+                key={swatch.color}
                 type="button"
                 className={[
                   'cb-swatch',
-                  color.toLowerCase() === selectedWire.color.toLowerCase() ? 'is-active' : '',
+                  swatch.color.toLowerCase() === selectedWire.color.toLowerCase()
+                    ? 'is-active'
+                    : '',
                 ]
                   .filter(Boolean)
                   .join(' ')}
-                style={{ background: color }}
-                title={`Use ${color}`}
-                aria-label={`Use ${color}`}
-                onClick={() => setWireColor(color)}
+                style={{ background: swatch.color }}
+                title={`${swatch.label} · ${swatch.color}`}
+                aria-label={`${swatch.label} ${swatch.color}`}
+                onClick={() => setWireColor(swatch.color)}
               />
             ))}
           </div>

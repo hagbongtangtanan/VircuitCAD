@@ -43,6 +43,13 @@ publish:
 asar: true
 npmRebuild: false
 
+fileAssociations:
+  - ext: hucad
+    name: HuCAD Project
+    description: HuCAD circuit project
+    mimeType: application/x-hucad
+    role: Editor
+
 win:
   target:
     - nsis

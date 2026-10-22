@@ -3,6 +3,7 @@ import {
   circuitDocumentSchema,
   emptyCircuitDocument,
   partSchema,
+  pinHasWire,
   type CircuitDocument,
   type PartInstance,
   type PartType,
@@ -11,13 +12,12 @@ import {
   type Rotation,
   type Wire,
 } from '../../shared/circuit'
+import { DEFAULT_WIRE_COLOR, wireColorFor, wireKindFor } from '../../shared/wireColors'
 import { GRID_SIZE, snapPoint } from '../canvas/geometry'
 import { definitionOf } from '../parts/definitions'
 import { createHistory } from './history'
 
-export const DEFAULT_WIRE_COLOR = '#4f9cf9'
-const POWER_WIRE_COLOR = '#d64545'
-const GROUND_WIRE_COLOR = '#20242c'
+export { DEFAULT_WIRE_COLOR } from '../../shared/wireColors'
 
 function createId(prefix: string): string {
   return `${prefix}-${crypto.randomUUID().slice(0, 8)}`
@@ -94,10 +94,9 @@ function colorForWire(
     return definitionOf(part.type).pins.find((pin) => pin.id === ref.pinId)?.kind
   }
 
-  const kinds = [kindOf(from), kindOf(to)]
-  if (kinds.includes('ground')) return GROUND_WIRE_COLOR
-  if (kinds.includes('power')) return POWER_WIRE_COLOR
-  return fallback
+  const kinds = [kindOf(from), kindOf(to)].filter((kind): kind is string => kind !== undefined)
+  const kind = wireKindFor(kinds)
+  return kind === 'signal' ? fallback : wireColorFor(kind)
 }
 
 export const useCircuitStore = create<CircuitStore>()((set, get) => {
@@ -287,6 +286,7 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       const { document, wireColor } = get()
       if (from.partId === to.partId && from.pinId === to.pinId) return null
       if (hasWireBetween(document, from, to)) return null
+      if (pinHasWire(document.wires, from) || pinHasWire(document.wires, to)) return null
 
       const wire: Wire = {
         id: createId('wire'),
@@ -308,6 +308,7 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       const other = end === 'from' ? wire.to : wire.from
       if (refsEqual(ref, other)) return false
       if (hasWireBetween(document, ref, other, id)) return false
+      if (pinHasWire(document.wires, ref, id)) return false
 
       const wires = document.wires.map((candidate) =>
         candidate.id === id ? { ...candidate, [end]: ref } : candidate

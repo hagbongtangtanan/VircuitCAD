@@ -33,6 +33,20 @@ export function snapPoint(point: Point, grid: number = GRID_SIZE): Point {
   return { x: snapToGrid(point.x, grid), y: snapToGrid(point.y, grid) }
 }
 
+/**
+ * Constrains a wire point to the horizontal or vertical axis through `from`,
+ * whichever the pointer is closer to. Holding Ctrl bypasses this, but points
+ * still land on the grid. Pins use their exact world position as `from`, so the
+ * snapped segment starts cleanly at the terminal.
+ */
+export function snapWirePoint(from: Point, point: Point, orthographic = true): Point {
+  const snapped = snapPoint(point)
+  if (!orthographic) return snapped
+  return Math.abs(point.x - from.x) >= Math.abs(point.y - from.y)
+    ? { x: snapped.x, y: from.y }
+    : { x: from.x, y: snapped.y }
+}
+
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
 }
@@ -90,26 +104,12 @@ export function panBy(viewport: Viewport, dx: number, dy: number): Viewport {
 }
 
 /**
- * Builds an axis-aligned polyline through the given waypoints. Any diagonal leg
- * gets an elbow inserted, so the result is always made of horizontal and
- * vertical segments.
+ * The wire path the user actually drew: direct segments between the two pins
+ * and the bends they placed. Unlike an autorouter, no extra elbow is injected,
+ * so diagonal runs stay diagonal like a wire in Tinkercad.
  */
-export function orthogonalRoute(from: Point, to: Point, waypoints: readonly Point[] = []): Point[] {
-  const stops: Point[] = [from, ...waypoints, to]
-  const route: Point[] = [from]
-  let previous: Point = from
-
-  for (let index = 1; index < stops.length; index += 1) {
-    const next = stops[index]
-    if (next === undefined) continue
-    if (previous.x !== next.x && previous.y !== next.y) {
-      route.push({ x: next.x, y: previous.y })
-    }
-    route.push(next)
-    previous = next
-  }
-
-  return route
+export function wireRoute(from: Point, to: Point, waypoints: readonly Point[] = []): Point[] {
+  return [from, ...waypoints, to]
 }
 
 export function polylineLength(points: readonly Point[]): number {
@@ -146,10 +146,10 @@ export function polylineMidpoint(points: readonly Point[]): Point {
 }
 
 /**
- * SVG path for an orthogonal polyline with rounded elbows, used by wires so a
- * bend reads as a curve instead of a hard right angle. Segments shorter than
- * twice the radius are rounded by half their length, so tiny detours never
- * overshoot into the next segment.
+ * SVG path for a wire polyline with rounded bends. Tinkercad wires can run at
+ * any angle, so only the corners are softened. Segments shorter than twice the
+ * radius are rounded by half their length, so tiny detours never overshoot into
+ * the next segment.
  */
 export function roundedPolylinePath(points: readonly Point[], radius = 8): string {
   const first = points[0]
@@ -194,10 +194,8 @@ function distanceToSegment(point: Point, a: Point, b: Point): number {
 }
 
 /**
- * Inserts a bend at the position along the wire that is closest to `point`,
- * instead of always appending. Appending made a new bend jump to the far end of
- * the route, which is not what dragging a handle in the middle of a wire
- * suggests.
+ * Inserts a bend on the direct wire segment nearest to `point`, so adding a
+ * handle in the middle of a wire does not make it jump to the far end.
  */
 export function insertWaypoint(
   from: Point,
@@ -205,88 +203,20 @@ export function insertWaypoint(
   waypoints: readonly Point[],
   point: Point
 ): Point[] {
-  const stops: Point[] = [from, ...waypoints, to]
+  const stops = wireRoute(from, to, waypoints)
   let bestDistance = Number.POSITIVE_INFINITY
   let bestIndex = waypoints.length
 
-  let previous = from
   for (let index = 1; index < stops.length; index += 1) {
+    const previous = stops[index - 1]
     const next = stops[index]
-    if (next === undefined) continue
-    const elbow =
-      previous.x !== next.x && previous.y !== next.y ? { x: next.x, y: previous.y } : null
-    const firstLeg = distanceToSegment(point, previous, elbow ?? next)
-    if (firstLeg < bestDistance) {
-      bestDistance = firstLeg
+    if (previous === undefined || next === undefined) continue
+    const distance = distanceToSegment(point, previous, next)
+    if (distance < bestDistance) {
+      bestDistance = distance
       bestIndex = index - 1
     }
-    if (elbow !== null) {
-      const secondLeg = distanceToSegment(point, elbow, next)
-      if (secondLeg < bestDistance) {
-        bestDistance = secondLeg
-        bestIndex = index - 1
-      }
-    }
-    previous = next
   }
 
-  const inserted = [...waypoints.slice(0, bestIndex), point, ...waypoints.slice(bestIndex)]
-  return pruneSpikes(from, to, inserted, bestIndex)
-}
-
-function routeVertexIndex(route: readonly Point[], point: Point): number {
-  for (let index = 1; index < route.length - 1; index += 1) {
-    const vertex = route[index]
-    if (vertex !== undefined && vertex.x === point.x && vertex.y === point.y) return index
-  }
-  return -1
-}
-
-/**
- * Drops bends that the new point turned into a there-and-back spike (the wire
- * would double back over itself). The freshly inserted bend is protected so a
- * deliberate drag is never undone.
- */
-export function pruneSpikes(
-  from: Point,
-  to: Point,
-  waypoints: readonly Point[],
-  protectedIndex = -1
-): Point[] {
-  const current = [...waypoints]
-  let keepIndex = protectedIndex
-
-  for (let guard = 0; guard <= current.length; guard += 1) {
-    const route = orthogonalRoute(from, to, current)
-    let removed = false
-
-    for (let index = 0; index < current.length; index += 1) {
-      if (index === keepIndex) continue
-      const waypoint = current[index]
-      if (waypoint === undefined) continue
-      const vertex = routeVertexIndex(route, waypoint)
-      if (vertex < 0) continue
-      const before = route[vertex - 1]
-      const after = route[vertex + 1]
-      if (before === undefined || after === undefined) continue
-
-      const inX = waypoint.x - before.x
-      const inY = waypoint.y - before.y
-      const outX = after.x - waypoint.x
-      const outY = after.y - waypoint.y
-      const collinear = inX * outY - inY * outX === 0
-      const opposite = inX * outX + inY * outY < 0
-
-      if (collinear && opposite) {
-        current.splice(index, 1)
-        if (index < keepIndex) keepIndex -= 1
-        removed = true
-        break
-      }
-    }
-
-    if (!removed) break
-  }
-
-  return current
+  return [...waypoints.slice(0, bestIndex), point, ...waypoints.slice(bestIndex)]
 }

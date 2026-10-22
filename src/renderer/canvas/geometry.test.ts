@@ -2,8 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   GRID_SIZE,
   insertWaypoint,
-  orthogonalRoute,
-  pruneSpikes,
   panBy,
   polylineLength,
   polylineMidpoint,
@@ -12,6 +10,8 @@ import {
   screenToWorld,
   snapPoint,
   snapToGrid,
+  snapWirePoint,
+  wireRoute,
   worldToScreen,
   zoomAtPointer,
   type Viewport,
@@ -81,6 +81,21 @@ describe('rotateOffset', () => {
   })
 })
 
+describe('snapWirePoint', () => {
+  it('snaps to the nearer horizontal or vertical axis', () => {
+    expect(snapWirePoint({ x: 0, y: 0 }, { x: 53, y: 22 })).toEqual({ x: 50, y: 0 })
+    expect(snapWirePoint({ x: 0, y: 0 }, { x: 18, y: 47 })).toEqual({ x: 0, y: 50 })
+  })
+
+  it('keeps the fixed axis exactly on the previous point', () => {
+    expect(snapWirePoint({ x: 13, y: 27 }, { x: 42, y: 33 })).toEqual({ x: 40, y: 27 })
+  })
+
+  it('only grids the point when orthographic snapping is disabled', () => {
+    expect(snapWirePoint({ x: 0, y: 0 }, { x: 53, y: 22 }, false)).toEqual({ x: 50, y: 20 })
+  })
+})
+
 describe('viewport transforms', () => {
   const viewport: Viewport = { scale: 2, offsetX: 30, offsetY: -10 }
 
@@ -112,43 +127,32 @@ describe('viewport transforms', () => {
   })
 })
 
-describe('orthogonalRoute', () => {
-  it('keeps an already axis-aligned route untouched', () => {
-    const route = orthogonalRoute({ x: 0, y: 0 }, { x: 50, y: 0 })
-    expect(route).toEqual([
+describe('wireRoute', () => {
+  it('connects two pins directly without redirecting a diagonal run', () => {
+    expect(wireRoute({ x: 0, y: 0 }, { x: 50, y: 30 })).toEqual([
       { x: 0, y: 0 },
-      { x: 50, y: 0 },
-    ])
-  })
-
-  it('inserts a single elbow for a diagonal leg', () => {
-    const route = orthogonalRoute({ x: 0, y: 0 }, { x: 50, y: 30 })
-    expect(route).toEqual([
-      { x: 0, y: 0 },
-      { x: 50, y: 0 },
       { x: 50, y: 30 },
     ])
   })
 
-  it('produces only horizontal and vertical segments through waypoints', () => {
-    const route = orthogonalRoute({ x: 0, y: 0 }, { x: 100, y: 100 }, [
+  it('passes through manual bends without inserting extra elbows', () => {
+    expect(
+      wireRoute({ x: 0, y: 0 }, { x: 100, y: 100 }, [
+        { x: 40, y: 20 },
+        { x: 80, y: 60 },
+      ])
+    ).toEqual([
+      { x: 0, y: 0 },
       { x: 40, y: 20 },
       { x: 80, y: 60 },
+      { x: 100, y: 100 },
     ])
-
-    for (let index = 1; index < route.length; index += 1) {
-      const a = route[index - 1]
-      const b = route[index]
-      if (a === undefined || b === undefined) continue
-      const axisAligned = a.x === b.x || a.y === b.y
-      expect(axisAligned).toBe(true)
-    }
   })
 
-  it('starts and ends on the requested endpoints', () => {
+  it('starts and ends on the requested pins', () => {
     const from = { x: 5, y: 5 }
     const to = { x: 95, y: 45 }
-    const route = orthogonalRoute(from, to, [{ x: 50, y: 25 }])
+    const route = wireRoute(from, to, [{ x: 50, y: 25 }])
     expect(route[0]).toEqual(from)
     expect(route[route.length - 1]).toEqual(to)
   })
@@ -176,7 +180,7 @@ describe('polyline helpers', () => {
 })
 
 describe('roundedPolylinePath', () => {
-  it('rounds an interior elbow instead of drawing a hard corner', () => {
+  it('rounds a wire bend instead of drawing a hard corner', () => {
     const path = roundedPolylinePath([
       { x: 0, y: 0 },
       { x: 100, y: 0 },
@@ -229,34 +233,5 @@ describe('insertWaypoint', () => {
       { x: 40, y: 0 },
       { x: 90, y: 0 },
     ])
-  })
-})
-
-describe('pruneSpikes', () => {
-  it('removes a bend that the route doubles back over', () => {
-    const from = { x: 630, y: 180 }
-    const to = { x: 180, y: 320 }
-    const next = pruneSpikes(
-      from,
-      to,
-      [
-        { x: 630, y: 520 },
-        { x: 480, y: 450 },
-        { x: 180, y: 520 },
-      ],
-      1
-    )
-    expect(next).toEqual([
-      { x: 630, y: 520 },
-      { x: 480, y: 450 },
-    ])
-  })
-
-  it('keeps ordinary corners', () => {
-    const waypoints = [
-      { x: 180, y: 520 },
-      { x: 630, y: 520 },
-    ]
-    expect(pruneSpikes({ x: 180, y: 320 }, { x: 630, y: 180 }, waypoints)).toEqual(waypoints)
   })
 })

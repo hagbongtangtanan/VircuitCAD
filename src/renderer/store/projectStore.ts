@@ -3,11 +3,12 @@ import { APP_NAME, DEFAULT_PROJECT_NAME } from '../../shared/app'
 import { emptyCircuitDocument, type CircuitDocument } from '../../shared/circuit'
 import {
   createProject,
-  fileBaseName,
+  fileStem,
   sampleLabel,
   type OpenFileResult,
   type SampleEntry,
 } from '../../shared/project'
+import { captureActiveSchematicPdf } from '../export/pdfCapture'
 import { captureActiveViewPng } from '../export/pngCapture'
 import { useSerialStore } from '../serial/serialStore'
 import { useCircuitStore } from './circuitStore'
@@ -24,6 +25,11 @@ export interface ProjectStore {
   readonly samples: readonly SampleEntry[]
 
   open(): Promise<void>
+  /** Loads a project/sketch passed to the app by the OS. */
+  openLaunch(): Promise<void>
+  /** Receives a file opened by the OS while the app is running. */
+  receiveOpened(opened: OpenFileResult): void
+  reportError(message: string): void
   loadSamples(): Promise<void>
   openSample(name: string): Promise<void>
   newProject(): void
@@ -32,6 +38,7 @@ export interface ProjectStore {
   exportSketch(): Promise<void>
   exportHex(): Promise<void>
   exportPng(): Promise<void>
+  exportPdf(): Promise<void>
   dismissError(): void
 }
 
@@ -67,12 +74,12 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       useSketchStore.getState().setSource(opened.project.sketch)
       useSketchStore.getState().clearBuild()
       set({ path: opened.path })
-      markSaved(label ?? fileBaseName(opened.path))
+      markSaved(label ?? fileStem(opened.path))
     } else {
       useSketchStore.getState().setSource(opened.sketch)
       useSketchStore.getState().clearBuild()
       set({ path: null })
-      markSaved(label ?? fileBaseName(opened.path))
+      markSaved(label ?? fileStem(opened.path))
     }
   }
 
@@ -106,6 +113,32 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       } finally {
         set({ busy: false })
       }
+    },
+
+    async openLaunch(): Promise<void> {
+      if (get().busy) return
+      set({ busy: true })
+      try {
+        const opened = await window.api.takeLaunchFile()
+        if (opened !== null) applyOpened(opened)
+      } catch (error) {
+        set({ error: errorMessage(error) })
+      } finally {
+        set({ busy: false })
+      }
+    },
+
+    receiveOpened(opened: OpenFileResult): void {
+      try {
+        applyOpened(opened)
+        set({ error: null })
+      } catch (error) {
+        set({ error: errorMessage(error) })
+      }
+    },
+
+    reportError(message: string): void {
+      set({ error: message })
     },
 
     async loadSamples(): Promise<void> {
@@ -157,7 +190,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
         if (saved === null) return
 
         set({ path: saved.path })
-        markSaved(fileBaseName(saved.path))
+        markSaved(fileStem(saved.path))
         set({ error: null })
       } catch (error) {
         set({ error: errorMessage(error) })
@@ -184,6 +217,20 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
           return
         }
         await window.api.exportPng({ dataUrl, name: get().name, path: null })
+      } catch (error) {
+        set({ error: errorMessage(error) })
+      }
+    },
+
+    async exportPdf(): Promise<void> {
+      set({ error: null })
+      try {
+        const data = await captureActiveSchematicPdf()
+        if (data === null) {
+          set({ error: 'Switch to Schematic in Original style to save a vector PDF.' })
+          return
+        }
+        await window.api.exportPdf({ data, name: get().name, path: null })
       } catch (error) {
         set({ error: errorMessage(error) })
       }

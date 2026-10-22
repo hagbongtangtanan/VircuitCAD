@@ -1295,10 +1295,45 @@ button:disabled {
   color: var(--cb-stop);
 }
 
+.cb-sch-paper-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--cb-text-muted);
+}
+
+.cb-sch-paper-picker select {
+  padding: 3px 6px;
+  font: inherit;
+  color: var(--cb-text);
+  background: var(--cb-surface-sunken);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius-sm);
+}
+
+.cb-sch-paper-picker select:focus-visible {
+  outline: 2px solid var(--cb-primary);
+  outline-offset: 1px;
+}
+
+.cb-sch-designator {
+  fill: var(--cb-text);
+  font-family: var(--cb-font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.cb-sch-value {
+  fill: var(--cb-text-muted);
+  font-family: var(--cb-font-mono);
+  font-size: 9px;
+}
+
 .cb-sch-mode {
   display: inline-flex;
   gap: 2px;
-  margin-left: auto;
   padding: 2px;
   background: var(--cb-surface-sunken);
   border: 1px solid var(--cb-border);

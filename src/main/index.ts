@@ -1,11 +1,17 @@
 import { app, BrowserWindow, session } from 'electron'
 import { join } from 'node:path'
 import { APP_NAME } from '../shared/app'
-import { registerIpcHandlers } from './ipc'
+import { deliverOpenFile, queueLaunchPath, registerIpcHandlers } from './ipc'
+import { filePathFromArgs } from './startup'
 
 const rendererUrl = process.env['ELECTRON_RENDERER_URL']
 /** True only when electron-vite's dev server is driving the renderer. */
 const isDevServer = !app.isPackaged && rendererUrl !== undefined
+
+let mainWindow: BrowserWindow | null = null
+
+const launchFile = filePathFromArgs(process.argv)
+if (launchFile !== null) queueLaunchPath(launchFile)
 
 /**
  * Strict, offline-only policy: no remote scripts, styles, fonts or connections.
@@ -92,7 +98,29 @@ function createWindow(): BrowserWindow {
     void window.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
+  window.on('closed', () => {
+    if (mainWindow === window) mainWindow = null
+  })
+
   return window
+}
+
+function focusWindow(window: BrowserWindow): void {
+  if (window.isMinimized()) window.restore()
+  window.show()
+  window.focus()
+}
+
+/** Routes a file opened by the OS to the renderer, or queues it until startup. */
+function acceptOpenedFile(path: string): void {
+  const window = mainWindow
+  if (window === null || window.webContents.isLoadingMainFrame()) {
+    queueLaunchPath(path)
+    if (window !== null) focusWindow(window)
+    return
+  }
+  focusWindow(window)
+  void deliverOpenFile(window, path)
 }
 
 app.on('web-contents-created', (_event, contents) => {
@@ -102,20 +130,39 @@ app.on('web-contents-created', (_event, contents) => {
   })
 })
 
-void app.whenReady().then(() => {
-  hardenSession()
-  registerIpcHandlers()
-  createWindow()
+const gotSingleInstanceLock = app.requestSingleInstanceLock()
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
+if (!gotSingleInstanceLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (_event, argv) => {
+    const path = filePathFromArgs(argv)
+    if (path !== null) acceptOpenedFile(path)
+    else if (mainWindow !== null) focusWindow(mainWindow)
+  })
+
+  // macOS delivers Finder double-clicks through this event, often before the
+  // window or renderer exists, so the path is queued for the first mount.
+  app.on('open-file', (event, path) => {
+    event.preventDefault()
+    acceptOpenedFile(path)
+  })
+
+  void app.whenReady().then(() => {
+    hardenSession()
+    registerIpcHandlers()
+    mainWindow = createWindow()
+
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        mainWindow = createWindow()
+      }
+    })
+  })
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
     }
   })
-})
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+}

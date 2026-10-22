@@ -15,12 +15,15 @@ import {
   SKETCH_EXTENSION,
   HEX_EXTENSION,
   PNG_EXTENSION,
+  PDF_EXTENSION,
   exportHexRequestSchema,
+  exportPdfRequestSchema,
   exportPngRequestSchema,
   exportSketchRequestSchema,
   openSampleRequestSchema,
   saveProjectRequestSchema,
   withExtension,
+  type OpenFileResult,
   type SampleEntry,
   type SavedFile,
 } from '../../shared/project'
@@ -35,6 +38,7 @@ import { compileSketch, readToolchainStatus } from '../services/compiler'
 import {
   openFile,
   writeHexFile,
+  writePdfFile,
   writePngFile,
   writeProjectFile,
   writeSketchFile,
@@ -57,6 +61,40 @@ function samplesDirectory(): string {
  * renderer cannot write over an arbitrary file.
  */
 const approvedPaths = new Set<string>()
+
+/** A file path handed to the app before the renderer was ready to receive it. */
+let pendingLaunchPath: string | null = null
+
+export function queueLaunchPath(path: string): void {
+  pendingLaunchPath = path
+}
+
+function messageOf(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+/** Reads an OS-supplied path in main, then hands the parsed result to the renderer. */
+export async function deliverOpenFile(window: BrowserWindow, path: string): Promise<void> {
+  try {
+    const opened = await openFile(path)
+    approvedPaths.add(path)
+    if (!window.isDestroyed()) {
+      window.webContents.send(IpcChannels.fileOpened, opened)
+    }
+  } catch (error) {
+    if (!window.isDestroyed()) {
+      window.webContents.send(IpcChannels.fileOpenError, messageOf(error))
+    }
+  }
+}
+
+function safeBaseName(name: string, fallback: string): string {
+  const cleaned = name
+    .replace(/[^a-z0-9._-]+/gi, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+  return cleaned === '' ? fallback : cleaned
+}
 
 function ownerWindow(event: IpcMainInvokeEvent): BrowserWindow | null {
   return BrowserWindow.fromWebContents(event.sender)
@@ -131,6 +169,15 @@ export function registerIpcHandlers(): void {
     return readToolchainStatus()
   })
 
+  ipcMain.handle(IpcChannels.takeLaunchFile, async (): Promise<OpenFileResult | null> => {
+    if (pendingLaunchPath === null) return null
+    const path = pendingLaunchPath
+    pendingLaunchPath = null
+    const opened = await openFile(path)
+    approvedPaths.add(path)
+    return opened
+  })
+
   ipcMain.handle(IpcChannels.openFile, async (event) => {
     const path = await showOpenDialog(event, {
       title: 'Open project or sketch',
@@ -185,18 +232,31 @@ export function registerIpcHandlers(): void {
     IpcChannels.exportPng,
     async (event, payload: unknown): Promise<SavedFile | null> => {
       const request = exportPngRequestSchema.parse(payload)
-      const baseName = request.name
-        .replace(/[^a-z0-9._-]+/gi, '-')
-        .replace(/^-+|-+$/g, '')
-        .slice(0, 80)
       const path = await resolveSavePath(event, request.path, PNG_EXTENSION, {
         title: 'Export PNG',
-        defaultPath: `${baseName === '' ? 'circuit' : baseName}.${PNG_EXTENSION}`,
+        defaultPath: `${safeBaseName(request.name, 'circuit')}.${PNG_EXTENSION}`,
         filters: [{ name: 'PNG image', extensions: [PNG_EXTENSION] }],
       })
       if (path === null) return null
 
       await writePngFile(path, request.dataUrl)
+      approvedPaths.add(path)
+      return { path }
+    }
+  )
+
+  ipcMain.handle(
+    IpcChannels.exportPdf,
+    async (event, payload: unknown): Promise<SavedFile | null> => {
+      const request = exportPdfRequestSchema.parse(payload)
+      const path = await resolveSavePath(event, request.path, PDF_EXTENSION, {
+        title: 'Save schematic as PDF',
+        defaultPath: `${safeBaseName(request.name, 'schematic')}.${PDF_EXTENSION}`,
+        filters: [{ name: 'PDF document', extensions: [PDF_EXTENSION] }],
+      })
+      if (path === null) return null
+
+      await writePdfFile(path, request.data)
       approvedPaths.add(path)
       return { path }
     }
@@ -235,10 +295,12 @@ export function unregisterIpcHandlers(): void {
   ipcMain.removeHandler(IpcChannels.compile)
   ipcMain.removeHandler(IpcChannels.toolchainStatus)
   ipcMain.removeHandler(IpcChannels.openFile)
+  ipcMain.removeHandler(IpcChannels.takeLaunchFile)
   ipcMain.removeHandler(IpcChannels.saveProject)
   ipcMain.removeHandler(IpcChannels.exportSketch)
   ipcMain.removeHandler(IpcChannels.exportHex)
   ipcMain.removeHandler(IpcChannels.exportPng)
+  ipcMain.removeHandler(IpcChannels.exportPdf)
   ipcMain.removeHandler(IpcChannels.listSamples)
   ipcMain.removeHandler(IpcChannels.openSample)
 }

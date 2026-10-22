@@ -1,5 +1,6 @@
 import type {
   ExportHexRequest,
+  ExportPdfRequest,
   ExportPngRequest,
   ExportSketchRequest,
   OpenFileResult,
@@ -25,10 +26,14 @@ export const IpcChannels = {
   compile: 'build:compile',
   toolchainStatus: 'build:toolchain-status',
   openFile: 'file:open',
+  takeLaunchFile: 'file:take-launch',
+  fileOpened: 'file:opened',
+  fileOpenError: 'file:open-error',
   saveProject: 'file:save-project',
   exportSketch: 'file:export-sketch',
   exportHex: 'file:export-hex',
   exportPng: 'file:export-png',
+  exportPdf: 'file:export-pdf',
   listSamples: 'file:list-samples',
   openSample: 'file:open-sample',
 } as const
@@ -47,10 +52,14 @@ export interface IpcContract {
   /** No request payload; the status is read on demand. */
   readonly [IpcChannels.toolchainStatus]: IpcExchange<undefined, ToolchainStatus>
   readonly [IpcChannels.openFile]: IpcExchange<undefined, OpenFileResult | null>
+  readonly [IpcChannels.takeLaunchFile]: IpcExchange<undefined, OpenFileResult | null>
+  readonly [IpcChannels.fileOpened]: IpcExchange<OpenFileResult, void>
+  readonly [IpcChannels.fileOpenError]: IpcExchange<string, void>
   readonly [IpcChannels.saveProject]: IpcExchange<SaveProjectRequest, SavedFile | null>
   readonly [IpcChannels.exportSketch]: IpcExchange<ExportSketchRequest, SavedFile | null>
   readonly [IpcChannels.exportHex]: IpcExchange<ExportHexRequest, SavedFile | null>
   readonly [IpcChannels.exportPng]: IpcExchange<ExportPngRequest, SavedFile | null>
+  readonly [IpcChannels.exportPdf]: IpcExchange<ExportPdfRequest, SavedFile | null>
   readonly [IpcChannels.listSamples]: IpcExchange<undefined, readonly SampleEntry[]>
   readonly [IpcChannels.openSample]: IpcExchange<OpenSampleRequest, OpenFileResult>
 }
@@ -64,10 +73,16 @@ export interface CircuitApi {
   compile(request: CompileRequest): Promise<CompileResult>
   toolchainStatus(): Promise<ToolchainStatus>
   openFile(): Promise<OpenFileResult | null>
+  /** Consumes a file passed by the OS at launch. */
+  takeLaunchFile(): Promise<OpenFileResult | null>
+  /** A project/sketch opened by the OS while the app is already running. */
+  onFileOpened(listener: (opened: OpenFileResult) => void): () => void
+  onFileOpenError(listener: (message: string) => void): () => void
   saveProject(request: SaveProjectRequest): Promise<SavedFile | null>
   exportSketch(request: ExportSketchRequest): Promise<SavedFile | null>
   exportHex(request: ExportHexRequest): Promise<SavedFile | null>
   exportPng(request: ExportPngRequest): Promise<SavedFile | null>
+  exportPdf(request: ExportPdfRequest): Promise<SavedFile | null>
   listSamples(): Promise<readonly SampleEntry[]>
   openSample(request: OpenSampleRequest): Promise<OpenFileResult>
 }

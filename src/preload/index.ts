@@ -1,7 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { API_NAMESPACE, IpcChannels, type CircuitApi } from '../shared/ipc'
+import type { IpcRendererEvent } from 'electron'
 import type {
   ExportHexRequest,
+  ExportPdfRequest,
   ExportPngRequest,
   ExportSketchRequest,
   OpenFileResult,
@@ -31,6 +33,19 @@ const api: CircuitApi = {
   openFile(): Promise<OpenFileResult | null> {
     return ipcRenderer.invoke(IpcChannels.openFile) as Promise<OpenFileResult | null>
   },
+  takeLaunchFile(): Promise<OpenFileResult | null> {
+    return ipcRenderer.invoke(IpcChannels.takeLaunchFile) as Promise<OpenFileResult | null>
+  },
+  onFileOpened(listener: (opened: OpenFileResult) => void): () => void {
+    const handler = (_event: IpcRendererEvent, opened: OpenFileResult): void => listener(opened)
+    ipcRenderer.on(IpcChannels.fileOpened, handler)
+    return () => ipcRenderer.removeListener(IpcChannels.fileOpened, handler)
+  },
+  onFileOpenError(listener: (message: string) => void): () => void {
+    const handler = (_event: IpcRendererEvent, message: string): void => listener(message)
+    ipcRenderer.on(IpcChannels.fileOpenError, handler)
+    return () => ipcRenderer.removeListener(IpcChannels.fileOpenError, handler)
+  },
   saveProject(request: SaveProjectRequest): Promise<SavedFile | null> {
     return ipcRenderer.invoke(IpcChannels.saveProject, request) as Promise<SavedFile | null>
   },
@@ -42,6 +57,9 @@ const api: CircuitApi = {
   },
   exportPng(request: ExportPngRequest): Promise<SavedFile | null> {
     return ipcRenderer.invoke(IpcChannels.exportPng, request) as Promise<SavedFile | null>
+  },
+  exportPdf(request: ExportPdfRequest): Promise<SavedFile | null> {
+    return ipcRenderer.invoke(IpcChannels.exportPdf, request) as Promise<SavedFile | null>
   },
   listSamples(): Promise<readonly SampleEntry[]> {
     return ipcRenderer.invoke(IpcChannels.listSamples) as Promise<readonly SampleEntry[]>
