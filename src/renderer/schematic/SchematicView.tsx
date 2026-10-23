@@ -1,16 +1,28 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState, type JSX } from 'react'
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type JSX,
+} from 'react'
 import { APP_NAME } from '../../shared/app'
+import type { CircuitDocument } from '../../shared/circuit'
 import { registerPdfCapture } from '../export/pdfCapture'
 import { registerPngCapture } from '../export/pngCapture'
 import { svgToPdfBase64 } from '../export/svgPdf'
 import { rasterizeSvgToPng } from '../export/svgPng'
 import { definitionOf } from '../parts/definitions'
+import { Icon } from '../ui/Icon'
 import { useCircuitStore } from '../store/circuitStore'
 import { useProjectStore } from '../store/projectStore'
 import {
   fitSchematicToPaper,
-  layoutSchematic,
+  layoutSchematicPages,
   PAPER_PRESETS,
+  type SchematicPagination,
   type SchematicPaper,
   type SchematicPartNode,
 } from './layout'
@@ -519,9 +531,11 @@ interface TitleBlockProps {
   readonly y: number
   readonly project: string
   readonly paper: string
+  readonly sheet: number
+  readonly sheetCount: number
 }
 
-function TitleBlock({ x, y, project, paper }: TitleBlockProps): JSX.Element {
+function TitleBlock({ x, y, project, paper, sheet, sheetCount }: TitleBlockProps): JSX.Element {
   return (
     <g className="cb-sch-titleblock" data-testid="schematic-title-block">
       <rect x={x} y={y} width={230} height={54} />
@@ -533,7 +547,7 @@ function TitleBlock({ x, y, project, paper }: TitleBlockProps): JSX.Element {
       </text>
       <line x1={x + 10} y1={y + 41} x2={x + 220} y2={y + 41} />
       <text className="cb-sch-titleblock-sheet" x={x + 220} y={y + 50} textAnchor="end">
-        {paper} · Sheet 1/1
+        {paper} · Sheet {sheet}/{sheetCount}
       </text>
     </g>
   )
@@ -562,24 +576,101 @@ function Paper({
   )
 }
 
+const layoutCache = new WeakMap<CircuitDocument, Map<string, SchematicPagination>>()
+
+function cacheKey(mode: SchematicMode, paper: SchematicPaper): string {
+  return `${mode}:${paper}`
+}
+
+function cachedPagination(
+  document: CircuitDocument,
+  mode: SchematicMode,
+  paper: SchematicPaper
+): SchematicPagination | null {
+  return layoutCache.get(document)?.get(cacheKey(mode, paper)) ?? null
+}
+
+function cachePagination(
+  document: CircuitDocument,
+  mode: SchematicMode,
+  paper: SchematicPaper,
+  pagination: SchematicPagination
+): void {
+  const byKey = layoutCache.get(document)
+  if (byKey === undefined) {
+    layoutCache.set(document, new Map([[cacheKey(mode, paper), pagination]]))
+    return
+  }
+  byKey.set(cacheKey(mode, paper), pagination)
+}
+
 export function SchematicView(): JSX.Element {
   const document = useCircuitStore((state) => state.document)
   const projectName = useProjectStore((state) => state.name)
   const [mode, setMode] = useState<SchematicMode>(readStoredMode)
   const [paperSize, setPaperSize] = useState<SchematicPaper>(readStoredPaper)
-  const layout = useMemo(
-    () => layoutSchematic(document, mode === 'original' ? { roomyTwoPin: true } : {}),
-    [document, mode]
+  const [pagination, setPagination] = useState<SchematicPagination | null>(() =>
+    cachedPagination(document, readStoredMode(), readStoredPaper())
   )
-  const empty = layout.nodes.length === 0
+  const [pageIndex, setPageIndex] = useState(0)
+  const [preparing, setPreparing] = useState(pagination === null)
   const svgRef = useRef<SVGSVGElement | null>(null)
   const original = mode === 'original'
   const paper = PAPER_PRESETS[paperSize]
+  const pageCount = pagination?.pageCount ?? 0
+  const safePageIndex = pageCount === 0 ? 0 : Math.min(pageIndex, pageCount - 1)
+  const layout = pagination?.pages[safePageIndex] ?? null
+  const empty = layout !== null && !preparing && layout.nodes.length === 0
+  const totalNodes = useMemo(
+    () => pagination?.pages.reduce((sum, page) => sum + page.nodes.length, 0) ?? 0,
+    [pagination]
+  )
 
-  const sheet = useMemo(() => fitSchematicToPaper(layout, paperSize), [layout, paperSize])
+  const sheet = useMemo(
+    () => (layout === null ? null : fitSchematicToPaper(layout, paperSize)),
+    [layout, paperSize]
+  )
 
-  const drawWidth = original ? paper.width : layout.width
-  const drawHeight = original ? paper.height : layout.height
+  useEffect(() => {
+    setPageIndex(0)
+  }, [document, mode, paperSize])
+
+  useEffect(() => {
+    const cached = cachedPagination(document, mode, paperSize)
+    if (cached !== null) {
+      setPagination(cached)
+      setPreparing(false)
+      return
+    }
+
+    let cancelled = false
+    let timer: ReturnType<typeof setTimeout> | null = null
+    setPreparing(true)
+    const frame = requestAnimationFrame(() => {
+      if (cancelled) return
+      timer = setTimeout(() => {
+        const next = layoutSchematicPages(document, {
+          paperSize,
+          ...(mode === 'original' ? { roomyTwoPin: true } : {}),
+        })
+        cachePagination(document, mode, paperSize, next)
+        startTransition(() => {
+          if (cancelled) return
+          setPagination(next)
+          setPreparing(false)
+        })
+      }, 0)
+    })
+
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(frame)
+      if (timer !== null) clearTimeout(timer)
+    }
+  }, [document, mode, paperSize])
+
+  const drawWidth = original ? paper.width : (layout?.width ?? 0)
+  const drawHeight = original ? paper.height : (layout?.height ?? 0)
 
   useEffect(() => {
     try {
@@ -616,122 +707,157 @@ export function SchematicView(): JSX.Element {
     return registerPdfCapture(capturePdf)
   }, [capturePdf, original])
 
-  const wires = (
-    <g className="cb-sch-wires">
-      {layout.wires.map((wire) => (
-        <g key={wire.netId} data-testid="schematic-wire" data-net-id={wire.netId}>
-          {wire.paths.map((points, index) => (
-            <polyline
-              key={index}
-              className={original ? 'cb-sch-original-wire' : 'cb-sch-wire'}
-              style={{ stroke: wire.color }}
-              points={points.map((point) => `${point.x},${point.y}`).join(' ')}
-            />
-          ))}
-          {wire.junctions.map((point, index) => (
-            <circle
-              key={`junction-${index}`}
-              className={original ? 'cb-sch-original-junction' : 'cb-sch-junction'}
-              style={{ fill: wire.color }}
-              cx={point.x}
-              cy={point.y}
-              r={3.2}
-            />
+  const wires = useMemo(
+    () =>
+      layout === null ? null : (
+        <g className="cb-sch-wires">
+          {layout.wires.map((wire) => (
+            <g key={wire.netId} data-testid="schematic-wire" data-net-id={wire.netId}>
+              {wire.paths.map((points, index) => (
+                <polyline
+                  key={index}
+                  className={original ? 'cb-sch-original-wire' : 'cb-sch-wire'}
+                  style={{ stroke: wire.color }}
+                  points={points.map((point) => `${point.x},${point.y}`).join(' ')}
+                />
+              ))}
+              {wire.junctions.map((point, index) => (
+                <circle
+                  key={`junction-${index}`}
+                  className={original ? 'cb-sch-original-junction' : 'cb-sch-junction'}
+                  style={{ fill: wire.color }}
+                  cx={point.x}
+                  cy={point.y}
+                  r={3.2}
+                />
+              ))}
+            </g>
           ))}
         </g>
-      ))}
-    </g>
+      ),
+    [layout, original]
   )
 
-  const nodes = original ? (
-    <g className="cb-sch-original-nodes">
-      {layout.nodes.map((node) => (
-        <g
-          key={node.id}
-          className="cb-sch-original-part"
-          data-testid="schematic-part"
-          data-part-id={node.id}
-          data-part-type={node.type}
-        >
-          <title>{node.label}</title>
-          <OriginalPart node={node} designator={node.designator} value={node.value} />
-        </g>
-      ))}
-    </g>
-  ) : (
-    <g className="cb-sch-nodes">
-      {layout.nodes.map((node) => {
-        const labelX = node.board ? node.x + 10 : node.x + 10
-        const labelAnchor = 'start'
-        return (
-          <g
-            key={node.id}
-            data-testid="schematic-part"
-            data-part-id={node.id}
-            data-part-type={node.type}
-          >
-            <title>{`${node.designator} · ${node.label}${node.value === null ? '' : ` · ${node.value}`}`}</title>
-            <rect
-              className={node.board ? 'cb-sch-node cb-sch-node-board' : 'cb-sch-node'}
-              x={node.x}
-              y={node.y}
-              width={node.width}
-              height={node.height}
-              rx={7}
-            />
-            <text className="cb-sch-node-label" x={labelX} y={node.y + 17}>
-              {fittedLabel(node.label, node.width - 48, 12)}
-            </text>
-            <text
-              className="cb-sch-designator"
-              x={node.x + node.width - 10}
-              y={node.y + 17}
-              textAnchor="end"
+  const nodes = useMemo(
+    () =>
+      layout === null ? null : original ? (
+        <g className="cb-sch-original-nodes">
+          {layout.nodes.map((node) => (
+            <g
+              key={node.id}
+              className="cb-sch-original-part"
+              data-testid="schematic-part"
+              data-part-id={node.id}
+              data-part-type={node.type}
             >
-              {node.designator}
-            </text>
-            {node.value === null ? null : (
-              <text className="cb-sch-value" x={labelX} y={node.y + node.height - 7}>
-                {fittedLabel(node.value, node.width - 20, 9)}
-              </text>
-            )}
-            <GlyphFor node={node} />
-            {node.pins.map((pin) => (
-              <g key={pin.key} data-pin={pin.key}>
-                <line
-                  className="cb-sch-pin"
-                  x1={pin.side === 'right' ? node.x + node.width : node.x}
-                  y1={pin.y}
-                  x2={pin.x}
-                  y2={pin.y}
+              <title>{node.label}</title>
+              <OriginalPart node={node} designator={node.designator} value={node.value} />
+            </g>
+          ))}
+        </g>
+      ) : (
+        <g className="cb-sch-nodes">
+          {layout.nodes.map((node) => {
+            const labelX = node.board ? node.x + 10 : node.x + 10
+            const labelAnchor = 'start'
+            return (
+              <g
+                key={node.id}
+                data-testid="schematic-part"
+                data-part-id={node.id}
+                data-part-type={node.type}
+              >
+                <title>{`${node.designator} · ${node.label}${node.value === null ? '' : ` · ${node.value}`}`}</title>
+                <rect
+                  className={node.board ? 'cb-sch-node cb-sch-node-board' : 'cb-sch-node'}
+                  x={node.x}
+                  y={node.y}
+                  width={node.width}
+                  height={node.height}
+                  rx={7}
                 />
-                <circle className="cb-sch-pin-dot" cx={pin.x} cy={pin.y} r={2.2} />
-                <text
-                  className={`cb-sch-pin-label cb-sch-pin-${pin.kind}`}
-                  x={labelX}
-                  y={pin.y + 4}
-                  textAnchor={labelAnchor}
-                >
-                  {fittedLabel(pin.label, node.width - 20, 11)}
+                <text className="cb-sch-node-label" x={labelX} y={node.y + 17}>
+                  {fittedLabel(node.label, node.width - 48, 12)}
                 </text>
+                <text
+                  className="cb-sch-designator"
+                  x={node.x + node.width - 10}
+                  y={node.y + 17}
+                  textAnchor="end"
+                >
+                  {node.designator}
+                </text>
+                {node.value === null ? null : (
+                  <text className="cb-sch-value" x={labelX} y={node.y + node.height - 7}>
+                    {fittedLabel(node.value, node.width - 20, 9)}
+                  </text>
+                )}
+                <GlyphFor node={node} />
+                {node.pins.map((pin) => (
+                  <g key={pin.key} data-pin={pin.key}>
+                    <line
+                      className="cb-sch-pin"
+                      x1={pin.side === 'right' ? node.x + node.width : node.x}
+                      y1={pin.y}
+                      x2={pin.x}
+                      y2={pin.y}
+                    />
+                    <circle className="cb-sch-pin-dot" cx={pin.x} cy={pin.y} r={2.2} />
+                    <text
+                      className={`cb-sch-pin-label cb-sch-pin-${pin.kind}`}
+                      x={labelX}
+                      y={pin.y + 4}
+                      textAnchor={labelAnchor}
+                    >
+                      {fittedLabel(pin.label, node.width - 20, 11)}
+                    </text>
+                  </g>
+                ))}
               </g>
-            ))}
-          </g>
-        )
-      })}
-    </g>
+            )
+          })}
+        </g>
+      ),
+    [layout, original]
   )
+
+  const netLabels = useMemo(
+    () =>
+      layout === null ? null : (
+        <g className="cb-sch-netlabels">
+          {layout.netLabels.map((label, index) => (
+            <text
+              key={`${label.netId}-${index}`}
+              className="cb-sch-netlabel"
+              x={label.x}
+              y={label.y}
+              textAnchor={label.anchor}
+            >
+              {label.label}
+            </text>
+          ))}
+        </g>
+      ),
+    [layout]
+  )
+
+  const totalWires = useMemo(
+    () => pagination?.pages.reduce((sum, page) => sum + page.wires.length, 0) ?? 0,
+    [pagination]
+  )
+  const summary = preparing
+    ? 'Preparing schematic…'
+    : `Read-only · ${totalNodes} ${totalNodes === 1 ? 'part' : 'parts'} · ${totalWires} schematic ${totalWires === 1 ? 'net' : 'nets'} · ${pageCount} ${pageCount === 1 ? 'page' : 'pages'}`
 
   return (
     <section className="cb-schematic" data-testid="schematic-view" aria-label="Schematic">
       <header className="cb-schematic-header">
         <span className="cb-schematic-title">Schematic</span>
-        <span className="cb-schematic-hint">
-          Read-only · {layout.nodes.length} {layout.nodes.length === 1 ? 'part' : 'parts'} ·{' '}
-          {layout.wires.length} schematic {layout.wires.length === 1 ? 'net' : 'nets'}
+        <span className="cb-schematic-hint" aria-live="polite">
+          {summary}
         </span>
         <label className="cb-sch-paper-picker">
-          <span>Page</span>
+          <span>Paper</span>
           <select
             value={paperSize}
             data-testid="schematic-paper"
@@ -749,6 +875,33 @@ export function SchematicView(): JSX.Element {
             ))}
           </select>
         </label>
+        {pageCount > 1 && (
+          <div className="cb-sch-pager" role="group" aria-label="Schematic pages">
+            <button
+              type="button"
+              className="cb-sch-pager-button is-prev"
+              data-testid="schematic-page-prev"
+              aria-label="Previous schematic page"
+              disabled={safePageIndex === 0}
+              onClick={() => setPageIndex((current) => Math.max(0, current - 1))}
+            >
+              <Icon name="chevron" />
+            </button>
+            <span className="cb-sch-pager-label" data-testid="schematic-page">
+              Page {safePageIndex + 1} / {pageCount}
+            </span>
+            <button
+              type="button"
+              className="cb-sch-pager-button"
+              data-testid="schematic-page-next"
+              aria-label="Next schematic page"
+              disabled={safePageIndex >= pageCount - 1}
+              onClick={() => setPageIndex((current) => Math.min(pageCount - 1, current + 1))}
+            >
+              <Icon name="chevron" />
+            </button>
+          </div>
+        )}
         <div className="cb-sch-mode" role="group" aria-label="Schematic style">
           <button
             type="button"
@@ -782,39 +935,56 @@ export function SchematicView(): JSX.Element {
           </div>
         </div>
       ) : (
-        <div className={`cb-schematic-canvas${original ? ' is-original' : ''}`}>
-          <svg
-            ref={svgRef}
-            className="cb-schematic-svg"
-            viewBox={`0 0 ${drawWidth} ${drawHeight}`}
-            role="img"
-            aria-label="Schematic of the current circuit"
-            data-testid="schematic-svg"
-            data-schematic-mode={mode}
-            data-schematic-paper={original ? paperSize : 'none'}
-            preserveAspectRatio="xMidYMid meet"
-          >
-            {original ? (
-              <>
-                <Paper width={drawWidth} height={drawHeight} />
-                <g transform={`translate(${sheet.x} ${sheet.y}) scale(${sheet.scale})`}>
+        <div
+          className={`cb-schematic-canvas${original ? ' is-original' : ''}`}
+          aria-busy={preparing}
+        >
+          {layout !== null && (
+            <svg
+              ref={svgRef}
+              className="cb-schematic-svg"
+              viewBox={`0 0 ${drawWidth} ${drawHeight}`}
+              role="img"
+              aria-label="Schematic of the current circuit"
+              data-testid="schematic-svg"
+              data-schematic-mode={mode}
+              data-schematic-paper={original ? paperSize : 'none'}
+              preserveAspectRatio="xMidYMid meet"
+            >
+              {original ? (
+                <>
+                  <Paper width={drawWidth} height={drawHeight} />
+                  <g
+                    transform={`translate(${sheet?.x ?? 0} ${sheet?.y ?? 0}) scale(${sheet?.scale ?? 1})`}
+                  >
+                    {wires}
+                    {nodes}
+                    {netLabels}
+                  </g>
+                  <TitleBlock
+                    x={drawWidth - 242}
+                    y={drawHeight - 66}
+                    project={projectName}
+                    paper={paper.label}
+                    sheet={safePageIndex + 1}
+                    sheetCount={Math.max(1, pageCount)}
+                  />
+                </>
+              ) : (
+                <>
                   {wires}
                   {nodes}
-                </g>
-                <TitleBlock
-                  x={drawWidth - 242}
-                  y={drawHeight - 66}
-                  project={projectName}
-                  paper={paper.label}
-                />
-              </>
-            ) : (
-              <>
-                {wires}
-                {nodes}
-              </>
-            )}
-          </svg>
+                  {netLabels}
+                </>
+              )}
+            </svg>
+          )}
+          {preparing && (
+            <div className="cb-sch-loading" role="status" aria-live="polite">
+              <span className="cb-sch-spinner" aria-hidden="true" />
+              <span>Preparing schematic…</span>
+            </div>
+          )}
         </div>
       )}
     </section>

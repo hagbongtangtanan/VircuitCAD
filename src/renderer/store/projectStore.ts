@@ -3,6 +3,7 @@ import { APP_NAME, DEFAULT_PROJECT_NAME, normalizeProjectName } from '../../shar
 import { emptyCircuitDocument, type CircuitDocument } from '../../shared/circuit'
 import {
   createProject,
+  fileBaseName,
   fileStem,
   sampleLabel,
   type OpenFileResult,
@@ -12,6 +13,7 @@ import { captureActiveSchematicPdf } from '../export/pdfCapture'
 import { captureActiveViewPng } from '../export/pngCapture'
 import { useSerialStore } from '../serial/serialStore'
 import { useCircuitStore } from './circuitStore'
+import { useNotificationStore } from './notificationStore'
 import { useSimStore } from './simStore'
 import { DEFAULT_SKETCH, useSketchStore } from './sketchStore'
 
@@ -74,12 +76,16 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       useSketchStore.getState().setSource(opened.project.sketch)
       useSketchStore.getState().clearBuild()
       set({ path: opened.path })
-      markSaved(label ?? fileStem(opened.path))
+      const name = normalizeProjectName(label ?? opened.project.name ?? fileStem(opened.path))
+      markSaved(name)
+      notify('success', 'Project opened', name)
     } else {
       useSketchStore.getState().setSource(opened.sketch)
       useSketchStore.getState().clearBuild()
       set({ path: null })
-      markSaved(label ?? fileStem(opened.path))
+      const name = normalizeProjectName(label ?? fileStem(opened.path))
+      markSaved(name)
+      notify('success', 'Sketch opened', name)
     }
   }
 
@@ -89,6 +95,25 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     useCircuitStore.getState().replaceDocument(emptyCircuitDocument())
     useSketchStore.getState().setSource(DEFAULT_SKETCH)
     useSketchStore.getState().clearBuild()
+  }
+
+  function notify(
+    tone: 'success' | 'info' | 'warning' | 'error',
+    title: string,
+    message?: string
+  ): void {
+    useNotificationStore.getState().notify({ tone, title, message })
+  }
+
+  function fail(title: string, error: unknown): void {
+    const message = errorMessage(error)
+    set({ error: message })
+    notify('error', title, message)
+  }
+
+  function warn(title: string, message: string): void {
+    set({ error: message })
+    notify('warning', title, message)
   }
 
   return {
@@ -109,7 +134,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
         applyOpened(opened)
         set({ error: null })
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not open file', error)
       } finally {
         set({ busy: false })
       }
@@ -122,7 +147,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
         const opened = await window.api.takeLaunchFile()
         if (opened !== null) applyOpened(opened)
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not open file', error)
       } finally {
         set({ busy: false })
       }
@@ -133,12 +158,13 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
         applyOpened(opened)
         set({ error: null })
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not open file', error)
       }
     },
 
     reportError(message: string): void {
       set({ error: message })
+      notify('error', 'Could not open file', message)
     },
 
     async loadSamples(): Promise<void> {
@@ -157,7 +183,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
         // The sample file itself is read-only: saving asks for a new location.
         set({ path: null })
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not open sample', error)
       } finally {
         set({ busy: false })
       }
@@ -181,7 +207,9 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       if (get().busy) return
       set({ busy: true, error: null })
       try {
+        const name = get().name
         const project = createProject({
+          name,
           circuit: useCircuitStore.getState().document,
           sketch: useSketchStore.getState().source,
         })
@@ -189,10 +217,11 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
         if (saved === null) return
 
         set({ path: saved.path })
-        markSaved(fileStem(saved.path))
+        markSaved(name)
         set({ error: null })
+        notify('success', 'Project saved', `Saved as ${fileBaseName(saved.path)}`)
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not save project', error)
       } finally {
         set({ busy: false })
       }
@@ -201,9 +230,13 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     async exportSketch(): Promise<void> {
       set({ error: null })
       try {
-        await window.api.exportSketch({ sketch: useSketchStore.getState().source, path: null })
+        const saved = await window.api.exportSketch({
+          sketch: useSketchStore.getState().source,
+          path: null,
+        })
+        if (saved !== null) notify('success', 'Sketch exported', fileBaseName(saved.path))
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not export sketch', error)
       }
     },
 
@@ -212,12 +245,13 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       try {
         const dataUrl = await captureActiveViewPng()
         if (dataUrl === null) {
-          set({ error: 'There is nothing to export yet.' })
+          warn('Nothing to export', 'There is nothing to export yet.')
           return
         }
-        await window.api.exportPng({ dataUrl, name: get().name, path: null })
+        const saved = await window.api.exportPng({ dataUrl, name: get().name, path: null })
+        if (saved !== null) notify('success', 'View exported', fileBaseName(saved.path))
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not export view', error)
       }
     },
 
@@ -226,26 +260,31 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       try {
         const data = await captureActiveSchematicPdf()
         if (data === null) {
-          set({ error: 'Switch to Schematic in Original style to save a vector PDF.' })
+          warn(
+            'Schematic PDF unavailable',
+            'Switch to Schematic in Original style to save a vector PDF.'
+          )
           return
         }
-        await window.api.exportPdf({ data, name: get().name, path: null })
+        const saved = await window.api.exportPdf({ data, name: get().name, path: null })
+        if (saved !== null) notify('success', 'Schematic exported', fileBaseName(saved.path))
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not export schematic', error)
       }
     },
 
     async exportHex(): Promise<void> {
       const hex = useSketchStore.getState().hex
       if (hex === null) {
-        set({ error: 'Build the sketch before exporting HEX.' })
+        warn('No program to export', 'Build the sketch before exporting HEX.')
         return
       }
       set({ error: null })
       try {
-        await window.api.exportHex({ hex, path: null })
+        const saved = await window.api.exportHex({ hex, path: null })
+        if (saved !== null) notify('success', 'Program exported', fileBaseName(saved.path))
       } catch (error) {
-        set({ error: errorMessage(error) })
+        fail('Could not export program', error)
       }
     },
 

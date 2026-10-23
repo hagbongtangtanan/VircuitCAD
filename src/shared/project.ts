@@ -17,6 +17,8 @@ export const PDF_EXTENSION = 'pdf'
 export const projectFileSchema = z.strictObject({
   format: z.literal(PROJECT_FORMAT),
   version: z.literal(PROJECT_VERSION),
+  /** Optional for projects written before titles were persisted. */
+  name: z.string().trim().min(1).max(120).optional(),
   circuit: circuitDocumentSchema,
   sketch: z.string().max(MAX_SKETCH_LENGTH),
 })
@@ -26,12 +28,14 @@ export type ProjectFile = z.infer<typeof projectFileSchema>
 export interface ProjectSnapshot {
   readonly circuit: CircuitDocument
   readonly sketch: string
+  readonly name?: string
 }
 
 export function createProject(snapshot: ProjectSnapshot): ProjectFile {
   return {
     format: PROJECT_FORMAT,
     version: PROJECT_VERSION,
+    ...(snapshot.name === undefined ? {} : { name: snapshot.name }),
     circuit: snapshot.circuit,
     sketch: snapshot.sketch,
   }

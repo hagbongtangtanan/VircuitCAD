@@ -89,6 +89,7 @@ describe('partValue', () => {
       partValue(part({ id: 'l', type: 'inductor', props: { inductanceMilliHenries: 10 } }))
     ).toBe('10 mH')
     expect(partValue(part({ id: 'led', type: 'led', props: { color: 'green' } }))).toBe('GREEN')
+    expect(partValue(part({ id: 'rgb', type: 'rgb-led' }))).toBe('RGB')
     expect(
       partValue(
         part({ id: 'ec', type: 'electrolytic-capacitor', props: { capacitanceMicroFarads: 470 } })

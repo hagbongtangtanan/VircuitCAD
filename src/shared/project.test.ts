@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { emptyCircuitDocument } from './circuit'
+import { circuitDocumentSchema, emptyCircuitDocument } from './circuit'
 import {
   ProjectFileError,
   createProject,
@@ -20,6 +20,48 @@ describe('project files', () => {
     const parsed = parseProjectText(serializeProject(project))
     expect(parsed).toEqual(project)
     expect(serializeProject(parsed).endsWith('\n')).toBe(true)
+  })
+
+  it('persists a project title and accepts older files without one', () => {
+    const named = createProject({
+      name: 'Blink Led',
+      circuit: emptyCircuitDocument(),
+      sketch: 'void setup() {}\n',
+    })
+    expect(parseProjectText(serializeProject(named)).name).toBe('Blink Led')
+
+    const legacy = JSON.parse(serializeProject(named))
+    delete legacy.name
+    expect(parseProjectText(JSON.stringify(legacy)).name).toBeUndefined()
+  })
+
+  it('round-trips notes and flips and accepts legacy circuits without them', () => {
+    const circuit = circuitDocumentSchema.parse({
+      version: 1,
+      parts: [
+        {
+          id: 'led',
+          type: 'led',
+          position: { x: 10, y: 20 },
+          rotation: 0,
+          flipX: true,
+          props: { color: 'red' },
+        },
+      ],
+      wires: [],
+      notes: [{ id: 'note-1', text: 'Mind the polarity', position: { x: 40, y: 50 } }],
+    })
+    const withExtras = createProject({ circuit, sketch: 'void setup() {}\n' })
+    const parsed = parseProjectText(serializeProject(withExtras))
+    expect(parsed.circuit.parts[0]?.flipX).toBe(true)
+    expect(parsed.circuit.notes).toEqual(circuit.notes)
+
+    const legacy = JSON.parse(serializeProject(withExtras))
+    delete legacy.circuit.notes
+    delete legacy.circuit.parts[0].flipX
+    const legacyParsed = parseProjectText(JSON.stringify(legacy))
+    expect(legacyParsed.circuit.notes).toBeUndefined()
+    expect(legacyParsed.circuit.parts[0]?.flipX).toBeUndefined()
   })
 
   it('rejects malformed JSON with a readable message', () => {

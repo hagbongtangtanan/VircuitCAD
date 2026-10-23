@@ -6,12 +6,14 @@ import {
   partTypeSchema,
   pinHasWire,
   pinKey,
+  type Note,
   type PartType,
   type PinRef,
   type Point,
 } from '../../shared/circuit'
 import { definitionOf, pinWorldPosition } from '../parts/definitions'
 import { PartBody } from '../parts/renderers'
+import { NoteNode } from './NoteNode'
 import { PIN_ACTIVE_FILL, PIN_FILL, PIN_HOVER_FILL } from '../parts/partColors'
 import { useCircuitStore } from '../store/circuitStore'
 import { useShallow } from 'zustand/react/shallow'
@@ -170,6 +172,7 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
 }
 
 const EMPTY_DIP_BITS: readonly boolean[] = []
+const EMPTY_NOTES: readonly Note[] = []
 
 interface PartNodeProps {
   readonly partId: string
@@ -219,6 +222,8 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
       offsetX={width / 2}
       offsetY={height / 2}
       rotation={part.rotation}
+      scaleX={part.flipX === true ? -1 : 1}
+      scaleY={part.flipY === true ? -1 : 1}
       draggable={!props.routing}
       onDragStart={() => {
         beginTransientEdit()
@@ -587,6 +592,8 @@ export function CircuitCanvas(): JSX.Element {
 
   const parts = useCircuitStore((state) => state.document.parts)
   const wires = useCircuitStore((state) => state.document.wires)
+  const notes = useCircuitStore((state) => state.document.notes ?? EMPTY_NOTES)
+  const selectedNoteId = useCircuitStore((state) => state.selectedNoteId)
   const connectedColors = useMemo(() => {
     const colors = new Map<string, string>()
     for (const wire of wires) {
@@ -604,6 +611,7 @@ export function CircuitCanvas(): JSX.Element {
   const addWire = useCircuitStore((state) => state.addWire)
   const selectParts = useCircuitStore((state) => state.selectParts)
   const selectWire = useCircuitStore((state) => state.selectWire)
+  const selectNote = useCircuitStore((state) => state.selectNote)
   const setWireWaypoints = useCircuitStore((state) => state.setWireWaypoints)
 
   useEffect(() => {
@@ -738,6 +746,7 @@ export function CircuitCanvas(): JSX.Element {
         if (isEmptyClick && event.evt.button === 0) {
           selectParts([])
           selectWire(null)
+          selectNote(null)
           setDraft(null)
         }
         const pointer = stage?.getPointerPosition()
@@ -755,6 +764,7 @@ export function CircuitCanvas(): JSX.Element {
       isSpaceDown,
       parts,
       pointerInWorld,
+      selectNote,
       selectParts,
       selectWire,
       viewport.scale,
@@ -956,6 +966,7 @@ export function CircuitCanvas(): JSX.Element {
       onDragOver={handleDragOver}
       onContextMenu={(event) => event.preventDefault()}
       data-testid="circuit-canvas"
+      data-note-count={notes.length}
     >
       <Stage
         ref={stageRef}
@@ -1085,6 +1096,24 @@ export function CircuitCanvas(): JSX.Element {
               connectedColors={connectedColors}
               onHoverPin={setHoveredPin}
               onPointerDownPin={handlePointerDownPin}
+            />
+          ))}
+        </Layer>
+
+        <Layer
+          x={viewport.offsetX}
+          y={viewport.offsetY}
+          scaleX={viewport.scale}
+          scaleY={viewport.scale}
+          listening={draft === null}
+        >
+          {notes.map((note) => (
+            <NoteNode
+              key={note.id}
+              note={note}
+              selected={selectedNoteId === note.id}
+              routing={draft !== null}
+              scale={viewport.scale}
             />
           ))}
         </Layer>

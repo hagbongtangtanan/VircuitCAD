@@ -747,6 +747,40 @@ button:disabled {
   accent-color: var(--cb-primary);
 }
 
+.cb-note-text {
+  width: 100%;
+  min-height: 118px;
+  padding: 7px 8px;
+  font-family: inherit;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--cb-text);
+  resize: vertical;
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-border);
+  border-radius: 7px;
+}
+
+.cb-button-row {
+  display: flex;
+  gap: 6px;
+}
+
+.cb-inspector-button {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cb-text);
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-border);
+  border-radius: 6px;
+}
+
+.cb-inspector-button:hover {
+  background: var(--cb-surface-hover);
+}
+
 .cb-dip-bits {
   display: flex;
   gap: 6px;
@@ -1123,12 +1157,48 @@ button:disabled {
 }
 
 .cb-schematic-canvas {
+  position: relative;
   display: grid;
   place-items: center;
   min-width: 0;
   min-height: 0;
   padding: 10px 18px 18px;
   overflow: auto;
+}
+
+.cb-sch-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  color: var(--cb-text-muted);
+  font-size: 12px;
+  background: rgba(4, 11, 22, 0.82);
+  backdrop-filter: blur(2px);
+}
+
+.cb-sch-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 201, 40, 0.18);
+  border-top-color: var(--cb-primary);
+  border-radius: 50%;
+  animation: cb-spin 0.8s linear infinite;
+}
+
+@keyframes cb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb-sch-spinner {
+    animation-duration: 2.4s;
+  }
 }
 
 .cb-schematic-svg {
@@ -1215,6 +1285,22 @@ button:disabled {
 
 .cb-sch-junction {
   fill: var(--cb-schematic-wire);
+}
+
+.cb-sch-netlabel {
+  fill: var(--cb-primary-hover);
+  font-family: var(--cb-font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: var(--cb-canvas);
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+}
+
+.cb-schematic-canvas.is-original .cb-sch-netlabel {
+  fill: #8a5a00;
+  stroke: #fcfbf4;
 }
 
 .cb-placeholder-card {
@@ -1406,6 +1492,51 @@ button:disabled {
   font-size: 9px;
 }
 
+.cb-sch-pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  font-size: 11px;
+  color: var(--cb-text-muted);
+  background: var(--cb-surface-sunken);
+  border: 1px solid var(--cb-border);
+  border-radius: 999px;
+}
+
+.cb-sch-pager-button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: var(--cb-text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+}
+
+.cb-sch-pager-button:hover:not(:disabled) {
+  color: var(--cb-text);
+  background: var(--cb-surface-hover);
+}
+
+.cb-sch-pager-button .cb-icon {
+  width: 13px;
+  height: 13px;
+  transform: rotate(-90deg);
+}
+
+.cb-sch-pager-button.is-prev .cb-icon {
+  transform: rotate(90deg);
+}
+
+.cb-sch-pager-label {
+  min-width: 62px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
 .cb-sch-mode {
   display: inline-flex;
   gap: 2px;
@@ -1566,4 +1697,106 @@ button:disabled {
 .cb-sch-titleblock-sheet {
   fill: #555;
   font-size: 7px;
+}
+
+/* ---------- Notifications ---------- */
+
+.cb-notifications {
+  position: fixed;
+  top: calc(var(--cb-topbar-height) + 14px);
+  right: 16px;
+  z-index: 95;
+  display: grid;
+  gap: 8px;
+  width: min(360px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.cb-notification {
+  display: grid;
+  grid-template-columns: 4px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+  padding: 12px 10px 12px 0;
+  background: var(--cb-overlay);
+  border: 1px solid var(--cb-border-strong);
+  border-radius: var(--cb-radius-md);
+  box-shadow: var(--cb-shadow-lg);
+  pointer-events: auto;
+  animation: cb-notification-in 160ms ease-out;
+}
+
+.cb-notification-mark {
+  align-self: stretch;
+  border-radius: 999px;
+  background: var(--cb-text-faint);
+}
+
+.cb-notification-success .cb-notification-mark {
+  background: var(--cb-primary);
+}
+
+.cb-notification-info .cb-notification-mark {
+  background: var(--cb-schematic-wire);
+}
+
+.cb-notification-warning .cb-notification-mark {
+  background: var(--cb-warn);
+}
+
+.cb-notification-error .cb-notification-mark {
+  background: var(--cb-stop);
+}
+
+.cb-notification-copy {
+  min-width: 0;
+}
+
+.cb-notification-title {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--cb-text);
+}
+
+.cb-notification-message {
+  margin: 3px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--cb-text-muted);
+}
+
+.cb-notification-close {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: var(--cb-text-faint);
+  background: transparent;
+  border: 0;
+  border-radius: var(--cb-radius-sm);
+}
+
+.cb-notification-close:hover {
+  color: var(--cb-text);
+  background: var(--cb-surface-hover);
+}
+
+@keyframes cb-notification-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb-notification {
+    animation: none;
+  }
 }

@@ -1,4 +1,5 @@
 import type { JSX } from 'react'
+import { DEFAULT_NOTE_TEXT, NOTE_WIDTH, noteHeight } from '../canvas/notes'
 import { useCircuitStore } from '../store/circuitStore'
 import { useViewportStore } from '../store/viewportStore'
 import { Icon } from './Icon'
@@ -18,12 +19,27 @@ export function CanvasToolbar(): JSX.Element {
   const undo = useCircuitStore((state) => state.undo)
   const redo = useCircuitStore((state) => state.redo)
   const rotateSelected = useCircuitStore((state) => state.rotateSelected)
+  const flipSelected = useCircuitStore((state) => state.flipSelected)
+  const addNote = useCircuitStore((state) => state.addNote)
   const duplicateSelected = useCircuitStore((state) => state.duplicateSelected)
   const removeSelected = useCircuitStore((state) => state.removeSelected)
 
   const hasParts = useCircuitStore((state) => state.selectedPartIds.length > 0)
   const hasWire = useCircuitStore((state) => state.selectedWireId !== null)
-  const hasSelection = hasParts || hasWire
+  const hasNote = useCircuitStore((state) => state.selectedNoteId !== null)
+  const hasSelection = hasParts || hasWire || hasNote
+
+  const addNoteHere = (): void => {
+    const { size, viewport: current } = useViewportStore.getState()
+    const center = {
+      x: (size.width / 2 - current.offsetX) / current.scale,
+      y: (size.height / 2 - current.offsetY) / current.scale,
+    }
+    addNote(DEFAULT_NOTE_TEXT, {
+      x: center.x - NOTE_WIDTH / 2,
+      y: center.y - noteHeight(DEFAULT_NOTE_TEXT) / 2,
+    })
+  }
 
   return (
     <div className="cb-canvas-toolbar" data-testid="canvas-toolbar" role="toolbar">
@@ -108,20 +124,21 @@ export function CanvasToolbar(): JSX.Element {
       <button
         type="button"
         className="cb-tool"
-        title="Flip (arrives in Milestone 2)"
-        aria-label="Flip"
+        title="Flip horizontally (Shift+click for vertical)"
+        aria-label="Flip horizontally"
         data-testid="flip"
-        disabled
+        disabled={!hasParts}
+        onClick={(event) => flipSelected(event.shiftKey ? 'vertical' : 'horizontal')}
       >
         <Icon name="flip" />
       </button>
       <button
         type="button"
         className="cb-tool"
-        title="Notes (arrives in Milestone 2)"
-        aria-label="Notes"
+        title="Add note (N)"
+        aria-label="Add note"
         data-testid="notes"
-        disabled
+        onClick={addNoteHere}
       >
         <Icon name="note" />
       </button>

@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import type { PartInstance } from '../../shared/circuit'
+import type { Note, PartInstance } from '../../shared/circuit'
 import { definitionOf } from '../parts/definitions'
 import { useCircuitStore } from '../store/circuitStore'
 import { useInteractionStore } from '../store/interactionStore'
@@ -14,6 +14,7 @@ const WIRE_PALETTE = [
   { color: '#101a27', label: 'Signal (ink)' },
 ] as const
 const EMPTY_DIP_BITS: readonly boolean[] = []
+const EMPTY_NOTES: readonly Note[] = []
 const KEYPAD_KEYS = ['1', '2', '3', 'A', '4', '5', '6', 'B', '7', '8', '9', 'C', '*', '0', '#', 'D']
 
 function formatSensorValue(
@@ -199,30 +200,40 @@ function PartFields({ part }: { readonly part: PartInstance }): JSX.Element {
 export function InspectorPanel(): JSX.Element | null {
   const selectedPartIds = useCircuitStore((state) => state.selectedPartIds)
   const selectedWireId = useCircuitStore((state) => state.selectedWireId)
+  const selectedNoteId = useCircuitStore((state) => state.selectedNoteId)
   const parts = useCircuitStore((state) => state.document.parts)
   const wires = useCircuitStore((state) => state.document.wires)
+  const notes = useCircuitStore((state) => state.document.notes ?? EMPTY_NOTES)
   const setWireColor = useCircuitStore((state) => state.setWireColor)
   const selectParts = useCircuitStore((state) => state.selectParts)
   const selectWire = useCircuitStore((state) => state.selectWire)
+  const selectNote = useCircuitStore((state) => state.selectNote)
+  const updateNote = useCircuitStore((state) => state.updateNote)
+  const flipSelected = useCircuitStore((state) => state.flipSelected)
 
   const selectedWire = wires.find((wire) => wire.id === selectedWireId)
+  const selectedNote = notes.find((note) => note.id === selectedNoteId)
   const singlePart =
     selectedPartIds.length === 1 ? parts.find((part) => part.id === selectedPartIds[0]) : undefined
-  const visible = selectedWire !== undefined || selectedPartIds.length > 0
+  const visible =
+    selectedNote !== undefined || selectedWire !== undefined || selectedPartIds.length > 0
 
   if (!visible) return null
 
   const dismiss = (): void => {
     selectParts([])
     selectWire(null)
+    selectNote(null)
   }
 
   const title =
-    selectedWire !== undefined
-      ? 'Wire'
-      : singlePart !== undefined
-        ? definitionOf(singlePart.type).label
-        : `${selectedPartIds.length} parts`
+    selectedNote !== undefined
+      ? 'Note'
+      : selectedWire !== undefined
+        ? 'Wire'
+        : singlePart !== undefined
+          ? definitionOf(singlePart.type).label
+          : `${selectedPartIds.length} parts`
 
   return (
     <div className="cb-inspector" data-testid="inspector" role="dialog" aria-label="Inspector">
@@ -239,7 +250,28 @@ export function InspectorPanel(): JSX.Element | null {
         </button>
       </header>
 
-      {selectedWire !== undefined && (
+      {selectedNote !== undefined && (
+        <div className="cb-inspector-fields">
+          <label className="cb-field">
+            <span>Text</span>
+            <textarea
+              key={selectedNote.id}
+              className="cb-note-text"
+              data-testid="note-text"
+              value={selectedNote.text}
+              rows={6}
+              autoFocus
+              onFocus={(event) => event.currentTarget.select()}
+              onChange={(event) => updateNote(selectedNote.id, event.target.value)}
+            />
+          </label>
+          <p className="cb-placeholder">
+            Drag the note on the canvas to move it. Press Delete to remove it.
+          </p>
+        </div>
+      )}
+
+      {selectedNote === undefined && selectedWire !== undefined && (
         <div className="cb-inspector-fields">
           <label className="cb-field">
             <span>Wire color</span>
@@ -276,9 +308,37 @@ export function InspectorPanel(): JSX.Element | null {
         </div>
       )}
 
-      {selectedWire === undefined && singlePart !== undefined && <PartFields part={singlePart} />}
+      {selectedNote === undefined && selectedWire === undefined && (
+        <div className="cb-inspector-fields">
+          <div className="cb-field cb-field-inline">
+            <span>Flip</span>
+            <div className="cb-button-row">
+              <button
+                type="button"
+                className="cb-inspector-button"
+                data-testid="flip-horizontal"
+                onClick={() => flipSelected('horizontal')}
+              >
+                Horizontal
+              </button>
+              <button
+                type="button"
+                className="cb-inspector-button"
+                data-testid="flip-vertical"
+                onClick={() => flipSelected('vertical')}
+              >
+                Vertical
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {selectedWire === undefined && singlePart === undefined && (
+      {selectedNote === undefined && selectedWire === undefined && singlePart !== undefined && (
+        <PartFields part={singlePart} />
+      )}
+
+      {selectedNote === undefined && selectedWire === undefined && singlePart === undefined && (
         <p className="cb-placeholder">
           {selectedPartIds.length} parts selected. Select a single part to edit its properties.
         </p>

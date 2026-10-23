@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { CircuitDocument, PartInstance, Wire } from '../../shared/circuit'
+import { partDefinitions } from '../parts/definitions'
 import {
   fitSchematicToPaper,
   layoutSchematic,
+  layoutSchematicPages,
   PAPER_PRESETS,
   SHEET_MARGIN,
   TITLE_BLOCK_HEIGHT,
@@ -200,6 +202,71 @@ describe('layoutSchematic', () => {
     expect(layout.wires[0]?.kind).toBe('power')
   })
 
+  it('adds pages for a large unconnected library without duplicating parts', () => {
+    const parts: PartInstance[] = Array.from({ length: 60 }, (_unused, index) => ({
+      id: `r-${index}`,
+      type: 'resistor',
+      position: { x: index * 20, y: index * 20 },
+      rotation: 0,
+      props: { resistanceOhms: 220 + index },
+    }))
+
+    const a4 = layoutSchematicPages(documentOf(parts), { paperSize: 'a4' })
+    const legal = layoutSchematicPages(documentOf(parts), { paperSize: 'legal' })
+    const ids = a4.pages.flatMap((page) => page.nodes.map((node) => node.id))
+
+    expect(a4.pageCount).toBeGreaterThan(1)
+    expect(ids).toHaveLength(parts.length)
+    expect(new Set(ids).size).toBe(parts.length)
+    expect(legal.pageCount).toBeLessThanOrEqual(a4.pageCount)
+  })
+
+  it('keeps a connected cluster together when it fits one page', () => {
+    const leds: PartInstance[] = Array.from({ length: 10 }, (_unused, index) => ({
+      id: `led-${index}`,
+      type: 'led',
+      position: { x: index * 20, y: index * 20 },
+      rotation: 0,
+      props: { color: 'red' },
+    }))
+    const wires = leds.map((led, index) =>
+      wire(`w-${index}`, { partId: 'uno', pinId: '5V' }, { partId: led.id, pinId: 'anode' })
+    )
+
+    const pagination = layoutSchematicPages(documentOf([uno, ...leds], wires), {
+      paperSize: 'a4',
+    })
+
+    expect(pagination.pageCount).toBe(1)
+    expect(pagination.pages[0]?.nodes.map((node) => node.id).sort()).toEqual(
+      ['uno', ...leds.map((led) => led.id)].sort()
+    )
+  })
+
+  it('turns nets that cross split pages into labelled off-page connections', () => {
+    const leds: PartInstance[] = Array.from({ length: 40 }, (_unused, index) => ({
+      id: `led-${index}`,
+      type: 'led',
+      position: { x: index * 20, y: index * 20 },
+      rotation: 0,
+      props: { color: 'red' },
+    }))
+    const wires = leds.map((led, index) =>
+      wire(`w-${index}`, { partId: 'uno', pinId: '5V' }, { partId: led.id, pinId: 'anode' })
+    )
+
+    const pagination = layoutSchematicPages(documentOf([uno, ...leds], wires), {
+      paperSize: 'a4',
+    })
+
+    expect(pagination.pageCount).toBeGreaterThan(1)
+    expect(pagination.pages.some((page) => page.netLabels.length > 0)).toBe(true)
+    expect(pagination.pages.flatMap((page) => page.wires)).toHaveLength(0)
+    expect(
+      pagination.pages.some((page) => page.netLabels.some((label) => label.label === '5V'))
+    ).toBe(true)
+  })
+
   it('fits the drawing inside every paper size above the title block', () => {
     const parts: PartInstance[] = Array.from({ length: 14 }, (_unused, index) => ({
       id: `r-${index}`,
@@ -221,6 +288,25 @@ describe('layoutSchematic', () => {
         paper.height - TITLE_BLOCK_HEIGHT
       )
     }
+  })
+
+  it('lays out every component in the expanded library without throwing', () => {
+    const parts = partDefinitions.map((definition, index) => ({
+      id: `all-${index}`,
+      type: definition.type,
+      position: { x: (index % 10) * 140, y: Math.floor(index / 10) * 90 },
+      rotation: 0,
+      props: structuredClone(definition.defaultProps),
+    })) as unknown as readonly PartInstance[]
+
+    const layout = layoutSchematic(documentOf(parts))
+
+    const drawable = parts.filter(
+      (part) => !['breadboard', 'breadboard-small', 'breadboard-mini'].includes(part.type)
+    )
+    expect(layout.nodes).toHaveLength(drawable.length)
+    expect(layout.width).toBeGreaterThan(0)
+    expect(layout.height).toBeGreaterThan(0)
   })
 
   it('offers fixed landscape A4, Letter and Legal sheets', () => {

@@ -37,6 +37,9 @@ const BUS_STEP = 2.8
 const CHANNEL_LANES = 5
 const CHANNEL_STEP = 7
 const MAX_UNCONNECTED_PINS = 6
+const GROUP_GAP = 36
+const PAGE_PADDING = 28
+const DEFAULT_MIN_PAGE_SCALE = 0.55
 
 export type SchematicPaper = 'a4' | 'letter' | 'legal'
 
@@ -102,6 +105,8 @@ export interface SchematicPin {
   readonly y: number
   /** Routing channel to the left of this part's column. */
   readonly channel: number
+  /** Full-document net id, or null when the pin is not connected. */
+  readonly netId: number | null
 }
 
 export interface SchematicPartNode {
@@ -127,9 +132,18 @@ export interface SchematicWire {
   readonly junctions: readonly Point[]
 }
 
+export interface SchematicNetLabel {
+  readonly netId: number
+  readonly label: string
+  readonly x: number
+  readonly y: number
+  readonly anchor: 'start' | 'end'
+}
+
 export interface SchematicLayout {
   readonly nodes: readonly SchematicPartNode[]
   readonly wires: readonly SchematicWire[]
+  readonly netLabels: readonly SchematicNetLabel[]
   readonly width: number
   readonly height: number
 }
@@ -141,6 +155,22 @@ export interface SchematicLayoutOptions {
    * their compact layout.
    */
   readonly roomyTwoPin?: boolean
+  /** Used by pagination to keep a cluster inside one sheet width. */
+  readonly maxColumns?: number
+  /** Used by pagination to keep a cluster inside one sheet height. */
+  readonly targetColumnHeight?: number
+  /** Shared across independently laid-out clusters so references stay unique. */
+  readonly designators?: ReadonlyMap<string, string>
+}
+
+export interface SchematicPaginationOptions extends SchematicLayoutOptions {
+  readonly paperSize: SchematicPaper
+  readonly minScale?: number
+}
+
+export interface SchematicPagination {
+  readonly pages: readonly SchematicLayout[]
+  readonly pageCount: number
 }
 
 interface PinPlan {
@@ -150,6 +180,7 @@ interface PinPlan {
     readonly pinId: string
     readonly label: string
     readonly kind: PinKind
+    readonly netId: number | null
   }[]
 }
 
@@ -242,10 +273,13 @@ function leafDepths(
     const ids = [...new Set(keys.map((key) => key.slice(0, key.indexOf(':'))))].filter((id) =>
       leafIds.has(id)
     )
+    const hub = ids[0]
+    const hubNeighbours = hub === undefined ? undefined : adjacency.get(hub)
+    if (hub === undefined || hubNeighbours === undefined) continue
     for (const id of ids) {
-      for (const other of ids) {
-        if (id !== other) adjacency.get(id)?.add(other)
-      }
+      if (id === hub) continue
+      hubNeighbours.add(id)
+      adjacency.get(id)?.add(hub)
     }
   }
 
@@ -305,7 +339,7 @@ function planPins(
   part: PartInstance,
   anchors: ReadonlyMap<number, string[]>,
   netlist: ReturnType<typeof buildNetlist>
-): readonly { pinId: string; label: string; kind: PinKind }[] {
+): PinPlan['pins'] {
   const definition = definitionOf(part.type)
   const connected = new Set<string>()
 
@@ -320,7 +354,12 @@ function planPins(
       ? definition.pins.filter((pin) => connected.has(pin.id))
       : definition.pins.slice(0, MAX_UNCONNECTED_PINS)
 
-  return chosen.map((pin) => ({ pinId: pin.id, label: pin.label, kind: pin.kind }))
+  return chosen.map((pin) => ({
+    pinId: pin.id,
+    label: pin.label,
+    kind: pin.kind,
+    netId: netIdOfPin(netlist, part.id, pin.id) ?? null,
+  }))
 }
 
 function nodeHeight(pinCount: number, options: SchematicLayoutOptions): number {
@@ -368,6 +407,7 @@ function buildNode(
       x: stubX,
       y: y + offset,
       channel: plan.board ? 0 : column,
+      netId: pin.netId,
     } satisfies SchematicPin
   })
 
@@ -387,15 +427,18 @@ function buildNode(
   }
 }
 
-function planColumns(leaves: readonly LeafPlan[], hasBoards: boolean): readonly ColumnPlan[] {
+function planColumns(
+  leaves: readonly LeafPlan[],
+  hasBoards: boolean,
+  options: SchematicLayoutOptions
+): readonly ColumnPlan[] {
   if (leaves.length === 0) return []
 
+  const maxColumns = Math.max(1, options.maxColumns ?? MAX_COLUMNS)
+  const targetColumnHeight = Math.max(120, options.targetColumnHeight ?? TARGET_COLUMN_HEIGHT)
   const totalHeight =
     leaves.reduce((sum, leaf) => sum + leaf.height, 0) + NODE_GAP * Math.max(0, leaves.length - 1)
-  const columnCount = Math.max(
-    1,
-    Math.min(MAX_COLUMNS, Math.ceil(totalHeight / TARGET_COLUMN_HEIGHT))
-  )
+  const columnCount = Math.max(1, Math.min(maxColumns, Math.ceil(totalHeight / targetColumnHeight)))
   const targetHeight = totalHeight / columnCount
   const groups: LeafPlan[][] = []
   let current: LeafPlan[] = []
@@ -521,7 +564,7 @@ export function layoutSchematic(
   const ranks = rankLeaves(leafParts, boards, netlist)
   const depths = leafDepths(leafParts, boards, anchors)
   const leaves = sortLeaves(leafParts, ranks, depths)
-  const designators = referenceDesignators(drawable)
+  const designators = options.designators ?? referenceDesignators(drawable)
   const colors = colorByNet(document, netlist)
 
   const leafPlans: LeafPlan[] = leaves.map((leaf) => {
@@ -537,7 +580,7 @@ export function layoutSchematic(
       height: nodeHeight(plan.pins.length, options),
     }
   })
-  const columns = planColumns(leafPlans, boards.length > 0)
+  const columns = planColumns(leafPlans, boards.length > 0, options)
 
   const nodes: SchematicPartNode[] = []
   let boardY = TOP
@@ -613,7 +656,374 @@ export function layoutSchematic(
   return {
     nodes,
     wires,
+    netLabels: [],
     width: Math.max(560, right + 56, Number.isFinite(left) ? left + 560 : 560),
     height: Math.max(320, bottom + 62, TOP + 224),
   }
+}
+
+interface LayoutBounds {
+  readonly minX: number
+  readonly minY: number
+  readonly maxX: number
+  readonly maxY: number
+}
+
+function layoutBounds(layout: SchematicLayout): LayoutBounds | null {
+  let minX = Number.POSITIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
+
+  const include = (x: number, y: number): void => {
+    minX = Math.min(minX, x)
+    minY = Math.min(minY, y)
+    maxX = Math.max(maxX, x)
+    maxY = Math.max(maxY, y)
+  }
+
+  for (const node of layout.nodes) {
+    include(node.x, node.y)
+    include(node.x + node.width, node.y + node.height)
+    for (const pin of node.pins) include(pin.x, pin.y)
+  }
+  for (const wire of layout.wires) {
+    for (const path of wire.paths) {
+      for (const point of path) include(point.x, point.y)
+    }
+    for (const point of wire.junctions) include(point.x, point.y)
+  }
+  for (const label of layout.netLabels) include(label.x, label.y)
+
+  if (!Number.isFinite(minX)) return null
+  return { minX, minY, maxX, maxY }
+}
+
+function translateLayout(
+  layout: SchematicLayout,
+  dx: number,
+  dy: number,
+  width: number,
+  height: number
+): SchematicLayout {
+  return {
+    nodes: layout.nodes.map((node) => ({
+      ...node,
+      x: node.x + dx,
+      y: node.y + dy,
+      pins: node.pins.map((pin) => ({ ...pin, x: pin.x + dx, y: pin.y + dy })),
+    })),
+    wires: layout.wires.map((wire) => ({
+      ...wire,
+      paths: wire.paths.map((path) => path.map((point) => ({ x: point.x + dx, y: point.y + dy }))),
+      junctions: wire.junctions.map((point) => ({ x: point.x + dx, y: point.y + dy })),
+    })),
+    netLabels: layout.netLabels.map((label) => ({ ...label, x: label.x + dx, y: label.y + dy })),
+    width,
+    height,
+  }
+}
+
+function compactLayout(layout: SchematicLayout, padding = PAGE_PADDING): SchematicLayout {
+  const bounds = layoutBounds(layout)
+  if (bounds === null) return layout
+  return translateLayout(
+    layout,
+    padding - bounds.minX,
+    padding - bounds.minY,
+    Math.max(1, bounds.maxX - bounds.minX + padding * 2),
+    Math.max(1, bounds.maxY - bounds.minY + padding * 2)
+  )
+}
+
+function pageCapacity(
+  paperSize: SchematicPaper,
+  minScale: number
+): { readonly width: number; readonly height: number } {
+  const paper = PAPER_PRESETS[paperSize]
+  const availableWidth = paper.width - SHEET_MARGIN * 2
+  const availableHeight = paper.height - SHEET_MARGIN * 2 - TITLE_BLOCK_HEIGHT
+  return {
+    width: availableWidth / minScale,
+    height: availableHeight / minScale,
+  }
+}
+
+function partIdOfKey(key: string): string {
+  return key.slice(0, key.indexOf(':'))
+}
+
+function connectedGroups(
+  anchors: ReadonlyMap<number, string[]>,
+  drawable: readonly PartInstance[]
+): readonly PartInstance[][] {
+  const partsById = new Map(drawable.map((part) => [part.id, part]))
+  const parent = new Map<string, string>(drawable.map((part) => [part.id, part.id]))
+
+  const find = (id: string): string => {
+    let root = id
+    while (parent.get(root) !== root) root = parent.get(root) ?? root
+    let current = id
+    while (current !== root) {
+      const next = parent.get(current) ?? root
+      parent.set(current, root)
+      current = next
+    }
+    return root
+  }
+
+  const union = (a: string, b: string): void => {
+    const rootA = find(a)
+    const rootB = find(b)
+    if (rootA !== rootB) parent.set(rootB, rootA)
+  }
+
+  for (const keys of anchors.values()) {
+    const ids = [...new Set(keys.map(partIdOfKey))].filter((id) => partsById.has(id))
+    const first = ids[0]
+    if (first === undefined) continue
+    for (const id of ids) union(first, id)
+  }
+
+  const groups = new Map<string, PartInstance[]>()
+  for (const part of drawable) {
+    const root = find(part.id)
+    const group = groups.get(root)
+    if (group === undefined) groups.set(root, [part])
+    else group.push(part)
+  }
+  return [...groups.values()]
+}
+
+function groupDocument(
+  document: CircuitDocument,
+  parts: readonly PartInstance[],
+  skipped: readonly PartInstance[]
+): CircuitDocument {
+  const included = new Set([...parts, ...skipped].map((part) => part.id))
+  return {
+    version: document.version,
+    parts: [...parts, ...skipped],
+    wires: document.wires.filter(
+      (wire) => included.has(wire.from.partId) && included.has(wire.to.partId)
+    ),
+  }
+}
+
+function packLayouts(
+  layouts: readonly SchematicLayout[],
+  capacity: { readonly width: number; readonly height: number }
+): SchematicLayout[] {
+  const packWidth = capacity.width - PAGE_PADDING * 2
+  const packHeight = capacity.height - PAGE_PADDING * 2
+  const pages: SchematicLayout[] = []
+  let placements: { layout: SchematicLayout; x: number; y: number }[] = []
+  let x = PAGE_PADDING
+  let y = PAGE_PADDING
+  let rowHeight = 0
+
+  const flush = (): void => {
+    if (placements.length === 0) return
+    const nodes: SchematicPartNode[] = []
+    const wires: SchematicWire[] = []
+    const netLabels: SchematicNetLabel[] = []
+    for (const placement of placements) {
+      const moved = translateLayout(
+        placement.layout,
+        placement.x,
+        placement.y,
+        capacity.width,
+        capacity.height
+      )
+      nodes.push(...moved.nodes)
+      wires.push(...moved.wires)
+      netLabels.push(...moved.netLabels)
+    }
+    pages.push({ nodes, wires, netLabels, width: capacity.width, height: capacity.height })
+    placements = []
+  }
+
+  for (const layout of layouts) {
+    if (layout.width > packWidth || layout.height > packHeight) continue
+    if (x > PAGE_PADDING && x + layout.width > PAGE_PADDING + packWidth) {
+      x = PAGE_PADDING
+      y += rowHeight + GROUP_GAP
+      rowHeight = 0
+    }
+    if (y + layout.height > PAGE_PADDING + packHeight) {
+      flush()
+      x = PAGE_PADDING
+      y = PAGE_PADDING
+      rowHeight = 0
+    }
+    placements.push({ layout, x, y })
+    x += layout.width + GROUP_GAP
+    rowHeight = Math.max(rowHeight, layout.height)
+  }
+  flush()
+  return pages
+}
+
+function netLabelNames(layout: SchematicLayout): ReadonlyMap<number, string> {
+  const labelsByNet = new Map<number, Set<string>>()
+  for (const node of layout.nodes) {
+    for (const pin of node.pins) {
+      if (pin.netId === null) continue
+      const labels = labelsByNet.get(pin.netId)
+      if (labels === undefined) labelsByNet.set(pin.netId, new Set([pin.label]))
+      else labels.add(pin.label)
+    }
+  }
+
+  const preferred = ['GND', '5V', '3V3', 'VIN', 'VCC', '+5V', '+3V3']
+  const names = new Map<number, string>()
+  for (const [netId, labels] of labelsByNet) {
+    const match = preferred.find((candidate) => labels.has(candidate))
+    if (match !== undefined) {
+      names.set(netId, match)
+    } else if (labels.size === 1) {
+      names.set(netId, [...labels][0] ?? `N${netId}`)
+    } else {
+      names.set(netId, `N${netId}`)
+    }
+  }
+  return names
+}
+
+function tileLayout(
+  layout: SchematicLayout,
+  capacity: { readonly width: number; readonly height: number }
+): SchematicLayout[] {
+  const tileWidth = capacity.width - PAGE_PADDING * 2
+  const tileHeight = capacity.height - PAGE_PADDING * 2
+  const xBands = Math.max(1, Math.ceil(layout.width / tileWidth))
+  const yBands = Math.max(1, Math.ceil(layout.height / tileHeight))
+  const buckets: SchematicPartNode[][] = Array.from({ length: xBands * yBands }, () => [])
+
+  for (const node of layout.nodes) {
+    const column = Math.min(
+      xBands - 1,
+      Math.max(0, Math.floor((node.x + node.width / 2) / tileWidth))
+    )
+    const row = Math.min(
+      yBands - 1,
+      Math.max(0, Math.floor((node.y + node.height / 2) / tileHeight))
+    )
+    buckets[row * xBands + column]?.push(node)
+  }
+
+  const tiles: { bx: number; by: number; nodes: SchematicPartNode[] }[] = []
+  for (let by = 0; by < yBands; by += 1) {
+    for (let bx = 0; bx < xBands; bx += 1) {
+      const nodes = buckets[by * xBands + bx]
+      if (nodes !== undefined && nodes.length > 0) tiles.push({ bx, by, nodes })
+    }
+  }
+
+  const netPages = new Map<number, Set<number>>()
+  tiles.forEach((tile, pageIndex) => {
+    for (const node of tile.nodes) {
+      for (const pin of node.pins) {
+        if (pin.netId === null) continue
+        const pages = netPages.get(pin.netId)
+        if (pages === undefined) netPages.set(pin.netId, new Set([pageIndex]))
+        else pages.add(pageIndex)
+      }
+    }
+  })
+  const names = netLabelNames(layout)
+
+  return tiles.map((tile) => {
+    const includedNets = new Set<number>()
+    for (const node of tile.nodes) {
+      for (const pin of node.pins) {
+        if (pin.netId !== null) includedNets.add(pin.netId)
+      }
+    }
+    const spanning = new Set(
+      [...includedNets].filter((netId) => (netPages.get(netId)?.size ?? 0) > 1)
+    )
+    const wires = layout.wires.filter(
+      (wire) => includedNets.has(wire.netId) && !spanning.has(wire.netId)
+    )
+    const netLabels: SchematicNetLabel[] = []
+    for (const node of tile.nodes) {
+      for (const pin of node.pins) {
+        if (pin.netId === null || !spanning.has(pin.netId)) continue
+        const left = pin.side === 'left'
+        netLabels.push({
+          netId: pin.netId,
+          label: names.get(pin.netId) ?? `N${pin.netId}`,
+          x: pin.x + (left ? -4 : 4),
+          y: pin.y + 3,
+          anchor: left ? 'end' : 'start',
+        })
+      }
+    }
+
+    return translateLayout(
+      { nodes: tile.nodes, wires, netLabels, width: capacity.width, height: capacity.height },
+      PAGE_PADDING - tile.bx * tileWidth,
+      PAGE_PADDING - tile.by * tileHeight,
+      capacity.width,
+      capacity.height
+    )
+  })
+}
+
+/**
+ * Groups electrically connected components, lays each group out as a compact
+ * block, and adds sheets whenever the blocks no longer fit the selected paper.
+ * A group that is itself larger than a sheet is split into readable tiles; nets
+ * crossing those tiles become labelled off-page connections.
+ */
+export function layoutSchematicPages(
+  document: CircuitDocument,
+  options: SchematicPaginationOptions
+): SchematicPagination {
+  const minScale = options.minScale ?? DEFAULT_MIN_PAGE_SCALE
+  const capacity = pageCapacity(options.paperSize, minScale)
+  const packWidth = capacity.width - PAGE_PADDING * 2
+  const packHeight = capacity.height - PAGE_PADDING * 2
+  const netlist = buildNetlist(document)
+  const anchors = anchorKeysByNet(document, netlist)
+  const drawable = document.parts.filter((part) => !SKIPPED_TYPES.has(part.type))
+  if (drawable.length === 0) {
+    return { pages: [layoutSchematic(document, options)], pageCount: 1 }
+  }
+
+  const skipped = document.parts.filter((part) => SKIPPED_TYPES.has(part.type))
+  const designators = referenceDesignators(drawable)
+  const normal: SchematicLayout[] = []
+  const oversized: SchematicLayout[] = []
+
+  for (const group of connectedGroups(anchors, drawable)) {
+    const hasBoard = group.some((part) => BOARD_TYPES.has(part.type))
+    const boardRoom = hasBoard ? BOARD_WIDTH + COLUMN_GAP : 0
+    const maxColumns = Math.max(
+      1,
+      Math.min(
+        MAX_COLUMNS,
+        Math.floor((packWidth - boardRoom + COLUMN_GAP) / (LEAF_WIDTH + COLUMN_GAP))
+      )
+    )
+    const compact = compactLayout(
+      layoutSchematic(groupDocument(document, group, skipped), {
+        ...options,
+        designators,
+        maxColumns,
+        targetColumnHeight: packHeight,
+      })
+    )
+    if (compact.width > packWidth || compact.height > packHeight) oversized.push(compact)
+    else normal.push(compact)
+  }
+
+  normal.sort((a, b) => b.height - a.height || b.width - a.width)
+  const pages = packLayouts(normal, capacity)
+  for (const layout of oversized) pages.push(...tileLayout(layout, capacity))
+  if (pages.length === 0) pages.push(layoutSchematic(document, options))
+  if (pages.length === 1)
+    return { pages: [compactLayout(pages[0] ?? layoutSchematic(document, options))], pageCount: 1 }
+  return { pages, pageCount: pages.length }
 }

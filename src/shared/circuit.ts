@@ -252,6 +252,10 @@ interface PartVariant<Type extends PartType> {
   readonly type: z.ZodLiteral<Type>
   readonly position: typeof pointSchema
   readonly rotation: typeof rotationSchema
+  /** Mirrored across the vertical axis; omitted in projects saved before flipping. */
+  readonly flipX: z.ZodOptional<z.ZodBoolean>
+  /** Mirrored across the horizontal axis; omitted in projects saved before flipping. */
+  readonly flipY: z.ZodOptional<z.ZodBoolean>
   readonly props: (typeof partPropsSchemas)[Type]
 }
 
@@ -261,6 +265,8 @@ function partVariant<Type extends PartType>(type: Type): PartVariant<Type> {
     type: z.literal(type),
     position: pointSchema,
     rotation: rotationSchema,
+    flipX: z.boolean().optional(),
+    flipY: z.boolean().optional(),
     props: partPropsSchemas[type],
   }
 }
@@ -365,12 +371,20 @@ export const partSchema = z.discriminatedUnion('type', [
   z.strictObject(partVariant('cd4511')),
 ])
 
+export const noteSchema = z.strictObject({
+  id: z.string().min(1),
+  text: z.string().max(4000),
+  position: pointSchema,
+})
+
 export const currentCircuitVersion = 1
 
 export const circuitDocumentSchema = z.strictObject({
   version: z.literal(currentCircuitVersion),
   parts: z.array(partSchema),
   wires: z.array(wireSchema),
+  /** Canvas annotations; omitted in projects saved before notes existed. */
+  notes: z.array(noteSchema).optional(),
 })
 
 export type PartType = z.infer<typeof partTypeSchema>
@@ -379,6 +393,7 @@ export type Rotation = z.infer<typeof rotationSchema>
 export type LedColor = z.infer<typeof ledColorSchema>
 export type PinRef = z.infer<typeof pinRefSchema>
 export type Wire = z.infer<typeof wireSchema>
+export type Note = z.infer<typeof noteSchema>
 export type PartInstance = z.infer<typeof partSchema>
 export type CircuitDocument = z.infer<typeof circuitDocumentSchema>
 
@@ -388,7 +403,7 @@ export type PartPropsMap = {
 }
 
 export function emptyCircuitDocument(): CircuitDocument {
-  return { version: currentCircuitVersion, parts: [], wires: [] }
+  return { version: currentCircuitVersion, parts: [], wires: [], notes: [] }
 }
 
 /** Stable key for a pin across the whole document. */

@@ -468,3 +468,39 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 - **Part previews are drawn as recognisable physical components.** The library and canvas
   share the same visual language: resistor colour bands, LED lenses and polarity marks, IC
   notches and pins, battery terminals, breadboard sockets and switch actuators.
+
+## 2026-10-23 — Every component has an intentional preview
+
+- **Preview selection is exhaustive.** `PartPreview` switches on `PartType` with `assertNever`,
+  so adding a definition without artwork is a typecheck error instead of silently showing a
+  breadboard or buzzer.
+- **The expanded library draws its real hardware.** Sensors, displays, keypads, remote/IR parts,
+  actuators, headers, USB connectors, IC families and breadboard sizes have dedicated previews;
+  generic modules are used only when the part genuinely is a module.
+
+## 2026-10-23 — Schematic generation is cached and non-blocking
+
+- **Layout is deferred until after the loading frame.** `SchematicView` renders a spinner first,
+  then computes `layoutSchematic` on a timer and commits it with `startTransition`, so opening
+  a large circuit never leaves a blank root.
+- **Layouts are cached by document object and style.** Re-entering Schematic or toggling back
+  to a previously used style reuses the `WeakMap` entry instead of rebuilding it.
+- **Large nets build connectivity in linear time.** `leafDepths` links each pin to one hub per
+  net rather than forming a complete clique, avoiding quadratic work on shared rails.
+- **Wire and node trees are memoised.** Changing paper size or toggling export state reuses the
+  existing SVG groups; only the sheet transform changes.
+
+## 2026-10-23 — Component flipping and canvas notes
+
+- **Flipping is two optional booleans, not a rotation.** `flipX` and `flipY` mirror a part before
+  its existing quarter-turn rotation. Keeping the two concepts separate means rotation shortcuts
+  still behave normally, both axes can be combined, and projects written before flipping parse
+  without a migration.
+- **Pin geometry is the single source of truth.** `pinWorldPosition` mirrors the local pin offset
+  first, and `pinLabelBoxes` uses the same mirrored pin when choosing its edge. Wires, hit
+  testing, labels and flipping therefore cannot disagree.
+- **Notes are sticky cards in the circuit document.** A note is `{ id, text, position }`, rendered
+  in world space on the canvas and edited from the inspector. Storing notes beside parts and
+  wires gives them undo/redo, dirty tracking, fit-to-content and project persistence for free.
+- **Notes do not appear in the schematic.** The schematic is a derived electrical drawing; sticky
+  notes are workspace annotations and would add clutter to an automatically paginated sheet.

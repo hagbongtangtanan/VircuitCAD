@@ -1,5 +1,5 @@
 import type { PartInstance, Rotation } from '../../shared/circuit'
-import { definitionOf, pinWorldPosition, type PartPin } from '../parts/definitions'
+import { definitionOf, effectivePin, pinWorldPosition, type PartPin } from '../parts/definitions'
 import type { Size } from './geometry'
 
 /** On-screen sizes, divided by the canvas scale so labels stay readable. */
@@ -142,11 +142,12 @@ export function pinLabelBoxes(part: PartInstance, scale: number): ReadonlyMap<Pi
 
   const interiorPins: PartPin[] = []
   for (const pin of definition.pins) {
-    if (edgeDistance(pin, definition.size) > 0.01) {
-      interiorPins.push(pin)
+    const mirrored = effectivePin(part, pin)
+    if (edgeDistance(mirrored, definition.size) > 0.01) {
+      interiorPins.push(mirrored)
       continue
     }
-    const edge = nearestEdge(pin, definition.size)
+    const edge = nearestEdge(mirrored, definition.size)
     const normal = rotateDirection(EDGE_DIRECTIONS[edge], part.rotation)
     const tangent = rotateDirection(EDGE_TANGENTS[edge], part.rotation)
     const world = pinWorldPosition(part, pin.id)
@@ -158,7 +159,7 @@ export function pinLabelBoxes(part: PartInstance, scale: number): ReadonlyMap<Pi
     const horizontal = Math.abs(tangent.x) > 0.5
     const entries = edgeGroups.get(edge) ?? []
     entries.push({
-      pin,
+      pin: mirrored,
       centerAlongEdge: horizontal ? world.x : world.y,
       extentAlongEdge: horizontal ? width : height,
       width,

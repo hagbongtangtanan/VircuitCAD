@@ -200,7 +200,7 @@ export function registerIpcHandlers(): void {
       const request = saveProjectRequestSchema.parse(payload)
       const path = await resolveSavePath(event, request.path, PROJECT_EXTENSION, {
         title: 'Save project',
-        defaultPath: `untitled.${PROJECT_EXTENSION}`,
+        defaultPath: `${safeBaseName(request.project.name ?? 'untitled', 'untitled')}.${PROJECT_EXTENSION}`,
         filters: [{ name: 'VircuitCAD project', extensions: [PROJECT_EXTENSION] }],
       })
       if (path === null) return null

@@ -10,24 +10,27 @@ The GitHub repository keeps its existing slug for download continuity.
 
 Designed and built by Kheil27.
 
-[![Latest release](https://img.shields.io/github/v/release/hagbongtangtanan/HuCAD)](https://github.com/hagbongtangtanan/HuCAD/releases/latest)
+> **Beta:** `v0.4.0-beta.1` is a pre-release for testing. Features and project formats may still
+> change before the stable release; keep backups of important projects.
+
+[![Latest release](https://img.shields.io/github/v/release/hagbongtangtanan/HuCAD?include_prereleases)](https://github.com/hagbongtangtanan/HuCAD/releases)
 
 ## Status
 
-Under active development.
+Under active development. The current release is a **beta**.
 
-| Milestone | Scope                                                  | State       | Remaining                                                                 |
-| --------- | ------------------------------------------------------ | ----------- | ------------------------------------------------------------------------- |
-| 1         | Scaffolding, secure IPC, design system, full UI shell  | Done        | Blocks, notes and flip are labelled placeholders                          |
-| 2         | Canvas, breadboard, wiring, undo/redo, notes           | In progress | Curved wire routing and the notes tool; breadboard and undo/redo are done |
-| 3         | Core parts, inspector, property editing                | Done        | Extended library is tracked under milestone 8                             |
-| 4         | MNA solver, LED/resistor models, sim engine            | Done        | —                                                                         |
-| 5         | Compiler, text editor, serial monitor                  | Done        | Block modes moved to milestone 6                                          |
-| 6         | Block editor (Blocks / Text / Blocks + Text)           | Not started | Whole milestone                                                           |
-| 7         | LED glow, burn-out, buzzer audio, multimeter, warnings | In progress | Burn-out, audio, multimeter and warnings; LED glow is done                |
-| 8         | Extended parts and starter gallery                     | In progress | Protocol parts and displays, servo/relay/stepper, more starter circuits   |
-| 9         | Persistence, schematic view, PNG export, shortcuts     | Done        | —                                                                         |
-| 10        | Windows-first installers, bundled toolchain, docs      | In progress | Windows/macOS toolchains and verified builds on those platforms           |
+| Milestone | Scope                                                  | State       | Remaining                                                               |
+| --------- | ------------------------------------------------------ | ----------- | ----------------------------------------------------------------------- |
+| 1         | Scaffolding, secure IPC, design system, full UI shell  | Done        | Blocks are the only labelled placeholder                                |
+| 2         | Canvas, breadboard, wiring, undo/redo, notes           | In progress | Curved wire routing; breadboard, undo/redo, flip and notes are done     |
+| 3         | Core parts, inspector, property editing                | Done        | Extended library is tracked under milestone 8                           |
+| 4         | MNA solver, LED/resistor models, sim engine            | Done        | —                                                                       |
+| 5         | Compiler, text editor, serial monitor                  | Done        | Block modes moved to milestone 6                                        |
+| 6         | Block editor (Blocks / Text / Blocks + Text)           | Not started | Whole milestone                                                         |
+| 7         | LED glow, burn-out, buzzer audio, multimeter, warnings | In progress | Burn-out, audio, multimeter and warnings; LED glow is done              |
+| 8         | Extended parts and starter gallery                     | In progress | Protocol parts and displays, servo/relay/stepper, more starter circuits |
+| 9         | Persistence, schematic view, PNG export, shortcuts     | Done        | —                                                                       |
+| 10        | Windows-first installers, bundled toolchain, docs      | In progress | Windows/macOS toolchains and verified builds on those platforms         |
 
 This table reflects the code rather than the original six-step plan. "Done" means implemented,
 tested and exercised by the CDP probe; "In progress" names exactly what is still missing. The
@@ -116,6 +119,18 @@ bend, double-click a diamond to remove it, and drag the round blue midpoint hand
 Power leads are yellow and ground leads blue; other wires take the palette colour chosen in the
 inspector.
 
+### Flipping and notes
+
+Select one or more parts and use the **Flip** tool to mirror them horizontally; hold **Shift**
+while clicking it to flip vertically. The inspector offers both axes explicitly, and the
+shortcuts are `Shift+F` and `Shift+V`. Flipping is stored on each part, so pins, wire endpoints,
+labels and project files stay consistent.
+
+Press **N** or the **Notes** tool to drop a sticky note at the centre of the view. Drag it to
+move it, edit its text in the inspector, and press **Delete** to remove it. Notes are canvas
+annotations that live in the circuit document, so they save with the project and participate in
+undo/redo and fit-to-content.
+
 ### Schematics
 
 The **Schematic** tab is a read-only drawing derived from the circuit. Its toggle switches
@@ -179,7 +194,7 @@ VircuitCAD targets Windows; the NSIS installer is the shipped artifact:
 npm run build:win
 ```
 
-produces `release/VircuitCAD-0.3.0-win-x64.exe`. The installer is unsigned for now. A fresh checkout needs network access once so
+produces `release/VircuitCAD-<version>-win-x64.exe`. The installer is unsigned for now. A fresh checkout needs network access once so
 `prebuild:win` can vendor the toolchain (cached in `resources/toolchain/.cache`). The Linux build
 (`npm run build:linux`, about 234 MB AppImage) still exists for development and smoke tests on
 the machine the app is developed on: `prebuild:linux` vendors the toolchain, and electron-builder
@@ -203,11 +218,13 @@ the GitHub Release for that tag. Tags with a suffix, such as `v0.2.0-beta.1`, ar
 pre-releases. Releases intentionally contain Windows assets only.
 
 ```bash
-npm version 0.3.0 --no-git-tag-version   # or edit package.json by hand
-git commit -am "chore: release v0.3.0"
-git tag v0.3.0
-git push origin main v0.3.0
+npm version 0.4.0-beta.1 --no-git-tag-version   # or edit package.json by hand
+git commit -am "chore: release v0.4.0-beta.1"
+git tag v0.4.0-beta.1
+git push origin main v0.4.0-beta.1
 ```
+
+The suffix makes the release a GitHub pre-release; the current beta is `v0.4.0-beta.1`.
 
 `scripts/release.mjs` is the manual/hotfix path: it publishes an already-built `release/`
 directory using the same naming and notes rules. It prefers an authenticated `gh` session and

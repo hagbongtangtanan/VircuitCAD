@@ -138,3 +138,69 @@ describe('setWireEndpoint', () => {
     ).toBe(true)
   })
 })
+
+describe('flipSelected', () => {
+  it('toggles mirroring per axis without changing rotation', () => {
+    useCircuitStore.getState().selectParts(['led'])
+    useCircuitStore.getState().flipSelected('horizontal')
+
+    const flipped = useCircuitStore.getState().document.parts.find((part) => part.id === 'led')
+    expect(flipped?.flipX).toBe(true)
+    expect(flipped?.flipY).toBeUndefined()
+    expect(flipped?.rotation).toBe(0)
+
+    useCircuitStore.getState().flipSelected('vertical')
+    const both = useCircuitStore.getState().document.parts.find((part) => part.id === 'led')
+    expect(both?.flipX).toBe(true)
+    expect(both?.flipY).toBe(true)
+
+    useCircuitStore.getState().flipSelected('horizontal')
+    const verticalOnly = useCircuitStore.getState().document.parts.find((part) => part.id === 'led')
+    expect(verticalOnly?.flipX).toBe(false)
+    expect(verticalOnly?.flipY).toBe(true)
+  })
+
+  it('only changes selected parts', () => {
+    useCircuitStore.getState().selectParts(['r1'])
+    useCircuitStore.getState().flipSelected('horizontal')
+
+    const parts = useCircuitStore.getState().document.parts
+    expect(parts.find((part) => part.id === 'r1')?.flipX).toBe(true)
+    expect(parts.find((part) => part.id === 'led')?.flipX).toBeUndefined()
+  })
+})
+
+describe('notes', () => {
+  it('adds, edits, moves and removes a note with undo support', () => {
+    const id = useCircuitStore.getState().addNote('Check the LED polarity', { x: 20, y: 30 })
+
+    expect(useCircuitStore.getState().document.notes).toEqual([
+      { id, text: 'Check the LED polarity', position: { x: 20, y: 30 } },
+    ])
+    expect(useCircuitStore.getState().selectedNoteId).toBe(id)
+
+    useCircuitStore.getState().updateNote(id, 'Check the resistor value')
+    useCircuitStore.getState().moveNote(id, { x: 50, y: 60 })
+    expect(useCircuitStore.getState().document.notes?.[0]).toMatchObject({
+      text: 'Check the resistor value',
+      position: { x: 50, y: 60 },
+    })
+
+    useCircuitStore.getState().removeSelected()
+    expect(useCircuitStore.getState().document.notes).toHaveLength(0)
+    expect(useCircuitStore.getState().selectedNoteId).toBeNull()
+
+    useCircuitStore.getState().undo()
+    expect(useCircuitStore.getState().document.notes).toHaveLength(1)
+  })
+
+  it('clears note selection when a part or wire is selected', () => {
+    useCircuitStore.getState().addNote('Temporary', { x: 0, y: 0 })
+    useCircuitStore.getState().selectParts(['led'])
+    expect(useCircuitStore.getState().selectedNoteId).toBeNull()
+
+    useCircuitStore.getState().addNote('Temporary', { x: 0, y: 0 })
+    useCircuitStore.getState().selectWire(null)
+    expect(useCircuitStore.getState().selectedNoteId).toBeNull()
+  })
+})

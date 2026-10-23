@@ -1,9 +1,11 @@
 import { useEffect, useState, type JSX } from 'react'
 import { APP_NAME } from '../shared/app'
 import { CircuitCanvas } from './canvas/CircuitCanvas'
+import { DEFAULT_NOTE_TEXT, NOTE_WIDTH, noteHeight } from './canvas/notes'
 import { CanvasToolbar } from './ui/CanvasToolbar'
 import { CodePanel } from './ui/CodePanel'
 import { InspectorPanel } from './ui/InspectorPanel'
+import { NotificationCenter } from './ui/NotificationCenter'
 import { PartsPanel } from './ui/PartsPanel'
 import { SchematicView } from './schematic/SchematicView'
 import { SerialDrawer } from './ui/SerialDrawer'
@@ -29,6 +31,8 @@ export function App(): JSX.Element {
   const removeSelected = useCircuitStore((state) => state.removeSelected)
   const duplicateSelected = useCircuitStore((state) => state.duplicateSelected)
   const rotateSelected = useCircuitStore((state) => state.rotateSelected)
+  const flipSelected = useCircuitStore((state) => state.flipSelected)
+  const addNote = useCircuitStore((state) => state.addNote)
 
   const build = useSketchStore((state) => state.build)
   const refreshToolchain = useSketchStore((state) => state.refreshToolchain)
@@ -102,6 +106,29 @@ export function App(): JSX.Element {
         rotateSelected()
         return
       }
+      if (event.shiftKey && key === 'f') {
+        event.preventDefault()
+        flipSelected('horizontal')
+        return
+      }
+      if (event.shiftKey && key === 'v') {
+        event.preventDefault()
+        flipSelected('vertical')
+        return
+      }
+      if (key === 'n') {
+        event.preventDefault()
+        const { size, viewport } = useViewportStore.getState()
+        const center = {
+          x: (size.width / 2 - viewport.offsetX) / viewport.scale,
+          y: (size.height / 2 - viewport.offsetY) / viewport.scale,
+        }
+        addNote(DEFAULT_NOTE_TEXT, {
+          x: center.x - NOTE_WIDTH / 2,
+          y: center.y - noteHeight(DEFAULT_NOTE_TEXT) / 2,
+        })
+        return
+      }
       if (key === 'f') {
         fitToContent()
         return
@@ -116,9 +143,11 @@ export function App(): JSX.Element {
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [
+    addNote,
     build,
     duplicateSelected,
     fitToContent,
+    flipSelected,
     openProject,
     redo,
     removeSelected,
@@ -155,6 +184,7 @@ export function App(): JSX.Element {
       </div>
 
       <StatusBar />
+      <NotificationCenter />
     </div>
   )
 }

@@ -70,3 +70,65 @@ describe('nearestWirePin', () => {
     })
   })
 })
+
+describe('flipped pins', () => {
+  it('mirrors pin positions across the vertical axis', () => {
+    const led = part({
+      id: 'led',
+      type: 'led',
+      position: { x: 100, y: 100 },
+      rotation: 0,
+      flipX: true,
+      props: { color: 'red' },
+    })
+
+    expect(findPinNear([led], { x: 130, y: 140 }, 4)?.ref).toEqual({
+      partId: 'led',
+      pinId: 'anode',
+    })
+    expect(findPinNear([led], { x: 110, y: 140 }, 4)?.ref).toEqual({
+      partId: 'led',
+      pinId: 'cathode',
+    })
+  })
+
+  it('mirrors before applying rotation', () => {
+    const led = part({
+      id: 'led',
+      type: 'led',
+      position: { x: 100, y: 100 },
+      rotation: 90,
+      flipX: true,
+      props: { color: 'red' },
+    })
+
+    expect(findPinNear([led], { x: 100, y: 130 }, 4)?.ref).toEqual({
+      partId: 'led',
+      pinId: 'anode',
+    })
+    expect(findPinNear([led], { x: 100, y: 110 }, 4)?.ref).toEqual({
+      partId: 'led',
+      pinId: 'cathode',
+    })
+  })
+
+  it('mirrors pin positions across the horizontal axis', () => {
+    const led = part({
+      id: 'led',
+      type: 'led',
+      position: { x: 100, y: 100 },
+      rotation: 0,
+      flipY: true,
+      props: { color: 'red' },
+    })
+
+    expect(findPinNear([led], { x: 110, y: 100 }, 4)?.ref).toEqual({
+      partId: 'led',
+      pinId: 'anode',
+    })
+    expect(findPinNear([led], { x: 130, y: 100 }, 4)?.ref).toEqual({
+      partId: 'led',
+      pinId: 'cathode',
+    })
+  })
+})

@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import {
   circuitDocumentSchema,
   emptyCircuitDocument,
+  noteSchema,
   partSchema,
   pinHasWire,
   type CircuitDocument,
@@ -31,10 +32,13 @@ function duplicatePart(part: PartInstance, offset: Point): PartInstance {
   })
 }
 
+export type FlipAxis = 'horizontal' | 'vertical'
+
 export interface CircuitStore {
   document: CircuitDocument
   selectedPartIds: readonly string[]
   selectedWireId: string | null
+  selectedNoteId: string | null
   wireColor: string
   canUndo: boolean
   canRedo: boolean
@@ -46,7 +50,13 @@ export interface CircuitStore {
   removeSelected(): void
   duplicateSelected(): void
   rotateSelected(): void
+  flipSelected(axis: FlipAxis): void
   setPartProp(id: string, key: string, value: string | number): void
+
+  addNote(text: string, position: Point): string
+  updateNote(id: string, text: string): void
+  moveNote(id: string, position: Point): void
+  selectNote(id: string | null): void
 
   selectParts(ids: readonly string[], additive?: boolean): void
   selectWire(id: string | null): void
@@ -120,6 +130,7 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
     document: emptyCircuitDocument(),
     selectedPartIds: [],
     selectedWireId: null,
+    selectedNoteId: null,
     wireColor: DEFAULT_WIRE_COLOR,
     canUndo: false,
     canRedo: false,
@@ -135,7 +146,7 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       })
       const document = get().document
       commit({ ...document, parts: [...document.parts, part] })
-      set({ selectedPartIds: [part.id], selectedWireId: null })
+      set({ selectedPartIds: [part.id], selectedWireId: null, selectedNoteId: null })
       return part.id
     },
 
@@ -164,9 +175,16 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
     },
 
     removeSelected(): void {
-      const { document, selectedPartIds, selectedWireId } = get()
+      const { document, selectedPartIds, selectedWireId, selectedNoteId } = get()
       const doomedParts = new Set(selectedPartIds)
-      if (doomedParts.size === 0 && selectedWireId === null) return
+      if (doomedParts.size === 0 && selectedWireId === null && selectedNoteId === null) return
+
+      if (selectedNoteId !== null) {
+        const notes = (document.notes ?? []).filter((note) => note.id !== selectedNoteId)
+        commit({ ...document, notes })
+        set({ selectedPartIds: [], selectedWireId: null, selectedNoteId: null })
+        return
+      }
 
       const parts = document.parts.filter((part) => !doomedParts.has(part.id))
       const wires = document.wires.filter(
@@ -177,7 +195,7 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       )
 
       commit({ ...document, parts, wires })
-      set({ selectedPartIds: [], selectedWireId: null })
+      set({ selectedPartIds: [], selectedWireId: null, selectedNoteId: null })
     },
 
     duplicateSelected(): void {
@@ -214,7 +232,11 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
         parts: [...document.parts, ...clones],
         wires: [...document.wires, ...clonedWires],
       })
-      set({ selectedPartIds: clones.map((clone) => clone.id), selectedWireId: null })
+      set({
+        selectedPartIds: clones.map((clone) => clone.id),
+        selectedWireId: null,
+        selectedNoteId: null,
+      })
     },
 
     rotateSelected(): void {
@@ -229,6 +251,54 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       })
 
       commit({ ...document, parts })
+      set({ selectedNoteId: null })
+    },
+
+    flipSelected(axis: FlipAxis): void {
+      const { document, selectedPartIds } = get()
+      if (selectedPartIds.length === 0) return
+
+      const selected = new Set(selectedPartIds)
+      const parts = document.parts.map((part) => {
+        if (!selected.has(part.id)) return part
+        const flag = axis === 'horizontal' ? 'flipX' : 'flipY'
+        return partSchema.parse({ ...part, [flag]: part[flag] !== true })
+      })
+
+      commit({ ...document, parts })
+      set({ selectedNoteId: null })
+    },
+
+    addNote(text: string, position: Point): string {
+      const { document } = get()
+      const note = noteSchema.parse({
+        id: createId('note'),
+        text: text.slice(0, 4000),
+        position: snapPoint(position),
+      })
+      commit({ ...document, notes: [...(document.notes ?? []), note] })
+      set({ selectedPartIds: [], selectedWireId: null, selectedNoteId: note.id })
+      return note.id
+    },
+
+    updateNote(id: string, text: string): void {
+      const { document } = get()
+      const notes = (document.notes ?? []).map((note) =>
+        note.id === id ? noteSchema.parse({ ...note, text: text.slice(0, 4000) }) : note
+      )
+      commit({ ...document, notes })
+    },
+
+    moveNote(id: string, position: Point): void {
+      const { document } = get()
+      const notes = (document.notes ?? []).map((note) =>
+        note.id === id ? noteSchema.parse({ ...note, position }) : note
+      )
+      set({ document: { ...document, notes } })
+    },
+
+    selectNote(id: string | null): void {
+      set({ selectedNoteId: id, selectedPartIds: [], selectedWireId: null })
     },
 
     setPartProp(id: string, key: string, value: string | number): void {
@@ -264,11 +334,11 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
 
     selectParts(ids: readonly string[], additive = false): void {
       const next = additive ? Array.from(new Set([...get().selectedPartIds, ...ids])) : [...ids]
-      set({ selectedPartIds: next, selectedWireId: null })
+      set({ selectedPartIds: next, selectedWireId: null, selectedNoteId: null })
     },
 
     selectWire(id: string | null): void {
-      set({ selectedWireId: id, selectedPartIds: [] })
+      set({ selectedWireId: id, selectedPartIds: [], selectedNoteId: null })
     },
 
     setWireColor(color: string): void {
@@ -337,7 +407,7 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       const previous = history.undo(get().document)
       if (previous === null) return
       transientBase = null
-      set({ document: previous, selectedPartIds: [], selectedWireId: null })
+      set({ document: previous, selectedPartIds: [], selectedWireId: null, selectedNoteId: null })
       syncHistoryFlags()
     },
 
@@ -345,7 +415,7 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       const next = history.redo(get().document)
       if (next === null) return
       transientBase = null
-      set({ document: next, selectedPartIds: [], selectedWireId: null })
+      set({ document: next, selectedPartIds: [], selectedWireId: null, selectedNoteId: null })
       syncHistoryFlags()
     },
 
@@ -357,6 +427,7 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
         document: parsed,
         selectedPartIds: [],
         selectedWireId: null,
+        selectedNoteId: null,
         canUndo: false,
         canRedo: false,
       })

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Point } from '../../shared/circuit'
 import { MAX_SCALE, MIN_SCALE, clamp, type Size, type Viewport } from '../canvas/geometry'
+import { NOTE_WIDTH, noteHeight } from '../canvas/notes'
 import { definitionOf, pinWorldPosition } from '../parts/definitions'
 import { useCircuitStore } from './circuitStore'
 
@@ -25,8 +26,8 @@ export interface ViewportStore {
 
 /** Axis-aligned world bounds of every part and wire anchor, or null when empty. */
 export function circuitContentBounds(): { min: Point; max: Point } | null {
-  const { parts } = useCircuitStore.getState().document
-  if (parts.length === 0) return null
+  const { parts, notes = [] } = useCircuitStore.getState().document
+  if (parts.length === 0 && notes.length === 0) return null
 
   let minX = Number.POSITIVE_INFINITY
   let minY = Number.POSITIVE_INFINITY
@@ -47,6 +48,11 @@ export function circuitContentBounds(): { min: Point; max: Point } | null {
     for (const pin of definitionOf(part.type).pins) {
       include(pinWorldPosition(part, pin.id))
     }
+  }
+
+  for (const note of notes) {
+    include(note.position)
+    include({ x: note.position.x + NOTE_WIDTH, y: note.position.y + noteHeight(note.text) })
   }
 
   if (!Number.isFinite(minX)) return null

@@ -1750,10 +1750,25 @@ export function pinOf(type: PartType, pinId: string): PartPin {
   return found
 }
 
-/** Absolute world position of a pin, accounting for the part's rotation. */
-export function pinWorldPosition(part: PartInstance, pinId: string): Point {
+/** Pin offset from the part's top-left after mirroring, before rotation. */
+export function localPinPosition(part: PartInstance, pinId: string): Point {
   const definition = definitionOf(part.type)
   const local = pinOf(part.type, pinId)
-  const rotated = rotateOffset(local.position, part.rotation, definition.size)
+  return {
+    x: part.flipX === true ? definition.size.width - local.position.x : local.position.x,
+    y: part.flipY === true ? definition.size.height - local.position.y : local.position.y,
+  }
+}
+
+/** The pin definition with its mirrored position, for edge and label layout. */
+export function effectivePin(part: PartInstance, pin: PartPin): PartPin {
+  return { ...pin, position: localPinPosition(part, pin.id) }
+}
+
+/** Absolute world position of a pin, accounting for flipping and rotation. */
+export function pinWorldPosition(part: PartInstance, pinId: string): Point {
+  const definition = definitionOf(part.type)
+  const local = localPinPosition(part, pinId)
+  const rotated = rotateOffset(local, part.rotation, definition.size)
   return { x: part.position.x + rotated.x, y: part.position.y + rotated.y }
 }

@@ -138,8 +138,9 @@ export function partValue(part: PartInstance): string | null {
     case 'inductor':
       return `${part.props.inductanceMilliHenries} mH`
     case 'led':
-    case 'rgb-led':
       return part.props.color.toUpperCase()
+    case 'rgb-led':
+      return 'RGB'
     case 'zener-diode':
       return `${formatNumber(part.props.zenerVoltage)} V`
     case 'light-bulb':
