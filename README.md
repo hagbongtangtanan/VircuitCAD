@@ -39,7 +39,8 @@ extended part library is tracked under milestone 8.
 
 ## Download
 
-Latest installers: **<https://github.com/hagbongtangtanan/HuCAD/releases/latest>**
+Latest installers: **<https://github.com/hagbongtangtanan/HuCAD/releases>** — the current beta is
+`v0.4.0-beta.1`, marked as a pre-release.
 
 | Platform | Artifact                        | Install                                                     |
 | -------- | ------------------------------- | ----------------------------------------------------------- |
