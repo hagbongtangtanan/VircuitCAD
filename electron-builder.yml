@@ -37,7 +37,7 @@ artifactName: VircuitCAD-${version}-${os}-${arch}.${ext}
 publish:
   provider: github
   owner: hagbongtangtanan
-  repo: HuCAD
+  repo: VircuitCAD
   releaseType: release
 
 asar: true

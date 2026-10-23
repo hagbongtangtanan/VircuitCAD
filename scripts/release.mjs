@@ -21,7 +21,7 @@ const execFileAsync = promisify(execFile)
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 const OWNER = 'hagbongtangtanan'
-const REPO = 'HuCAD'
+const REPO = 'VircuitCAD'
 const SLUG = `${OWNER}/${REPO}`
 const RELEASES_URL = `https://github.com/${SLUG}/releases`
 const UPLOADS_HOST = 'https://uploads.github.com'

@@ -504,3 +504,12 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   wires gives them undo/redo, dirty tracking, fit-to-content and project persistence for free.
 - **Notes do not appear in the schematic.** The schematic is a derived electrical drawing; sticky
   notes are workspace annotations and would add clutter to an automatically paginated sheet.
+
+## 2026-10-23 — Beta release and GitHub repository rename
+
+- **`0.4.0-beta.1` is the only published release.** The older stable releases were removed so
+  testers cannot accidentally download `0.2.11`; their git tags remain for history. Downloads
+  point at `/releases` because GitHub excludes pre-releases from `/releases/latest`.
+- **The GitHub repository is now `VircuitCAD`.** Remotes, the electron-builder publish target,
+  release URLs and README badges use the new slug. GitHub redirects the former `HuCAD` URLs,
+  so existing clones and release links keep working.

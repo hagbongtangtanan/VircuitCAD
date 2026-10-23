@@ -6,14 +6,14 @@ against an emulated AVR — with no account and no network access at any point.
 
 The product name is a single constant, `APP_NAME` in `src/shared/app.ts`. The product name, npm package,
 windows, user-data directory, desktop entry and installer artifact names all use `VircuitCAD`.
-The GitHub repository keeps its existing slug for download continuity.
+The GitHub repository is `VircuitCAD`; GitHub redirects the former `HuCAD` URLs.
 
 Designed and built by Kheil27.
 
 > **Beta:** `v0.4.0-beta.1` is a pre-release for testing. Features and project formats may still
 > change before the stable release; keep backups of important projects.
 
-[![Latest release](https://img.shields.io/github/v/release/hagbongtangtanan/HuCAD?include_prereleases)](https://github.com/hagbongtangtanan/HuCAD/releases)
+[![Latest release](https://img.shields.io/github/v/release/hagbongtangtanan/VircuitCAD?include_prereleases)](https://github.com/hagbongtangtanan/VircuitCAD/releases)
 
 ## Status
 
@@ -39,7 +39,7 @@ extended part library is tracked under milestone 8.
 
 ## Download
 
-Latest installers: **<https://github.com/hagbongtangtanan/HuCAD/releases>** — the current beta is
+Latest installers: **<https://github.com/hagbongtangtanan/VircuitCAD/releases>** — the current beta is
 `v0.4.0-beta.1`, marked as a pre-release.
 
 | Platform | Artifact                        | Install                                                     |
@@ -243,7 +243,7 @@ npm run release -- --draft --prerelease
 The script is idempotent: an existing release for the tag is updated and its assets are
 clobbered, so a failed upload is re-run by invoking it again. It creates and pushes the
 annotated tag only when it is missing, and it refuses to run against a dirty working tree (or a
-remote that is not `hagbongtangtanan/HuCAD`) unless told otherwise.
+remote that is not `hagbongtangtanan/VircuitCAD`) unless told otherwise.
 
 ## Verifying the running window
 
