@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type JSX } from 'react'
-import { APP_AUTHOR, APP_NAME, APP_TAGLINE, normalizeProjectName } from '../../shared/app'
+import { APP_AUTHOR, APP_NAME, APP_TAGLINE, IS_BETA, normalizeProjectName } from '../../shared/app'
 import { Icon } from './Icon'
 import { useProjectStore } from '../store/projectStore'
 import { useSimStore } from '../store/simStore'
@@ -206,7 +206,10 @@ function AboutDialog({ onClose }: AboutDialogProps): JSX.Element {
           {APP_NAME}
         </h2>
         <p className="cb-about-tagline">{APP_TAGLINE}</p>
-        <p className="cb-about-version">Version {__APP_VERSION__}</p>
+        <p className="cb-about-version">
+          Version {__APP_VERSION__}
+          {IS_BETA ? ' · Beta' : ''}
+        </p>
         <div className="cb-about-rule" />
         <p className="cb-about-meta">Designed and built by {APP_AUTHOR}</p>
         <p className="cb-about-meta">Copyright © 2026 {APP_AUTHOR}</p>
@@ -250,6 +253,7 @@ export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarPro
             <span className="cb-brand-pin" />
           </span>
           <span className="cb-brand-name">{APP_NAME}</span>
+          {IS_BETA && <span className="cb-beta-badge">Beta</span>}
         </button>
       </div>
 

@@ -10,8 +10,9 @@ The GitHub repository is `VircuitCAD`; GitHub redirects the former `HuCAD` URLs.
 
 Designed and built by Kheil27.
 
-> **Beta:** `v0.4.0-beta.1` is a pre-release for testing. Features and project formats may still
-> change before the stable release; keep backups of important projects.
+> **Beta:** `v0.5.0-beta.1` is a pre-release for testing. VircuitCAD stays on the beta channel
+> until further notice; features and project formats may still change, so keep backups of
+> important projects.
 
 [![Latest release](https://img.shields.io/github/v/release/hagbongtangtanan/VircuitCAD?include_prereleases)](https://github.com/hagbongtangtanan/VircuitCAD/releases)
 
@@ -40,7 +41,7 @@ extended part library is tracked under milestone 8.
 ## Download
 
 Latest installers: **<https://github.com/hagbongtangtanan/VircuitCAD/releases>** — the current beta is
-`v0.4.0-beta.1`, marked as a pre-release.
+`v0.5.0-beta.1`, marked as a pre-release.
 
 | Platform | Artifact                        | Install                                                     |
 | -------- | ------------------------------- | ----------------------------------------------------------- |
@@ -158,15 +159,21 @@ a path, never invent one.
 
 ## Supported parts
 
-All parts below are modelled by the MNA solver and animate while the simulation runs. The
-**Basic** section of the library is a curated subset; **All parts** groups everything.
+Most parts below are modelled by the MNA solver and animate while the simulation runs; the
+Raspberry Pi 4 is the wiring-only exception. The **Basic** section of the library is a curated
+subset; **All parts** groups everything.
 
-| Group    | Parts                                                         |
-| -------- | ------------------------------------------------------------- |
-| Boards   | Arduino Uno R3, breadboard, AA battery, 9V battery, 5V supply |
-| Passives | resistor, capacitor, inductor, diode                          |
-| Inputs   | push button, slide switch, potentiometer, photoresistor (LDR) |
-| Outputs  | LED, RGB LED, 7-segment display, buzzer, DC motor             |
+| Group    | Parts                                                                         |
+| -------- | ----------------------------------------------------------------------------- |
+| Boards   | Arduino Uno R3, Raspberry Pi 4, breadboard, AA battery, 9V battery, 5V supply |
+| Passives | resistor, capacitor, inductor, diode                                          |
+| Inputs   | push button, slide switch, potentiometer, photoresistor (LDR)                 |
+| Outputs  | LED, RGB LED, 7-segment display, buzzer, DC motor                             |
+
+The Raspberry Pi 4 is a passive 40-pin wiring target: its header exposes the physical pin
+number, the GPIO name, and shared 5V, 3V3 and GND rails, but no Raspberry Pi firmware or Python
+code is executed. Hover a header pin to read its label. The Arduino Uno remains the emulated
+controller.
 
 Interaction: hold a push button on the canvas to press it, click a slide switch (or the
 inspector checkbox) to latch it, and use the inspector sliders for the potentiometer wiper and
@@ -186,6 +193,8 @@ Known modelling limits, chosen to keep the solver fast and predictable:
 - Sensors with digital protocols (ultrasonic, PIR, temperature, gas, soil) and displays with
   controllers (LCD, OLED) are not in this tranche; they need device-level models and are tracked
   as Milestone 8 work.
+- The Raspberry Pi header is wiring-only. It does not run Pi code, boot an OS, or model USB,
+  Ethernet, HDMI or the camera/display connectors.
 
 ## Packaging
 
@@ -215,17 +224,20 @@ would break both the download links and the updater metadata in `latest.yml`.
 CI is the primary path. Bump `version` in `package.json`, commit, and push a matching
 `v<version>` tag: `.github/workflows/release.yml` builds the Windows installer, verifies that
 the tag matches `package.json`, and uploads the `.exe` (plus `latest.yml` and its blockmap) to
-the GitHub Release for that tag. Tags with a suffix, such as `v0.2.0-beta.1`, are published as
-pre-releases. Releases intentionally contain Windows assets only.
+the GitHub Release for that tag. Releases intentionally contain Windows assets only.
+
+**Beta-only policy:** every release must use a `-beta.N` suffix until the policy is lifted.
+The GitHub workflow and `scripts/release.mjs` both reject stable versions, so `0.5.0` is not a
+valid tag; use `0.5.0-beta.1`.
 
 ```bash
-npm version 0.4.0-beta.1 --no-git-tag-version   # or edit package.json by hand
-git commit -am "chore: release v0.4.0-beta.1"
-git tag v0.4.0-beta.1
-git push origin main v0.4.0-beta.1
+npm version 0.5.0-beta.1 --no-git-tag-version   # or edit package.json by hand
+git commit -am "chore: release v0.5.0-beta.1"
+git tag v0.5.0-beta.1
+git push origin main v0.5.0-beta.1
 ```
 
-The suffix makes the release a GitHub pre-release; the current beta is `v0.4.0-beta.1`.
+The suffix makes the release a GitHub pre-release; the current beta is `v0.5.0-beta.1`.
 
 `scripts/release.mjs` is the manual/hotfix path: it publishes an already-built `release/`
 directory using the same naming and notes rules. It prefers an authenticated `gh` session and

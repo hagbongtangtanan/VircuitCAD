@@ -8,6 +8,7 @@ import { z } from 'zod'
 
 export const partTypeSchema = z.enum([
   'arduino-uno',
+  'raspberry-pi',
   'breadboard',
   'led',
   'resistor',
@@ -118,6 +119,7 @@ export const ledColorSchema = z.enum(['red', 'green', 'blue', 'yellow', 'white']
 /** Per-part property shapes. Empty objects still parse strictly, so unknown keys fail. */
 export const partPropsSchemas = {
   'arduino-uno': z.strictObject({}),
+  'raspberry-pi': z.strictObject({}),
   breadboard: z.strictObject({}),
   led: z.strictObject({ color: ledColorSchema }),
   resistor: z.strictObject({ resistanceOhms: z.number().positive().max(1_000_000) }),
@@ -273,6 +275,7 @@ function partVariant<Type extends PartType>(type: Type): PartVariant<Type> {
 
 export const partSchema = z.discriminatedUnion('type', [
   z.strictObject(partVariant('arduino-uno')),
+  z.strictObject(partVariant('raspberry-pi')),
   z.strictObject(partVariant('breadboard')),
   z.strictObject(partVariant('led')),
   z.strictObject(partVariant('resistor')),

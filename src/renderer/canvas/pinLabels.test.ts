@@ -110,6 +110,12 @@ describe('pinLabelBoxes', () => {
     }
   })
 
+  it('lays out every Raspberry Pi header label without overlap', () => {
+    const boxes = [...pinLabelBoxes(part('raspberry-pi'), 1).values()]
+    expect(boxes).toHaveLength(40)
+    expect(pinLabelsOverlap(boxes)).toBe(false)
+  })
+
   it('flags crowded labels so the canvas can hide them', () => {
     expect(pinLabelsOverlap(pinLabelBoxes(part('attiny85'), 0.6).values())).toBe(true)
     expect(pinLabelsOverlap(pinLabelBoxes(part('attiny85'), 1).values())).toBe(false)

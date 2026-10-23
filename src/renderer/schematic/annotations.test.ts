@@ -54,6 +54,16 @@ describe('referenceDesignators', () => {
     expect(designators.get('q1')).toBe('Q1')
   })
 
+  it('uses the board prefix for the Raspberry Pi', () => {
+    const designators = referenceDesignators([
+      part({ id: 'uno', type: 'arduino-uno' }),
+      part({ id: 'pi', type: 'raspberry-pi' }),
+    ])
+
+    expect(designators.get('uno')).toBe('U1')
+    expect(designators.get('pi')).toBe('U2')
+  })
+
   it('keeps numbering stable when a component is removed', () => {
     const before = referenceDesignators([
       part({ id: 'r1', type: 'resistor', props: { resistanceOhms: 220 } }),

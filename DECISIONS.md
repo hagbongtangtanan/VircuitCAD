@@ -507,9 +507,20 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
 
 ## 2026-10-23 — Beta release and GitHub repository rename
 
-- **`0.4.0-beta.1` is the only published release.** The older stable releases were removed so
-  testers cannot accidentally download `0.2.11`; their git tags remain for history. Downloads
+- **`0.4.0-beta.1` was the only published release after the cleanup.** The older stable
+  releases were removed so testers cannot accidentally download `0.2.11`; their git tags remain
+  for history. Downloads
   point at `/releases` because GitHub excludes pre-releases from `/releases/latest`.
 - **The GitHub repository is now `VircuitCAD`.** Remotes, the electron-builder publish target,
   release URLs and README badges use the new slug. GitHub redirects the former `HuCAD` URLs,
   so existing clones and release links keep working.
+
+## 2026-10-23 — Beta-only releases and the Raspberry Pi 4 board
+
+- **Every release stays in beta until the policy is lifted.** The version must match
+  `x.y.z-beta.N`; `.github/workflows/release.yml` and `scripts/release.mjs` both reject stable
+  tags, and the title bar shows a Beta badge from `IS_BETA` in `src/shared/app.ts`.
+- **The Raspberry Pi 4 is a passive 40-pin board.** Its header pins carry the physical pin
+  number and GPIO name, and repeated 5V, 3V3 and GND pins share internal nets. It is a wiring
+  target only: no Pi firmware, Python, USB, Ethernet, HDMI or camera/display modelling. The
+  Arduino Uno remains the only emulated controller.

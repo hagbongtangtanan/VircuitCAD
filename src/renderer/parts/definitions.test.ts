@@ -14,6 +14,27 @@ describe('part pin layouts', () => {
     expect(definition.internalNets).toContainEqual(['common', 'common2'])
   })
 
+  it('wires the Raspberry Pi 4 header power and ground rails', () => {
+    const pi = definitionOf('raspberry-pi')
+    expect(pi.pins).toHaveLength(40)
+    expect(pi.pins.filter((pin) => pin.label === '3V3')).toHaveLength(2)
+    expect(pi.pins.filter((pin) => pin.label === '5V')).toHaveLength(2)
+    expect(pi.pins.filter((pin) => pin.label === 'GND')).toHaveLength(8)
+    expect(pi.pins.filter((pin) => pin.kind === 'digital')).toHaveLength(28)
+    expect(pi.internalNets).toContainEqual(['3V3-1', '3V3-17'])
+    expect(pi.internalNets).toContainEqual(['5V-2', '5V-4'])
+    expect(pi.internalNets).toContainEqual([
+      'GND-6',
+      'GND-9',
+      'GND-14',
+      'GND-20',
+      'GND-25',
+      'GND-30',
+      'GND-34',
+      'GND-39',
+    ])
+  })
+
   it('marks the six Uno PWM pins with a leading tilde', () => {
     const pwmPins = definitionOf('arduino-uno')
       .pins.filter((pin) => pin.label.startsWith('~'))

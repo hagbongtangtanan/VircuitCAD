@@ -70,6 +70,39 @@ function ArduinoPreview(): JSX.Element {
   )
 }
 
+function RaspberryPiPreview(): JSX.Element {
+  return (
+    <>
+      <rect
+        x={8}
+        y={12}
+        width={80}
+        height={36}
+        rx={4}
+        fill="#2f7d4f"
+        stroke={INK}
+        strokeWidth={1.2}
+      />
+      <rect x={18} y={8} width={60} height={9} rx={2} fill="#171b20" stroke="#080b0e" />
+      {Array.from({ length: 20 }, (_unused, index) => (
+        <rect key={index} x={20 + index * 2.8} y={9.5} width={1.3} height={4} fill="#d9b24a" />
+      ))}
+      <rect x={11} y={20} width={12} height={7} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={11} y={30} width={12} height={7} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={48} y={22} width={18} height={14} rx={1} fill="#161a1f" />
+      <text x={50} y={31} fontSize={4.5} fill="#dce8f2" fontFamily="monospace">
+        BCM
+      </text>
+      <rect x={74} y={22} width={9} height={14} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <circle cx={16} cy={43} r={1.6} fill="#0d2d1d" />
+      <circle cx={80} cy={43} r={1.6} fill="#0d2d1d" />
+      <text x={32} y={42} fontSize={4.5} fill="#eaf4ee" fontFamily="monospace">
+        Pi 4
+      </text>
+    </>
+  )
+}
+
 function BreadboardPreview({
   variant = 'full',
 }: {
@@ -917,6 +950,7 @@ function ModulePreview(): JSX.Element {
 
 function BoardPreview({ type }: { readonly type: PartType }): JSX.Element {
   if (type === 'arduino-uno') return <ArduinoPreview />
+  if (type === 'raspberry-pi') return <RaspberryPiPreview />
   if (type === 'breadboard') return <BreadboardPreview />
   if (type === 'breadboard-small') return <BreadboardPreview variant="small" />
   if (type === 'breadboard-mini') return <BreadboardPreview variant="mini" />
@@ -1777,6 +1811,7 @@ function assertNever(value: never): never {
 function partArt(type: PartType): ReactNode {
   switch (type) {
     case 'arduino-uno':
+    case 'raspberry-pi':
     case 'breadboard':
     case 'breadboard-small':
     case 'breadboard-mini':

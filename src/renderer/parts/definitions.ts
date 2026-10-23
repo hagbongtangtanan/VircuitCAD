@@ -44,6 +44,8 @@ export interface PartDefinition<Type extends PartType = PartType> {
   readonly size: Size
   readonly defaultProps: PartPropsMap[Type]
   readonly pins: readonly PartPin[]
+  /** Widens the measured label box for unusually dense headers. */
+  readonly pinLabelCharWidthFactor?: number
   /**
    * Pin groups that are connected inside the part itself and must therefore end
    * up in the same net (breadboard strips and rails, switch contacts, ...).
@@ -361,6 +363,97 @@ export const arduinoUnoDefinition: PartDefinition<'arduino-uno'> = {
   size: { width: 300, height: 200 },
   defaultProps: {},
   pins: buildUnoPins(),
+  propFields: [],
+}
+
+/**
+ * The Raspberry Pi 4's 40-pin header, numbered as on the physical board. The
+ * board is a wiring target rather than a second CPU: its GPIO pins are passive
+ * nets and the repeated 5V, 3V3 and GND pins are tied together internally.
+ */
+const RASPBERRY_PI_HEADER_PINS = [
+  { physical: 1, id: '3V3-1', label: '3V3', kind: 'power' },
+  { physical: 2, id: '5V-2', label: '5V', kind: 'power' },
+  { physical: 3, id: 'GPIO2-3', label: 'GP2', kind: 'digital' },
+  { physical: 4, id: '5V-4', label: '5V', kind: 'power' },
+  { physical: 5, id: 'GPIO3-5', label: 'GP3', kind: 'digital' },
+  { physical: 6, id: 'GND-6', label: 'GND', kind: 'ground' },
+  { physical: 7, id: 'GPIO4-7', label: 'GP4', kind: 'digital' },
+  { physical: 8, id: 'GPIO14-8', label: 'GP14', kind: 'digital' },
+  { physical: 9, id: 'GND-9', label: 'GND', kind: 'ground' },
+  { physical: 10, id: 'GPIO15-10', label: 'GP15', kind: 'digital' },
+  { physical: 11, id: 'GPIO17-11', label: 'GP17', kind: 'digital' },
+  { physical: 12, id: 'GPIO18-12', label: 'GP18', kind: 'digital' },
+  { physical: 13, id: 'GPIO27-13', label: 'GP27', kind: 'digital' },
+  { physical: 14, id: 'GND-14', label: 'GND', kind: 'ground' },
+  { physical: 15, id: 'GPIO22-15', label: 'GP22', kind: 'digital' },
+  { physical: 16, id: 'GPIO23-16', label: 'GP23', kind: 'digital' },
+  { physical: 17, id: '3V3-17', label: '3V3', kind: 'power' },
+  { physical: 18, id: 'GPIO24-18', label: 'GP24', kind: 'digital' },
+  { physical: 19, id: 'GPIO10-19', label: 'GP10', kind: 'digital' },
+  { physical: 20, id: 'GND-20', label: 'GND', kind: 'ground' },
+  { physical: 21, id: 'GPIO9-21', label: 'GP9', kind: 'digital' },
+  { physical: 22, id: 'GPIO25-22', label: 'GP25', kind: 'digital' },
+  { physical: 23, id: 'GPIO11-23', label: 'GP11', kind: 'digital' },
+  { physical: 24, id: 'GPIO8-24', label: 'GP8', kind: 'digital' },
+  { physical: 25, id: 'GND-25', label: 'GND', kind: 'ground' },
+  { physical: 26, id: 'GPIO7-26', label: 'GP7', kind: 'digital' },
+  { physical: 27, id: 'GPIO0-27', label: 'GP0', kind: 'digital' },
+  { physical: 28, id: 'GPIO1-28', label: 'GP1', kind: 'digital' },
+  { physical: 29, id: 'GPIO5-29', label: 'GP5', kind: 'digital' },
+  { physical: 30, id: 'GND-30', label: 'GND', kind: 'ground' },
+  { physical: 31, id: 'GPIO6-31', label: 'GP6', kind: 'digital' },
+  { physical: 32, id: 'GPIO12-32', label: 'GP12', kind: 'digital' },
+  { physical: 33, id: 'GPIO13-33', label: 'GP13', kind: 'digital' },
+  { physical: 34, id: 'GND-34', label: 'GND', kind: 'ground' },
+  { physical: 35, id: 'GPIO19-35', label: 'GP19', kind: 'digital' },
+  { physical: 36, id: 'GPIO16-36', label: 'GP16', kind: 'digital' },
+  { physical: 37, id: 'GPIO26-37', label: 'GP26', kind: 'digital' },
+  { physical: 38, id: 'GPIO20-38', label: 'GP20', kind: 'digital' },
+  { physical: 39, id: 'GND-39', label: 'GND', kind: 'ground' },
+  { physical: 40, id: 'GPIO21-40', label: 'GP21', kind: 'digital' },
+] as const satisfies readonly {
+  readonly physical: number
+  readonly id: string
+  readonly label: string
+  readonly kind: PinKind
+}[]
+
+const RASPBERRY_PI_HEADER_X = 44
+const RASPBERRY_PI_HEADER_Y = 0
+const RASPBERRY_PI_HEADER_PITCH = 26
+const RASPBERRY_PI_HEADER_ROW_PITCH = 16
+
+function buildRaspberryPiPins(): readonly PartPin[] {
+  return RASPBERRY_PI_HEADER_PINS.map((entry) => {
+    const index = entry.physical - 1
+    return pin(
+      entry.id,
+      entry.label,
+      {
+        x: RASPBERRY_PI_HEADER_X + Math.floor(index / 2) * RASPBERRY_PI_HEADER_PITCH,
+        y: RASPBERRY_PI_HEADER_Y + (index % 2) * RASPBERRY_PI_HEADER_ROW_PITCH,
+      },
+      entry.kind
+    )
+  })
+}
+
+function raspberryPiInternalNets(): readonly (readonly string[])[] {
+  const idsFor = (label: string): readonly string[] =>
+    RASPBERRY_PI_HEADER_PINS.filter((entry) => entry.label === label).map((entry) => entry.id)
+  return [idsFor('3V3'), idsFor('5V'), idsFor('GND')]
+}
+
+export const raspberryPiDefinition: PartDefinition<'raspberry-pi'> = {
+  type: 'raspberry-pi',
+  label: 'Raspberry Pi 4',
+  category: 'boards',
+  size: { width: 560, height: 220 },
+  defaultProps: {},
+  pins: buildRaspberryPiPins(),
+  pinLabelCharWidthFactor: 0.78,
+  internalNets: raspberryPiInternalNets(),
   propFields: [],
 }
 
@@ -1685,6 +1778,7 @@ const additionalDefinitions = [
 
 export const partDefinitions = [
   arduinoUnoDefinition,
+  raspberryPiDefinition,
   breadboardDefinition,
   ledDefinition,
   resistorDefinition,

@@ -17,7 +17,7 @@ const SKIPPED_TYPES: ReadonlySet<PartType> = new Set<PartType>([
   'breadboard-small',
   'breadboard-mini',
 ])
-const BOARD_TYPES: ReadonlySet<PartType> = new Set<PartType>(['arduino-uno'])
+const BOARD_TYPES: ReadonlySet<PartType> = new Set<PartType>(['arduino-uno', 'raspberry-pi'])
 
 const BOARD_X = 48
 const BOARD_WIDTH = 200

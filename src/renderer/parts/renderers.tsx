@@ -1698,6 +1698,124 @@ export function PartBody({
         </>
       )
 
+    case 'raspberry-pi': {
+      const definition = definitionOf(part.type)
+      return (
+        <>
+          <Rect
+            x={2}
+            y={26}
+            width={size.width - 4}
+            height={size.height - 30}
+            cornerRadius={8}
+            fill="#2f7d4f"
+            stroke={outline}
+            strokeWidth={outlineWidth}
+          />
+          <Rect
+            x={38}
+            y={0}
+            width={508}
+            height={26}
+            cornerRadius={3}
+            fill="#171b20"
+            stroke="#080b0e"
+          />
+          {definition.pins.map((item) => (
+            <Rect
+              key={`pi-pin-${item.id}`}
+              x={item.position.x - 3}
+              y={item.position.y - 3}
+              width={6}
+              height={6}
+              cornerRadius={1}
+              fill="#d9b24a"
+              stroke="#6f5418"
+              strokeWidth={0.5}
+            />
+          ))}
+          <Rect
+            x={6}
+            y={54}
+            width={28}
+            height={20}
+            cornerRadius={2}
+            fill="#c9d3dd"
+            stroke="#6b7683"
+          />
+          <Rect
+            x={6}
+            y={82}
+            width={28}
+            height={20}
+            cornerRadius={2}
+            fill="#c9d3dd"
+            stroke="#6b7683"
+          />
+          <Rect
+            x={4}
+            y={116}
+            width={34}
+            height={28}
+            cornerRadius={2}
+            fill="#aeb8c3"
+            stroke="#6b7683"
+          />
+          <Rect
+            x={210}
+            y={78}
+            width={68}
+            height={54}
+            cornerRadius={2}
+            fill="#161a1f"
+            stroke="#070a0d"
+          />
+          <Text x={222} y={108} text="BCM2711" fontSize={9} fill="#dce8f2" fontFamily="monospace" />
+          <Rect
+            x={222}
+            y={146}
+            width={44}
+            height={22}
+            cornerRadius={2}
+            fill="#1b2027"
+            stroke="#080b0e"
+          />
+          <Text x={228} y={161} text="RAM" fontSize={7} fill="#9fb4c8" fontFamily="monospace" />
+          <Rect
+            x={404}
+            y={142}
+            width={46}
+            height={28}
+            cornerRadius={2}
+            fill="#c9d3dd"
+            stroke="#6b7683"
+          />
+          <Rect x={412} y={150} width={30} height={12} fill="#1a1e24" />
+          <Rect
+            x={246}
+            y={198}
+            width={30}
+            height={12}
+            cornerRadius={2}
+            fill="#c9d3dd"
+            stroke="#6b7683"
+          />
+          <Circle x={16} y={36} radius={3} fill="#0d2d1d" />
+          <Circle x={544} y={40} radius={3} fill="#0d2d1d" />
+          <Circle x={16} y={204} radius={3} fill="#0d2d1d" />
+          <Circle x={544} y={204} radius={3} fill="#0d2d1d" />
+          <Text
+            x={360}
+            y={210}
+            text="Raspberry Pi 4"
+            fontSize={10}
+            fill="#eaf4ee"
+            fontFamily="monospace"
+          />
+        </>
+      )
+    }
+
     case 'multimeter': {
       const modeLabel = part.props.mode === 'volts' ? 'V' : part.props.mode === 'amps' ? 'A' : 'Ω'
       return (

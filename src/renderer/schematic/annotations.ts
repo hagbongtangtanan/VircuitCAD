@@ -3,6 +3,7 @@ import type { PartInstance, PartType } from '../../shared/circuit'
 /** Standard reference-letter prefixes, one namespace per prefix. */
 const PREFIX: Readonly<Record<PartType, string>> = {
   'arduino-uno': 'U',
+  'raspberry-pi': 'U',
   breadboard: 'BB',
   led: 'D',
   resistor: 'R',

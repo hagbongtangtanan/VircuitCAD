@@ -128,6 +128,10 @@ function printHelp() {
 
 Usage: node scripts/release.mjs [options]
 
+VircuitCAD is beta-only until further notice. The package version must end in
+-beta.N (for example 0.5.0-beta.1); stable versions are rejected here and in
+the GitHub release workflow.
+
 Options:
   --dry-run            Show the plan (tag, assets, notes) without writing anything
   --draft              Create the release as a draft instead of publishing it
@@ -541,6 +545,11 @@ async function main() {
   }
 
   const version = await readVersion()
+  if (!/-beta\.\d+$/.test(version)) {
+    throw new Error(
+      `VircuitCAD is beta-only until further notice: ${version} is not a -beta.N version.`
+    )
+  }
   const tag = `v${version}`
   const artifactsDir = resolve(repoRoot, options.dir)
   const isSemverPrerelease = version.includes('-')

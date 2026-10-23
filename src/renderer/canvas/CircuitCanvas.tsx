@@ -148,7 +148,7 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
           props.onPointerDown(ref, event)
         }}
       />
-      {props.showLabel && props.labelBox !== null && (
+      {(props.showLabel || props.state === 'hovered') && props.labelBox !== null && (
         <Text
           x={props.labelBox.x}
           y={props.labelBox.y}
@@ -286,11 +286,10 @@ function PartPins(props: PartPinsProps): JSX.Element | null {
   if (part === undefined) return null
 
   const definition = definitionOf(part.type)
-  const candidateBoxes =
-    definition.pins.length <= 30 && props.scale >= 0.45 ? pinLabelBoxes(part, props.scale) : null
-  // Hide a crowded label set instead of drawing unreadable overlapping text.
-  const showLabels = candidateBoxes !== null && !pinLabelsOverlap(candidateBoxes.values())
-  const labelBoxes = showLabels ? candidateBoxes : null
+  const labelBoxes = props.scale >= 0.45 ? pinLabelBoxes(part, props.scale) : null
+  // Dense headers show a pin's label on hover instead of a wall of tiny text.
+  const showLabels =
+    definition.pins.length <= 30 && labelBoxes !== null && !pinLabelsOverlap(labelBoxes.values())
 
   return (
     <>

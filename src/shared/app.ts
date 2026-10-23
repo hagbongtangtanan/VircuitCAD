@@ -10,6 +10,13 @@ export const APP_AUTHOR = 'Kheil27'
 
 export const APP_TAGLINE = 'Offline Arduino circuit simulator'
 
+/**
+ * Release channel shown in the chrome. The project is beta-only until further
+ * notice; stable releases are deliberately blocked in CI and the release script.
+ */
+export const APP_CHANNEL = 'beta'
+export const IS_BETA = APP_CHANNEL === 'beta'
+
 /** Default project name shown until the user renames or opens a project. */
 export const DEFAULT_PROJECT_NAME = 'untitled'
 

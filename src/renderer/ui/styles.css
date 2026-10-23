@@ -195,6 +195,19 @@ button:disabled {
   white-space: nowrap;
 }
 
+.cb-beta-badge {
+  padding: 1px 6px;
+  color: var(--cb-primary);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  background: var(--cb-primary-soft);
+  border: 1px solid var(--cb-warn-border);
+  border-radius: var(--cb-radius-pill);
+}
+
 .cb-title {
   position: relative;
   display: flex;

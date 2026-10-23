@@ -133,6 +133,7 @@ function assignRows(entries: readonly LabelEntry[], gap: number): Map<PinKey, nu
  */
 export function pinLabelBoxes(part: PartInstance, scale: number): ReadonlyMap<PinKey, PinLabelBox> {
   const definition = definitionOf(part.type)
+  const charWidthFactor = definition.pinLabelCharWidthFactor ?? LABEL_CHAR_WIDTH_FACTOR
   const fontSize = LABEL_FONT_SIZE / scale
   const height = fontSize * LABEL_HEIGHT_FACTOR
   const gap = LABEL_GAP / scale
@@ -151,10 +152,7 @@ export function pinLabelBoxes(part: PartInstance, scale: number): ReadonlyMap<Pi
     const normal = rotateDirection(EDGE_DIRECTIONS[edge], part.rotation)
     const tangent = rotateDirection(EDGE_TANGENTS[edge], part.rotation)
     const world = pinWorldPosition(part, pin.id)
-    const width = Math.max(
-      fontSize * 0.9,
-      pin.label.length * fontSize * LABEL_CHAR_WIDTH_FACTOR + gap
-    )
+    const width = Math.max(fontSize * 0.9, pin.label.length * fontSize * charWidthFactor + gap)
     const halfNormal = Math.abs(normal.x) > 0.5 ? width / 2 : height / 2
     const horizontal = Math.abs(tangent.x) > 0.5
     const entries = edgeGroups.get(edge) ?? []
@@ -246,10 +244,7 @@ export function pinLabelBoxes(part: PartInstance, scale: number): ReadonlyMap<Pi
     { x: 0, y: -1 },
   ] as const
   for (const pin of interiorPins) {
-    const width = Math.max(
-      fontSize * 0.9,
-      pin.label.length * fontSize * LABEL_CHAR_WIDTH_FACTOR + gap
-    )
+    const width = Math.max(fontSize * 0.9, pin.label.length * fontSize * charWidthFactor + gap)
     const world = pinWorldPosition(part, pin.id)
     let placed: PinLabelBox | null = null
     for (let step = 0; step < 4 && placed === null; step += 1) {
