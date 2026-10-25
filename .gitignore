@@ -27,3 +27,4 @@ npm-debug.log*
 .env
 .env.local
 *.local
+.gh_token
