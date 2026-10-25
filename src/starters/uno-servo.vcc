@@ -1,0 +1,81 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "sv1",
+        "type": "servo",
+        "position": {
+          "x": 520,
+          "y": 220
+        },
+        "rotation": 0,
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D9"
+        },
+        "to": {
+          "partId": "sv1",
+          "pinId": "signal"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "sv1",
+          "pinId": "vcc"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "sv1",
+          "pinId": "gnd"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// Micro servo on D9. Bit-banged so the sketch needs no Servo library.\nconst int servoPin = 9;\n\nvoid setup() {\n  pinMode(servoPin, OUTPUT);\n}\n\nvoid pulseServo(int angle) {\n  int width = map(angle, 0, 180, 500, 2500);\n  digitalWrite(servoPin, HIGH);\n  delayMicroseconds(width);\n  digitalWrite(servoPin, LOW);\n  delay(20);\n}\n\nvoid loop() {\n  for (int angle = 0; angle <= 180; angle += 10) {\n    pulseServo(angle);\n    delay(40);\n  }\n  for (int angle = 180; angle >= 0; angle -= 10) {\n    pulseServo(angle);\n    delay(40);\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Sweep a micro servo"
+}

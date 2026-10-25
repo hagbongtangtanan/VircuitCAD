@@ -16,6 +16,7 @@ import {
   usart0Config,
 } from 'avr8js'
 import type { CircuitDocument } from '../../shared/circuit'
+import { definitionOf } from '../parts/definitions'
 import { pinKey } from '../../shared/circuit'
 import { parseIntelHex, toProgramWords } from '../../shared/intelhex'
 import { buildNetlist } from '../wiring/netlist'
@@ -102,6 +103,25 @@ function pwmDutyOf(
  * circuit against the pin outputs. Framework-free on purpose: tests drive it
  * for a fixed number of cycles instead of waiting on animation frames.
  */
+interface IrReceiverChannel {
+  readonly sensorId: string
+  readonly outPort: 'B' | 'C' | 'D'
+  readonly outBit: number
+  readonly remoteId: string | null
+}
+
+interface UltrasonicChannel {
+  readonly sensorId: string
+  readonly echoDistanceUnitCm: number
+  readonly trigPort: 'B' | 'C' | 'D'
+  readonly trigBit: number
+  readonly echoPort: 'B' | 'C' | 'D'
+  readonly echoBit: number
+  lastTriggerHigh: boolean
+  echoStartCycle: number | null
+  echoEndCycle: number | null
+}
+
 export class ArduinoSimulation {
   private readonly cpu: CPU
   private readonly ports: Record<'B' | 'C' | 'D', AVRIOPort>
@@ -109,8 +129,10 @@ export class ArduinoSimulation {
   readonly timers: readonly AVRTimer[]
   readonly usart: AVRUSART
   private readonly adc: AVRADC
-  private readonly document: CircuitDocument
-  private readonly netlist: ReturnType<typeof buildNetlist>
+  private document: CircuitDocument
+  private netlist: ReturnType<typeof buildNetlist>
+  private readonly ultrasonicChannels: UltrasonicChannel[] = []
+  private readonly irReceiverChannels: IrReceiverChannel[] = []
   private lastDriversSignature = ''
   private lastSolve: SolveResult | null = null
 
@@ -121,6 +143,8 @@ export class ArduinoSimulation {
   constructor(hex: string, document: CircuitDocument) {
     this.document = document
     this.netlist = buildNetlist(document)
+    this.buildUltrasonicChannels()
+    this.buildIrReceiverChannels()
     this.cpu = new CPU(toProgramWords(parseIntelHex(hex)), 2048)
     this.ports = {
       B: new AVRIOPort(this.cpu, portBConfig),
@@ -152,6 +176,8 @@ export class ArduinoSimulation {
     while (this.cpu.cycles < cycles) {
       avrInstruction(this.cpu)
       this.cpu.tick()
+      this.updateIrReceiverPulses()
+      this.updateUltrasonicPulses()
     }
   }
 
@@ -223,6 +249,167 @@ export class ArduinoSimulation {
     return { drivers, pinVoltages }
   }
 
+  private buildUltrasonicChannels(): void {
+    const unoPart = this.document.parts.find((part) => part.type === 'arduino-uno')
+    if (unoPart === undefined) return
+    const unoPinOnNet = (
+      targetNet: number | undefined
+    ): { port: 'B' | 'C' | 'D'; bit: number } | null => {
+      if (targetNet === undefined) return null
+      for (const pinId of Object.keys(UNO_PIN_SPECS)) {
+        const net = this.netlist.netIdOf({ partId: unoPart.id, pinId })
+        if (net !== targetNet) continue
+        const spec = UNO_PIN_SPECS[pinId]
+        if (spec === undefined || spec.kind !== 'io') return null
+        return { port: spec.port, bit: spec.bit }
+      }
+      return null
+    }
+
+    for (const part of this.document.parts) {
+      if (part.type !== 'ultrasonic-hcsr04') continue
+      const trigNet = this.netlist.netIdOf({ partId: part.id, pinId: 'trig' })
+      const echoNet = this.netlist.netIdOf({ partId: part.id, pinId: 'echo' })
+      const trigDriver = unoPinOnNet(trigNet)
+      const echoDriver = unoPinOnNet(echoNet)
+      if (trigDriver === null || echoDriver === null) continue
+      this.ultrasonicChannels.push({
+        sensorId: part.id,
+        echoDistanceUnitCm: this.ultrasonicDistance(part),
+        trigPort: trigDriver.port,
+        trigBit: trigDriver.bit,
+        echoPort: echoDriver.port,
+        echoBit: echoDriver.bit,
+        lastTriggerHigh: false,
+        echoStartCycle: null,
+        echoEndCycle: null,
+      })
+    }
+  }
+
+  private ultrasonicDistance(part: Readonly<CircuitDocument['parts'][number]>): number {
+    const definition = definitionOf(part.type)
+    const sensorCenter = {
+      x: part.position.x + definition.size.width / 2,
+      y: part.position.y + definition.size.height / 2,
+    }
+    const forward =
+      part.rotation === 90
+        ? { x: 1, y: 0 }
+        : part.rotation === 180
+          ? { x: 0, y: 1 }
+          : part.rotation === 270
+            ? { x: -1, y: 0 }
+            : { x: 0, y: -1 }
+    let best = Number.POSITIVE_INFINITY
+    for (const other of this.document.parts) {
+      if (other.id === part.id) continue
+      if (other.type === 'arduino-uno') continue
+      const otherDefinition = definitionOf(other.type)
+      const otherCenter = {
+        x: other.position.x + otherDefinition.size.width / 2,
+        y: other.position.y + otherDefinition.size.height / 2,
+      }
+      const delta = { x: otherCenter.x - sensorCenter.x, y: otherCenter.y - sensorCenter.y }
+      const projection = delta.x * forward.x + delta.y * forward.y
+      if (projection <= 2) continue
+      const normal = { x: -forward.y, y: forward.x }
+      const lateral = Math.abs(delta.x * normal.x + delta.y * normal.y)
+      // HC-SR04 beam is narrow (about +/-15 degrees), not a straight line;
+      // treat parts as an obstacle only when they sit inside that cone.
+      if (lateral > Math.max(2, projection * 0.27)) continue
+      best = Math.min(best, Math.hypot(delta.x, delta.y))
+    }
+    if (!Number.isFinite(best)) return 0
+    return Math.max(2, Math.min(400, best / 10))
+  }
+
+  private updateUltrasonicPulses(): void {
+    const cycles = this.cpu.cycles
+    for (const sensor of this.ultrasonicChannels) {
+      const trigState = this.ports[sensor.trigPort].pinState(sensor.trigBit)
+      const triggered = trigState === PinState.High
+      if (triggered && !sensor.lastTriggerHigh && sensor.echoEndCycle === null) {
+        const durationCm = sensor.echoDistanceUnitCm
+        const roundTripCycles = Math.round(durationCm * 58 * 16)
+        // Real HC-SR04 produces the echo pulse after a short settling time,
+        // so a sketch that calls pulseIn() right after triggering sees the
+        // rising edge instead of an already-high line.
+        const settleCycles = 7200
+        sensor.echoEndCycle =
+          durationCm > 0 ? cycles + settleCycles + Math.max(200, roundTripCycles) : null
+        sensor.echoStartCycle = durationCm > 0 ? cycles + settleCycles : null
+      }
+      sensor.lastTriggerHigh = triggered
+
+      if (sensor.echoEndCycle !== null && sensor.echoStartCycle !== null) {
+        if (cycles < sensor.echoStartCycle) {
+          this.ports[sensor.echoPort].setPin(sensor.echoBit, false)
+        } else if (cycles < sensor.echoEndCycle) {
+          this.ports[sensor.echoPort].setPin(sensor.echoBit, true)
+        } else {
+          this.ports[sensor.echoPort].setPin(sensor.echoBit, false)
+          sensor.echoEndCycle = null
+          sensor.echoStartCycle = null
+        }
+      } else {
+        this.ports[sensor.echoPort].setPin(sensor.echoBit, false)
+      }
+    }
+  }
+
+  private buildIrReceiverChannels(): void {
+    for (const part of this.document.parts) {
+      if (part.type !== 'ir-receiver') continue
+      const unoPart = this.document.parts.find((candidate) => candidate.type === 'arduino-uno')
+      if (unoPart === undefined) continue
+      let driver: { port: 'B' | 'C' | 'D'; bit: number } | null = null
+      for (const pinId of Object.keys(UNO_PIN_SPECS)) {
+        const net = this.netlist.netIdOf({ partId: unoPart.id, pinId })
+        if (net !== this.netlist.netIdOf({ partId: part.id, pinId: 'out' })) continue
+        const spec = UNO_PIN_SPECS[pinId]
+        if (spec === undefined || spec.kind !== 'io') continue
+        driver = { port: spec.port, bit: spec.bit }
+        break
+      }
+      if (driver === null) continue
+      let nearest: string | null = null
+      let bestDistance = 300
+      for (const other of this.document.parts) {
+        if (other.type !== 'ir-remote') continue
+        const dx = other.position.x - part.position.x
+        const dy = other.position.y - part.position.y
+        const distance = Math.hypot(dx, dy)
+        if (distance < bestDistance) {
+          bestDistance = distance
+          nearest = other.id
+        }
+      }
+      this.irReceiverChannels.push({
+        sensorId: part.id,
+        outPort: driver.port,
+        outBit: driver.bit,
+        remoteId: nearest,
+      })
+    }
+  }
+
+  private updateIrReceiverPulses(): void {
+    const inputs = this.readInputs?.() ?? {}
+    const keys = inputs.irKeys ?? new Map<string, number | null>()
+    for (const channel of this.irReceiverChannels) {
+      if (channel.remoteId === null) {
+        this.ports[channel.outPort].setPin(channel.outBit, false)
+        continue
+      }
+      const pressedKey = keys.get(channel.remoteId)
+      this.ports[channel.outPort].setPin(
+        channel.outBit,
+        pressedKey !== null && pressedKey !== undefined
+      )
+    }
+  }
+
   /**
    * Feeds the solved net voltages back into the CPU: analog channels drive
    * analogRead(), and input pins read the level the external circuit imposes.
@@ -254,6 +441,19 @@ export class ArduinoSimulation {
   /** Solves without advancing the CPU, so the first analogRead has real data. */
   prime(): void {
     this.frame()
+  }
+
+  /** Hot-swaps the circuit while the CPU keeps running. */
+  updateDocument(document: CircuitDocument): void {
+    this.document = document
+    this.netlist = buildNetlist(document)
+    this.ultrasonicChannels.length = 0
+    this.buildUltrasonicChannels()
+    this.irReceiverChannels.length = 0
+    this.buildIrReceiverChannels()
+    this.lastDriversSignature = ''
+    this.lastSolve = null
+    this.prime()
   }
 
   /** Reads the pin registers, solves the circuit and reports the visible state. */

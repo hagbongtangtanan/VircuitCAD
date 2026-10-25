@@ -130,6 +130,14 @@ async function resolveLibraries(
       const sources = (await readdir(candidate))
         .filter((file) => /\.(c|cpp|S)$/.test(file))
         .map((file) => join(candidate, file))
+      // Libraries such as Wire keep C sources in `utility/`.
+      const utility = join(candidate, 'utility')
+      if (existsSync(utility)) {
+        const nested = (await readdir(utility))
+          .filter((file) => /\.(c|cpp|S)$/.test(file))
+          .map((file) => join(utility, file))
+        sources.push(...nested)
+      }
       resolved.push({ dir: candidate, sources })
     }
   }

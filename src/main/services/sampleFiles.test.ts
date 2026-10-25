@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -7,9 +7,11 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { projectFileSchema } from '../../shared/project'
 import { compileWithToolchain, toolchainFromDir } from './toolchain'
 import { listSamples, readSample } from './sampleFiles'
+import { readProjectFile } from './projectFiles'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 const samplesDir = join(repoRoot, 'resources', 'samples')
+const startersDir = join(repoRoot, 'src', 'starters')
 const toolchain = toolchainFromDir(join(repoRoot, 'resources', 'toolchain', 'linux'))
 const installed = toolchain !== null && existsSync(toolchain.coreArchive)
 
@@ -26,10 +28,7 @@ afterAll(async () => {
 describe('sample projects', () => {
   it('lists the shipped samples with readable labels', async () => {
     const samples = await listSamples(samplesDir)
-    expect(samples.map((sample) => sample.name)).toEqual([
-      'blink-led.vircuit',
-      'traffic-light.vircuit',
-    ])
+    expect(samples.map((sample) => sample.name)).toEqual(['blink-led.vcc', 'traffic-light.vcc'])
     expect(samples[0]?.label).toBe('Blink led')
   })
 
@@ -46,7 +45,7 @@ describe('sample projects', () => {
   })
 
   it('loads every shipped sample as a valid project', async () => {
-    for (const name of ['blink-led.vircuit', 'traffic-light.vircuit']) {
+    for (const name of ['blink-led.vcc', 'traffic-light.vcc']) {
       const opened = await readSample(samplesDir, name)
       expect(opened.kind).toBe('project')
       if (opened.kind !== 'project') continue
@@ -55,6 +54,21 @@ describe('sample projects', () => {
       expect(opened.project.circuit.wires.length).toBeGreaterThan(2)
     }
   })
+
+  it.skipIf(!installed)(
+    'compiles every starter sketch',
+    async () => {
+      const names = (await readdir(startersDir)).filter((name) => name.endsWith('.vcc')).sort()
+      expect(names.length).toBeGreaterThanOrEqual(10)
+      for (const name of names) {
+        const project = await readProjectFile(join(startersDir, name))
+        const compiled = await compileWithToolchain(toolchain!, project.sketch)
+        expect(compiled.diagnostics, name).toEqual([])
+        expect(compiled.ok, name).toBe(true)
+      }
+    },
+    20_000
+  )
 
   it.skipIf(!installed)('compiles the sketch in every sample', async () => {
     const samples = await listSamples(samplesDir)

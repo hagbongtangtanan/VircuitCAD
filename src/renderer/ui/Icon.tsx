@@ -13,6 +13,9 @@ export type IconName =
   | 'trash'
   | 'close'
   | 'chevron'
+  | 'sun'
+  | 'moon'
+  | 'keyboard'
 
 const PATHS: Record<IconName, JSX.Element> = {
   'zoom-in': (
@@ -84,6 +87,20 @@ const PATHS: Record<IconName, JSX.Element> = {
   ),
   close: <path d="M4 4l8 8M12 4l-8 8" />,
   chevron: <path d="M4 6l4 4 4-4" />,
+  sun: (
+    <>
+      <circle cx="8" cy="8" r="3" />
+      <path d="M8 1.5v1.2M8 13.3v1.2M1.5 8h1.2M13.3 8h1.2" />
+      <path d="M3.4 3.4l.9.9M11.7 11.7l.9.9M12.6 3.4l-.9.9M4.3 11.7l-.9.9" />
+    </>
+  ),
+  moon: <path d="M13 9.7A5.5 5.5 0 0 1 6.3 3a5.5 5.5 0 1 0 6.7 6.7z" />,
+  keyboard: (
+    <>
+      <rect x="1.5" y="4" width="13" height="8" rx="1.5" />
+      <path d="M4 6.5h.01M6.5 6.5h.01M9 6.5h.01M11.5 6.5h.01M4 9.5h8" />
+    </>
+  ),
 }
 
 /** Offline, font-independent icon set (system fonts lack many symbol glyphs). */

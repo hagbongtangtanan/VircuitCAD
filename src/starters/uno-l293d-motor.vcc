@@ -1,0 +1,169 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 60,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "drv1",
+        "type": "l293d",
+        "position": {
+          "x": 450,
+          "y": 130
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "m1",
+        "type": "dc-motor",
+        "position": {
+          "x": 650,
+          "y": 220
+        },
+        "rotation": 0,
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D5"
+        },
+        "to": {
+          "partId": "drv1",
+          "pinId": "1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "D2"
+        },
+        "to": {
+          "partId": "drv1",
+          "pinId": "2"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D3"
+        },
+        "to": {
+          "partId": "drv1",
+          "pinId": "7"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "drv1",
+          "pinId": "3"
+        },
+        "to": {
+          "partId": "m1",
+          "pinId": "plus"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "drv1",
+          "pinId": "6"
+        },
+        "to": {
+          "partId": "m1",
+          "pinId": "minus"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "drv1",
+          "pinId": "8"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w7",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "drv1",
+          "pinId": "16"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w8",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "drv1",
+          "pinId": "4"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w9",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND2"
+        },
+        "to": {
+          "partId": "drv1",
+          "pinId": "5"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// L293D: EN1 -> D5, IN1 -> D2, IN2 -> D3, OUT1/OUT2 -> motor.\nconst int enablePin = 5;\nconst int in1Pin = 2;\nconst int in2Pin = 3;\n\nvoid setup() {\n  pinMode(enablePin, OUTPUT);\n  pinMode(in1Pin, OUTPUT);\n  pinMode(in2Pin, OUTPUT);\n  analogWrite(enablePin, 180);\n}\n\nvoid loop() {\n  digitalWrite(in1Pin, HIGH);\n  digitalWrite(in2Pin, LOW);\n  delay(2000);\n\n  digitalWrite(in1Pin, LOW);\n  digitalWrite(in2Pin, HIGH);\n  delay(2000);\n\n  digitalWrite(in1Pin, LOW);\n  digitalWrite(in2Pin, LOW);\n  delay(1000);\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Drive a DC motor"
+}

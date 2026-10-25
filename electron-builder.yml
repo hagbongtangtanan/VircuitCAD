@@ -25,6 +25,7 @@ extraResources:
   - from: resources/samples
     to: samples
     filter:
+      - '**/*.vcc'
       - '**/*.vircuit'
 
 # GitHub replaces spaces in uploaded asset names, which would break the download
@@ -44,9 +45,14 @@ asar: true
 npmRebuild: false
 
 fileAssociations:
-  - ext: vircuit
+  - ext: vcc
     name: VircuitCAD Project
     description: VircuitCAD circuit project
+    mimeType: application/x-vircuitcad
+    role: Editor
+  - ext: vircuit
+    name: VircuitCAD Project (legacy)
+    description: Legacy VircuitCAD circuit project
     mimeType: application/x-vircuitcad
     role: Editor
 

@@ -1,0 +1,146 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "kp1",
+        "type": "keypad-4x4",
+        "position": {
+          "x": 500,
+          "y": 160
+        },
+        "rotation": 0,
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D2"
+        },
+        "to": {
+          "partId": "kp1",
+          "pinId": "r1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "D3"
+        },
+        "to": {
+          "partId": "kp1",
+          "pinId": "r2"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D4"
+        },
+        "to": {
+          "partId": "kp1",
+          "pinId": "r3"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "uno",
+          "pinId": "D5"
+        },
+        "to": {
+          "partId": "kp1",
+          "pinId": "r4"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "uno",
+          "pinId": "D6"
+        },
+        "to": {
+          "partId": "kp1",
+          "pinId": "c1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "uno",
+          "pinId": "D7"
+        },
+        "to": {
+          "partId": "kp1",
+          "pinId": "c2"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w7",
+        "from": {
+          "partId": "uno",
+          "pinId": "D8"
+        },
+        "to": {
+          "partId": "kp1",
+          "pinId": "c3"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w8",
+        "from": {
+          "partId": "uno",
+          "pinId": "D9"
+        },
+        "to": {
+          "partId": "kp1",
+          "pinId": "c4"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// 4x4 Keypad (no library): Rows R1-R4 -> D2-D5, Cols C1-C4 -> D6-D9\n// Manual matrix scanning without Keypad library\nconst byte ROWS = 4;\nconst byte COLS = 4;\nchar keys[ROWS][COLS] = {\n  {'1','2','3','A'},\n  {'4','5','6','B'},\n  {'7','8','9','C'},\n  {'*','0','#','D'}\n};\nbyte rowPins[ROWS] = {2, 3, 4, 5};\nbyte colPins[COLS] = {6, 7, 8, 9};\n\nvoid setup() {\n  for (byte c = 0; c < COLS; c++) pinMode(colPins[c], OUTPUT);\n  for (byte r = 0; r < ROWS; r++) pinMode(rowPins[r], INPUT_PULLUP);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  for (byte c = 0; c < COLS; c++) {\n    digitalWrite(colPins[c], LOW);\n    for (byte r = 0; r < ROWS; r++) {\n      if (digitalRead(rowPins[r]) == LOW) {\n        Serial.print(\"Key: \");\n        Serial.println(keys[r][c]);\n        delay(300);\n      }\n    }\n    digitalWrite(colPins[c], HIGH);\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Read 4x4 keypad input"
+}

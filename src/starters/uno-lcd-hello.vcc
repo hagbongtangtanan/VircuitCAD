@@ -1,0 +1,94 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 60,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "lcd1",
+        "type": "lcd-16x2-i2c",
+        "position": {
+          "x": 500,
+          "y": 220
+        },
+        "rotation": 0,
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "lcd1",
+          "pinId": "gnd"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "lcd1",
+          "pinId": "vcc"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "A4"
+        },
+        "to": {
+          "partId": "lcd1",
+          "pinId": "sda"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "uno",
+          "pinId": "A5"
+        },
+        "to": {
+          "partId": "lcd1",
+          "pinId": "scl"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// 16x2 LCD with a PCF8574 I2C backpack at 0x27 (SDA A4, SCL A5).\n#include <Wire.h>\n\nconst uint8_t LCD_ADDR = 0x27;\nconst uint8_t BACKLIGHT = 0x08;\nconst uint8_t ENABLE = 0x04;\nconst uint8_t RS = 0x01;\n\nvoid lcdWrite(uint8_t value) {\n  Wire.beginTransmission(LCD_ADDR);\n  Wire.write(value);\n  Wire.endTransmission();\n}\n\nvoid lcdPulse(uint8_t value) {\n  lcdWrite(value | ENABLE);\n  delayMicroseconds(1);\n  lcdWrite(value & ~ENABLE);\n  delayMicroseconds(50);\n}\n\nvoid lcdNibble(uint8_t nibble, bool isData) {\n  lcdPulse((nibble << 4) | BACKLIGHT | (isData ? RS : 0));\n}\n\nvoid lcdSend(uint8_t value, bool isData) {\n  lcdNibble(value >> 4, isData);\n  lcdNibble(value & 0x0F, isData);\n}\n\nvoid lcdCommand(uint8_t command) { lcdSend(command, false); }\nvoid lcdData(uint8_t value) { lcdSend(value, true); }\n\nvoid lcdBegin() {\n  Wire.begin();\n  delay(50);\n  lcdNibble(0x03, false); delay(5);\n  lcdNibble(0x03, false); delay(1);\n  lcdNibble(0x03, false); delay(1);\n  lcdNibble(0x02, false);\n  lcdCommand(0x28);\n  lcdCommand(0x0C);\n  lcdCommand(0x06);\n  lcdCommand(0x01);\n  delay(2);\n}\n\nvoid lcdPrint(const char* text) {\n  while (*text) lcdData((uint8_t)*text++);\n}\n\nvoid setup() {\n  lcdBegin();\n  lcdPrint(\"Hello, Vircuit!\");\n}\n\nvoid loop() {}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Hello on an LCD"
+}

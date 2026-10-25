@@ -49,6 +49,9 @@ export interface CircuitStore {
   commitTransientEdit(): void
   removeSelected(): void
   duplicateSelected(): void
+  copySelected(): void
+  pasteClipboard(): void
+  selectAll(): void
   rotateSelected(): void
   flipSelected(axis: FlipAxis): void
   setPartProp(id: string, key: string, value: string | number): void
@@ -113,6 +116,9 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
   const history = createHistory<CircuitDocument>()
 
   let transientBase: CircuitDocument | null = null
+  let clipboardParts: PartInstance[] = []
+  let clipboardWires: Wire[] = []
+  let pasteGeneration = 0
 
   function syncHistoryFlags(): void {
     set({ canUndo: history.canUndo(), canRedo: history.canRedo() })
@@ -234,6 +240,66 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
       })
       set({
         selectedPartIds: clones.map((clone) => clone.id),
+        selectedWireId: null,
+        selectedNoteId: null,
+      })
+    },
+
+    copySelected(): void {
+      const { document, selectedPartIds } = get()
+      if (selectedPartIds.length === 0) return
+      const selected = new Set(selectedPartIds)
+      clipboardParts = document.parts
+        .filter((part) => selected.has(part.id))
+        .map((part) => structuredClone(part))
+      clipboardWires = document.wires
+        .filter((wire) => selected.has(wire.from.partId) && selected.has(wire.to.partId))
+        .map((wire) => structuredClone(wire))
+      pasteGeneration = 0
+    },
+
+    pasteClipboard(): void {
+      if (clipboardParts.length === 0) return
+      const { document } = get()
+      pasteGeneration += 1
+      const offset = { x: GRID_SIZE * 2 * pasteGeneration, y: GRID_SIZE * 2 * pasteGeneration }
+      const idMap = new Map<string, string>()
+      const clones = clipboardParts.map((part) => {
+        const clone = partSchema.parse({
+          ...structuredClone(part),
+          id: createId(part.type),
+          position: { x: part.position.x + offset.x, y: part.position.y + offset.y },
+        })
+        idMap.set(part.id, clone.id)
+        return clone
+      })
+      const wires: Wire[] = []
+      for (const wire of clipboardWires) {
+        const from = idMap.get(wire.from.partId)
+        const to = idMap.get(wire.to.partId)
+        if (from === undefined || to === undefined) continue
+        wires.push({
+          ...structuredClone(wire),
+          id: createId('wire'),
+          from: { partId: from, pinId: wire.from.pinId },
+          to: { partId: to, pinId: wire.to.pinId },
+        })
+      }
+      commit({
+        ...document,
+        parts: [...document.parts, ...clones],
+        wires: [...document.wires, ...wires],
+      })
+      set({
+        selectedPartIds: clones.map((clone) => clone.id),
+        selectedWireId: null,
+        selectedNoteId: null,
+      })
+    },
+
+    selectAll(): void {
+      set({
+        selectedPartIds: get().document.parts.map((part) => part.id),
         selectedWireId: null,
         selectedNoteId: null,
       })

@@ -1,0 +1,81 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "gs1",
+        "type": "gas-sensor",
+        "position": {
+          "x": 500,
+          "y": 160
+        },
+        "rotation": 0,
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "gs1",
+          "pinId": "h1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "gs1",
+          "pinId": "h2"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "A0"
+        },
+        "to": {
+          "partId": "gs1",
+          "pinId": "a1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// Gas Sensor (MQ series): H pins -> 5V/GND (heater), A pin -> A0\n// B pins can be used for differential measurement\nconst int sensorPin = A0;\n\nvoid setup() {\n  Serial.begin(9600);\n  Serial.println(\"Gas sensor warming up...\");\n}\n\nvoid loop() {\n  int reading = analogRead(sensorPin);\n  float voltage = reading * 5.0 / 1023.0;\n  \n  Serial.print(\"Gas level: \");\n  Serial.print(reading);\n  Serial.print(\" (\");\n  Serial.print(voltage, 3);\n  Serial.println(\" V)\");\n  delay(1000);\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Detect gas with MQ sensor"
+}

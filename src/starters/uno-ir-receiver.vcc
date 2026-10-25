@@ -1,0 +1,81 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "ir1",
+        "type": "ir-receiver",
+        "position": {
+          "x": 500,
+          "y": 160
+        },
+        "rotation": 0,
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "ir1",
+          "pinId": "vcc"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "ir1",
+          "pinId": "gnd"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D2"
+        },
+        "to": {
+          "partId": "ir1",
+          "pinId": "out"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// IR Receiver (raw): VCC -> 5V, GND -> GND, OUT -> D2\n// Measures raw HIGH/LOW pulse widths; protocol decoding needs IRremote library\nconst int recvPin = 2;\nunsigned long lastChange = 0;\nint lastState = HIGH;\n\nvoid setup() {\n  pinMode(recvPin, INPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int state = digitalRead(recvPin);\n  if (state != lastState) {\n    unsigned long now = micros();\n    unsigned long duration = now - lastChange;\n    if (lastState == LOW) {\n      Serial.print(\"Pulse: \");\n    } else {\n      Serial.print(\"Space: \");\n    }\n    Serial.println(duration);\n    lastChange = now;\n    lastState = state;\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Receive IR remote signals"
+}

@@ -70,6 +70,15 @@ describe.skipIf(!installed)('avr-gcc toolchain', () => {
     expect(result.ok).toBe(true)
   })
 
+  it('resolves a bundled library with utility sources such as Wire', async () => {
+    const sketch = ['#include <Wire.h>', 'void setup() { Wire.begin(); }', 'void loop() {}'].join(
+      '\n'
+    )
+    const result = await compileWithToolchain(toolchain!, sketch)
+    expect(result.diagnostics).toEqual([])
+    expect(result.ok).toBe(true)
+  })
+
   it('reports errors against the lines the user typed', async () => {
     const sketch = ['void setup() {', '  unknownCall();', '}', '', 'void loop() {}'].join('\n')
     const result = await compileWithToolchain(toolchain!, sketch)

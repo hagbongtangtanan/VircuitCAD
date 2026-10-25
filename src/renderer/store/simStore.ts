@@ -166,9 +166,13 @@ export const useSimStore = create<SimStore>()((set, get) => {
   }
 })
 
-// Editing the circuit invalidates the netlist the emulator is holding; stop
-// instead of solving against stale wiring.
+// Circuit edits (moving parts, rewiring, inserting components) swap the
+// netlist the emulator is holding without pausing the CPU, so the sketch keeps
+// running against the new wiring.
 useCircuitStore.subscribe((state, previous) => {
   if (state.document === previous.document) return
-  if (useSimStore.getState().status === 'running') useSimStore.getState().stop()
+  const simulation = engine
+  if (simulation !== null && useSimStore.getState().status === 'running') {
+    simulation.updateDocument(state.document)
+  }
 })

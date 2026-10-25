@@ -31,13 +31,26 @@ const project = createProject({
 
 describe('project files on disk', () => {
   it('writes and reads a project', async () => {
-    const path = join(directory, 'demo.vircuit')
+    const path = join(directory, 'demo.vcc')
     await writeProjectFile(path, project)
     expect(await readProjectFile(path)).toEqual(project)
   })
 
+  it('still opens a legacy .vircuit project', async () => {
+    const legacy = JSON.parse(serializeProject(project))
+    legacy.version = 1
+    delete legacy.metadata
+    delete legacy.viewport
+    const path = join(directory, 'legacy.vircuit')
+    await writeFile(path, JSON.stringify(legacy))
+
+    const opened = await openFile(path)
+    expect(opened.kind).toBe('project')
+    if (opened.kind === 'project') expect(opened.project.version).toBe(1)
+  })
+
   it('opens a project through the extension dispatcher', async () => {
-    const path = join(directory, 'demo.vircuit')
+    const path = join(directory, 'demo.vcc')
     await writeProjectFile(path, project)
     const opened = await openFile(path)
     expect(opened.kind).toBe('project')
@@ -58,7 +71,7 @@ describe('project files on disk', () => {
   })
 
   it('surfaces a corrupt project as a readable error', async () => {
-    const path = join(directory, 'broken.vircuit')
+    const path = join(directory, 'broken.vcc')
     await writeFile(path, '{"format":"nope"}')
     await expect(readProjectFile(path)).rejects.toThrow(/not a VircuitCAD project/)
   })
@@ -114,7 +127,7 @@ describe('project files on disk', () => {
   })
 
   it('keeps the serialized project stable for diffing', async () => {
-    const path = join(directory, 'demo.vircuit')
+    const path = join(directory, 'demo.vcc')
     await writeProjectFile(path, project)
     expect(await readFile(path, 'utf8')).toBe(serializeProject(project))
   })

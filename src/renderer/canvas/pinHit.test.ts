@@ -16,7 +16,7 @@ const uno = part({
 
 describe('findPinNear', () => {
   it('returns the closest terminal within the radius', () => {
-    const hit = findPinNear([uno], { x: 22, y: 4 }, 12)
+    const hit = findPinNear([uno], { x: 280, y: 4 }, 12)
     expect(hit?.ref).toEqual({ partId: 'uno', pinId: 'D13' })
   })
 
@@ -60,11 +60,11 @@ describe('nearestWirePin', () => {
   }
 
   it('picks the endpoint closest to the pointer', () => {
-    expect(nearestWirePin(wire, [uno], { x: 25, y: 5 })).toEqual({
+    expect(nearestWirePin(wire, [uno], { x: 280, y: 5 })).toEqual({
       partId: 'uno',
       pinId: 'D13',
     })
-    expect(nearestWirePin(wire, [uno], { x: 90, y: 205 })).toEqual({
+    expect(nearestWirePin(wire, [uno], { x: 60, y: 205 })).toEqual({
       partId: 'uno',
       pinId: 'GND',
     })

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { filePathFromArgs } from './startup'
 
 const fileExists = (path: string): boolean =>
-  path === '/home/ada/blink.vircuit' || path === 'C:\\work\\blink.ino' || path === '/tmp/data.json'
+  path === '/home/ada/blink.vcc' || path === 'C:\\work\\blink.ino' || path === '/tmp/data.json'
 
 describe('filePathFromArgs', () => {
   it('finds a project path among electron and chromium flags', () => {
@@ -13,11 +13,11 @@ describe('filePathFromArgs', () => {
           '--no-sandbox',
           '--enable-logging',
           '--user-data-dir=/tmp/vircuitcad',
-          '/home/ada/blink.vircuit',
+          '/home/ada/blink.vcc',
         ],
         fileExists
       )
-    ).toBe('/home/ada/blink.vircuit')
+    ).toBe('/home/ada/blink.vcc')
   })
 
   it('accepts fingerprints of Windows argv paths', () => {

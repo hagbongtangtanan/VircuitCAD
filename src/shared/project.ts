@@ -5,36 +5,75 @@ import { MAX_SKETCH_LENGTH } from './schemas'
 /**
  * The on-disk project format. A project is a circuit plus the sketch it runs;
  * keeping both in one file means "open" always restores a runnable state.
+ *
+ * Version 2 adds a strict metadata header and the canvas viewport. Version 1
+ * files written before those fields existed remain readable and are upgraded
+ * the next time they are saved.
  */
 export const PROJECT_FORMAT = 'vircuit-project'
-export const PROJECT_VERSION = 1
-export const PROJECT_EXTENSION = 'vircuit'
+export const PROJECT_VERSION = 2
+export const LEGACY_PROJECT_VERSION = 1
+export const PROJECT_EXTENSION = 'vcc'
+export const LEGACY_PROJECT_EXTENSION = 'vircuit'
 export const SKETCH_EXTENSION = 'ino'
 export const HEX_EXTENSION = 'hex'
 export const PNG_EXTENSION = 'png'
 export const PDF_EXTENSION = 'pdf'
 
-export const projectFileSchema = z.strictObject({
+export const projectMetadataSchema = z.strictObject({
+  created_at: z.string().min(1).max(64),
+  app_version: z.string().min(1).max(64),
+})
+
+export const projectViewportSchema = z.strictObject({
+  scale: z.number().positive(),
+  offsetX: z.number(),
+  offsetY: z.number(),
+})
+
+const currentProjectFileSchema = z.strictObject({
   format: z.literal(PROJECT_FORMAT),
   version: z.literal(PROJECT_VERSION),
+  metadata: projectMetadataSchema,
+  viewport: projectViewportSchema,
   /** Optional for projects written before titles were persisted. */
   name: z.string().trim().min(1).max(120).optional(),
   circuit: circuitDocumentSchema,
   sketch: z.string().max(MAX_SKETCH_LENGTH),
 })
 
+const legacyProjectFileSchema = z.strictObject({
+  format: z.literal(PROJECT_FORMAT),
+  version: z.literal(LEGACY_PROJECT_VERSION),
+  name: z.string().trim().min(1).max(120).optional(),
+  circuit: circuitDocumentSchema,
+  sketch: z.string().max(MAX_SKETCH_LENGTH),
+})
+
+export const projectFileSchema = z.union([currentProjectFileSchema, legacyProjectFileSchema])
+
 export type ProjectFile = z.infer<typeof projectFileSchema>
+export type ProjectMetadata = z.infer<typeof projectMetadataSchema>
+export type ProjectViewport = z.infer<typeof projectViewportSchema>
 
 export interface ProjectSnapshot {
   readonly circuit: CircuitDocument
   readonly sketch: string
   readonly name?: string
+  readonly createdAt?: string
+  readonly appVersion?: string
+  readonly viewport?: ProjectViewport
 }
 
 export function createProject(snapshot: ProjectSnapshot): ProjectFile {
   return {
     format: PROJECT_FORMAT,
     version: PROJECT_VERSION,
+    metadata: {
+      created_at: snapshot.createdAt ?? new Date().toISOString(),
+      app_version: snapshot.appVersion ?? '0.0.0',
+    },
+    viewport: snapshot.viewport ?? { scale: 1, offsetX: 60, offsetY: 60 },
     ...(snapshot.name === undefined ? {} : { name: snapshot.name }),
     circuit: snapshot.circuit,
     sketch: snapshot.sketch,
@@ -60,15 +99,18 @@ export function parseProjectText(text: string): ProjectFile {
     throw new ProjectFileError('The file is not valid JSON.')
   }
 
-  const result = projectFileSchema.safeParse(parsed)
-  if (!result.success) {
-    const [issue] = result.error.issues
-    const location = issue?.path.join('.') ?? 'document'
-    throw new ProjectFileError(
-      `This is not a VircuitCAD project: ${location} — ${issue?.message ?? 'invalid data'}`
-    )
-  }
-  return result.data
+  const current = currentProjectFileSchema.safeParse(parsed)
+  if (current.success) return current.data
+
+  const legacy = legacyProjectFileSchema.safeParse(parsed)
+  if (legacy.success) return legacy.data
+
+  const issues = current.error.issues.length > 0 ? current.error.issues : legacy.error.issues
+  const [issue] = issues
+  const location = issue?.path.join('.') ?? 'document'
+  throw new ProjectFileError(
+    `This is not a VircuitCAD project: ${location} — ${issue?.message ?? 'invalid data'}`
+  )
 }
 
 export type OpenFileKind = 'project' | 'sketch'
@@ -97,7 +139,13 @@ export function fileStem(path: string): string {
 /** Chooses how an opened file is interpreted from its extension. */
 export function openKindForPath(path: string): OpenFileKind | null {
   const extension = fileExtension(path)
-  if (extension === PROJECT_EXTENSION || extension === 'json') return 'project'
+  if (
+    extension === PROJECT_EXTENSION ||
+    extension === LEGACY_PROJECT_EXTENSION ||
+    extension === 'json'
+  ) {
+    return 'project'
+  }
   if (extension === SKETCH_EXTENSION) return 'sketch'
   return null
 }
@@ -150,7 +198,7 @@ export const exportPdfRequestSchema = z.strictObject({
 })
 
 /** Shipped examples; the name doubles as the file name and is never a path. */
-export const SAMPLE_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*\.vircuit$/
+export const SAMPLE_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*\.(?:vcc|vircuit)$/
 
 export const openSampleRequestSchema = z.strictObject({
   name: z.string().regex(SAMPLE_NAME_PATTERN),
@@ -162,7 +210,7 @@ export interface SampleEntry {
 }
 
 export function sampleLabel(name: string): string {
-  const base = name.replace(/\.vircuit$/, '').replace(/-/g, ' ')
+  const base = name.replace(/\.(?:vcc|vircuit)$/, '').replace(/-/g, ' ')
   return base.charAt(0).toUpperCase() + base.slice(1)
 }
 

@@ -4,6 +4,7 @@ import { Icon } from './Icon'
 import { useProjectStore } from '../store/projectStore'
 import { useSimStore } from '../store/simStore'
 import { useSketchStore } from '../store/sketchStore'
+import { useThemeStore } from '../store/themeStore'
 
 export type WorkspaceView = 'circuit' | 'schematic'
 
@@ -12,10 +13,19 @@ export interface TopBarProps {
   readonly onChangeView: (view: WorkspaceView) => void
   readonly codeOpen: boolean
   readonly onToggleCode: () => void
+  readonly onShowTour: () => void
+  readonly onOpenStarters: () => void
+  readonly onShowShortcuts: () => void
 }
 
 /** Thin wrapper around `main`'s file operations, with a click-away menu. */
-function FileMenu(): JSX.Element {
+interface FileMenuProps {
+  readonly onShowTour: () => void
+  readonly onOpenStarters: () => void
+  readonly onShowShortcuts: () => void
+}
+
+function FileMenu({ onShowTour, onOpenStarters, onShowShortcuts }: FileMenuProps): JSX.Element {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement | null>(null)
 
@@ -85,6 +95,14 @@ function FileMenu(): JSX.Element {
           <button
             type="button"
             role="menuitem"
+            data-testid="file-starters"
+            onClick={() => run(onOpenStarters)}
+          >
+            Open starter…
+          </button>
+          <button
+            type="button"
+            role="menuitem"
             data-testid="file-save"
             disabled={busy}
             onClick={() => run(saveProject)}
@@ -125,6 +143,23 @@ function FileMenu(): JSX.Element {
             onClick={() => run(exportPdf)}
           >
             Save schematic as PDF…
+          </button>
+          <span className="cb-menu-separator" role="separator" />
+          <button
+            type="button"
+            role="menuitem"
+            data-testid="show-shortcuts"
+            onClick={() => run(onShowShortcuts)}
+          >
+            Keyboard shortcuts…
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            data-testid="show-tour"
+            onClick={() => run(onShowTour)}
+          >
+            Show tour
           </button>
         </div>
       )}
@@ -219,12 +254,22 @@ function AboutDialog({ onClose }: AboutDialogProps): JSX.Element {
 }
 
 /** Application chrome: brand, project name, view tabs, file/build/run actions. */
-export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarProps): JSX.Element {
+export function TopBar({
+  view,
+  onChangeView,
+  codeOpen,
+  onToggleCode,
+  onShowTour,
+  onOpenStarters,
+  onShowShortcuts,
+}: TopBarProps): JSX.Element {
   const name = useProjectStore((state) => state.name)
   const dirty = useProjectStore((state) => state.dirty)
   const rename = useProjectStore((state) => state.rename)
   const [titleDraft, setTitleDraft] = useState(name)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const theme = useThemeStore((state) => state.theme)
+  const toggleTheme = useThemeStore((state) => state.toggle)
 
   useEffect(() => {
     setTitleDraft(name)
@@ -305,7 +350,11 @@ export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarPro
       <span className="cb-topbar-spacer" />
 
       <div className="cb-topbar-actions">
-        <FileMenu />
+        <FileMenu
+          onShowTour={onShowTour}
+          onOpenStarters={onOpenStarters}
+          onShowShortcuts={onShowShortcuts}
+        />
         <button
           type="button"
           className="cb-button"
@@ -325,6 +374,26 @@ export function TopBar({ view, onChangeView, codeOpen, onToggleCode }: TopBarPro
           onClick={onToggleCode}
         >
           Code
+        </button>
+        <button
+          type="button"
+          className="cb-icon-button"
+          data-testid="shortcuts-toggle"
+          aria-label="Keyboard shortcuts"
+          title="Keyboard shortcuts (?)"
+          onClick={onShowShortcuts}
+        >
+          <Icon name="keyboard" />
+        </button>
+        <button
+          type="button"
+          className="cb-icon-button"
+          data-testid="theme-toggle"
+          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+          onClick={toggleTheme}
+        >
+          <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
         </button>
         <SimulationControls />
       </div>

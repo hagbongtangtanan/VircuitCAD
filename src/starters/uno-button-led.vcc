@@ -1,0 +1,131 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "btn1",
+        "type": "push-button",
+        "position": {
+          "x": 470,
+          "y": 230
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "r1",
+        "type": "resistor",
+        "position": {
+          "x": 470,
+          "y": 150
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "led1",
+        "type": "led",
+        "position": {
+          "x": 600,
+          "y": 170
+        },
+        "rotation": 0,
+        "props": {
+          "color": "green"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D7"
+        },
+        "to": {
+          "partId": "btn1",
+          "pinId": "1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "btn1",
+          "pinId": "2"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D9"
+        },
+        "to": {
+          "partId": "r1",
+          "pinId": "lead1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "r1",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "led1",
+          "pinId": "anode"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "led1",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND2"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// Hold the button to light the LED. Uses the Uno's internal pull-up.\nconst int buttonPin = 7;\nconst int ledPin = 9;\n\nvoid setup() {\n  pinMode(buttonPin, INPUT_PULLUP);\n  pinMode(ledPin, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  bool pressed = digitalRead(buttonPin) == LOW;\n  digitalWrite(ledPin, pressed ? HIGH : LOW);\n  Serial.println(pressed ? \"pressed\" : \"released\");\n  delay(50);\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Button-controlled LED"
+}

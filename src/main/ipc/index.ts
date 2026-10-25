@@ -12,6 +12,7 @@ import {
 import { IpcChannels } from '../../shared/ipc'
 import {
   PROJECT_EXTENSION,
+  LEGACY_PROJECT_EXTENSION,
   SKETCH_EXTENSION,
   HEX_EXTENSION,
   PNG_EXTENSION,
@@ -183,7 +184,10 @@ export function registerIpcHandlers(): void {
       title: 'Open project or sketch',
       properties: ['openFile'],
       filters: [
-        { name: 'VircuitCAD project', extensions: [PROJECT_EXTENSION, 'json'] },
+        {
+          name: 'VircuitCAD project',
+          extensions: [PROJECT_EXTENSION, LEGACY_PROJECT_EXTENSION, 'json'],
+        },
         { name: 'Arduino sketch', extensions: [SKETCH_EXTENSION] },
       ],
     })
@@ -201,7 +205,12 @@ export function registerIpcHandlers(): void {
       const path = await resolveSavePath(event, request.path, PROJECT_EXTENSION, {
         title: 'Save project',
         defaultPath: `${safeBaseName(request.project.name ?? 'untitled', 'untitled')}.${PROJECT_EXTENSION}`,
-        filters: [{ name: 'VircuitCAD project', extensions: [PROJECT_EXTENSION] }],
+        filters: [
+          {
+            name: 'VircuitCAD project',
+            extensions: [PROJECT_EXTENSION, LEGACY_PROJECT_EXTENSION],
+          },
+        ],
       })
       if (path === null) return null
 

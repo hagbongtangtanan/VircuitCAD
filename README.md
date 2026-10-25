@@ -6,11 +6,11 @@ against an emulated AVR — with no account and no network access at any point.
 
 The product name is a single constant, `APP_NAME` in `src/shared/app.ts`. The product name, npm package,
 windows, user-data directory, desktop entry and installer artifact names all use `VircuitCAD`.
-The GitHub repository is `VircuitCAD`; GitHub redirects the former `HuCAD` URLs.
+The GitHub repository is `VircuitCAD`; GitHub redirects the former repository URLs.
 
 Designed and built by Kheil27.
 
-> **Beta:** `v0.5.0-beta.1` is a pre-release for testing. VircuitCAD stays on the beta channel
+> **Beta:** `v0.5.0-beta.2` is a pre-release for testing. VircuitCAD stays on the beta channel
 > until further notice; features and project formats may still change, so keep backups of
 > important projects.
 
@@ -41,7 +41,7 @@ extended part library is tracked under milestone 8.
 ## Download
 
 Latest installers: **<https://github.com/hagbongtangtanan/VircuitCAD/releases>** — the current beta is
-`v0.5.0-beta.1`, marked as a pre-release.
+`v0.5.0-beta.2`, marked as a pre-release.
 
 | Platform | Artifact                        | Install                                                     |
 | -------- | ------------------------------- | ----------------------------------------------------------- |
@@ -95,19 +95,22 @@ npm run release:dry # print the release plan without writing anything
 
 ## Projects and files
 
-A project is one `.vircuit` file (JSON) holding both the circuit document and the sketch, so
-opening it always restores a runnable state.
+A project is one `.vcc` file (JSON) holding both the circuit document and the sketch, so
+opening it always restores a runnable state. Version 2 files also carry a creation timestamp,
+the app version that wrote them, and the canvas viewport. Legacy `.vircuit` files remain
+readable and are upgraded the next time they are saved.
 
-| Action        | Where               | Notes                                                     |
-| ------------- | ------------------- | --------------------------------------------------------- |
-| New           | toolbar             | starts a clean circuit with the default Blink sketch      |
-| Open          | toolbar, `Ctrl+O`   | `.vircuit` projects, plus `.ino` sketches into the editor |
-| Save          | toolbar, `Ctrl+S`   | asks for a location the first time                        |
-| Export `.ino` | toolbar (Code view) | writes the sketch alone                                   |
-| Export `.hex` | toolbar (Code view) | writes the last compiled program                          |
+| Action        | Where               | Notes                                                         |
+| ------------- | ------------------- | ------------------------------------------------------------- |
+| New           | toolbar             | starts a clean circuit with the default Blink sketch          |
+| Open          | toolbar, `Ctrl+O`   | `.vcc` projects (and legacy `.vircuit`), plus `.ino` sketches |
+| Save          | toolbar, `Ctrl+S`   | asks for a `.vcc` location the first time                     |
+| Export `.ino` | toolbar (Code view) | writes the sketch alone                                       |
+| Export `.hex` | toolbar (Code view) | writes the last compiled program                              |
 
 The window title gains a bullet while there are unsaved changes, and the status bar shows the
-project name plus an unsaved marker.
+project name plus an unsaved marker. The theme toggle in the toolbar switches between the dark
+navy workspace and a light paper-like workspace; the choice is remembered on this machine.
 
 ### Wiring
 
@@ -142,9 +145,21 @@ two-terminal symbols, reference designators and values. Wire colours follow the 
 Simplified and are black in Original. The choice is remembered on this machine, and **Export
 view as PNG** captures whichever style is showing.
 
+### Starter library
+
+**File → Open starter…**, or **Starters → Browse starter library** in the parts panel, opens a
+searchable-by-category library of twenty-nine complete projects. Every starter includes wiring, a
+compiling sketch, and a short explanation. Starters cover microcontrollers, inputs, sensors,
+displays, outputs, actuators, motor drivers, shift registers, and timers. They are bundled in
+the renderer from `src/starters/`, so the library works offline and does not depend on the
+sample folder.
+
+Loading a starter replaces the current circuit and sketch, just like opening a sample. Because
+it is a template, the first **Save** asks for a new `.vcc` location.
+
 ### Samples
 
-The toolbar's sample picker ships two read-only examples from `resources/samples/`
+The parts panel also lists two read-only examples from `resources/samples/`
 (`process.resourcesPath/samples` in packaged builds):
 
 | Sample        | Circuit                                       |
@@ -153,9 +168,17 @@ The toolbar's sample picker ships two read-only examples from `resources/samples
 | Traffic light | Three LEDs with resistors on D11, D12 and D13 |
 
 Choosing one replaces the whole project, circuit and sketch. The sample file is read-only, so
-the first **Save** asks for a `.vircuit` location instead of offering to overwrite the example. Files are read and written in the main process; the
+the first **Save** asks for a `.vcc` location instead of offering to overwrite the example. Files are read and written in the main process; the
 renderer only ever sees paths that came out of a native dialog, and a save can only reuse such
 a path, never invent one.
+
+### Keyboard shortcuts
+
+Press **?** or use **File → Keyboard shortcuts…** for the full guide. In addition to the file and
+edit shortcuts, the canvas supports **Ctrl+C**/**Ctrl+V** for parts and their internal wires,
+**Ctrl+A** to select every part, **Ctrl+D** to duplicate, **R** to rotate, **Shift+F**/**Shift+V**
+to flip, **N** for a note, and **F** to fit the circuit to the view. Shortcuts are ignored while
+typing in the code editor or a text field.
 
 ## Supported parts
 
@@ -228,16 +251,16 @@ the GitHub Release for that tag. Releases intentionally contain Windows assets o
 
 **Beta-only policy:** every release must use a `-beta.N` suffix until the policy is lifted.
 The GitHub workflow and `scripts/release.mjs` both reject stable versions, so `0.5.0` is not a
-valid tag; use `0.5.0-beta.1`.
+valid tag; use `0.5.0-beta.2`.
 
 ```bash
-npm version 0.5.0-beta.1 --no-git-tag-version   # or edit package.json by hand
-git commit -am "chore: release v0.5.0-beta.1"
-git tag v0.5.0-beta.1
-git push origin main v0.5.0-beta.1
+npm version 0.5.0-beta.2 --no-git-tag-version   # or edit package.json by hand
+git commit -am "chore: release v0.5.0-beta.2"
+git tag v0.5.0-beta.2
+git push origin main v0.5.0-beta.2
 ```
 
-The suffix makes the release a GitHub pre-release; the current beta is `v0.5.0-beta.1`.
+The suffix makes the release a GitHub pre-release; the current beta is `v0.5.0-beta.2`.
 
 `scripts/release.mjs` is the manual/hotfix path: it publishes an already-built `release/`
 directory using the same naming and notes rules. It prefers an authenticated `gh` session and

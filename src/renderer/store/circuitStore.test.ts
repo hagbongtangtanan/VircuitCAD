@@ -204,3 +204,30 @@ describe('notes', () => {
     expect(useCircuitStore.getState().selectedNoteId).toBeNull()
   })
 })
+describe('clipboard and selection', () => {
+  it('copies selected parts with their internal wires and pastes fresh ids', () => {
+    const store = useCircuitStore.getState()
+    store.addWire({ partId: 'r1', pinId: 'lead2' }, { partId: 'led', pinId: 'anode' })
+    store.selectParts(['r1', 'led'])
+    store.copySelected()
+    store.pasteClipboard()
+
+    const state = useCircuitStore.getState()
+    expect(state.document.parts).toHaveLength(5)
+    expect(state.document.wires).toHaveLength(2)
+    expect(state.selectedPartIds).toHaveLength(2)
+    expect(state.selectedPartIds).not.toContain('r1')
+    expect(state.selectedPartIds).not.toContain('led')
+    const pastedWire = state.document.wires[1]
+    expect(pastedWire?.from.partId).toBe(state.selectedPartIds[0])
+    expect(pastedWire?.to.partId).toBe(state.selectedPartIds[1])
+  })
+
+  it('selects every part and clears other selections', () => {
+    useCircuitStore.getState().selectAll()
+    const state = useCircuitStore.getState()
+    expect(state.selectedPartIds).toEqual(['uno', 'r1', 'led'])
+    expect(state.selectedWireId).toBeNull()
+    expect(state.selectedNoteId).toBeNull()
+  })
+})

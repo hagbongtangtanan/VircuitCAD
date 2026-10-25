@@ -220,7 +220,8 @@ export function pinLabelBoxes(part: PartInstance, scale: number): ReadonlyMap<Pi
     for (const entry of entries) {
       const row = rows.get(entry.pin.id) ?? 0
       const pinPosition = pinWorldPosition(part, entry.pin.id)
-      const distance = radius + gap + entry.halfNormal + row * laneStep
+      const inset = inside ? (definition.pinLabelInset ?? 0) : 0
+      const distance = radius + gap + entry.halfNormal + row * laneStep + inset
       const side = inside ? -1 : 1
       const centerX = pinPosition.x + normal.x * side * distance
       const centerY = pinPosition.y + normal.y * side * distance

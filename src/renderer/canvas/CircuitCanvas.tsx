@@ -1,7 +1,7 @@
 import type { KonvaEventObject } from 'konva/lib/Node'
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent, type JSX } from 'react'
 import type Konva from 'konva'
-import { Circle, Group, Layer, Line, Path, Rect, Stage, Text } from 'react-konva'
+import { Circle, Group, Layer, Line, Path, Rect, Stage, Text, Wedge } from 'react-konva'
 import {
   partTypeSchema,
   pinHasWire,
@@ -19,6 +19,7 @@ import { useCircuitStore } from '../store/circuitStore'
 import { useShallow } from 'zustand/react/shallow'
 import { useInteractionStore } from '../store/interactionStore'
 import { useSimStore } from '../store/simStore'
+import { useThemeStore } from '../store/themeStore'
 import { circuitContentBounds, fitViewport, useViewportStore } from '../store/viewportStore'
 import { canvasBackground, registerPngCapture } from '../export/pngCapture'
 import { PART_DRAG_MIME } from './dnd'
@@ -90,6 +91,7 @@ interface PinMarkerProps {
   readonly scale: number
   readonly showLabel: boolean
   readonly labelBox: PinLabelBox | null
+  readonly pinStyle?: 'header'
   readonly state: 'idle' | 'hovered' | 'active' | 'target'
   readonly connectedColor: string | null
   readonly onHover: (ref: PinRef | null) => void
@@ -98,9 +100,11 @@ interface PinMarkerProps {
 
 const PIN_TARGET_FILL = '#ffc928'
 const PIN_TARGET_RING = '#ffe27a'
+const HEADER_PIN_FILL = '#d9b24a'
 
 function PinMarker(props: PinMarkerProps): JSX.Element {
   const ref: PinRef = { partId: props.partId, pinId: props.pinId }
+  const header = props.pinStyle === 'header'
   // A wired terminal takes on its wire's colour, including custom palette
   // choices. State colours only apply to pins that are still free.
   const fill =
@@ -111,43 +115,77 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
         ? PIN_TARGET_FILL
         : props.state === 'hovered'
           ? PIN_HOVER_FILL
-          : PIN_FILL)
+          : header
+            ? HEADER_PIN_FILL
+            : PIN_FILL)
   // Pin dots and labels keep a constant on-screen size, like Tinkercad.
   const radius = 4 / props.scale
+  const pinSize = 8 / props.scale
+  const ringSize = pinSize * (props.state === 'target' ? 3.2 : 2.4)
+  const ringStroke =
+    props.state === 'active' ? '#ffc928' : props.state === 'target' ? PIN_TARGET_RING : '#6fb3ff'
 
   return (
     <Group>
-      {props.state !== 'idle' && (
+      {props.state !== 'idle' &&
+        (header ? (
+          <Rect
+            x={props.position.x - ringSize / 2}
+            y={props.position.y - ringSize / 2}
+            width={ringSize}
+            height={ringSize}
+            cornerRadius={0}
+            fill={props.state === 'target' ? PIN_TARGET_RING : 'transparent'}
+            opacity={props.state === 'target' ? 0.18 : 1}
+            stroke={ringStroke}
+            strokeWidth={(props.state === 'target' ? 2.5 : 1.5) / props.scale}
+            listening={false}
+          />
+        ) : (
+          <Circle
+            x={props.position.x}
+            y={props.position.y}
+            radius={radius * (props.state === 'target' ? 3.4 : 2.6)}
+            fill={props.state === 'target' ? PIN_TARGET_RING : 'transparent'}
+            opacity={props.state === 'target' ? 0.18 : 1}
+            stroke={ringStroke}
+            strokeWidth={(props.state === 'target' ? 2.5 : 1.5) / props.scale}
+            listening={false}
+          />
+        ))}
+      {header ? (
+        <Rect
+          x={props.position.x - pinSize / 2}
+          y={props.position.y - pinSize / 2}
+          width={pinSize}
+          height={pinSize}
+          cornerRadius={0}
+          fill={fill}
+          stroke="#6f5418"
+          strokeWidth={0.6 / props.scale}
+          hitStrokeWidth={10 / props.scale}
+          onMouseEnter={() => props.onHover(ref)}
+          onMouseLeave={() => props.onHover(null)}
+          onMouseDown={(event) => {
+            event.cancelBubble = true
+            props.onPointerDown(ref, event)
+          }}
+        />
+      ) : (
         <Circle
           x={props.position.x}
           y={props.position.y}
-          radius={radius * (props.state === 'target' ? 3.4 : 2.6)}
-          fill={props.state === 'target' ? PIN_TARGET_RING : 'transparent'}
-          opacity={props.state === 'target' ? 0.18 : 1}
-          stroke={
-            props.state === 'active'
-              ? '#ffc928'
-              : props.state === 'target'
-                ? PIN_TARGET_RING
-                : '#6fb3ff'
-          }
-          strokeWidth={(props.state === 'target' ? 2.5 : 1.5) / props.scale}
-          listening={false}
+          radius={radius}
+          fill={fill}
+          hitStrokeWidth={8 / props.scale}
+          onMouseEnter={() => props.onHover(ref)}
+          onMouseLeave={() => props.onHover(null)}
+          onMouseDown={(event) => {
+            event.cancelBubble = true
+            props.onPointerDown(ref, event)
+          }}
         />
       )}
-      <Circle
-        x={props.position.x}
-        y={props.position.y}
-        radius={radius}
-        fill={fill}
-        hitStrokeWidth={8 / props.scale}
-        onMouseEnter={() => props.onHover(ref)}
-        onMouseLeave={() => props.onHover(null)}
-        onMouseDown={(event) => {
-          event.cancelBubble = true
-          props.onPointerDown(ref, event)
-        }}
-      />
       {(props.showLabel || props.state === 'hovered') && props.labelBox !== null && (
         <Text
           x={props.labelBox.x}
@@ -155,15 +193,15 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
           width={props.labelBox.width}
           height={props.labelBox.height}
           text={props.label}
-          fontSize={props.labelBox.fontSize}
-          fontStyle="bold"
+          fontSize={header ? props.labelBox.fontSize * 0.82 : props.labelBox.fontSize}
+          fontStyle={header ? 'normal' : 'bold'}
           align="center"
           verticalAlign="middle"
           wrap="none"
           fill="#eaf4ff"
-          stroke="#040b16"
-          strokeWidth={2.5 / props.scale}
-          fillAfterStrokeEnabled
+          stroke={header ? undefined : '#040b16'}
+          strokeWidth={header ? 0 : 2.5 / props.scale}
+          fillAfterStrokeEnabled={!header}
           listening={false}
         />
       )}
@@ -312,6 +350,7 @@ function PartPins(props: PartPinsProps): JSX.Element | null {
             scale={props.scale}
             showLabel={showLabels}
             labelBox={labelBoxes?.get(pin.id) ?? null}
+            pinStyle={definition.pinStyle}
             state={state}
             connectedColor={props.connectedColors.get(pinKey(ref)) ?? null}
             onHover={props.onHoverPin}
@@ -400,6 +439,8 @@ interface WaypointHandlesProps {
 }
 
 function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
+  const dark = useThemeStore((state) => state.theme === 'dark')
+  const handleOutline = dark ? '#040b16' : '#ffffff'
   const wire = useCircuitStore((state) =>
     state.document.wires.find((w) => w.id === state.selectedWireId)
   )
@@ -471,7 +512,7 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           offsetY={handleSize / 2}
           cornerRadius={2 / scale}
           fill="#6fb3ff"
-          stroke="#040b16"
+          stroke={handleOutline}
           strokeWidth={1.5 / scale}
           draggable
           onDragStart={() => {
@@ -551,7 +592,7 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
           offsetY={handleSize / 2}
           cornerRadius={handleSize / 2}
           fill="#2f7df6"
-          stroke="#040b16"
+          stroke={handleOutline}
           strokeWidth={1.5 / scale}
           draggable
           onDragEnd={(event) => {
@@ -574,6 +615,10 @@ function WaypointHandles({ scale }: WaypointHandlesProps): JSX.Element | null {
 export function CircuitCanvas(): JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const stageRef = useRef<Konva.Stage | null>(null)
+  const dark = useThemeStore((state) => state.theme === 'dark')
+  const gridColor = dark ? GRID_COLOR : '#dbe5ef'
+  const gridAxisColor = dark ? GRID_AXIS_COLOR : '#b7c9db'
+  const handleOutline = dark ? '#040b16' : '#ffffff'
 
   const [size, setSize] = useState<Size>({ width: 800, height: 600 })
   const [hoveredPin, setHoveredPin] = useState<PinRef | null>(null)
@@ -987,7 +1032,7 @@ export function CircuitCanvas(): JSX.Element {
             <Line
               key={`v-${x}`}
               points={[x, grid.top, x, grid.bottom]}
-              stroke={x === 0 ? GRID_AXIS_COLOR : GRID_COLOR}
+              stroke={x === 0 ? gridAxisColor : gridColor}
               strokeWidth={1 / viewport.scale}
             />
           ))}
@@ -995,7 +1040,7 @@ export function CircuitCanvas(): JSX.Element {
             <Line
               key={`h-${y}`}
               points={[grid.left, y, grid.right, y]}
-              stroke={y === 0 ? GRID_AXIS_COLOR : GRID_COLOR}
+              stroke={y === 0 ? gridAxisColor : gridColor}
               strokeWidth={1 / viewport.scale}
             />
           ))}
@@ -1142,7 +1187,7 @@ export function CircuitCanvas(): JSX.Element {
                   y={waypoint.y}
                   radius={3.5 / viewport.scale}
                   fill="#ffc928"
-                  stroke="#040b16"
+                  stroke={handleOutline}
                   strokeWidth={1 / viewport.scale}
                   listening={false}
                 />
@@ -1156,6 +1201,34 @@ export function CircuitCanvas(): JSX.Element {
               />
             </>
           )}
+          {useSimStore.getState().status === 'running' &&
+            useCircuitStore
+              .getState()
+              .document.parts.filter((part) => part.type.startsWith('ultrasonic-'))
+              .map((part) => {
+                const definition = definitionOf(part.type)
+                return (
+                  <Group
+                    key={`range-${part.id}`}
+                    x={part.position.x + definition.size.width / 2}
+                    y={part.position.y + definition.size.height / 2}
+                    rotation={part.rotation}
+                    listening={false}
+                  >
+                    <Wedge
+                      x={0}
+                      y={0}
+                      radius={1500}
+                      angle={30}
+                      rotation={-105}
+                      fill="rgba(255, 201, 40, 0.12)"
+                      stroke="rgba(255, 201, 40, 0.42)"
+                      strokeWidth={1}
+                      listening={false}
+                    />
+                  </Group>
+                )
+              })}
         </Layer>
       </Stage>
     </div>

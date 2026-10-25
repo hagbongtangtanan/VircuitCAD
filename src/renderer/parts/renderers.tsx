@@ -1,7 +1,7 @@
 import type { JSX } from 'react'
 import { Circle, Ellipse, Group, Line, Rect, Shape, Text } from 'react-konva'
 import type { PartInstance } from '../../shared/circuit'
-import { BREADBOARD_COLUMNS, BREADBOARD_LAYOUT, definitionOf } from './definitions'
+import { BREADBOARD_COLUMNS, BREADBOARD_LAYOUT, definitionOf, type PartPin } from './definitions'
 import {
   LED_COLORS,
   PART_BODY_FILL,
@@ -10,6 +10,30 @@ import {
   mixRgbGlow,
 } from './partColors'
 import { resistorBands } from './resistorBands'
+
+function headerStrip(
+  pins: readonly PartPin[],
+  y: number,
+  height: number,
+  fill: string,
+  stroke: string
+): JSX.Element | null {
+  if (pins.length === 0) return null
+  const xs = pins.map((pin) => pin.position.x)
+  const left = Math.min(...xs) - 4
+  const right = Math.max(...xs) + 4
+  return (
+    <Rect
+      x={left}
+      y={y}
+      width={right - left}
+      height={height}
+      cornerRadius={0}
+      fill={fill}
+      stroke={stroke}
+    />
+  )
+}
 
 export interface PartBodyProps {
   readonly part: PartInstance
@@ -90,6 +114,8 @@ function DipPackage({
   )
 }
 
+import { useInteractionStore } from '../store/interactionStore'
+
 export function PartBody({
   part,
   selected,
@@ -104,6 +130,9 @@ export function PartBody({
   const outline = selected ? PART_SELECTED_STROKE : PART_BODY_STROKE
   const outlineWidth = selected ? 2 : 1
   const size = definitionOf(part.type).size
+  const irPressed = useInteractionStore((state) =>
+    part.type === 'ir-remote' ? (state.irKeys[part.id] ?? null) : null
+  )
 
   switch (part.type) {
     case 'led': {
@@ -150,7 +179,7 @@ export function PartBody({
             opacity={0.9}
             listening={false}
           />
-          <Text x={31} y={32} text="+" fontSize={5} fill="#dce8f5" listening={false} />
+          <Text x={5} y={37} text="+" fontSize={5} fill="#dce8f5" listening={false} />
         </>
       )
     }
@@ -656,7 +685,16 @@ export function PartBody({
         </>
       )
 
-    case 'arduino-uno':
+    case 'arduino-uno': {
+      const definition = definitionOf(part.type)
+      const digitalPins = definition.pins.filter((item) => item.position.y === 0)
+      const bottomPins = definition.pins.filter((item) => item.position.y === size.height)
+      const topLeftPins = digitalPins.filter((item) => /^D[0-7]$/.test(item.id))
+      const topRightPins = digitalPins.filter((item) => /^D(?:[89]|1[0-3])$/.test(item.id))
+      const bottomLeftPins = bottomPins.filter((item) =>
+        ['3V3', '5V', 'GND', 'GND2', 'VIN'].includes(item.id)
+      )
+      const bottomRightPins = bottomPins.filter((item) => /^A[0-5]$/.test(item.id))
       return (
         <>
           <Rect
@@ -664,85 +702,255 @@ export function PartBody({
             y={0}
             width={size.width}
             height={size.height}
-            cornerRadius={6}
-            fill="#0f7c92"
+            cornerRadius={8}
+            fill="#0c7f8f"
             stroke={outline}
             strokeWidth={outlineWidth}
           />
-          <Rect x={size.width - 116} y={6} width={100} height={13} rx={2} fill="#18212d" />
-          {Array.from({ length: 10 }, (_unused, index) => (
+          <Rect
+            x={5}
+            y={5}
+            width={size.width - 10}
+            height={size.height - 10}
+            cornerRadius={5}
+            stroke="#0a6673"
+            strokeWidth={1.2}
+          />
+          <Line
+            points={[34, 82, 34, 112, 92, 112]}
+            stroke="#0a6673"
+            strokeWidth={1}
+            opacity={0.7}
+          />
+          <Line
+            points={[96, 150, 96, 174, 150, 174]}
+            stroke="#0a6673"
+            strokeWidth={1}
+            opacity={0.7}
+          />
+          <Line
+            points={[188, 120, 220, 120, 220, 152]}
+            stroke="#0a6673"
+            strokeWidth={1}
+            opacity={0.7}
+          />
+          {[
+            [10, 12],
+            [290, 12],
+            [10, 188],
+            [290, 188],
+          ].map(([x, y]) => (
+            <Circle
+              key={`uno-hole-${x}-${y}`}
+              x={x}
+              y={y}
+              radius={3.8}
+              fill="#063d47"
+              stroke="#d7e7e9"
+              strokeWidth={1}
+            />
+          ))}
+          {headerStrip(topLeftPins, 0, 13, '#0a6673', '#084f59')}
+          {headerStrip(topRightPins, 0, 13, '#0a6673', '#084f59')}
+          {digitalPins.map((item) => (
             <Rect
-              key={`header-top-${index}`}
-              x={size.width - 111 + index * 9.5}
-              y={9}
-              width={5}
-              height={7}
-              rx={1}
-              fill="#d6b45b"
+              key={`uno-top-${item.id}`}
+              x={item.position.x - 3.5}
+              y={2.5}
+              width={7}
+              height={8}
+              cornerRadius={0}
+              fill="#d9b24a"
+              stroke="#6f5418"
+              strokeWidth={0.4}
+            />
+          ))}
+          {headerStrip(bottomLeftPins, 187, 13, '#0a6673', '#084f59')}
+          {headerStrip(bottomRightPins, 187, 13, '#0a6673', '#084f59')}
+          {bottomPins.map((item) => (
+            <Rect
+              key={`uno-bottom-${item.id}`}
+              x={item.position.x - 3.5}
+              y={189.5}
+              width={7}
+              height={8}
+              cornerRadius={0}
+              fill="#d9b24a"
+              stroke="#6f5418"
+              strokeWidth={0.4}
             />
           ))}
           <Rect
-            x={size.width - 116}
-            y={size.height - 19}
-            width={100}
-            height={13}
-            rx={2}
-            fill="#18212d"
+            x={0}
+            y={38}
+            width={44}
+            height={36}
+            cornerRadius={2}
+            fill="#c9d3dd"
+            stroke="#6b7683"
           />
-          {Array.from({ length: 10 }, (_unused, index) => (
-            <Rect
-              key={`header-bottom-${index}`}
-              x={size.width - 111 + index * 9.5}
-              y={size.height - 16}
-              width={5}
-              height={7}
-              rx={1}
-              fill="#d6b45b"
-            />
-          ))}
+          <Rect x={3} y={43} width={30} height={26} rx={1} fill="#aeb8c3" />
+          <Rect x={0} y={48} width={9} height={16} rx={1} fill="#151a20" />
+          <Line points={[9, 44, 9, 68]} stroke="#eef4fa" strokeWidth={1.2} opacity={0.8} />
           <Rect
-            x={18}
-            y={70}
-            width={34}
-            height={44}
+            x={0}
+            y={118}
+            width={38}
+            height={42}
             cornerRadius={3}
-            fill="#c9ced8"
-            stroke="#7e8da0"
+            fill="#151a20"
+            stroke="#070a0d"
           />
-          <Rect x={22} y={74} width={26} height={36} rx={1} fill="#1b2836" />
+          <Circle x={11} y={139} radius={9} fill="#2a313a" stroke="#4d657d" />
+          <Circle x={11} y={139} radius={4} fill="#080b0e" />
+          <Circle x={58} y={44} radius={8} fill="#c9d3dd" stroke="#6b7683" />
+          <Circle x={58} y={44} radius={4.5} fill="#8f9aa6" />
           <Rect
-            x={18}
-            y={132}
-            width={34}
-            height={32}
-            cornerRadius={3}
-            fill="#11131a"
-            stroke="#3f5065"
-          />
-          <Rect
-            x={70}
-            y={70}
-            width={56}
-            height={56}
+            x={118}
+            y={58}
+            width={64}
+            height={84}
             cornerRadius={4}
-            fill="#1b1f29"
-            stroke="#3f5065"
+            fill="#171b20"
+            stroke="#070a0d"
           />
-          <Rect
-            x={size.width - 22}
-            y={54}
-            width={18}
-            height={18}
-            rx={5}
-            fill="#1c2836"
-            stroke="#4d657d"
+          <Rect x={124} y={64} width={52} height={72} rx={2} fill="#20262e" />
+          <Circle x={150} y={58} radius={4} fill="#0a0d11" />
+          <Circle x={124} y={64} radius={1.6} fill="#dce8f2" />
+          {Array.from({ length: 14 }, (_unused, index) => (
+            <Rect
+              key={`uno-chip-left-${index}`}
+              x={112}
+              y={62 + index * 5.7}
+              width={7}
+              height={3}
+              fill="#c9d3dd"
+            />
+          ))}
+          {Array.from({ length: 14 }, (_unused, index) => (
+            <Rect
+              key={`uno-chip-right-${index}`}
+              x={181}
+              y={62 + index * 5.7}
+              width={7}
+              height={3}
+              fill="#c9d3dd"
+            />
+          ))}
+          <Text
+            x={128}
+            y={96}
+            width={44}
+            text="ATmega328P"
+            align="center"
+            fontSize={5.5}
+            fill="#dce8f2"
+            fontFamily="monospace"
           />
-          <Circle x={size.width - 13} y={63} radius={4} fill="#c9ced8" />
-          <Text x={150} y={95} text="UNO R3" fontSize={18} fill="#e6e9f0" fontStyle="bold" />
-          <Text x={22} y={128} text="DIGITAL" fontSize={5.5} fill="#bfe7ef" />
-          <Text x={size.width - 108} y={27} text="POWER" fontSize={5.5} fill="#bfe7ef" />
+          <Text
+            x={132}
+            y={108}
+            width={36}
+            text="DIP-28"
+            align="center"
+            fontSize={5}
+            fill="#9fb4c8"
+            fontFamily="monospace"
+          />
+          <Ellipse x={212} y={104} radiusX={12} radiusY={7} fill="#c9d3dd" stroke="#6b7683" />
+          <Text
+            x={200}
+            y={116}
+            width={24}
+            text="16MHz"
+            align="center"
+            fontSize={4.5}
+            fill="#233246"
+            fontFamily="monospace"
+          />
+          <Rect x={48} y={124} width={22} height={30} cornerRadius={2} fill="#171b20" />
+          <Rect x={52} y={120} width={14} height={6} fill="#c9d3dd" />
+          <Rect x={52} y={130} width={14} height={20} fill="#2a313a" />
+          <Circle x={54} y={96} radius={6} fill="#1b2836" stroke="#4d657d" />
+          <Circle x={72} y={96} radius={6} fill="#1b2836" stroke="#4d657d" />
+          <Rect x={210} y={52} width={26} height={18} cornerRadius={2} fill="#151a20" />
+          {Array.from({ length: 6 }, (_unused, index) => (
+            <Rect
+              key={`uno-icsp-${index}`}
+              x={214 + (index % 3) * 7}
+              y={55 + Math.floor(index / 3) * 7}
+              width={4}
+              height={4}
+              cornerRadius={0}
+              fill="#d9b24a"
+            />
+          ))}
+          <Text
+            x={212}
+            y={76}
+            width={24}
+            text="ICSP"
+            align="center"
+            fontSize={4.5}
+            fill="#d7f1f4"
+            fontFamily="monospace"
+          />
+          <Circle x={44} y={82} radius={2.5} fill="#4ade80" />
+          <Circle x={248} y={24} radius={2.2} fill="#fbbf24" />
+          <Circle x={262} y={24} radius={2.2} fill="#fbbf24" />
+          <Text x={240} y={31} text="TX" fontSize={4} fill="#d7f1f4" fontFamily="monospace" />
+          <Text x={256} y={31} text="RX" fontSize={4} fill="#d7f1f4" fontFamily="monospace" />
+          <Text
+            x={20}
+            y={34}
+            text="DIGITAL (PWM~)"
+            fontSize={6}
+            fill="#d7f1f4"
+            fontFamily="monospace"
+          />
+          <Text x={20} y={166} text="POWER" fontSize={5.5} fill="#d7f1f4" fontFamily="monospace" />
+          <Text
+            x={188}
+            y={166}
+            text="ANALOG IN"
+            fontSize={5.5}
+            fill="#d7f1f4"
+            fontFamily="monospace"
+          />
+          <Text
+            x={84}
+            y={42}
+            width={60}
+            text="ARDUINO"
+            align="center"
+            fontSize={8.5}
+            fill="#f4fbfc"
+            fontStyle="bold"
+            fontFamily="monospace"
+          />
+          <Text
+            x={84}
+            y={51}
+            width={48}
+            text="UNO R3"
+            align="center"
+            fontSize={6.5}
+            fill="#f4fbfc"
+            fontFamily="monospace"
+          />
+          <Text
+            x={48}
+            y={56}
+            width={20}
+            text="RESET"
+            align="center"
+            fontSize={4}
+            fill="#d7f1f4"
+            fontFamily="monospace"
+          />
         </>
       )
+    }
 
     case 'breadboard': {
       const { size: boardSize, rails, halves, firstColumnX, columnPitch } = BREADBOARD_LAYOUT
@@ -1517,34 +1725,82 @@ export function PartBody({
       )
     }
 
-    case 'ir-remote':
+    case 'ir-remote': {
+      const LABELS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#']
       return (
         <>
           <Rect
-            x={5}
+            x={4}
             y={2}
-            width={34}
-            height={84}
-            cornerRadius={8}
-            fill="#232833"
+            width={88}
+            height={166}
+            cornerRadius={12}
+            fill="#202630"
             stroke={outline}
           />
-          <Circle x={22} y={13} radius={6} fill="#c44b4b" />
-          {Array.from({ length: 12 }, (_unused, index) => (
-            <Rect
-              key={index}
-              x={11 + (index % 2) * 15}
-              y={27 + Math.floor(index / 2) * 9}
-              width={9}
-              height={6}
-              cornerRadius={2}
-              fill="#9aa3b3"
-            />
-          ))}
-          <Text x={13} y={77} text="IR" fontSize={7} fill="#e2e8f0" />
+          <Rect
+            x={30}
+            y={10}
+            width={36}
+            height={12}
+            cornerRadius={6}
+            fill={irPressed === 0 ? '#ff6b66' : '#c44b4b'}
+            cursor="pointer"
+            onPointerDown={(event) => {
+              event.cancelBubble = true
+              useInteractionStore.getState().setIrKey(part.id, 0)
+            }}
+            onPointerUp={(event) => {
+              event.cancelBubble = true
+              useInteractionStore.getState().setIrKey(part.id, null)
+            }}
+            onPointerLeave={() => {
+              useInteractionStore.getState().setIrKey(part.id, null)
+            }}
+          />
+          <Text x={44} y={11} text="Power" fontSize={7} fill="#f8fafc" listening={false} />
+          <Text x={10} y={22} text="IR" fontSize={9} fill="#f8fafc" listening={false} />
+          {LABELS.map((label, index) => {
+            const column = index % 3
+            const row = Math.floor(index / 3)
+            return (
+              <g key={index}>
+                <Rect
+                  x={8 + column * 28}
+                  y={44 + row * 28}
+                  width={24}
+                  height={24}
+                  cornerRadius={6}
+                  fill={irPressed === index + 1 ? '#ffc928' : '#d3dae6'}
+                  stroke="#8b95a7"
+                  cursor="pointer"
+                  onPointerDown={(event) => {
+                    event.cancelBubble = true
+                    useInteractionStore.getState().setIrKey(part.id, index + 1)
+                  }}
+                  onPointerUp={(event) => {
+                    event.cancelBubble = true
+                    useInteractionStore.getState().setIrKey(part.id, null)
+                  }}
+                  onPointerLeave={() => {
+                    useInteractionStore.getState().setIrKey(part.id, null)
+                  }}
+                />
+                <Text
+                  x={16 + column * 28}
+                  y={50 + row * 28}
+                  text={label}
+                  fontSize={11}
+                  fill="#111827"
+                  fontStyle="bold"
+                  listening={false}
+                />
+              </g>
+            )
+          })}
         </>
       )
-
+    }
     case 'encoder-motor':
       return (
         <>
@@ -1703,114 +1959,244 @@ export function PartBody({
       return (
         <>
           <Rect
-            x={2}
-            y={26}
-            width={size.width - 4}
-            height={size.height - 30}
-            cornerRadius={8}
+            x={0}
+            y={0}
+            width={size.width}
+            height={size.height}
+            cornerRadius={10}
             fill="#2f7d4f"
             stroke={outline}
             strokeWidth={outlineWidth}
           />
           <Rect
+            x={5}
+            y={5}
+            width={size.width - 10}
+            height={size.height - 10}
+            cornerRadius={7}
+            stroke="#286b43"
+            strokeWidth={1.2}
+          />
+          <Rect
             x={38}
             y={0}
             width={508}
-            height={26}
-            cornerRadius={3}
-            fill="#171b20"
-            stroke="#080b0e"
+            height={34}
+            cornerRadius={0}
+            fill="#276b43"
+            stroke="#1f5736"
           />
           {definition.pins.map((item) => (
             <Rect
               key={`pi-pin-${item.id}`}
-              x={item.position.x - 3}
-              y={item.position.y - 3}
-              width={6}
-              height={6}
-              cornerRadius={1}
+              x={item.position.x - 4}
+              y={item.position.y - 4}
+              width={8}
+              height={8}
+              cornerRadius={0}
               fill="#d9b24a"
               stroke="#6f5418"
               strokeWidth={0.5}
             />
           ))}
+          <Rect x={38} y={0} width={14} height={14} fill="#f4fbfc" opacity={0.28} />
+          <Text
+            x={44}
+            y={38}
+            text="40-PIN GPIO"
+            fontSize={6}
+            fill="#dff3e7"
+            fontFamily="monospace"
+          />
+          {[
+            [14, 36],
+            [546, 36],
+            [14, 206],
+            [546, 206],
+          ].map(([x, y]) => (
+            <Circle
+              key={`pi-hole-${x}-${y}`}
+              x={x}
+              y={y}
+              radius={4}
+              fill="#1f5c38"
+              stroke="#c9d3dd"
+              strokeWidth={1}
+            />
+          ))}
           <Rect
-            x={6}
-            y={54}
-            width={28}
+            x={0}
+            y={36}
+            width={30}
             height={20}
+            cornerRadius={4}
+            fill="#c9d3dd"
+            stroke="#6b7683"
+          />
+          <Rect x={5} y={40} width={12} height={12} rx={3} fill="#151a20" />
+          <Text x={34} y={50} text="USB-C" fontSize={5} fill="#dff3e7" fontFamily="monospace" />
+          <Rect
+            x={0}
+            y={64}
+            width={32}
+            height={18}
             cornerRadius={2}
             fill="#c9d3dd"
             stroke="#6b7683"
           />
+          <Rect x={4} y={68} width={14} height={10} fill="#151a20" />
+          <Text x={36} y={76} text="HDMI0" fontSize={5} fill="#dff3e7" fontFamily="monospace" />
           <Rect
-            x={6}
-            y={82}
-            width={28}
-            height={20}
+            x={0}
+            y={88}
+            width={32}
+            height={18}
             cornerRadius={2}
             fill="#c9d3dd"
             stroke="#6b7683"
           />
+          <Rect x={4} y={92} width={14} height={10} fill="#151a20" />
+          <Text x={36} y={100} text="HDMI1" fontSize={5} fill="#dff3e7" fontFamily="monospace" />
           <Rect
-            x={4}
+            x={0}
             y={116}
-            width={34}
-            height={28}
-            cornerRadius={2}
-            fill="#aeb8c3"
-            stroke="#6b7683"
-          />
-          <Rect
-            x={210}
-            y={78}
-            width={68}
-            height={54}
-            cornerRadius={2}
-            fill="#161a1f"
-            stroke="#070a0d"
-          />
-          <Text x={222} y={108} text="BCM2711" fontSize={9} fill="#dce8f2" fontFamily="monospace" />
-          <Rect
-            x={222}
-            y={146}
-            width={44}
-            height={22}
-            cornerRadius={2}
-            fill="#1b2027"
+            width={32}
+            height={32}
+            cornerRadius={4}
+            fill="#171b20"
             stroke="#080b0e"
           />
-          <Text x={228} y={161} text="RAM" fontSize={7} fill="#9fb4c8" fontFamily="monospace" />
+          <Circle x={11} y={132} radius={8} fill="#2a313a" stroke="#4d657d" />
+          <Circle x={11} y={132} radius={3.5} fill="#080b0e" />
+          <Text x={36} y={134} text="AUDIO" fontSize={5} fill="#dff3e7" fontFamily="monospace" />
           <Rect
-            x={404}
-            y={142}
-            width={46}
-            height={28}
+            x={526}
+            y={42}
+            width={34}
+            height={58}
+            cornerRadius={3}
+            fill="#c9d3dd"
+            stroke="#6b7683"
+          />
+          <Rect x={530} y={48} width={20} height={46} fill="#151a20" />
+          <Text x={484} y={68} text="ETH" fontSize={5} fill="#dff3e7" fontFamily="monospace" />
+          <Rect
+            x={526}
+            y={108}
+            width={34}
+            height={36}
+            cornerRadius={3}
+            fill="#c9d3dd"
+            stroke="#6b7683"
+          />
+          <Rect x={530} y={112} width={20} height={12} fill="#151a20" />
+          <Rect x={530} y={128} width={20} height={12} fill="#151a20" />
+          <Text x={484} y={128} text="USB3" fontSize={5} fill="#dff3e7" fontFamily="monospace" />
+          <Rect
+            x={526}
+            y={150}
+            width={34}
+            height={36}
+            cornerRadius={3}
+            fill="#c9d3dd"
+            stroke="#6b7683"
+          />
+          <Rect x={530} y={154} width={20} height={12} fill="#151a20" />
+          <Rect x={530} y={170} width={20} height={12} fill="#151a20" />
+          <Text x={484} y={170} text="USB2" fontSize={5} fill="#dff3e7" fontFamily="monospace" />
+          <Rect
+            x={220}
+            y={204}
+            width={64}
+            height={16}
             cornerRadius={2}
             fill="#c9d3dd"
             stroke="#6b7683"
           />
-          <Rect x={412} y={150} width={30} height={12} fill="#1a1e24" />
+          <Rect x={224} y={208} width={56} height={8} fill="#151a20" />
+          <Text x={222} y={200} text="microSD" fontSize={5} fill="#dff3e7" fontFamily="monospace" />
           <Rect
-            x={246}
-            y={198}
-            width={30}
-            height={12}
-            cornerRadius={2}
+            x={250}
+            y={72}
+            width={80}
+            height={68}
+            cornerRadius={3}
+            fill="#171b20"
+            stroke="#070a0d"
+          />
+          <Rect x={270} y={88} width={40} height={36} rx={2} fill="#8f9aa6" stroke="#c9d3dd" />
+          <Text x={260} y={132} text="BCM2711" fontSize={6} fill="#dce8f2" fontFamily="monospace" />
+          <Rect x={80} y={42} width={34} height={26} cornerRadius={2} fill="#171b20" />
+          <Text x={86} y={58} text="PMIC" fontSize={5} fill="#9fb4c8" fontFamily="monospace" />
+          <Rect
+            x={90}
+            y={148}
+            width={92}
+            height={52}
+            cornerRadius={3}
             fill="#c9d3dd"
             stroke="#6b7683"
           />
-          <Circle x={16} y={36} radius={3} fill="#0d2d1d" />
-          <Circle x={544} y={40} radius={3} fill="#0d2d1d" />
-          <Circle x={16} y={204} radius={3} fill="#0d2d1d" />
-          <Circle x={544} y={204} radius={3} fill="#0d2d1d" />
+          <Rect x={95} y={153} width={82} height={42} rx={2} fill="#b8c2cc" />
+          <Line points={[96, 158, 96, 190]} stroke="#8f9aa6" strokeWidth={1} />
+          <Line points={[100, 158, 100, 190]} stroke="#8f9aa6" strokeWidth={1} />
+          <Text x={112} y={174} text="Wi-Fi" fontSize={7} fill="#233246" fontStyle="bold" />
           <Text
-            x={360}
-            y={210}
+            x={102}
+            y={184}
+            text="BCM43455"
+            fontSize={4.5}
+            fill="#4d5b6b"
+            fontFamily="monospace"
+          />
+          <Rect x={430} y={52} width={48} height={44} cornerRadius={2} fill="#171b20" />
+          <Text x={442} y={76} text="LAN" fontSize={6} fill="#9fb4c8" fontFamily="monospace" />
+          <Rect x={430} y={116} width={48} height={44} cornerRadius={2} fill="#171b20" />
+          <Text x={442} y={140} text="USB" fontSize={6} fill="#9fb4c8" fontFamily="monospace" />
+          <Rect
+            x={300}
+            y={36}
+            width={42}
+            height={10}
+            cornerRadius={1}
+            fill="#e9eef3"
+            stroke="#8f9aa6"
+          />
+          <Rect
+            x={352}
+            y={36}
+            width={42}
+            height={10}
+            cornerRadius={1}
+            fill="#e9eef3"
+            stroke="#8f9aa6"
+          />
+          <Text x={306} y={44} text="CAM" fontSize={4} fill="#233246" fontFamily="monospace" />
+          <Text x={358} y={44} text="DSI" fontSize={4} fill="#233246" fontFamily="monospace" />
+          <Ellipse x={210} y={160} radiusX={14} radiusY={7} fill="#c9d3dd" stroke="#6b7683" />
+          <Circle x={200} y={60} radius={5} fill="#1b2836" stroke="#4d657d" />
+          <Circle x={218} y={60} radius={5} fill="#1b2836" stroke="#4d657d" />
+          <Text
+            x={330}
+            y={198}
             text="Raspberry Pi 4"
             fontSize={10}
             fill="#eaf4ee"
             fontFamily="monospace"
+          />
+          <Text x={330} y={210} text="Model B" fontSize={6} fill="#c9e6d5" fontFamily="monospace" />
+          <Line points={[74, 56, 80, 56, 80, 80]} stroke="#286b43" strokeWidth={1} opacity={0.8} />
+          <Line
+            points={[190, 50, 230, 50, 230, 72]}
+            stroke="#286b43"
+            strokeWidth={1}
+            opacity={0.8}
+          />
+          <Line
+            points={[360, 140, 360, 170, 400, 170]}
+            stroke="#286b43"
+            strokeWidth={1}
+            opacity={0.8}
           />
         </>
       )

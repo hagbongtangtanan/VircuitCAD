@@ -5,16 +5,19 @@ import {
   createProject,
   fileBaseName,
   fileStem,
+  parseProjectText,
   sampleLabel,
   type OpenFileResult,
   type SampleEntry,
 } from '../../shared/project'
+import type { StarterDefinition } from '../../starters/catalog'
 import { captureActiveSchematicPdf } from '../export/pdfCapture'
 import { captureActiveViewPng } from '../export/pngCapture'
 import { useSerialStore } from '../serial/serialStore'
 import { useCircuitStore } from './circuitStore'
 import { useNotificationStore } from './notificationStore'
 import { useSimStore } from './simStore'
+import { useViewportStore } from './viewportStore'
 import { DEFAULT_SKETCH, useSketchStore } from './sketchStore'
 
 export interface ProjectStore {
@@ -25,6 +28,8 @@ export interface ProjectStore {
   readonly busy: boolean
   readonly error: string | null
   readonly samples: readonly SampleEntry[]
+  /** Creation timestamp stored in the project metadata header. */
+  readonly createdAt: string | null
 
   open(): Promise<void>
   /** Loads a project/sketch passed to the app by the OS. */
@@ -34,6 +39,8 @@ export interface ProjectStore {
   reportError(message: string): void
   loadSamples(): Promise<void>
   openSample(name: string): Promise<void>
+  /** Loads a bundled starter without touching the filesystem. */
+  loadStarter(starter: StarterDefinition): void
   newProject(): void
   rename(name: string): void
   save(): Promise<void>
@@ -56,6 +63,10 @@ function errorMessage(error: unknown): string {
   return raw.replace(/^Error invoking remote method '[^']+': (Error: )?/, '')
 }
 
+function currentAppVersion(): string {
+  return typeof __APP_VERSION__ === 'string' ? __APP_VERSION__ : '0.0.0'
+}
+
 export function updateWindowTitle(name: string, dirty: boolean): void {
   if (typeof document === 'undefined') return
   document.title = `${dirty ? '• ' : ''}${name} — ${APP_NAME}`
@@ -75,14 +86,25 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       useCircuitStore.getState().replaceDocument(opened.project.circuit)
       useSketchStore.getState().setSource(opened.project.sketch)
       useSketchStore.getState().clearBuild()
-      set({ path: opened.path })
+      if ('viewport' in opened.project) {
+        useViewportStore.getState().setViewport(opened.project.viewport)
+      } else {
+        useViewportStore.getState().fitToContent()
+      }
+      set({
+        path: opened.path,
+        createdAt:
+          'metadata' in opened.project
+            ? opened.project.metadata.created_at
+            : new Date().toISOString(),
+      })
       const name = normalizeProjectName(label ?? opened.project.name ?? fileStem(opened.path))
       markSaved(name)
       notify('success', 'Project opened', name)
     } else {
       useSketchStore.getState().setSource(opened.sketch)
       useSketchStore.getState().clearBuild()
-      set({ path: null })
+      set({ path: null, createdAt: new Date().toISOString() })
       const name = normalizeProjectName(label ?? fileStem(opened.path))
       markSaved(name)
       notify('success', 'Sketch opened', name)
@@ -95,6 +117,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     useCircuitStore.getState().replaceDocument(emptyCircuitDocument())
     useSketchStore.getState().setSource(DEFAULT_SKETCH)
     useSketchStore.getState().clearBuild()
+    useViewportStore.getState().reset()
   }
 
   function notify(
@@ -123,6 +146,7 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     busy: false,
     error: null,
     samples: [],
+    createdAt: null,
 
     async open(): Promise<void> {
       if (get().busy) return
@@ -189,9 +213,21 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       }
     },
 
+    loadStarter(starter: StarterDefinition): void {
+      if (get().busy) return
+      try {
+        const project = parseProjectText(starter.projectText)
+        applyOpened({ kind: 'project', path: `${starter.id}.vcc`, project }, starter.title)
+        // Starters are templates: Save asks for a new location.
+        set({ path: null, error: null })
+      } catch (error) {
+        fail('Could not load starter', error)
+      }
+    },
+
     newProject(): void {
       resetAll()
-      set({ path: null, error: null })
+      set({ path: null, error: null, createdAt: new Date().toISOString() })
       markSaved(DEFAULT_PROJECT_NAME)
     },
 
@@ -208,15 +244,19 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
       set({ busy: true, error: null })
       try {
         const name = get().name
+        const createdAt = get().createdAt ?? new Date().toISOString()
         const project = createProject({
           name,
           circuit: useCircuitStore.getState().document,
           sketch: useSketchStore.getState().source,
+          createdAt,
+          appVersion: currentAppVersion(),
+          viewport: useViewportStore.getState().viewport,
         })
         const saved = await window.api.saveProject({ project, path: get().path })
         if (saved === null) return
 
-        set({ path: saved.path })
+        set({ path: saved.path, createdAt })
         markSaved(name)
         set({ error: null })
         notify('success', 'Project saved', `Saved as ${fileBaseName(saved.path)}`)

@@ -1,0 +1,106 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "us1",
+        "type": "ultrasonic-hcsr04",
+        "position": {
+          "x": 500,
+          "y": 160
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "obs1",
+        "type": "resistor",
+        "position": {
+          "x": 400,
+          "y": 40
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "us1",
+          "pinId": "vcc"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "us1",
+          "pinId": "gnd"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D9"
+        },
+        "to": {
+          "partId": "us1",
+          "pinId": "trig"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "uno",
+          "pinId": "D10"
+        },
+        "to": {
+          "partId": "us1",
+          "pinId": "echo"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// HC-SR04 Ultrasonic: VCC -> 5V, GND -> GND, TRIG -> D9, ECHO -> D10\nconst int trigPin = 9;\nconst int echoPin = 10;\n\nvoid setup() {\n  pinMode(trigPin, OUTPUT);\n  pinMode(echoPin, INPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(trigPin, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trigPin, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trigPin, LOW);\n\n  long duration = pulseInLong(echoPin, HIGH);\n  float distance = duration * 0.034 / 2.0;\n\n  Serial.print(\"Distance: \");\n  Serial.print(distance);\n  Serial.println(\" cm\");\n  delay(500);\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Measure distance with ultrasonic"
+}

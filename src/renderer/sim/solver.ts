@@ -33,8 +33,10 @@ export interface SolveOptions {
   readonly switchStates?: ReadonlyMap<string, boolean>
   /** Photosensor and other analog sensor levels, normalised 0 to 1. */
   readonly sensorLevels?: ReadonlyMap<string, number>
-  /** Per-bit state for DIP switch banks, index 0 is the first switch. */
+  /** Pressed matrix-keypad key index, row-major from 0 to 15. */
   readonly dipBits?: ReadonlyMap<string, readonly boolean[]>
+  /** Selected IR remote key index (0-4) per remote part id. */
+  readonly irKeys?: ReadonlyMap<string, number | null>
   /** Pressed matrix-keypad key index, row-major from 0 to 15. */
   readonly keypadKeys?: ReadonlyMap<string, number>
 }

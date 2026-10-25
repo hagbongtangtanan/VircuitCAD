@@ -1,0 +1,169 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "rgb1",
+        "type": "rgb-led",
+        "position": {
+          "x": 500,
+          "y": 160
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "r1",
+        "type": "resistor",
+        "position": {
+          "x": 550,
+          "y": 80
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "r2",
+        "type": "resistor",
+        "position": {
+          "x": 570,
+          "y": 80
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "r3",
+        "type": "resistor",
+        "position": {
+          "x": 590,
+          "y": 80
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D9"
+        },
+        "to": {
+          "partId": "r1",
+          "pinId": "lead1"
+        },
+        "color": "#ff4444",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "r1",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "rgb1",
+          "pinId": "red"
+        },
+        "color": "#ff4444",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D10"
+        },
+        "to": {
+          "partId": "r2",
+          "pinId": "lead1"
+        },
+        "color": "#44ff44",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "r2",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "rgb1",
+          "pinId": "green"
+        },
+        "color": "#44ff44",
+        "waypoints": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "uno",
+          "pinId": "D11"
+        },
+        "to": {
+          "partId": "r3",
+          "pinId": "lead1"
+        },
+        "color": "#4444ff",
+        "waypoints": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "r3",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "rgb1",
+          "pinId": "blue"
+        },
+        "color": "#4444ff",
+        "waypoints": []
+      },
+      {
+        "id": "w7",
+        "from": {
+          "partId": "rgb1",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// RGB LED (common cathode): R -> D9 (220Ω), G -> D10 (220Ω), B -> D11 (220Ω), K -> GND\nconst int redPin = 9;\nconst int greenPin = 10;\nconst int bluePin = 11;\n\nvoid setup() {\n  pinMode(redPin, OUTPUT);\n  pinMode(greenPin, OUTPUT);\n  pinMode(bluePin, OUTPUT);\n}\n\nvoid setColor(int r, int g, int b) {\n  analogWrite(redPin, r);\n  analogWrite(greenPin, g);\n  analogWrite(bluePin, b);\n}\n\nvoid loop() {\n  setColor(255, 0, 0); delay(500);   // Red\n  setColor(0, 255, 0); delay(500);   // Green\n  setColor(0, 0, 255); delay(500);   // Blue\n  setColor(255, 255, 0); delay(500); // Yellow\n  setColor(0, 255, 255); delay(500); // Cyan\n  setColor(255, 0, 255); delay(500); // Magenta\n  setColor(255, 255, 255); delay(500); // White\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Control RGB LED colors"
+}

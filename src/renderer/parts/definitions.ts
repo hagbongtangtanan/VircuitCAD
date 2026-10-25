@@ -46,6 +46,10 @@ export interface PartDefinition<Type extends PartType = PartType> {
   readonly pins: readonly PartPin[]
   /** Widens the measured label box for unusually dense headers. */
   readonly pinLabelCharWidthFactor?: number
+  /** Draws header pins as square pads instead of generic round terminals. */
+  readonly pinStyle?: 'header'
+  /** Extra inward offset for printed header labels, clear of the plastic strip. */
+  readonly pinLabelInset?: number
   /**
    * Pin groups that are connected inside the part itself and must therefore end
    * up in the same net (breadboard strips and rails, switch contacts, ...).
@@ -305,55 +309,36 @@ export const powerSupplyDefinition: PartDefinition<'power-supply'> = {
 /** Uno R3 pins wired to a timer output; the board prints them with a leading ~. */
 const UNO_PWM_PINS = new Set(['D3', 'D5', 'D6', 'D9', 'D10', 'D11'])
 
-const UNO_DIGITAL_PINS = [
-  'D13',
-  'D12',
-  'D11',
-  'D10',
-  'D9',
-  'D8',
-  'D7',
-  'D6',
-  'D5',
-  'D4',
-  'D3',
-  'D2',
-  'D1',
-  'D0',
-] as const
+const UNO_DIGITAL_LEFT_PINS = ['D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'] as const
 
-const UNO_POWER_ANALOG_PINS: readonly { id: string; kind: PinKind }[] = [
-  { id: 'VIN', kind: 'power' },
+const UNO_DIGITAL_RIGHT_PINS = ['D8', 'D9', 'D10', 'D11', 'D12', 'D13'] as const
+
+const UNO_POWER_PINS: readonly { id: string; kind: PinKind }[] = [
   { id: '3V3', kind: 'power' },
   { id: '5V', kind: 'power' },
   { id: 'GND', kind: 'ground' },
   { id: 'GND2', kind: 'ground' },
-  { id: 'A0', kind: 'analog' },
-  { id: 'A1', kind: 'analog' },
-  { id: 'A2', kind: 'analog' },
-  { id: 'A3', kind: 'analog' },
-  { id: 'A4', kind: 'analog' },
-  { id: 'A5', kind: 'analog' },
+  { id: 'VIN', kind: 'power' },
 ]
 
+const UNO_ANALOG_PINS = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5'] as const
+
 function buildUnoPins(): readonly PartPin[] {
-  const digital = UNO_DIGITAL_PINS.map((id, index) =>
-    pin(
-      id,
-      `${UNO_PWM_PINS.has(id) ? '~' : ''}${id.replace('D', '')}`,
-      {
-        x: 20 + index * 20,
-        y: 0,
-      },
-      'digital'
-    )
+  const labelFor = (id: string): string =>
+    `${UNO_PWM_PINS.has(id) ? '~' : ''}${id.replace('D', '')}`
+  const digitalLeft = UNO_DIGITAL_LEFT_PINS.map((id, index) =>
+    pin(id, labelFor(id), { x: 18 + index * 20, y: 0 }, 'digital')
   )
-
-  const powerAndAnalog = UNO_POWER_ANALOG_PINS.map((entry, index) =>
-    pin(entry.id, entry.id.replace('GND2', 'GND'), { x: 20 + index * 20, y: 200 }, entry.kind)
+  const digitalRight = UNO_DIGITAL_RIGHT_PINS.map((id, index) =>
+    pin(id, labelFor(id), { x: 178 + index * 20, y: 0 }, 'digital')
   )
-
-  return [...digital, ...powerAndAnalog]
+  const power = UNO_POWER_PINS.map((entry, index) =>
+    pin(entry.id, entry.id.replace('GND2', 'GND'), { x: 18 + index * 20, y: 200 }, entry.kind)
+  )
+  const analog = UNO_ANALOG_PINS.map((id, index) =>
+    pin(id, id, { x: 178 + index * 20, y: 200 }, 'analog')
+  )
+  return [...digitalLeft, ...digitalRight, ...power, ...analog]
 }
 
 export const arduinoUnoDefinition: PartDefinition<'arduino-uno'> = {
@@ -363,6 +348,8 @@ export const arduinoUnoDefinition: PartDefinition<'arduino-uno'> = {
   size: { width: 300, height: 200 },
   defaultProps: {},
   pins: buildUnoPins(),
+  pinStyle: 'header',
+  pinLabelInset: 9,
   propFields: [],
 }
 
@@ -420,9 +407,9 @@ const RASPBERRY_PI_HEADER_PINS = [
 }[]
 
 const RASPBERRY_PI_HEADER_X = 44
-const RASPBERRY_PI_HEADER_Y = 0
+const RASPBERRY_PI_HEADER_Y = 4
 const RASPBERRY_PI_HEADER_PITCH = 26
-const RASPBERRY_PI_HEADER_ROW_PITCH = 16
+const RASPBERRY_PI_HEADER_ROW_PITCH = 26
 
 function buildRaspberryPiPins(): readonly PartPin[] {
   return RASPBERRY_PI_HEADER_PINS.map((entry) => {
@@ -452,6 +439,7 @@ export const raspberryPiDefinition: PartDefinition<'raspberry-pi'> = {
   size: { width: 560, height: 220 },
   defaultProps: {},
   pins: buildRaspberryPiPins(),
+  pinStyle: 'header',
   pinLabelCharWidthFactor: 0.78,
   internalNets: raspberryPiInternalNets(),
   propFields: [],
@@ -1173,7 +1161,7 @@ export const irRemoteDefinition = genericPart(
   'ir-remote',
   'IR Remote',
   'inputs',
-  { width: 44, height: 90 },
+  { width: 96, height: 170 },
   []
 )
 
@@ -1228,12 +1216,12 @@ export const lcd16x2I2cDefinition = genericPart(
   'lcd-16x2-i2c',
   'LCD 16x2 I2C',
   'outputs',
-  { width: 100, height: 64 },
+  { width: 120, height: 90 },
   [
-    pin('gnd', 'GND', { x: 12, y: 64 }, 'ground'),
-    pin('vcc', 'VCC', { x: 34, y: 64 }, 'power'),
-    pin('sda', 'SDA', { x: 56, y: 64 }, 'digital'),
-    pin('scl', 'SCL', { x: 78, y: 64 }, 'digital'),
+    pin('gnd', 'GND', { x: 15, y: 90 }, 'ground'),
+    pin('vcc', 'VCC', { x: 40, y: 90 }, 'power'),
+    pin('sda', 'SDA', { x: 65, y: 90 }, 'digital'),
+    pin('scl', 'SCL', { x: 90, y: 90 }, 'digital'),
   ]
 )
 

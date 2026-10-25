@@ -1,0 +1,84 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "np1",
+        "type": "neopixel-strip",
+        "position": {
+          "x": 500,
+          "y": 160
+        },
+        "rotation": 0,
+        "props": {
+          "pixelCount": 8,
+          "color": "green"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "np1",
+          "pinId": "vdd"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "np1",
+          "pinId": "gnd"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D6"
+        },
+        "to": {
+          "partId": "np1",
+          "pinId": "din"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// NeoPixel Strip (bit-bang): VDD -> 5V, GND -> GND, DIN -> D6\n// WS2812 timing without Adafruit_NeoPixel library\n#define PIN 6\n#define NUMPIXELS 8\n\nvoid sendBit(bool bitVal) {\n  if (bitVal) {\n    PORTD |= (1 << PIN);\n    __asm__ volatile (\n      \"nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t\"\n      \"nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t\"\n      \"nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t nop\\n\\t\"\n    );\n    PORTD &= ~(1 << PIN);\n  } else {\n    PORTD |= (1 << PIN);\n    __asm__ volatile (\"nop\\n\\t nop\\n\\t nop\\n\\t\");\n    PORTD &= ~(1 << PIN);\n  }\n}\n\nvoid sendByte(uint8_t b) {\n  for (int i = 7; i >= 0; i--) sendBit(b & (1 << i));\n}\n\nvoid setPixel(uint8_t r, uint8_t g, uint8_t b) {\n  sendByte(g); sendByte(r); sendByte(b);\n}\n\nvoid show() {\n  PORTD &= ~(1 << PIN);\n  delayMicroseconds(50);\n}\n\nvoid setup() {\n  pinMode(PIN, OUTPUT);\n  digitalWrite(PIN, LOW);\n}\n\nvoid loop() {\n  for (int i = 0; i < NUMPIXELS; i++) {\n    setPixel(0, 150, 0);\n    show();\n    delay(100);\n    setPixel(0, 0, 0);\n    show();\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Control NeoPixel LED strip"
+}

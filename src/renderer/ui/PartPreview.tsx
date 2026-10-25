@@ -53,17 +53,67 @@ function dippedBody(
 function ArduinoPreview(): JSX.Element {
   return (
     <>
-      <rect x={8} y={8} width={80} height={40} rx={4} fill={BOARD} stroke={INK} strokeWidth={1.3} />
-      <rect x={8} y={8} width={80} height={5} rx={3} fill="#ffffff" opacity={0.12} />
-      <rect x={16} y={11} width={17} height={20} rx={2} fill={METAL} stroke={METAL_DARK} />
-      <rect x={63} y={11} width={19} height={11} rx={1.5} fill={METAL} stroke={METAL_DARK} />
-      <rect x={63} y={27} width={19} height={11} rx={1.5} fill={METAL} stroke={METAL_DARK} />
-      <rect x={42} y={17} width={16} height={20} rx={1.5} fill="#101c28" stroke="#071019" />
-      <rect x={45} y={21} width={10} height={12} rx={1} fill="#1d3045" />
-      <circle cx={84} cy={40} r={3.2} fill="#dce7f2" stroke={METAL_DARK} strokeWidth={0.8} />
-      <circle cx={84} cy={23} r={2.4} fill="#e9f0f7" />
-      <rect x={13} y={38} width={28} height={6} rx={2} fill="#082d3b" />
-      <text x={20} y={43} fontSize={4.5} fill="#bce8f1" fontFamily="monospace">
+      <rect x={6} y={8} width={84} height={40} rx={3} fill={BOARD} stroke={INK} strokeWidth={1.2} />
+      <rect x={10} y={8} width={36} height={5} fill="#0a6673" stroke="#084f59" strokeWidth={0.5} />
+      {Array.from({ length: 8 }, (_unused, index) => (
+        <rect
+          key={`uno-top-left-${index}`}
+          x={12 + index * 4.4}
+          y={9}
+          width={3}
+          height={3}
+          fill="#d9b24a"
+        />
+      ))}
+      <rect x={52} y={8} width={30} height={5} fill="#0a6673" stroke="#084f59" strokeWidth={0.5} />
+      {Array.from({ length: 6 }, (_unused, index) => (
+        <rect
+          key={`uno-top-right-${index}`}
+          x={54 + index * 4.8}
+          y={9}
+          width={3}
+          height={3}
+          fill="#d9b24a"
+        />
+      ))}
+      <rect x={10} y={43} width={24} height={5} fill="#0a6673" stroke="#084f59" strokeWidth={0.5} />
+      {Array.from({ length: 5 }, (_unused, index) => (
+        <rect
+          key={`uno-bottom-left-${index}`}
+          x={12 + index * 4.5}
+          y={44}
+          width={3}
+          height={3}
+          fill="#d9b24a"
+        />
+      ))}
+      <rect x={52} y={43} width={30} height={5} fill="#0a6673" stroke="#084f59" strokeWidth={0.5} />
+      {Array.from({ length: 6 }, (_unused, index) => (
+        <rect
+          key={`uno-bottom-right-${index}`}
+          x={54 + index * 4.8}
+          y={44}
+          width={3}
+          height={3}
+          fill="#d9b24a"
+        />
+      ))}
+      <rect x={6} y={15} width={11} height={8} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={6} y={33} width={9} height={10} rx={1} fill="#151a20" stroke="#070a0d" />
+      <circle cx={8.5} cy={38} r={2} fill="#2a313a" />
+      <circle cx={22} cy={18} r={2.2} fill={METAL} stroke={METAL_DARK} strokeWidth={0.6} />
+      <rect x={36} y={20} width={17} height={18} rx={1} fill="#171b20" stroke="#070a0d" />
+      {Array.from({ length: 7 }, (_unused, index) => (
+        <g key={`uno-chip-${index}`}>
+          <rect x={34} y={22 + index * 2.2} width={2} height={1.2} fill={METAL} />
+          <rect x={53} y={22 + index * 2.2} width={2} height={1.2} fill={METAL} />
+        </g>
+      ))}
+      <ellipse cx={60} cy={28} rx={5} ry={3} fill={METAL} stroke={METAL_DARK} strokeWidth={0.5} />
+      <circle cx={70} cy={18} r={1.2} fill="#4ade80" />
+      <circle cx={76} cy={18} r={1.2} fill="#fbbf24" />
+      <circle cx={82} cy={18} r={1.2} fill="#fbbf24" />
+      <text x={58} y={38.5} fontSize={4} fill="#eaf4ee" fontFamily="monospace">
         UNO R3
       </text>
     </>
@@ -74,29 +124,51 @@ function RaspberryPiPreview(): JSX.Element {
   return (
     <>
       <rect
-        x={8}
-        y={12}
-        width={80}
-        height={36}
-        rx={4}
+        x={6}
+        y={10}
+        width={84}
+        height={40}
+        rx={3}
         fill="#2f7d4f"
         stroke={INK}
         strokeWidth={1.2}
       />
-      <rect x={18} y={8} width={60} height={9} rx={2} fill="#171b20" stroke="#080b0e" />
+      <rect x={14} y={8} width={68} height={6} fill="#276b43" stroke="#1f5736" />
       {Array.from({ length: 20 }, (_unused, index) => (
-        <rect key={index} x={20 + index * 2.8} y={9.5} width={1.3} height={4} fill="#d9b24a" />
+        <g key={`pi-header-${index}`}>
+          <rect x={16 + index * 3.4} y={9} width={1.6} height={1.6} fill="#d9b24a" />
+          <rect x={16 + index * 3.4} y={12} width={1.6} height={1.6} fill="#d9b24a" />
+        </g>
       ))}
-      <rect x={11} y={20} width={12} height={7} rx={1} fill={METAL} stroke={METAL_DARK} />
-      <rect x={11} y={30} width={12} height={7} rx={1} fill={METAL} stroke={METAL_DARK} />
-      <rect x={48} y={22} width={18} height={14} rx={1} fill="#161a1f" />
-      <text x={50} y={31} fontSize={4.5} fill="#dce8f2" fontFamily="monospace">
-        BCM
-      </text>
-      <rect x={74} y={22} width={9} height={14} rx={1} fill={METAL} stroke={METAL_DARK} />
-      <circle cx={16} cy={43} r={1.6} fill="#0d2d1d" />
-      <circle cx={80} cy={43} r={1.6} fill="#0d2d1d" />
-      <text x={32} y={42} fontSize={4.5} fill="#eaf4ee" fontFamily="monospace">
+      <rect x={6} y={16} width={7} height={5} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={6} y={23} width={8} height={4} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={6} y={29} width={8} height={4} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={6} y={36} width={8} height={7} rx={1} fill="#171b20" stroke="#080b0e" />
+      <circle cx={9} cy={39.5} r={1.5} fill="#2a313a" />
+      <rect x={83} y={17} width={7} height={9} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={83} y={28} width={7} height={8} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={83} y={38} width={7} height={8} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={40} y={20} width={13} height={13} rx={1} fill="#171b20" />
+      <rect x={43} y={23} width={7} height={7} fill="#8f9aa6" />
+      <rect x={24} y={35} width={16} height={11} rx={1} fill={METAL} stroke={METAL_DARK} />
+      <rect x={56} y={44} width={12} height={5} rx={1} fill={METAL} stroke={METAL_DARK} />
+      {[
+        [10, 14],
+        [86, 14],
+        [10, 46],
+        [86, 46],
+      ].map(([x, y]) => (
+        <circle
+          key={`pi-hole-${x}-${y}`}
+          cx={x}
+          cy={y}
+          r={1.4}
+          fill="#1f5c38"
+          stroke={METAL}
+          strokeWidth={0.5}
+        />
+      ))}
+      <text x={42} y={48} fontSize={4} fill="#eaf4ee" fontFamily="monospace">
         Pi 4
       </text>
     </>
@@ -275,39 +347,42 @@ function PassivePreview({ type }: { readonly type: PartType }): JSX.Element {
 
 function LedPreview({ type }: { readonly type: string }): JSX.Element {
   const rgb = type === 'rgb-led'
+  if (rgb) {
+    return (
+      <>
+        {leads([
+          [33, 32, 33, 52],
+          [43, 32, 43, 52],
+          [53, 32, 53, 52],
+          [63, 32, 63, 52],
+        ])}
+        <path
+          d="M31 25 A17 17 0 0 1 65 25 V32 H31 Z"
+          fill="#dfe8f2"
+          stroke={INK}
+          strokeWidth={1.4}
+        />
+        <path d="M34 25 A14 14 0 0 1 62 25 V30 H34 Z" fill="#f3f7fb" opacity={0.85} />
+        <circle cx={42} cy={23} r={2.8} fill="#e5484d" />
+        <circle cx={48} cy={20} r={2.8} fill="#46a758" />
+        <circle cx={54} cy={23} r={2.8} fill="#3b82f6" />
+        <ellipse cx={42} cy={16} rx={4.2} ry={2.2} fill="#ffffff" opacity={0.65} />
+        <line x1={31} y1={32} x2={65} y2={32} stroke={METAL_DARK} strokeWidth={1.2} />
+      </>
+    )
+  }
   return (
     <>
       {leads([
-        [34, 51, 34, 37],
-        [46, 51, 46, 31],
-        [58, 51, 58, 37],
+        [42, 32, 42, 52],
+        [54, 32, 54, 48],
       ])}
-      <circle
-        cx={48}
-        cy={24}
-        r={16}
-        fill={rgb ? '#e7edf5' : '#e5484d'}
-        stroke={INK}
-        strokeWidth={1.4}
-      />
-      <circle cx={48} cy={24} r={11} fill={rgb ? '#f6f8fb' : '#ff7c81'} opacity={0.7} />
-      {rgb ? (
-        <>
-          <circle cx={42} cy={25} r={3.2} fill="#e5484d" />
-          <circle cx={48} cy={21} r={3.2} fill="#46a758" />
-          <circle cx={54} cy={25} r={3.2} fill="#3b82f6" />
-        </>
-      ) : (
-        <circle cx={44} cy={19} r={4} fill="#ffffff" opacity={0.55} />
-      )}
-      <path
-        d="M62 31 L68 37 L73 36"
-        fill="none"
-        stroke={METAL_DARK}
-        strokeWidth={2}
-        strokeLinecap="round"
-      />
-      <path d="M33 38 L33 44" stroke={METAL_DARK} strokeWidth={2.2} />
+      <path d="M33 25 A15 15 0 0 1 63 25 V32 H33 Z" fill="#ef6b71" stroke={INK} strokeWidth={1.4} />
+      <path d="M36 25 A12 12 0 0 1 60 25 V30 H36 Z" fill="#ff9a9e" opacity={0.65} />
+      <rect x={44} y={23} width={8} height={6} rx={1} fill="#b71c1c" />
+      <ellipse cx={42} cy={17} rx={4.2} ry={2.4} fill="#ffffff" opacity={0.55} />
+      <line x1={33} y1={32} x2={63} y2={32} stroke={METAL_DARK} strokeWidth={1.2} />
+      <line x1={61} y1={30} x2={64} y2={33} stroke={METAL_DARK} strokeWidth={1.2} />
     </>
   )
 }
@@ -328,6 +403,12 @@ function BatteryPreview({ type }: { readonly type: string }): JSX.Element {
         />
         <rect x={34} y={5} width={8} height={7} rx={1} fill={METAL} stroke={METAL_DARK} />
         <rect x={54} y={5} width={8} height={7} rx={1} fill={METAL} stroke={METAL_DARK} />
+        <text x={32} y={15} fontSize={4.5} fill="#f4d27a" fontWeight="700">
+          +
+        </text>
+        <text x={54} y={15} fontSize={4.5} fill="#9db6d5" fontWeight="700">
+          −
+        </text>
         <text x={35} y={31} fontSize={13} fill="#eef4fa" fontWeight="700" fontFamily="monospace">
           9V
         </text>
@@ -368,7 +449,10 @@ function BatteryPreview({ type }: { readonly type: string }): JSX.Element {
       <text x={21} y={33} fontSize={9} fill="#eef4fa" fontWeight="700" fontFamily="monospace">
         AA 1.5V
       </text>
-      <text x={16} y={27} fontSize={7} fill="#f4d27a" fontWeight="700">
+      <text x={13} y={27} fontSize={7} fill="#9db6d5" fontWeight="700">
+        −
+      </text>
+      <text x={70} y={27} fontSize={7} fill="#f4d27a" fontWeight="700">
         +
       </text>
     </>
@@ -380,8 +464,8 @@ function InputPreview({ type }: { readonly type: PartType }): JSX.Element {
     return (
       <>
         {leads([
-          [10, 42, 10, 30],
-          [86, 42, 86, 30],
+          [0, 28, 17, 28],
+          [79, 28, 96, 28],
         ])}
         <rect
           x={17}
@@ -426,8 +510,8 @@ function InputPreview({ type }: { readonly type: PartType }): JSX.Element {
     return (
       <>
         {leads([
-          [12, 39, 12, 31],
-          [84, 39, 84, 31],
+          [0, 26, 16, 26],
+          [80, 26, 96, 26],
         ])}
         <rect
           x={16}
@@ -562,32 +646,46 @@ function InputPreview({ type }: { readonly type: PartType }): JSX.Element {
   }
   if (type === 'photodiode' || type === 'phototransistor') {
     const transistor = type === 'phototransistor'
+    if (!transistor) {
+      return (
+        <>
+          {leads([
+            [0, 28, 26, 28],
+            [70, 28, 96, 28],
+          ])}
+          <rect
+            x={26}
+            y={20}
+            width={44}
+            height={16}
+            rx={8}
+            fill="#232833"
+            stroke={INK}
+            strokeWidth={1.2}
+          />
+          <circle cx={48} cy={28} r={5.5} fill="#8fa3b8" stroke="#c9d0da" strokeWidth={1} />
+          <path
+            d="M60 18 L66 12 M66 22 L72 17"
+            stroke="#f0c75e"
+            strokeWidth={1.4}
+            strokeLinecap="round"
+          />
+        </>
+      )
+    }
     return (
       <>
         {leads([
           [30, 48, 30, 38],
           [66, 48, 66, 38],
         ])}
-        <circle
-          cx={48}
-          cy={27}
-          r={14}
-          fill={transistor ? '#8a93a6' : '#232833'}
-          stroke={INK}
-          strokeWidth={1.3}
+        <circle cx={48} cy={27} r={14} fill="#8a93a6" stroke={INK} strokeWidth={1.3} />
+        <path
+          d="M40 23 H40 V33 H49 V23 M49 29 L57 21"
+          fill="none"
+          stroke="#1d3045"
+          strokeWidth={1.8}
         />
-        {transistor ? (
-          <>
-            <path
-              d="M40 23 H40 V33 H49 V23 M49 29 L57 21"
-              fill="none"
-              stroke="#1d3045"
-              strokeWidth={1.8}
-            />
-          </>
-        ) : (
-          <path d="M56 19 V35 L48 31 M56 19 L63 23" fill="none" stroke={METAL} strokeWidth={1.4} />
-        )}
         <path
           d="M65 13 L70 7 M71 17 L77 12 M74 24 L81 23"
           stroke="#ffc928"
@@ -624,36 +722,52 @@ function InputPreview({ type }: { readonly type: PartType }): JSX.Element {
       <>
         <rect
           x={24}
-          y={8}
+          y={12}
           width={48}
-          height={28}
+          height={30}
           rx={3}
           fill="#225c3d"
           stroke={INK}
           strokeWidth={1.2}
         />
-        <line x1={37} y1={36} x2={37} y2={51} stroke={METAL} strokeWidth={3.2} />
-        <line x1={59} y1={36} x2={59} y2={51} stroke={METAL} strokeWidth={3.2} />
-        <circle cx={36} cy={20} r={3} fill="#6fd3ff" />
-        <circle cx={46} cy={17} r={2.2} fill="#6fd3ff" />
-        <circle cx={54} cy={24} r={2.6} fill="#6fd3ff" />
+        <rect x={30} y={7} width={36} height={7} rx={1} fill="#101820" stroke={INK} />
+        {[34, 44, 54].map((x) => (
+          <rect
+            key={x}
+            x={x}
+            y={7}
+            width={4}
+            height={7}
+            fill="#d6ad45"
+            stroke="#8f7026"
+            strokeWidth={0.5}
+          />
+        ))}
+        <line x1={37} y1={42} x2={37} y2={52} stroke={METAL} strokeWidth={3.2} />
+        <line x1={59} y1={42} x2={59} y2={52} stroke={METAL} strokeWidth={3.2} />
+        <circle cx={36} cy={22} r={3} fill="#6fd3ff" />
+        <circle cx={46} cy={19} r={2.2} fill="#6fd3ff" />
+        <circle cx={54} cy={26} r={2.6} fill="#6fd3ff" />
+        <text x={38} y={35} fontSize={4.5} fill="#e6f5ea" fontFamily="monospace">
+          SOIL
+        </text>
       </>
     )
   }
   if (type === 'gas-sensor') {
     return (
       <>
-        {Array.from({ length: 8 }, (_unused, index) => (
-          <circle
-            key={index}
-            cx={[24, 68, 20, 72, 28, 64, 36, 56][index]}
-            cy={[30, 30, 18, 18, 43, 43, 48, 48][index]}
-            r={2}
-            fill={METAL}
-            stroke={METAL_DARK}
-          />
+        {[
+          [30, 10],
+          [66, 10],
+          [28, 22],
+          [28, 36],
+          [68, 22],
+          [68, 36],
+        ].map(([x, y], index) => (
+          <circle key={index} cx={x} cy={y} r={2.2} fill={METAL} stroke={METAL_DARK} />
         ))}
-        <circle cx={48} cy={29} r={19} fill="#455a72" stroke={INK} strokeWidth={1.2} />
+        <circle cx={48} cy={29} r={18} fill="#455a72" stroke={INK} strokeWidth={1.2} />
         {[0, 30, 60, 90, 120, 150].map((angle) => (
           <line
             key={angle}
@@ -667,6 +781,9 @@ function InputPreview({ type }: { readonly type: PartType }): JSX.Element {
           />
         ))}
         <circle cx={48} cy={29} r={6} fill="#d9784a" />
+        <text x={42} y={48} fontSize={4} fill="#dce6f4" fontFamily="monospace">
+          GAS
+        </text>
       </>
     )
   }
@@ -727,6 +844,15 @@ function OutputPreview({ type }: { readonly type: PartType }): JSX.Element {
           <path key={path} d={path} stroke="#ff5e57" strokeWidth={4} strokeLinecap="round" />
         ))}
         <circle cx={69} cy={47} r={2.4} fill="#ff5e57" />
+        {Array.from({ length: 5 }, (_unused, index) => {
+          const x = 31 + index * 9.5
+          return (
+            <g key={x}>
+              <line x1={x} y1={1} x2={x} y2={5} stroke={METAL} strokeWidth={1.4} />
+              <line x1={x} y1={51} x2={x} y2={55} stroke={METAL} strokeWidth={1.4} />
+            </g>
+          )
+        })}
       </>
     )
   }
@@ -1003,12 +1129,12 @@ function BoardPreview({ type }: { readonly type: PartType }): JSX.Element {
           strokeWidth={1.2}
         />
         {Array.from({ length: 3 }, (_unused, row) =>
-          Array.from({ length: 4 }, (_unusedColumn, column) => (
+          Array.from({ length: 3 }, (_unusedColumn, column) => (
             <rect
               key={`${row}-${column}`}
-              x={16 + column * 16}
+              x={18 + column * 22}
               y={17 + row * 8}
-              width={14}
+              width={20}
               height={6}
               fill="#3f7fc4"
               stroke="#8ab6e8"
@@ -1200,16 +1326,17 @@ function MicrobitPreview(): JSX.Element {
           fill={index % 4 === 0 ? '#ff5e57' : '#8ea4b9'}
         />
       ))}
-      <rect x={13} y={43} width={70} height={5} rx={1} fill="#c9a33a" />
-      {Array.from({ length: 13 }, (_unused, index) => (
-        <line
+      {Array.from({ length: 5 }, (_unused, index) => (
+        <rect
           key={index}
-          x1={15 + index * 5.6}
-          y1={43}
-          x2={15 + index * 5.6}
-          y2={48}
+          x={14 + index * 14}
+          y={45}
+          width={9}
+          height={7}
+          rx={1}
+          fill="#d3ad52"
           stroke="#6e5722"
-          strokeWidth={1}
+          strokeWidth={0.7}
         />
       ))}
       <circle cx={22} cy={38} r={2} fill="#3b82f6" />
@@ -1257,7 +1384,7 @@ function LcdPreview({ i2c = false }: { readonly i2c?: boolean }): JSX.Element {
           />
         ))
       )}
-      {i2c && (
+      {i2c ? (
         <>
           <circle cx={17} cy={21} r={2.4} fill="#c7d4e2" stroke={INK} strokeWidth={0.6} />
           <rect x={37} y={41} width={22} height={9} rx={1.5} fill="#1b2a3a" />
@@ -1273,6 +1400,18 @@ function LcdPreview({ i2c = false }: { readonly i2c?: boolean }): JSX.Element {
             />
           ))}
         </>
+      ) : (
+        Array.from({ length: 16 }, (_unused, index) => (
+          <line
+            key={index}
+            x1={17 + index * 4}
+            y1={48}
+            x2={17 + index * 4}
+            y2={54}
+            stroke={METAL}
+            strokeWidth={1.1}
+          />
+        ))
       )}
     </>
   )
@@ -1323,6 +1462,9 @@ function SevenSegmentClockPreview(): JSX.Element {
       <text x={48} y={46} textAnchor="middle" fontSize={4} fill="#7d94ad" fontFamily="monospace">
         4-DIGIT CLOCK
       </text>
+      {[24, 40, 56, 72].map((x) => (
+        <line key={x} x1={x} y1={49} x2={x} y2={55} stroke={METAL} strokeWidth={1.5} />
+      ))}
     </>
   )
 }
@@ -1419,6 +1561,12 @@ function KeypadPreview(): JSX.Element {
         stroke={INK}
         strokeWidth={1.2}
       />
+      {[28, 44, 60, 76].map((x) => (
+        <g key={x}>
+          <line x1={x} y1={0} x2={x} y2={3} stroke={METAL} strokeWidth={1.6} />
+          <line x1={x} y1={53} x2={x} y2={56} stroke={METAL} strokeWidth={1.6} />
+        </g>
+      ))}
       <rect x={24} y={9} width={48} height={36} rx={1.5} fill="#dfe7ef" />
       {Array.from({ length: 16 }, (_unused, index) => {
         const column = index % 4
@@ -1568,11 +1716,15 @@ function ServoPreview(): JSX.Element {
 function RelayPreview({ dpdt = false }: { readonly dpdt?: boolean }): JSX.Element {
   return (
     <>
+      {leads([
+        [30, 8, 30, 13],
+        [66, 8, 66, 13],
+      ])}
       <rect
         x={17}
-        y={11}
+        y={13}
         width={62}
-        height={32}
+        height={30}
         rx={3}
         fill="#215f9a"
         stroke={INK}
@@ -1585,17 +1737,11 @@ function RelayPreview({ dpdt = false }: { readonly dpdt?: boolean }): JSX.Elemen
       <text x={48} y={36} textAnchor="middle" fontSize={4.5} fill="#bcd9f2" fontFamily="monospace">
         {dpdt ? '8 PIN' : '5 PIN'}
       </text>
-      {Array.from({ length: dpdt ? 8 : 5 }, (_unused, index) => (
-        <line
-          key={index}
-          x1={21 + index * (54 / ((dpdt ? 8 : 5) - 1))}
-          y1={43}
-          x2={21 + index * (54 / ((dpdt ? 8 : 5) - 1))}
-          y2={52}
-          stroke={METAL}
-          strokeWidth={1.7}
-        />
-      ))}
+      {Array.from({ length: dpdt ? 6 : 3 }, (_unused, index) => {
+        const count = dpdt ? 6 : 3
+        const x = 24 + index * (48 / (count - 1))
+        return <line key={x} x1={x} y1={43} x2={x} y2={52} stroke={METAL} strokeWidth={1.7} />
+      })}
     </>
   )
 }
@@ -1630,9 +1776,14 @@ function EncoderMotorPreview(): JSX.Element {
           />
         )
       })}
-      {[27, 37, 47].map((x) => (
-        <line key={x} x1={x} y1={44} x2={x} y2={53} stroke={METAL} strokeWidth={1.6} />
-      ))}
+      {leads([
+        [20, 9, 20, 15],
+        [30, 9, 30, 15],
+        [40, 9, 40, 15],
+        [22, 41, 22, 53],
+        [32, 41, 32, 53],
+        [80, 28, 86, 28],
+      ])}
     </>
   )
 }

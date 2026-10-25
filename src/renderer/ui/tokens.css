@@ -1,50 +1,49 @@
 /*
  * Design tokens for the VircuitCAD shell.
  *
- * Deep navy surfaces keep the canvas and components in focus, while a bright
- * yellow marks every primary action, active state and selection. The canvas
- * grid values are mirrored by GRID_COLOR / GRID_AXIS_COLOR in CircuitCanvas.tsx
- * because Konva cannot read CSS variables.
+ * Deep structural surfaces keep the canvas and components in focus. Amber
+ * remains the primary action colour, with ready green and error red retained
+ * as standard semantic controls.
  */
 :root {
   color-scheme: dark;
 
   /* Surfaces */
-  --cb-page: #050d1a;
-  --cb-surface: #0a1a2e;
-  --cb-surface-sunken: #071426;
-  --cb-surface-hover: #112b49;
+  --cb-page: #040916;
+  --cb-surface: #0a1627;
+  --cb-surface-sunken: #071120;
+  --cb-surface-hover: #122340;
 
   /* Lines */
-  --cb-border: #193553;
-  --cb-border-strong: #2b5178;
+  --cb-border: #203551;
+  --cb-border-strong: #3c597e;
 
   /* Text */
-  --cb-text: #edf6ff;
-  --cb-text-muted: #9db6d5;
-  --cb-text-faint: #6b87a8;
+  --cb-text: #edf5ff;
+  --cb-text-muted: #a8c0db;
+  --cb-text-faint: #6f8db5;
 
   /* Brand + semantic */
-  --cb-primary: #ffc928;
-  --cb-primary-hover: #ffd95e;
-  --cb-primary-soft: #2d260d;
-  --cb-on-primary: #07111f;
-  --cb-run: #ffc928;
-  --cb-run-hover: #ffd95e;
-  --cb-stop: #ff6b57;
-  --cb-stop-hover: #ff8777;
-  --cb-stop-soft: #351d1d;
-  --cb-warn: #ffc928;
-  --cb-warn-soft: #2d260d;
-  --cb-warn-border: #5a4a18;
+  --cb-primary: #ffca2c;
+  --cb-primary-hover: #ffd652;
+  --cb-primary-soft: #241d07;
+  --cb-on-primary: #08121d;
+  --cb-run: #4dd091;
+  --cb-run-hover: #67dd9e;
+  --cb-stop: #ff6b66;
+  --cb-stop-hover: #ff8782;
+  --cb-stop-soft: #2b171a;
+  --cb-warn: #ffca2c;
+  --cb-warn-soft: #241d07;
+  --cb-warn-border: #6a5118;
 
   /* Canvas */
-  --cb-canvas: #040b16;
-  --cb-canvas-grid: #10233a;
-  --cb-canvas-grid-strong: #1a3b5d;
-  --cb-schematic-wire: #6fb3ff;
-  --cb-overlay: rgba(7, 20, 38, 0.94);
-  --cb-backdrop: rgba(2, 7, 14, 0.72);
+  --cb-canvas: #030813;
+  --cb-canvas-grid: #122440;
+  --cb-canvas-grid-strong: #1d3b64;
+  --cb-schematic-wire: #6fa9ff;
+  --cb-overlay: rgba(6, 14, 28, 0.95);
+  --cb-backdrop: rgba(2, 6, 14, 0.78);
 
   /* Radii */
   --cb-radius-sm: 6px;
@@ -53,9 +52,9 @@
   --cb-radius-pill: 999px;
 
   /* Elevation */
-  --cb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --cb-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5);
-  --cb-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.6);
+  --cb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --cb-shadow-md: 0 8px 20px rgba(0, 0, 0, 0.55);
+  --cb-shadow-lg: 0 20px 54px rgba(0, 0, 0, 0.68);
 
   /* Spacing scale */
   --cb-space-1: 4px;
@@ -64,14 +63,54 @@
   --cb-space-4: 16px;
   --cb-space-5: 24px;
 
-  /* Typography. Only system fonts are used: they ship with the OS, so the app
-     stays fully offline with no bundled font assets or licensing. */
+  /* Typography. Only system fonts are used so the app stays offline. */
   --cb-font-sans:
-    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  --cb-font-mono:
-    ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Consolas, 'DejaVu Sans Mono', monospace;
+    'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --cb-font-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Consolas, monospace;
 
   /* Chrome */
   --cb-topbar-height: 52px;
   --cb-statusbar-height: 26px;
+  --cb-transition-fast: 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --cb-transition-base: 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --cb-page: #f1f5f9;
+  --cb-surface: #ffffff;
+  --cb-surface-sunken: #f3f7fb;
+  --cb-surface-hover: #eaf1fb;
+
+  --cb-border: #c6d6e5;
+  --cb-border-strong: #96afce;
+
+  --cb-text: #081523;
+  --cb-text-muted: #425c7a;
+  --cb-text-faint: #7187a2;
+
+  --cb-primary: #9a6c00;
+  --cb-primary-hover: #7a5500;
+  --cb-primary-soft: #fff1cc;
+  --cb-on-primary: #ffffff;
+  --cb-run: #237a57;
+  --cb-run-hover: #1a6445;
+  --cb-stop: #b83232;
+  --cb-stop-hover: #8e2a2a;
+  --cb-stop-soft: #fff1f1;
+  --cb-warn: #9a6c00;
+  --cb-warn-soft: #fff1cc;
+  --cb-warn-border: #d7af5d;
+
+  --cb-canvas: #f7fafc;
+  --cb-canvas-grid: #dbe5ef;
+  --cb-canvas-grid-strong: #b7c9db;
+  --cb-schematic-wire: #2b6cb0;
+  --cb-overlay: rgba(255, 255, 255, 0.96);
+  --cb-backdrop: rgba(15, 33, 54, 0.38);
+
+  --cb-shadow-sm: 0 1px 2px rgba(15, 33, 54, 0.12);
+  --cb-shadow-md: 0 8px 20px rgba(15, 33, 54, 0.14);
+  --cb-shadow-lg: 0 20px 48px rgba(15, 33, 54, 0.2);
 }

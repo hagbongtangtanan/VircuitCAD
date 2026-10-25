@@ -1,0 +1,285 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 60,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "sr1",
+        "type": "74hc595",
+        "position": {
+          "x": 430,
+          "y": 130
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "led1",
+        "type": "led",
+        "position": {
+          "x": 620,
+          "y": 70
+        },
+        "rotation": 0,
+        "props": {
+          "color": "red"
+        }
+      },
+      {
+        "id": "led2",
+        "type": "led",
+        "position": {
+          "x": 620,
+          "y": 140
+        },
+        "rotation": 0,
+        "props": {
+          "color": "yellow"
+        }
+      },
+      {
+        "id": "led3",
+        "type": "led",
+        "position": {
+          "x": 620,
+          "y": 210
+        },
+        "rotation": 0,
+        "props": {
+          "color": "green"
+        }
+      },
+      {
+        "id": "led4",
+        "type": "led",
+        "position": {
+          "x": 620,
+          "y": 280
+        },
+        "rotation": 0,
+        "props": {
+          "color": "blue"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D2"
+        },
+        "to": {
+          "partId": "sr1",
+          "pinId": "14"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "D3"
+        },
+        "to": {
+          "partId": "sr1",
+          "pinId": "11"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D4"
+        },
+        "to": {
+          "partId": "sr1",
+          "pinId": "12"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "sr1",
+          "pinId": "16"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "uno",
+          "pinId": "5V"
+        },
+        "to": {
+          "partId": "sr1",
+          "pinId": "10"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "sr1",
+          "pinId": "8"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w7",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND2"
+        },
+        "to": {
+          "partId": "sr1",
+          "pinId": "13"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w8",
+        "from": {
+          "partId": "sr1",
+          "pinId": "15"
+        },
+        "to": {
+          "partId": "led1",
+          "pinId": "anode"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w12",
+        "from": {
+          "partId": "led1",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w9",
+        "from": {
+          "partId": "sr1",
+          "pinId": "1"
+        },
+        "to": {
+          "partId": "led2",
+          "pinId": "anode"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w13",
+        "from": {
+          "partId": "led2",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w10",
+        "from": {
+          "partId": "sr1",
+          "pinId": "2"
+        },
+        "to": {
+          "partId": "led3",
+          "pinId": "anode"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w14",
+        "from": {
+          "partId": "led3",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w11",
+        "from": {
+          "partId": "sr1",
+          "pinId": "3"
+        },
+        "to": {
+          "partId": "led4",
+          "pinId": "anode"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w15",
+        "from": {
+          "partId": "led4",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// 74HC595: SER D2, SRCLK D3, RCLK D4. QA-QD drive four LEDs.\nconst int dataPin = 2;\nconst int clockPin = 3;\nconst int latchPin = 4;\n\nvoid setup() {\n  pinMode(dataPin, OUTPUT);\n  pinMode(clockPin, OUTPUT);\n  pinMode(latchPin, OUTPUT);\n}\n\nvoid loop() {\n  for (int value = 0; value < 16; value++) {\n    digitalWrite(latchPin, LOW);\n    shiftOut(dataPin, clockPin, MSBFIRST, value);\n    digitalWrite(latchPin, HIGH);\n    delay(300);\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Shift register LEDs"
+}

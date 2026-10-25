@@ -1,0 +1,148 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 60,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "seg1",
+        "type": "seven-segment",
+        "position": {
+          "x": 500,
+          "y": 160
+        },
+        "rotation": 0,
+        "props": {
+          "color": "red"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D2"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "a"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "D3"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "b"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D4"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "c"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "uno",
+          "pinId": "D5"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "d"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "uno",
+          "pinId": "D6"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "e"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "uno",
+          "pinId": "D7"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "f"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w7",
+        "from": {
+          "partId": "uno",
+          "pinId": "D8"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "g"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w8",
+        "from": {
+          "partId": "seg1",
+          "pinId": "common"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// Common-cathode 7-segment display: segments a-g on D2-D8.\nconst int segments[7] = {2, 3, 4, 5, 6, 7, 8};\nconst byte digits[10][7] = {\n  {1,1,1,1,1,1,0}, {0,1,1,0,0,0,0}, {1,1,0,1,1,0,1}, {1,1,1,1,0,0,1},\n  {0,1,1,0,0,1,1}, {1,0,1,1,0,1,1}, {1,0,1,1,1,1,1}, {1,1,1,0,0,0,0},\n  {1,1,1,1,1,1,1}, {1,1,1,1,0,1,1}\n};\n\nvoid setup() {\n  for (int i = 0; i < 7; i++) pinMode(segments[i], OUTPUT);\n}\n\nvoid loop() {\n  for (int digit = 0; digit < 10; digit++) {\n    for (int segment = 0; segment < 7; segment++) {\n      digitalWrite(segments[segment], digits[digit][segment]);\n    }\n    delay(500);\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "7-segment counter"
+}

@@ -512,7 +512,7 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   for history. Downloads
   point at `/releases` because GitHub excludes pre-releases from `/releases/latest`.
 - **The GitHub repository is now `VircuitCAD`.** Remotes, the electron-builder publish target,
-  release URLs and README badges use the new slug. GitHub redirects the former `HuCAD` URLs,
+  release URLs and README badges use the new slug. GitHub redirects the former repository URLs,
   so existing clones and release links keep working.
 
 ## 2026-10-23 — Beta-only releases and the Raspberry Pi 4 board
@@ -524,3 +524,25 @@ Record of non-obvious engineering choices. Newest entries at the bottom.
   number and GPIO name, and repeated 5V, 3V3 and GND pins share internal nets. It is a wiring
   target only: no Pi firmware, Python, USB, Ethernet, HDMI or camera/display modelling. The
   Arduino Uno remains the only emulated controller.
+
+## 2026-10-25 — `.vcc` v2 and the guided starter library
+
+- **The native project extension is `.vcc`; `.vircuit` is a legacy alias.** The format id stays
+  `vircuit-project`. Version 2 adds a strict metadata header (`created_at`, `app_version`) and the
+  canvas viewport. Version 1 `.vircuit` files are still accepted, keep their original data in
+  memory, and are written back as v2 on the next save.
+- **The viewport belongs in the project.** Reopening a saved circuit now restores the same pan and
+  zoom instead of guessing a fit, which matters for large boards and annotated schematics.
+- **Starters are bundled renderer assets, not shipped samples.** The twenty-nine starter projects live in
+  `src/starters/` and are imported as raw text by the renderer, so they work offline and cannot
+  drift from the app build. The `resources/samples/` folder remains the place for user-inspectable
+  example files installed beside the app.
+- **Every starter must parse and compile.** The test suite validates each starter's wiring against
+  the part definitions and compiles every starter sketch with the vendored AVR toolchain when it is
+  available.
+- **Theme preference is local and token-driven.** The shell reads `vircuitcad.theme` from
+  localStorage and applies `data-theme` to the document root; light values are token overrides,
+  while Konva colours are selected from the same theme in the canvas. No second stylesheet or
+  runtime CSS-in-JS dependency is needed.
+- **GSAP is a local dependency for small motion only.** Modal entrances, the code panel, and
+  notifications use `gsap`/`@gsap/react` with short durations and no network-loaded assets.

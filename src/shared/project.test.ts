@@ -22,6 +22,25 @@ describe('project files', () => {
     expect(serializeProject(parsed).endsWith('\n')).toBe(true)
   })
 
+  it('writes a v2 header with metadata and viewport', () => {
+    expect(project.version).toBe(2)
+    if (project.version !== 2) throw new Error('expected v2')
+    expect(project.metadata.created_at).not.toBe('')
+    expect(project.metadata.app_version).not.toBe('')
+    expect(project.viewport).toEqual({ scale: 1, offsetX: 60, offsetY: 60 })
+  })
+
+  it('parses a legacy v1 project without metadata or viewport', () => {
+    const legacy = JSON.parse(serializeProject(project))
+    legacy.version = 1
+    delete legacy.metadata
+    delete legacy.viewport
+    const parsed = parseProjectText(JSON.stringify(legacy))
+    expect(parsed.version).toBe(1)
+    expect('metadata' in parsed).toBe(false)
+    expect('viewport' in parsed).toBe(false)
+  })
+
   it('persists a project title and accepts older files without one', () => {
     const named = createProject({
       name: 'Blink Led',
@@ -83,6 +102,7 @@ describe('project files', () => {
   })
 
   it('maps extensions to open behaviour', () => {
+    expect(openKindForPath('/tmp/demo.vcc')).toBe('project')
     expect(openKindForPath('/tmp/demo.vircuit')).toBe('project')
     expect(openKindForPath('/tmp/demo.json')).toBe('project')
     expect(openKindForPath('/tmp/blink.ino')).toBe('sketch')
@@ -95,7 +115,8 @@ describe('project files', () => {
     expect(fileExtension('/home/me/no-extension')).toBe('')
     expect(fileBaseName('/home/me/Blink.ino')).toBe('Blink.ino')
     expect(fileStem('/home/me/Blink.ino')).toBe('Blink')
-    expect(fileStem('/home/me/traffic-light.vircuit')).toBe('traffic-light')
+    expect(fileStem('/home/me/traffic-light.vcc')).toBe('traffic-light')
+    expect(fileStem('/home/me/legacy.vircuit')).toBe('legacy')
     expect(fileStem('/home/me/no-extension')).toBe('no-extension')
   })
 

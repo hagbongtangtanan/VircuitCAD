@@ -1,4 +1,6 @@
-import { useState, type JSX } from 'react'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { useRef, useState, type JSX } from 'react'
 import { BuildOutput } from '../editor/BuildOutput'
 import { SketchEditor } from '../editor/SketchEditor'
 import { useProjectStore } from '../store/projectStore'
@@ -24,6 +26,7 @@ export interface CodePanelProps {
  */
 export function CodePanel({ onClose }: CodePanelProps): JSX.Element {
   const [mode, setMode] = useState<CodeMode>('text')
+  const panelRef = useRef<HTMLElement | null>(null)
 
   const phase = useSketchStore((state) => state.phase)
   const toggleSimulation = useSimStore((state) => state.toggle)
@@ -33,8 +36,20 @@ export function CodePanel({ onClose }: CodePanelProps): JSX.Element {
 
   const running = simStatus === 'running' || simStatus === 'preparing'
 
+  useGSAP(
+    () => {
+      gsap.from(panelRef.current, {
+        opacity: 0,
+        x: 20,
+        duration: 0.26,
+        ease: 'power3.out',
+      })
+    },
+    { scope: panelRef }
+  )
+
   return (
-    <aside className="cb-code-panel" aria-label="Code" data-testid="code-panel">
+    <aside ref={panelRef} className="cb-code-panel" aria-label="Code" data-testid="code-panel">
       <header className="cb-code-header">
         <h2 className="cb-panel-title">Code</h2>
         <div className="cb-segmented" role="group" aria-label="Code view">

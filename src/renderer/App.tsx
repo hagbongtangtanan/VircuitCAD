@@ -1,4 +1,4 @@
-import { useEffect, useState, type JSX } from 'react'
+import { useCallback, useEffect, useState, type JSX } from 'react'
 import { APP_NAME } from '../shared/app'
 import { CircuitCanvas } from './canvas/CircuitCanvas'
 import { DEFAULT_NOTE_TEXT, NOTE_WIDTH, noteHeight } from './canvas/notes'
@@ -6,15 +6,19 @@ import { CanvasToolbar } from './ui/CanvasToolbar'
 import { CodePanel } from './ui/CodePanel'
 import { InspectorPanel } from './ui/InspectorPanel'
 import { NotificationCenter } from './ui/NotificationCenter'
+import { OnboardingTour, type OnboardingMode } from './ui/OnboardingTour'
 import { PartsPanel } from './ui/PartsPanel'
 import { SchematicView } from './schematic/SchematicView'
 import { SerialDrawer } from './ui/SerialDrawer'
+import { ShortcutHelp } from './ui/ShortcutHelp'
+import { StarterModal } from './ui/StarterModal'
 import { StatusBar } from './ui/StatusBar'
 import { TopBar, type WorkspaceView } from './ui/TopBar'
 import { useCircuitStore } from './store/circuitStore'
 import { updateWindowTitle, useProjectStore } from './store/projectStore'
 import { useSketchStore } from './store/sketchStore'
 import { useViewportStore } from './store/viewportStore'
+import { hasSeenOnboarding, markOnboardingSeen } from './ui/onboarding'
 
 function isTextEntry(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false
@@ -25,6 +29,26 @@ function isTextEntry(target: EventTarget | null): boolean {
 export function App(): JSX.Element {
   const [view, setView] = useState<WorkspaceView>('circuit')
   const [codeOpen, setCodeOpen] = useState(false)
+  const [startersOpen, setStartersOpen] = useState(false)
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
+  const [onboarding, setOnboarding] = useState<OnboardingMode | null>(() =>
+    hasSeenOnboarding() ? null : 'welcome'
+  )
+
+  const dismissOnboarding = useCallback((): void => {
+    markOnboardingSeen('skipped')
+    setOnboarding(null)
+  }, [])
+
+  const startOnboarding = useCallback((): void => {
+    markOnboardingSeen('completed')
+    setOnboarding('tour')
+  }, [])
+
+  const finishOnboarding = useCallback((): void => {
+    markOnboardingSeen('completed')
+    setOnboarding(null)
+  }, [])
 
   const undo = useCircuitStore((state) => state.undo)
   const redo = useCircuitStore((state) => state.redo)
@@ -33,12 +57,16 @@ export function App(): JSX.Element {
   const rotateSelected = useCircuitStore((state) => state.rotateSelected)
   const flipSelected = useCircuitStore((state) => state.flipSelected)
   const addNote = useCircuitStore((state) => state.addNote)
+  const copySelected = useCircuitStore((state) => state.copySelected)
+  const pasteClipboard = useCircuitStore((state) => state.pasteClipboard)
+  const selectAll = useCircuitStore((state) => state.selectAll)
 
   const build = useSketchStore((state) => state.build)
   const refreshToolchain = useSketchStore((state) => state.refreshToolchain)
   const projectName = useProjectStore((state) => state.name)
   const projectDirty = useProjectStore((state) => state.dirty)
   const saveProject = useProjectStore((state) => state.save)
+  const newProject = useProjectStore((state) => state.newProject)
   const openProject = useProjectStore((state) => state.open)
   const openLaunch = useProjectStore((state) => state.openLaunch)
   const receiveOpened = useProjectStore((state) => state.receiveOpened)
@@ -65,6 +93,7 @@ export function App(): JSX.Element {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
+      if (onboarding !== null || startersOpen || shortcutsOpen) return
       const modifier = event.ctrlKey || event.metaKey
       const key = event.key.toLowerCase()
 
@@ -97,6 +126,31 @@ export function App(): JSX.Element {
       }
       if (isTextEntry(event.target)) return
 
+      if (modifier && key === 'c') {
+        event.preventDefault()
+        copySelected()
+        return
+      }
+      if (modifier && key === 'v') {
+        event.preventDefault()
+        pasteClipboard()
+        return
+      }
+      if (modifier && key === 'a') {
+        event.preventDefault()
+        selectAll()
+        return
+      }
+      if (modifier && key === 'n') {
+        event.preventDefault()
+        newProject()
+        return
+      }
+      if (event.key === '?') {
+        event.preventDefault()
+        setShortcutsOpen(true)
+        return
+      }
       if (modifier && key === 'd') {
         event.preventDefault()
         duplicateSelected()
@@ -145,14 +199,21 @@ export function App(): JSX.Element {
   }, [
     addNote,
     build,
+    copySelected,
     duplicateSelected,
     fitToContent,
     flipSelected,
+    newProject,
+    onboarding,
     openProject,
+    pasteClipboard,
     redo,
     removeSelected,
     rotateSelected,
     saveProject,
+    selectAll,
+    shortcutsOpen,
+    startersOpen,
     undo,
   ])
 
@@ -163,6 +224,9 @@ export function App(): JSX.Element {
         onChangeView={setView}
         codeOpen={codeOpen}
         onToggleCode={() => setCodeOpen((current) => !current)}
+        onShowTour={() => setOnboarding('tour')}
+        onOpenStarters={() => setStartersOpen(true)}
+        onShowShortcuts={() => setShortcutsOpen(true)}
       />
 
       <div className="cb-workspace">
@@ -180,11 +244,21 @@ export function App(): JSX.Element {
         </div>
 
         {codeOpen && <CodePanel onClose={() => setCodeOpen(false)} />}
-        <PartsPanel />
+        <PartsPanel onOpenStarters={() => setStartersOpen(true)} />
       </div>
 
       <StatusBar />
       <NotificationCenter />
+      {startersOpen && <StarterModal onClose={() => setStartersOpen(false)} />}
+      {shortcutsOpen && <ShortcutHelp onClose={() => setShortcutsOpen(false)} />}
+      {onboarding !== null && (
+        <OnboardingTour
+          mode={onboarding}
+          onStart={startOnboarding}
+          onDismiss={dismissOnboarding}
+          onFinish={finishOnboarding}
+        />
+      )}
     </div>
   )
 }

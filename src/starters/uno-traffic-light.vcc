@@ -1,0 +1,221 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 80,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "r1",
+        "type": "resistor",
+        "position": {
+          "x": 470,
+          "y": 100
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "led1",
+        "type": "led",
+        "position": {
+          "x": 590,
+          "y": 110
+        },
+        "rotation": 0,
+        "props": {
+          "color": "red"
+        }
+      },
+      {
+        "id": "r2",
+        "type": "resistor",
+        "position": {
+          "x": 470,
+          "y": 220
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "led2",
+        "type": "led",
+        "position": {
+          "x": 590,
+          "y": 230
+        },
+        "rotation": 0,
+        "props": {
+          "color": "yellow"
+        }
+      },
+      {
+        "id": "r3",
+        "type": "resistor",
+        "position": {
+          "x": 470,
+          "y": 340
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "led3",
+        "type": "led",
+        "position": {
+          "x": 590,
+          "y": 350
+        },
+        "rotation": 0,
+        "props": {
+          "color": "green"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D13"
+        },
+        "to": {
+          "partId": "r1",
+          "pinId": "lead1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "r1",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "led1",
+          "pinId": "anode"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "led1",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "uno",
+          "pinId": "D12"
+        },
+        "to": {
+          "partId": "r2",
+          "pinId": "lead1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "r2",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "led2",
+          "pinId": "anode"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "led2",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND2"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w7",
+        "from": {
+          "partId": "uno",
+          "pinId": "D11"
+        },
+        "to": {
+          "partId": "r3",
+          "pinId": "lead1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w8",
+        "from": {
+          "partId": "r3",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "led3",
+          "pinId": "anode"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w9",
+        "from": {
+          "partId": "led3",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// Traffic light: red D13, yellow D12, green D11.\nconst int redPin = 13;\nconst int yellowPin = 12;\nconst int greenPin = 11;\n\nvoid setup() {\n  pinMode(redPin, OUTPUT);\n  pinMode(yellowPin, OUTPUT);\n  pinMode(greenPin, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(redPin, HIGH);\n  delay(3000);\n  digitalWrite(redPin, LOW);\n\n  digitalWrite(yellowPin, HIGH);\n  delay(1000);\n  digitalWrite(yellowPin, LOW);\n\n  digitalWrite(greenPin, HIGH);\n  delay(3000);\n  digitalWrite(greenPin, LOW);\n}\n",
+  "metadata": {
+    "created_at": "2026-10-25T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "Traffic light"
+}

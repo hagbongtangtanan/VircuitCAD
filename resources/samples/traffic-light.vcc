@@ -1,6 +1,6 @@
 {
   "format": "vircuit-project",
-  "version": 1,
+  "version": 2,
   "circuit": {
     "version": 1,
     "parts": [
@@ -316,5 +316,14 @@
       }
     ]
   },
-  "sketch": "// Traffic light: three LEDs cycle red -> yellow -> green\nstruct Lamp {\n  int pin;\n  const char *name;\n};\n\nLamp lamps[3] = {\n  {13, \"red\"},\n  {12, \"yellow\"},\n  {11, \"green\"},\n};\n\nvoid setup() {\n  for (int i = 0; i < 3; i += 1) {\n    pinMode(lamps[i].pin, OUTPUT);\n  }\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  for (int i = 0; i < 3; i += 1) {\n    digitalWrite(lamps[i].pin, HIGH);\n    Serial.print(lamps[i].name);\n    Serial.println(\" on\");\n    delay(1200);\n    digitalWrite(lamps[i].pin, LOW);\n    delay(200);\n  }\n}\n"
+  "sketch": "// Traffic light: three LEDs cycle red -> yellow -> green\nstruct Lamp {\n  int pin;\n  const char *name;\n};\n\nLamp lamps[3] = {\n  {13, \"red\"},\n  {12, \"yellow\"},\n  {11, \"green\"},\n};\n\nvoid setup() {\n  for (int i = 0; i < 3; i += 1) {\n    pinMode(lamps[i].pin, OUTPUT);\n  }\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  for (int i = 0; i < 3; i += 1) {\n    digitalWrite(lamps[i].pin, HIGH);\n    Serial.print(lamps[i].name);\n    Serial.println(\" on\");\n    delay(1200);\n    digitalWrite(lamps[i].pin, LOW);\n    delay(200);\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-10-23T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 60,
+    "offsetY": 60
+  }
 }

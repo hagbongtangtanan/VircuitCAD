@@ -1,4 +1,5 @@
 import { useMemo, useState, type DragEvent, type JSX } from 'react'
+import { STARTERS } from '../../starters/catalog'
 import { PART_DRAG_MIME } from '../canvas/dnd'
 import { definitionOf, partDefinitions, type PartDefinition } from '../parts/definitions'
 import { screenToWorld, snapPoint } from '../canvas/geometry'
@@ -28,15 +29,23 @@ const CATEGORY_LABELS: Record<(typeof CATEGORY_ORDER)[number], string> = {
   passives: 'Passives',
 }
 
-type PanelSection = 'basic' | 'all' | 'starters'
+type PanelSection = 'basic' | 'all' | 'starters' | (typeof CATEGORY_ORDER)[number]
 
 const SECTION_LABELS: Record<PanelSection, string> = {
   basic: 'Basic',
   all: 'All parts',
+  boards: 'Boards',
+  outputs: 'Outputs',
+  inputs: 'Inputs',
+  passives: 'Passives',
   starters: 'Starters',
 }
 
-export function PartsPanel(): JSX.Element {
+interface PartsPanelProps {
+  readonly onOpenStarters: () => void
+}
+
+export function PartsPanel({ onOpenStarters }: PartsPanelProps): JSX.Element {
   const [section, setSection] = useState<PanelSection>('basic')
   const [query, setQuery] = useState('')
 
@@ -56,7 +65,9 @@ export function PartsPanel(): JSX.Element {
         ? partDefinitions.filter((definition) =>
             BASIC_TYPES.includes(definition.type as (typeof BASIC_TYPES)[number])
           )
-        : partDefinitions
+        : (CATEGORY_ORDER as readonly PanelSection[]).includes(section)
+          ? partDefinitions.filter((definition) => definition.category === section)
+          : partDefinitions
     if (search === '') return pool
     return pool.filter(
       (definition) =>
@@ -155,6 +166,16 @@ export function PartsPanel(): JSX.Element {
       <div className="cb-parts-scroll">
         {section === 'starters' ? (
           <div className="cb-starters" data-testid="samples">
+            <button
+              type="button"
+              className="cb-starter cb-starter-browse"
+              data-testid="open-starters"
+              title="Browse the full starter library"
+              onClick={onOpenStarters}
+            >
+              <span className="cb-starter-title">Browse starter library</span>
+              <span className="cb-starter-file">{STARTERS.length} guided circuits with code</span>
+            </button>
             {samples.length === 0 ? (
               <p className="cb-placeholder">No starter circuits are installed.</p>
             ) : (

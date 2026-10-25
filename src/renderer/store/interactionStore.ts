@@ -19,6 +19,8 @@ export interface InteractionStore {
   readonly dipBits: Readonly<Record<string, readonly boolean[]>>
   /** Pressed key index (0-15) for matrix keypads. */
   readonly keypadKeys: Readonly<Record<string, number>>
+  /** Pressed key index for IR remotes, or null when released. */
+  readonly irKeys: Readonly<Record<string, number | null>>
 
   press(partId: string): void
   release(partId: string): void
@@ -30,6 +32,7 @@ export interface InteractionStore {
   setDipBit(partId: string, bit: number, on: boolean): void
   toggleDipBit(partId: string, bit: number): void
   setKeypadKey(partId: string, key: number | null): void
+  setIrKey(partId: string, key: number | null): void
   reset(): void
 }
 
@@ -40,6 +43,7 @@ export const useInteractionStore = create<InteractionStore>()((set, get) => ({
   sensors: {},
   dipBits: {},
   keypadKeys: {},
+  irKeys: {},
 
   press(partId: string): void {
     if (get().pressed[partId] === true) return
@@ -104,14 +108,32 @@ export const useInteractionStore = create<InteractionStore>()((set, get) => ({
     })
   },
 
+  setIrKey(partId: string, key: number | null): void {
+    set((state) => {
+      const next = { ...state.irKeys }
+      if (key === null) delete next[partId]
+      else next[partId] = key
+      return { irKeys: next }
+    })
+  },
+
   reset(): void {
-    set({ pressed: {}, switches: {}, pots: {}, sensors: {}, dipBits: {}, keypadKeys: {} })
+    set({
+      pressed: {},
+      switches: {},
+      pots: {},
+      sensors: {},
+      dipBits: {},
+      keypadKeys: {},
+      irKeys: {},
+    })
   },
 }))
 
 /** Snapshot in the shape the solver expects; cheap enough to build per frame. */
 export function currentSolveOptions(): SolveOptions {
-  const { pressed, pots, switches, sensors, dipBits, keypadKeys } = useInteractionStore.getState()
+  const { pressed, pots, switches, sensors, dipBits, keypadKeys, irKeys } =
+    useInteractionStore.getState()
   return {
     pressedParts: new Set(
       Object.entries(pressed)
@@ -127,5 +149,6 @@ export function currentSolveOptions(): SolveOptions {
     ),
     dipBits: new Map(Object.entries(dipBits)),
     keypadKeys: new Map(Object.entries(keypadKeys)),
+    irKeys: new Map(Object.entries(irKeys)),
   }
 }
