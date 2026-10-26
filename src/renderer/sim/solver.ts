@@ -39,6 +39,8 @@ export interface SolveOptions {
   readonly irKeys?: ReadonlyMap<string, number | null>
   /** Pressed matrix-keypad key index, row-major from 0 to 15. */
   readonly keypadKeys?: ReadonlyMap<string, number>
+  /** Parts already permanently failed before this solve. */
+  readonly failedParts?: ReadonlySet<string>
 }
 
 export interface SolveResult {
@@ -50,6 +52,8 @@ export interface SolveResult {
   readonly motorCurrents: ReadonlyMap<string, number>
   /** Volts at each net, keyed by netlist net id. */
   readonly netVoltages: ReadonlyMap<number, number>
+  /** Parts permanently damaged by overload or reverse bias during this solve. */
+  readonly failedParts: ReadonlySet<string>
 }
 
 export const LED_FORWARD_VOLTAGE: Readonly<Record<LedColor, number>> = {
@@ -354,6 +358,7 @@ export function solveCircuit(
   const sensors = options.sensorLevels ?? new Map<string, number>()
   const dipBits = options.dipBits ?? new Map<string, readonly boolean[]>()
   const keypadKeys = options.keypadKeys ?? new Map<string, number>()
+  const failedParts = options.failedParts ?? new Set<string>()
   const gateStates = new Map<string, boolean[]>()
   const relayStates = new Map<string, boolean>()
   const transistorStates = new Map<string, boolean>()
@@ -961,6 +966,22 @@ export function solveCircuit(
           mna.addConductance(plus, minus, 1 / BUZZER_RESISTANCE_OHMS)
           break
         }
+        case 'header-8':
+        case 'usb-a':
+          break
+        case 'breadboard':
+        case 'breadboard-mini':
+        case 'breadboard-small':
+          break
+        case '74hc73':
+        case '74hc74':
+        case '74hc75':
+        case '74hc93':
+        case '74hc283':
+        case '74hc595':
+        case '74hc4017':
+        case 'cd4511':
+          break
         default:
           break
       }
@@ -1080,6 +1101,7 @@ export function solveCircuit(
       buzzerCurrents: new Map(),
       motorCurrents: new Map(),
       netVoltages: new Map(),
+      failedParts: new Set(failedParts),
     }
   }
 
@@ -1137,5 +1159,5 @@ export function solveCircuit(
     motorCurrents.set(part.id, (Math.abs(volts) / resistance) * pwmFactor(plus, minus))
   }
 
-  return { ledCurrents: ledCurrentsByPart, buzzerCurrents, motorCurrents, netVoltages }
+  return { ledCurrents: ledCurrentsByPart, buzzerCurrents, motorCurrents, netVoltages, failedParts: new Set(failedParts) }
 }

@@ -84,9 +84,9 @@ export const resistorDefinition: PartDefinition<'resistor'> = {
   type: 'resistor',
   label: 'Resistor',
   category: 'passives',
-  size: { width: 60, height: 20 },
+  size: { width: 30, height: 20 },
   defaultProps: { resistanceOhms: 220 },
-  pins: [pin('lead1', '1', { x: 0, y: 10 }), pin('lead2', '2', { x: 60, y: 10 })],
+  pins: [pin('lead1', '1', { x: 0, y: 10 }), pin('lead2', '2', { x: 30, y: 10 })],
   propFields: [
     {
       kind: 'number',
@@ -106,7 +106,13 @@ export const pushButtonDefinition: PartDefinition<'push-button'> = {
   category: 'inputs',
   size: { width: 40, height: 40 },
   defaultProps: {},
-  pins: [pin('1', '1', { x: 0, y: 20 }), pin('2', '2', { x: 40, y: 20 })],
+  pins: [
+    pin('1A', '1A', { x: 0, y: 0 }),
+    pin('1B', '1B', { x: 0, y: 40 }),
+    pin('2A', '2A', { x: 40, y: 0 }),
+    pin('2B', '2B', { x: 40, y: 40 }),
+  ],
+  internalNets: [['1A', '1B'], ['2A', '2B']],
   propFields: [],
 }
 
@@ -168,9 +174,9 @@ export const diodeDefinition: PartDefinition<'diode'> = {
   type: 'diode',
   label: 'Diode',
   category: 'passives',
-  size: { width: 50, height: 24 },
+  size: { width: 30, height: 24 },
   defaultProps: {},
-  pins: [pin('anode', 'A', { x: 0, y: 12 }), pin('cathode', 'K', { x: 50, y: 12 })],
+  pins: [pin('anode', 'A', { x: 0, y: 12 }), pin('cathode', 'K', { x: 30, y: 12 })],
   propFields: [],
 }
 
@@ -178,9 +184,9 @@ export const inductorDefinition: PartDefinition<'inductor'> = {
   type: 'inductor',
   label: 'Inductor',
   category: 'passives',
-  size: { width: 60, height: 26 },
+  size: { width: 40, height: 26 },
   defaultProps: { inductanceMilliHenries: 10 },
-  pins: [pin('1', '1', { x: 0, y: 13 }), pin('2', '2', { x: 60, y: 13 })],
+  pins: [pin('1', '1', { x: 0, y: 13 }), pin('2', '2', { x: 40, y: 13 })],
   propFields: [
     {
       kind: 'number',
@@ -450,7 +456,7 @@ export const raspberryPiDefinition: PartDefinition<'raspberry-pi'> = {
  * the four power rails. Each column half is one internal net of five holes, and
  * every rail is a single net shared by its 30 holes.
  */
-export const BREADBOARD_COLUMNS = 30
+export const BREADBOARD_COLUMNS = 45
 export const BREADBOARD_TOP_ROWS = ['a', 'b', 'c', 'd', 'e'] as const
 export const BREADBOARD_BOTTOM_ROWS = ['f', 'g', 'h', 'i', 'j'] as const
 
@@ -469,7 +475,7 @@ const BREADBOARD_BOTTOM_MINUS_Y = 200
  * away from where the holes actually are.
  */
 export const BREADBOARD_LAYOUT = {
-  size: { width: 360, height: 220 } satisfies Size,
+  size: { width: 510, height: 220 } satisfies Size,
   firstColumnX: BREADBOARD_FIRST_COLUMN_X,
   columnPitch: BREADBOARD_COLUMN_PITCH,
   rails: [

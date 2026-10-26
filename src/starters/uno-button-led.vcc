@@ -58,7 +58,7 @@
         },
         "to": {
           "partId": "btn1",
-          "pinId": "1"
+          "pinId": "1A"
         },
         "color": "#6fb3ff",
         "waypoints": []
@@ -67,7 +67,7 @@
         "id": "w2",
         "from": {
           "partId": "btn1",
-          "pinId": "2"
+          "pinId": "2A"
         },
         "to": {
           "partId": "uno",

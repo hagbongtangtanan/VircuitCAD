@@ -373,8 +373,8 @@ describe('input and power parts', () => {
         },
       ],
       wires: [
-        { id: 'w1', from: ['uno', '5V'], to: ['btn', '1'] },
-        { id: 'w2', from: ['btn', '2'], to: ['r1', 'lead1'] },
+        { id: 'w1', from: ['uno', '5V'], to: ['btn', '1A'] },
+        { id: 'w2', from: ['btn', '2A'], to: ['r1', 'lead1'] },
         { id: 'w3', from: ['r1', 'lead2'], to: ['led', 'anode'] },
         { id: 'w4', from: ['led', 'cathode'], to: ['uno', 'GND'] },
       ],

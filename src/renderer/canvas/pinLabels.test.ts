@@ -78,7 +78,7 @@ describe('pinLabelBoxes', () => {
     expect(resistorBoxes.get('lead1')?.inside).toBe(false)
     expect(resistorBoxes.get('lead2')?.inside).toBe(false)
     expect((resistorBoxes.get('lead1')?.x ?? 0) < 0).toBe(true)
-    expect((resistorBoxes.get('lead2')?.x ?? 0) > 60).toBe(true)
+    expect((resistorBoxes.get('lead2')?.x ?? 0) > 30).toBe(true)
   })
 
   it('keeps labels aligned and inside the Uno after rotation', () => {

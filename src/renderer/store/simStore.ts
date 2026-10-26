@@ -16,6 +16,7 @@ export interface SimStore {
   /** 0 to 1 rotor speed per DC motor part id. */
   readonly motorSpeed: Readonly<Record<string, number>>
   readonly pinVoltages: Readonly<Record<string, number | null>>
+  readonly failedParts: Readonly<Record<string, boolean>>
 
   start(): Promise<void>
   stop(): void
@@ -46,10 +47,54 @@ function brightnessRecord(frame: SimulationFrame): Record<string, number> {
   return Object.fromEntries(frame.ledBrightness)
 }
 
+let audioContext: AudioContext | null = null
+const buzzers = new Map<string, { readonly oscillator: OscillatorNode; readonly gain: GainNode }>()
+
+function ensureAudio(): AudioContext | null {
+  if (typeof window === 'undefined') return null
+  if (audioContext === null) audioContext = new AudioContext()
+  if (audioContext.state === 'suspended') void audioContext.resume()
+  return audioContext
+}
+
+function updatePiezoAudio(currents: ReadonlyMap<string, number>): void {
+  const context = audioContext
+  if (context === null) return
+  for (const partId of new Set([...buzzers.keys(), ...currents.keys()])) {
+    const current = currents.get(partId) ?? 0
+    if (current > 0.0005) {
+      let entry = buzzers.get(partId)
+      if (entry === undefined) {
+        const oscillator = context.createOscillator()
+        oscillator.type = 'square'
+        oscillator.frequency.value = 1000
+        const gain = context.createGain()
+        gain.gain.value = 0
+        oscillator.connect(gain).connect(context.destination)
+        oscillator.start()
+        entry = { oscillator, gain }
+        buzzers.set(partId, entry)
+      }
+      entry.gain.gain.setTargetAtTime(Math.min(0.12, current * 2.4), context.currentTime, 0.02)
+    } else {
+      const entry = buzzers.get(partId)
+      if (entry !== undefined) entry.gain.gain.setTargetAtTime(0, context.currentTime, 0.04)
+    }
+  }
+}
+
+function stopPiezoAudio(): void {
+  if (audioContext !== null) {
+    for (const entry of buzzers.values()) entry.gain.gain.setTargetAtTime(0, audioContext.currentTime, 0.04)
+  }
+}
+
+
 export const useSimStore = create<SimStore>()((set, get) => {
   function publish(frame: SimulationFrame, force = false): void {
     const now = performance.now()
     const brightness = brightnessRecord(frame)
+    const failedParts = Object.fromEntries([...frame.failedParts].map((id) => [id, true]))
     const signature = [
       ...Object.entries(brightness).map(([partId, value]) => `${partId}:${value.toFixed(3)}`),
       ...Object.entries(frame.motorSpeed).map(
@@ -70,6 +115,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
       ledBrightness: brightness,
       motorSpeed: Object.fromEntries(frame.motorSpeed),
       pinVoltages: Object.fromEntries(frame.pinVoltages),
+      failedParts,
     })
   }
 
@@ -81,7 +127,9 @@ export const useSimStore = create<SimStore>()((set, get) => {
     lastFrameTime = now
     try {
       simulation.runForCycles(Math.round(deltaSeconds * CLOCK_HZ))
-      publish(simulation.frame())
+      const frame = simulation.frame()
+      updatePiezoAudio(frame.buzzerCurrents)
+      publish(frame)
     } catch (error) {
       cancelLoop()
       engine = null
@@ -96,6 +144,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
     cancelLoop()
     engine = null
     lastBrightnessSignature = ''
+    stopPiezoAudio()
   }
 
   return {
@@ -105,6 +154,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
     ledBrightness: {},
     motorSpeed: {},
     pinVoltages: {},
+    failedParts: {},
 
     async start(): Promise<void> {
       if (get().status === 'running') return
@@ -116,6 +166,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
         ledBrightness: {},
         motorSpeed: {},
         pinVoltages: {},
+        failedParts: {},
       })
 
       const sketch = useSketchStore.getState()
@@ -140,6 +191,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
         }
         simulation.readInputs = currentSolveOptions
         simulation.prime()
+        ensureAudio()
         engine = simulation
         lastFrameTime = performance.now()
         lastPublishTime = 0
@@ -156,7 +208,7 @@ export const useSimStore = create<SimStore>()((set, get) => {
     stop(): void {
       if (get().status !== 'running' && get().status !== 'preparing') return
       stopEngine()
-      set({ status: 'stopped', ledBrightness: {}, motorSpeed: {}, pinVoltages: {} })
+      set({ status: 'stopped', ledBrightness: {}, motorSpeed: {}, pinVoltages: {}, failedParts: {} })
     },
 
     async toggle(): Promise<void> {

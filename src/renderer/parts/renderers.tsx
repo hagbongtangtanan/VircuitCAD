@@ -10,6 +10,7 @@ import {
   mixRgbGlow,
 } from './partColors'
 import { resistorBands } from './resistorBands'
+import { useThemeStore } from '../store/themeStore'
 
 function headerStrip(
   pins: readonly PartPin[],
@@ -130,6 +131,7 @@ export function PartBody({
   const outline = selected ? PART_SELECTED_STROKE : PART_BODY_STROKE
   const outlineWidth = selected ? 2 : 1
   const size = definitionOf(part.type).size
+  const lightMode = useThemeStore((state) => state.theme) === 'light'
   const irPressed = useInteractionStore((state) =>
     part.type === 'ir-remote' ? (state.irKeys[part.id] ?? null) : null
   )
@@ -138,20 +140,34 @@ export function PartBody({
     case 'led': {
       const palette = LED_COLORS[part.props.color]
       const glow = Math.min(1, Math.max(0, brightness))
+      const glowRadius = 13 + 9 * glow
       return (
         <>
           {glow > 0.01 && (
-            <Circle
-              x={20}
-              y={16}
-              radius={13 + 9 * glow}
-              fill={palette.glow}
-              opacity={0.4 * glow}
-              shadowColor={palette.glow}
-              shadowBlur={20 * glow}
-              shadowOpacity={0.8 * glow}
-              listening={false}
-            />
+            <>
+              <Circle
+                x={20}
+                y={16}
+                radius={glowRadius}
+                fill={palette.glow}
+                opacity={lightMode ? 0.55 * glow : 0.4 * glow}
+                shadowColor={palette.glow}
+                shadowBlur={lightMode ? 28 * glow : 20 * glow}
+                shadowOpacity={lightMode ? 1 * glow : 0.8 * glow}
+                listening={false}
+              />
+              {lightMode && (
+                <Circle
+                  x={20}
+                  y={16}
+                  radius={glowRadius + 2}
+                  stroke="#0d0a06"
+                  strokeWidth={1.5}
+                  opacity={0.6 * glow}
+                  listening={false}
+                />
+              )}
+            </>
           )}
           <Line points={[10, 40, 10, 26]} stroke={PART_BODY_STROKE} strokeWidth={2} />
           <Line points={[30, 40, 30, 26]} stroke={PART_BODY_STROKE} strokeWidth={2} />
@@ -160,8 +176,11 @@ export function PartBody({
             y={16}
             radius={12}
             fill={palette.body}
-            stroke={outline}
-            strokeWidth={outlineWidth}
+            stroke={selected ? PART_SELECTED_STROKE : lightMode ? '#1a1a1a' : PART_BODY_STROKE}
+            strokeWidth={selected ? 2 : lightMode ? 2 : 1}
+            shadowColor={lightMode ? palette.glow : undefined}
+            shadowBlur={lightMode ? 10 : 0}
+            shadowOpacity={lightMode ? 0.75 * glow : 0}
           />
           <Ellipse
             x={17}
@@ -169,7 +188,7 @@ export function PartBody({
             radiusX={glow > 0.01 ? 6 : 4}
             radiusY={glow > 0.01 ? 5 : 3}
             fill={palette.glow}
-            opacity={glow > 0.01 ? 0.35 + 0.6 * glow : 0.85}
+            opacity={glow > 0.01 ? (lightMode ? 0.5 + 0.5 * glow : 0.35 + 0.6 * glow) : 0.85}
           />
           <Line points={[28, 24, 33, 28]} stroke={PART_BODY_STROKE} strokeWidth={2} />
           <Line
@@ -188,12 +207,12 @@ export function PartBody({
       const bands = resistorBands(part.props.resistanceOhms)
       return (
         <>
-          <Line points={[0, 10, 12, 10]} stroke={PART_BODY_STROKE} strokeWidth={2} />
-          <Line points={[48, 10, 60, 10]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Line points={[0, 10, 6, 10]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Line points={[24, 10, 30, 10]} stroke={PART_BODY_STROKE} strokeWidth={2} />
           <Rect
-            x={12}
+            x={6}
             y={2}
-            width={36}
+            width={18}
             height={16}
             cornerRadius={5}
             fill="#d8cfae"
@@ -203,9 +222,9 @@ export function PartBody({
           {bands.map((color, index) => (
             <Rect
               key={`${color}-${index}`}
-              x={18 + index * 7}
+              x={7 + index * 4.5}
               y={3}
-              width={4}
+              width={3.5}
               height={14}
               fill={color}
             />
@@ -335,21 +354,21 @@ export function PartBody({
       // Axial package with the silver cathode band on the right.
       return (
         <>
-          <Line points={[0, 12, 14, 12]} stroke={PART_BODY_STROKE} strokeWidth={2} />
-          <Line points={[36, 12, 50, 12]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Line points={[0, 12, 8, 12]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Line points={[22, 12, 30, 12]} stroke={PART_BODY_STROKE} strokeWidth={2} />
           <Rect
-            x={14}
+            x={8}
             y={4}
-            width={22}
+            width={14}
             height={16}
             cornerRadius={4}
             fill="#232833"
             stroke={outline}
             strokeWidth={outlineWidth}
           />
-          <Rect x={31} y={4} width={5} height={16} fill="#c9d0da" />
+          <Rect x={19} y={4} width={5} height={16} fill="#c9d0da" />
           <Line
-            points={[17, 7, 17, 17]}
+            points={[11, 7, 11, 17]}
             stroke="#ffffff"
             opacity={0.16}
             strokeWidth={2}
@@ -362,24 +381,24 @@ export function PartBody({
       // Axial choke: dark ferrite core with copper windings around it.
       return (
         <>
-          <Line points={[0, 13, 12, 13]} stroke={PART_BODY_STROKE} strokeWidth={2} />
-          <Line points={[48, 13, 60, 13]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Line points={[0, 13, 8, 13]} stroke={PART_BODY_STROKE} strokeWidth={2} />
+          <Line points={[32, 13, 40, 13]} stroke={PART_BODY_STROKE} strokeWidth={2} />
           <Rect
-            x={12}
+            x={8}
             y={5}
-            width={36}
+            width={24}
             height={16}
             cornerRadius={6}
             fill="#3a2f28"
             stroke={outline}
             strokeWidth={outlineWidth}
           />
-          {[0, 1, 2, 3, 4, 5].map((index) => (
+          {[0, 1, 2, 3, 4].map((index) => (
             <Ellipse
               key={`winding-${index}`}
-              x={15 + index * 6}
+              x={11 + index * 5}
               y={13}
-              radiusX={2.4}
+              radiusX={2}
               radiusY={8}
               stroke="#c8864a"
               strokeWidth={2}
@@ -387,7 +406,7 @@ export function PartBody({
             />
           ))}
           <Line
-            points={[16, 7, 44, 7]}
+            points={[12, 7, 28, 7]}
             stroke="#ffffff"
             opacity={0.16}
             strokeWidth={1.5}
@@ -1001,7 +1020,9 @@ export function PartBody({
           )}
           <Shape
             listening={false}
-            fill="#948f83"
+            fill="#1e3a6b"
+            stroke="#102447"
+            strokeWidth={0.6}
             sceneFunc={(context, shape) => {
               const hole = 1.5
               for (let column = 0; column < BREADBOARD_COLUMNS; column += 1) {
@@ -2413,7 +2434,7 @@ export function PartBody({
               x={item.position.x}
               y={item.position.y}
               radius={1.8}
-              fill="#4a5160"
+              fill="#1e3a6b"
             />
           ))}
           <Line

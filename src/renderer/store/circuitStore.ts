@@ -18,6 +18,12 @@ import { GRID_SIZE, snapPoint } from '../canvas/geometry'
 import { definitionOf } from '../parts/definitions'
 import { createHistory } from './history'
 
+const BREADBOARD_TYPES: ReadonlySet<PartType> = new Set<PartType>([
+  'breadboard',
+  'breadboard-small',
+  'breadboard-mini',
+])
+
 export { DEFAULT_WIRE_COLOR } from '../../shared/wireColors'
 
 function createId(prefix: string): string {
@@ -70,6 +76,7 @@ export interface CircuitStore {
   setWireWaypoints(id: string, waypoints: readonly Point[]): void
   /** Live update during a handle drag; recorded by the transient edit. */
   dragWireWaypoints(id: string, waypoints: readonly Point[]): void
+  cleanupBreadboardWires(partId: string): void
 
   undo(): void
   redo(): void
@@ -467,6 +474,55 @@ export const useCircuitStore = create<CircuitStore>()((set, get) => {
         wire.id === id ? { ...wire, waypoints: [...waypoints] } : wire
       )
       set({ document: { ...document, wires } })
+    },
+
+    /** Remove wires connecting the given part to breadboard pins if the part is no longer near the breadboard. */
+    cleanupBreadboardWires(partId: string): void {
+      const { document } = get()
+      const part = document.parts.find((p) => p.id === partId)
+      if (!part) return
+
+      const definition = definitionOf(part.type)
+      if (definition.pins.length === 0) return
+
+      const breadboards = document.parts.filter((p) => BREADBOARD_TYPES.has(p.type))
+      if (breadboards.length === 0) return
+
+      const wiresToKeep = document.wires.filter((wire) => {
+        const fromPart = document.parts.find((p) => p.id === wire.from.partId)
+        const toPart = document.parts.find((p) => p.id === wire.to.partId)
+        const fromIsBreadboard = fromPart && BREADBOARD_TYPES.has(fromPart.type)
+        const toIsBreadboard = toPart && BREADBOARD_TYPES.has(toPart.type)
+        const involvesThisPart = wire.from.partId === partId || wire.to.partId === partId
+
+        if (!involvesThisPart) return true
+        if (!fromIsBreadboard && !toIsBreadboard) return true
+
+        const breadboardPart = fromIsBreadboard ? fromPart! : toPart!
+        const boardDefinition = definitionOf(breadboardPart.type)
+
+        // Disconnect a component's breadboard wires only when the whole part is
+        // outside the physical footprint of the board it was connected to.
+        const partLeft = part.position.x
+        const partRight = partLeft + definition.size.width
+        const partTop = part.position.y
+        const partBottom = partTop + definition.size.height
+        const boardLeft = breadboardPart.position.x
+        const boardRight = boardLeft + boardDefinition.size.width
+        const boardTop = breadboardPart.position.y
+        const boardBottom = boardTop + boardDefinition.size.height
+
+        return !(
+          partRight <= boardLeft ||
+          partLeft >= boardRight ||
+          partBottom <= boardTop ||
+          partTop >= boardBottom
+        )
+      })
+
+      if (wiresToKeep.length !== document.wires.length) {
+        commit({ ...document, wires: wiresToKeep })
+      }
     },
 
     undo(): void {

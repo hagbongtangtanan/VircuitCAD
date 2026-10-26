@@ -1,7 +1,10 @@
-import type { Point, Rotation } from '../../shared/circuit'
+import type { Point, Rotation, PartType } from '../../shared/circuit'
 
 /** One grid square, in world units. Everything snaps to this. */
 export const GRID_SIZE = 10
+
+/** Breadboard hole grid pitch (0.1 inch = 10 units). */
+export const BREADBOARD_PITCH = 10
 
 export interface Size {
   readonly width: number
@@ -31,6 +34,126 @@ export function snapToGrid(value: number, grid: number = GRID_SIZE): number {
 
 export function snapPoint(point: Point, grid: number = GRID_SIZE): Point {
   return { x: snapToGrid(point.x, grid), y: snapToGrid(point.y, grid) }
+}
+
+/**
+ * Tries to align a component's pins to breadboard holes.
+ * Returns the adjusted top-left position if a good alignment is found,
+ * otherwise returns the original position snapped to the canvas grid.
+ */
+export function snapToBreadboard(
+  partTopLeft: Point,
+  partPins: readonly { id: string; position: Point }[],
+  breadboards: readonly { id: string; type: PartType; position: Point; rotation: number }[],
+  getBoardPins: (boardType: PartType) => readonly { id: string; position: Point }[]
+): Point {
+  if (breadboards.length === 0) return snapPoint(partTopLeft)
+
+  // Quick check: only attempt snapping if component is near a breadboard
+  // This prevents snapping back to the breadboard when dragging far away
+  const MAX_SNAP_DISTANCE = 80
+  let nearAnyBreadboard = false
+  for (const board of breadboards) {
+    const boardPins = getBoardPins(board.type)
+    if (boardPins.length === 0) continue
+
+    // Find breadboard bounds
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
+    for (const bp of boardPins) {
+      const wx = board.position.x + bp.position.x
+      const wy = board.position.y + bp.position.y
+      minX = Math.min(minX, wx)
+      maxX = Math.max(maxX, wx)
+      minY = Math.min(minY, wy)
+      maxY = Math.max(maxY, wy)
+    }
+
+    // Find component bounds
+    let partMinX = Infinity, partMaxX = -Infinity, partMinY = Infinity, partMaxY = -Infinity
+    for (const pp of partPins) {
+      const wx = partTopLeft.x + pp.position.x
+      const wy = partTopLeft.y + pp.position.y
+      partMinX = Math.min(partMinX, wx)
+      partMaxX = Math.max(partMaxX, wx)
+      partMinY = Math.min(partMinY, wy)
+      partMaxY = Math.max(partMaxY, wy)
+    }
+
+    // Check if bounding boxes are close enough
+    const dx = Math.max(0, Math.max(minX - partMaxX, partMinX - maxX))
+    const dy = Math.max(0, Math.max(minY - partMaxY, partMinY - maxY))
+    const dist = Math.hypot(dx, dy)
+
+    if (dist <= MAX_SNAP_DISTANCE) {
+      nearAnyBreadboard = true
+      break
+    }
+  }
+
+  if (!nearAnyBreadboard) {
+    return snapPoint(partTopLeft)
+  }
+
+  let bestPosition = partTopLeft
+  let bestScore = Number.POSITIVE_INFINITY
+  let bestDistanceToOriginal = Number.POSITIVE_INFINITY
+
+  for (const board of breadboards) {
+    const boardPins = getBoardPins(board.type)
+    if (boardPins.length === 0) continue
+
+    // For each breadboard, try to align the component
+    // We need to find an offset such that component pins land on breadboard holes
+    for (const partPin of partPins) {
+      for (const boardPin of boardPins) {
+        const boardPinWorld = { x: board.position.x + boardPin.position.x, y: board.position.y + boardPin.position.y }
+
+        // Calculate the offset needed to align this part pin to this board pin
+        const candidateTopLeft = {
+          x: boardPinWorld.x - partPin.position.x,
+          y: boardPinWorld.y - partPin.position.y,
+        }
+
+        // Score this alignment: sum of distances from all part pins to nearest board holes
+        let score = 0
+        let alignedPins = 0
+        for (const pp of partPins) {
+          const pw = { x: candidateTopLeft.x + pp.position.x, y: candidateTopLeft.y + pp.position.y }
+          let minDist = Number.POSITIVE_INFINITY
+          for (const bp of boardPins) {
+            const bw = { x: board.position.x + bp.position.x, y: board.position.y + bp.position.y }
+            const dist = Math.hypot(bw.x - pw.x, bw.y - pw.y)
+            if (dist < minDist) minDist = dist
+          }
+          if (minDist <= 0.001) { // exact hole alignment
+            alignedPins += 1
+            score += minDist
+          } else {
+            score += 100 // penalty for unaligned pins
+          }
+        }
+
+        // Prefer alignments with more aligned pins and lower total distance
+        const effectiveScore = score + (partPins.length - alignedPins) * 50
+
+        // Tiebreaker: prefer alignment closest to the original drop position
+        const distToOriginal = Math.hypot(candidateTopLeft.x - partTopLeft.x, candidateTopLeft.y - partTopLeft.y)
+
+        if (effectiveScore < bestScore || (effectiveScore === bestScore && distToOriginal < bestDistanceToOriginal)) {
+          bestScore = effectiveScore
+          bestDistanceToOriginal = distToOriginal
+          bestPosition = candidateTopLeft
+        }
+      }
+    }
+  }
+
+  // If we found a good alignment (at least one pin aligned), snap to it
+  if (bestScore < 100) {
+    return bestPosition
+  }
+
+  return snapPoint(partTopLeft)
 }
 
 /**

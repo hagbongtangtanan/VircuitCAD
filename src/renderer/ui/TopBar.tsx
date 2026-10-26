@@ -33,6 +33,7 @@ function FileMenu({ onShowTour, onOpenStarters, onShowShortcuts }: FileMenuProps
   const newProject = useProjectStore((state) => state.newProject)
   const openProject = useProjectStore((state) => state.open)
   const saveProject = useProjectStore((state) => state.save)
+  const saveProjectAs = useProjectStore((state) => state.saveAs)
   const exportSketch = useProjectStore((state) => state.exportSketch)
   const exportHex = useProjectStore((state) => state.exportHex)
   const exportPng = useProjectStore((state) => state.exportPng)
@@ -108,6 +109,15 @@ function FileMenu({ onShowTour, onOpenStarters, onShowShortcuts }: FileMenuProps
             onClick={() => run(saveProject)}
           >
             Save
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            data-testid="file-save-as"
+            disabled={busy}
+            onClick={() => run(saveProjectAs)}
+          >
+            Save As…
           </button>
           <span className="cb-menu-separator" role="separator" />
           <button
@@ -313,7 +323,7 @@ export function TopBar({
           onChange={(event) => {
             const value = event.target.value
             setTitleDraft(value)
-            if (value.trim() !== '') rename(value)
+            rename(value)
           }}
           onBlur={(event) => commitTitle(event.target.value)}
           onKeyDown={(event) => {

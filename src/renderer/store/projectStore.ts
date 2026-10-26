@@ -44,6 +44,7 @@ export interface ProjectStore {
   newProject(): void
   rename(name: string): void
   save(): Promise<void>
+  saveAs(): Promise<void>
   exportSketch(): Promise<void>
   exportHex(): Promise<void>
   exportPng(): Promise<void>
@@ -57,6 +58,7 @@ export interface ProjectStore {
  */
 let savedCircuit: CircuitDocument = useCircuitStore.getState().document
 let savedSource: string = useSketchStore.getState().source
+let savedName: string = DEFAULT_PROJECT_NAME
 
 function errorMessage(error: unknown): string {
   const raw = error instanceof Error ? error.message : String(error)
@@ -72,12 +74,29 @@ export function updateWindowTitle(name: string, dirty: boolean): void {
   document.title = `${dirty ? '• ' : ''}${name} — ${APP_NAME}`
 }
 
+function computeDirty(): boolean {
+  return (
+    useCircuitStore.getState().document !== savedCircuit ||
+    useSketchStore.getState().source !== savedSource ||
+    normalizeProjectName(useProjectStore.getState().name) !== savedName
+  )
+}
+
+function syncDirty(): void {
+  const dirty = computeDirty()
+  if (dirty !== useProjectStore.getState().dirty) {
+    useProjectStore.setState({ dirty })
+    updateWindowTitle(useProjectStore.getState().name, dirty)
+  }
+}
+
 export const useProjectStore = create<ProjectStore>()((set, get) => {
   function markSaved(name: string): void {
     savedCircuit = useCircuitStore.getState().document
     savedSource = useSketchStore.getState().source
-    set({ name, dirty: false })
-    updateWindowTitle(name, false)
+    savedName = normalizeProjectName(name)
+    set({ name: savedName, dirty: false })
+    updateWindowTitle(savedName, false)
   }
 
   function applyOpened(opened: OpenFileResult, label?: string): void {
@@ -232,11 +251,8 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
     },
 
     rename(name: string): void {
-      const next = normalizeProjectName(name)
-      if (next === get().name) return
-      // A different name means the document no longer matches what is on disk.
-      set({ name: next, dirty: true })
-      updateWindowTitle(next, true)
+      set({ name: normalizeProjectName(name) })
+      syncDirty()
     },
 
     async save(): Promise<void> {
@@ -256,8 +272,38 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
         const saved = await window.api.saveProject({ project, path: get().path })
         if (saved === null) return
 
+        const nameFromFile = fileStem(saved.path)
         set({ path: saved.path, createdAt })
-        markSaved(name)
+        markSaved(nameFromFile)
+        set({ error: null })
+        notify('success', 'Project saved', `Saved as ${fileBaseName(saved.path)}`)
+      } catch (error) {
+        fail('Could not save project', error)
+      } finally {
+        set({ busy: false })
+      }
+    },
+
+    async saveAs(): Promise<void> {
+      if (get().busy) return
+      set({ busy: true, error: null })
+      try {
+        const name = get().name
+        const createdAt = get().createdAt ?? new Date().toISOString()
+        const project = createProject({
+          name,
+          circuit: useCircuitStore.getState().document,
+          sketch: useSketchStore.getState().source,
+          createdAt,
+          appVersion: currentAppVersion(),
+          viewport: useViewportStore.getState().viewport,
+        })
+        const saved = await window.api.saveProject({ project, path: null })
+        if (saved === null) return
+
+        const nameFromFile = fileStem(saved.path)
+        set({ path: saved.path, createdAt })
+        markSaved(nameFromFile)
         set({ error: null })
         notify('success', 'Project saved', `Saved as ${fileBaseName(saved.path)}`)
       } catch (error) {
@@ -334,20 +380,10 @@ export const useProjectStore = create<ProjectStore>()((set, get) => {
   }
 })
 
-useCircuitStore.subscribe((state, previous) => {
-  if (state.document === previous.document) return
-  const dirty = state.document !== savedCircuit
-  if (dirty !== useProjectStore.getState().dirty) {
-    useProjectStore.setState({ dirty })
-    updateWindowTitle(useProjectStore.getState().name, dirty)
-  }
+useCircuitStore.subscribe(() => {
+  syncDirty()
 })
 
-useSketchStore.subscribe((state, previous) => {
-  if (state.source === previous.source) return
-  const dirty = state.source !== savedSource
-  if (dirty !== useProjectStore.getState().dirty) {
-    useProjectStore.setState({ dirty })
-    updateWindowTitle(useProjectStore.getState().name, dirty)
-  }
+useSketchStore.subscribe(() => {
+  syncDirty()
 })

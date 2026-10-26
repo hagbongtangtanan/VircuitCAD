@@ -468,17 +468,17 @@ function InputPreview({ type }: { readonly type: PartType }): JSX.Element {
           [79, 28, 96, 28],
         ])}
         <rect
-          x={17}
-          y={17}
-          width={62}
-          height={27}
+          x={32}
+          y={16}
+          width={32}
+          height={24}
           rx={4}
-          fill="#34465e"
+          fill="#3b4252"
           stroke={INK}
           strokeWidth={1.3}
         />
-        <circle cx={48} cy={28} r={11} fill="#111b28" stroke="#617a95" strokeWidth={1.4} />
-        <circle cx={45} cy={24} r={3.2} fill="#ffffff" opacity={0.2} />
+        <circle cx={48} cy={28} r={8} fill="#4a5468" stroke="#617a95" strokeWidth={1.4} />
+        <circle cx={45} cy={24} r={2.5} fill="#ffffff" opacity={0.22} />
       </>
     )
   }

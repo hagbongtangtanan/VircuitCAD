@@ -12,6 +12,8 @@ import {
   type Point,
 } from '../../shared/circuit'
 import { definitionOf, pinWorldPosition } from '../parts/definitions'
+import { NOTE_WIDTH, noteHeight } from '../canvas/notes'
+
 import { PartBody } from '../parts/renderers'
 import { NoteNode } from './NoteNode'
 import { PIN_ACTIVE_FILL, PIN_FILL, PIN_HOVER_FILL } from '../parts/partColors'
@@ -31,6 +33,7 @@ import {
   roundedPolylinePath,
   screenToWorld,
   snapPoint,
+  snapToBreadboard,
   snapWirePoint,
   wireRoute,
   type Size,
@@ -92,6 +95,7 @@ interface PinMarkerProps {
   readonly showLabel: boolean
   readonly labelBox: PinLabelBox | null
   readonly pinStyle?: 'header'
+  readonly partType?: string
   readonly state: 'idle' | 'hovered' | 'active' | 'target'
   readonly connectedColor: string | null
   readonly onHover: (ref: PinRef | null) => void
@@ -117,7 +121,9 @@ function PinMarker(props: PinMarkerProps): JSX.Element {
           ? PIN_HOVER_FILL
           : header
             ? HEADER_PIN_FILL
-            : PIN_FILL)
+            : props.partType?.startsWith('breadboard') === true
+              ? '#1e3a6b'
+              : PIN_FILL)
   // Pin dots and labels keep a constant on-screen size, like Tinkercad.
   const radius = 4 / props.scale
   const pinSize = 8 / props.scale
@@ -216,6 +222,12 @@ interface PartNodeProps {
   readonly partId: string
   readonly selected: boolean
   readonly routing: boolean
+  readonly breadboards: readonly { id: string; type: PartType; position: Point; rotation: number }[]
+  readonly setDragBreadboardSnap: (snap: {
+    partId: string
+    targetTopLeft: Point
+    connections: readonly { partPinId: string; boardPinId: string; boardId: string; boardPinPos: Point }[]
+  } | null) => void
 }
 
 function PartNode(props: PartNodeProps): JSX.Element | null {
@@ -233,6 +245,7 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
   const press = useInteractionStore((state) => state.press)
   const release = useInteractionStore((state) => state.release)
   const motorSpeed = useSimStore((state) => state.motorSpeed[props.partId] ?? 0)
+  const burned = useSimStore((state) => state.failedParts[props.partId] === true)
   const elapsedMs = useSimStore((state) => state.elapsedMs)
   const channels = useSimStore(
     useShallow((state) => {
@@ -252,6 +265,45 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
 
   const definition = definitionOf(part.type)
   const { width, height } = definition.size
+  const partPins = definition.pins
+
+  // Compute breadboard snap target during drag
+  const computeBreadboardSnap = (topLeft: Point) => {
+    if (props.breadboards.length === 0) return null
+    const targetTopLeft = snapToBreadboard(
+      topLeft,
+      partPins,
+      props.breadboards,
+      (boardType: PartType) => definitionOf(boardType).pins
+    )
+    // Check if any pins would connect
+    const connections: { partPinId: string; boardPinId: string; boardId: string; boardPinPos: Point }[] = []
+    for (const partPin of partPins) {
+      const pinPos = { x: targetTopLeft.x + partPin.position.x, y: targetTopLeft.y + partPin.position.y }
+      let nearest: { boardId: string; boardPinId: string; boardPinPos: Point; distance: number } | null = null
+      for (const board of props.breadboards) {
+        for (const boardPin of definitionOf(board.type).pins) {
+          const hole = { x: board.position.x + boardPin.position.x, y: board.position.y + boardPin.position.y }
+          const distance = Math.hypot(hole.x - pinPos.x, hole.y - pinPos.y)
+          if (nearest === null || distance < nearest.distance) {
+            nearest = { boardId: board.id, boardPinId: boardPin.id, boardPinPos: hole, distance }
+          }
+        }
+      }
+      if (nearest !== null && nearest.distance <= 0.001) {
+        connections.push({
+          partPinId: partPin.id,
+          boardPinId: nearest.boardPinId,
+          boardId: nearest.boardId,
+          boardPinPos: nearest.boardPinPos,
+        })
+      }
+    }
+    if (connections.length >= 2) {
+      return { partId: part.id, targetTopLeft, connections }
+    }
+    return null
+  }
 
   return (
     <Group
@@ -262,17 +314,85 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
       rotation={part.rotation}
       scaleX={part.flipX === true ? -1 : 1}
       scaleY={part.flipY === true ? -1 : 1}
+      opacity={burned ? 0.45 : 1}
       draggable={!props.routing}
       onDragStart={() => {
         beginTransientEdit()
       }}
       onDragMove={(event) => {
-        movePart(part.id, { x: event.target.x() - width / 2, y: event.target.y() - height / 2 })
+        const topLeft = { x: event.target.x() - width / 2, y: event.target.y() - height / 2 }
+        movePart(part.id, topLeft)
+        const snap = computeBreadboardSnap(topLeft)
+        props.setDragBreadboardSnap(snap)
       }}
       onDragEnd={(event) => {
         const topLeft = { x: event.target.x() - width / 2, y: event.target.y() - height / 2 }
-        movePart(part.id, snapPoint(topLeft))
+        const snap = computeBreadboardSnap(topLeft)
+        const finalTopLeft = snap?.targetTopLeft ?? snapPoint(topLeft)
+        movePart(part.id, finalTopLeft)
+
+        // Auto-connect pins that align with breadboard holes. If a part pin is
+        // already wired to a different breadboard hole, move that wire instead
+        // of leaving it locked to the old location.
+        if (snap !== null) {
+          const { document, addWire, setWireEndpoint } = useCircuitStore.getState()
+          for (const conn of snap.connections) {
+            const partRef = { partId: part.id, pinId: conn.partPinId }
+            const boardRef = { partId: conn.boardId, pinId: conn.boardPinId }
+            const existing = document.wires.find((wire) => {
+              const fromPart = wire.from.partId === part.id && wire.from.pinId === conn.partPinId
+              const toPart = wire.to.partId === part.id && wire.to.pinId === conn.partPinId
+              if (!fromPart && !toPart) return false
+              const other = fromPart ? wire.to : wire.from
+              const otherPart = document.parts.find((candidate) => candidate.id === other.partId)
+              return otherPart !== undefined && BREADBOARD_TYPES.has(otherPart.type)
+            })
+            if (existing !== undefined) {
+              const end = existing.from.partId === part.id ? 'to' : 'from'
+              const other = end === 'to' ? existing.from : existing.to
+              if (!refsEqual(other, boardRef)) {
+                setWireEndpoint(existing.id, end, boardRef)
+              }
+            } else {
+              addWire(partRef, boardRef)
+            }
+          }
+        } else {
+          // Fallback: check for nearby holes even without perfect alignment
+          const { document, addWire } = useCircuitStore.getState()
+          const breadboards = document.parts.filter(
+            (candidate) => candidate.type.startsWith('breadboard')
+          )
+          if (breadboards.length > 0) {
+            const moved = document.parts.find((candidate) => candidate.id === part.id)
+            if (moved !== undefined) {
+              const pins = definitionOf(part.type).pins
+              for (const partPin of pins) {
+                const pinPosition = pinWorldPosition(moved, partPin.id)
+                let nearest: { partId: string; pinId: string; distance: number } | null = null
+                for (const board of breadboards) {
+                  for (const boardPin of definitionOf(board.type as PartType).pins) {
+                    const hole = pinWorldPosition(board, boardPin.id)
+                    const distance = Math.hypot(hole.x - pinPosition.x, hole.y - pinPosition.y)
+                    if (nearest === null || distance < nearest.distance) {
+                      nearest = { partId: board.id, pinId: boardPin.id, distance }
+                    }
+                  }
+                }
+                if (nearest !== null && nearest.distance <= 0.001) {
+                  addWire(
+                    { partId: part.id, pinId: partPin.id },
+                    { partId: nearest.partId, pinId: nearest.pinId }
+                  )
+                }
+              }
+            }
+          }
+        }
+
+        props.setDragBreadboardSnap(null)
         commitTransientEdit()
+        useCircuitStore.getState().cleanupBreadboardWires(part.id)
       }}
       onMouseDown={(event) => {
         if (event.evt.button !== 0 || props.routing) return
@@ -297,6 +417,27 @@ function PartNode(props: PartNodeProps): JSX.Element | null {
         spin={spin}
         dipBits={dipBits}
       />
+      {burned && (
+        <Group opacity={0.72}>
+          {Array.from({ length: 16 }, (_, index) => {
+            const cycle = 900 + (index % 5) * 260
+            const phase = (elapsedMs % cycle) / cycle
+            const angle = index * 0.82 + phase * 0.35
+            const distance = 14 + (index % 5) * 5 + phase * 18
+            return (
+              <Circle
+                key={index}
+                x={Math.cos(angle) * distance}
+                y={-phase * 46 - (index % 4) * 4}
+                radius={7 + phase * 13 + (index % 3) * 2}
+                fill={index % 2 === 0 ? '#9ca3af' : '#d4d4d4'}
+                opacity={0.48 * (1 - phase * 0.35)}
+                listening={false}
+              />
+            )
+          })}
+        </Group>
+      )}
     </Group>
   )
 }
@@ -351,6 +492,7 @@ function PartPins(props: PartPinsProps): JSX.Element | null {
             showLabel={showLabels}
             labelBox={labelBoxes?.get(pin.id) ?? null}
             pinStyle={definition.pinStyle}
+            partType={part.type}
             state={state}
             connectedColor={props.connectedColors.get(pinKey(ref)) ?? null}
             onHover={props.onHoverPin}
@@ -627,7 +769,14 @@ export function CircuitCanvas(): JSX.Element {
   const [isSpaceDown, setIsSpaceDown] = useState(false)
   const [isCtrlDown, setIsCtrlDown] = useState(false)
   const [isPanning, setIsPanning] = useState(false)
+  const [dragBreadboardSnap, setDragBreadboardSnap] = useState<{
+    partId: string
+    targetTopLeft: Point
+    connections: readonly { partPinId: string; boardPinId: string; boardId: string; boardPinPos: Point }[]
+  } | null>(null)
   const panStart = useRef<{ pointer: Point; offsetX: number; offsetY: number } | null>(null)
+  const pointerRafRef = useRef<number | null>(null)
+  const latestPointerRef = useRef<Point | null>(null)
 
   const viewport = useViewportStore((state) => state.viewport)
   const setCanvasSize = useViewportStore((state) => state.setSize)
@@ -648,8 +797,54 @@ export function CircuitCanvas(): JSX.Element {
   }, [wires])
   // Breadboards are the mounting surface: their body and holes sit below every
   // component, so a part dropped on top is never hidden by the hole markers.
-  const breadboards = parts.filter((part) => BREADBOARD_TYPES.has(part.type))
+  const breadboards = parts.filter((part) => BREADBOARD_TYPES.has(part.type)) as Array<{
+    id: string
+    type: PartType
+    position: Point
+    rotation: number
+  }>
   const components = parts.filter((part) => !BREADBOARD_TYPES.has(part.type))
+
+  // Viewport culling: only render elements inside the current view
+  const worldTopLeft = useMemo(() => screenToWorld({ x: 0, y: 0 }, viewport), [viewport])
+  const worldBottomRight = useMemo(() => screenToWorld({ x: size.width, y: size.height }, viewport), [viewport, size])
+
+  type CullablePart = { id: string; type: PartType; position: Point; rotation: number }
+  const partVisible = useCallback((part: CullablePart) => {
+    const def = definitionOf(part.type)
+    const minX = part.position.x
+    const minY = part.position.y
+    const maxX = minX + def.size.width
+    const maxY = minY + def.size.height
+    return !(maxX < worldTopLeft.x || minX > worldBottomRight.x || maxY < worldTopLeft.y || minY > worldBottomRight.y)
+  }, [worldTopLeft, worldBottomRight])
+
+  const wireVisible = useCallback((wire: typeof wires[0]) => {
+    const fromPart = parts.find(p => p.id === wire.from.partId)
+    const toPart = parts.find(p => p.id === wire.to.partId)
+    if (!fromPart || !toPart) return false
+    const fromPos = pinWorldPosition(fromPart, wire.from.pinId)
+    const toPos = pinWorldPosition(toPart, wire.to.pinId)
+    const minX = Math.min(fromPos.x, toPos.x, ...wire.waypoints.map(w => w.x))
+    const maxX = Math.max(fromPos.x, toPos.x, ...wire.waypoints.map(w => w.x))
+    const minY = Math.min(fromPos.y, toPos.y, ...wire.waypoints.map(w => w.y))
+    const maxY = Math.max(fromPos.y, toPos.y, ...wire.waypoints.map(w => w.y))
+    return !(maxX < worldTopLeft.x || minX > worldBottomRight.x || maxY < worldTopLeft.y || minY > worldBottomRight.y)
+  }, [worldTopLeft, worldBottomRight, parts])
+
+  const noteVisible = useCallback((note: typeof notes[0]) => {
+    const w = NOTE_WIDTH
+    const h = noteHeight(note.text)
+    return !(note.position.x + w < worldTopLeft.x || note.position.x > worldBottomRight.x ||
+             note.position.y + h < worldTopLeft.y || note.position.y > worldBottomRight.y)
+  }, [worldTopLeft, worldBottomRight])
+
+  const visibleBreadboards = useMemo(() => breadboards.filter(partVisible), [breadboards, partVisible])
+  const visibleComponents = useMemo(() => components.filter(partVisible), [components, partVisible])
+  const visibleNotes = useMemo(() => notes.filter(noteVisible), [notes, noteVisible])
+  const visibleWires = useMemo(() => wires.filter(wireVisible), [wires, wireVisible])
+
+
   const selectedPartIds = useCircuitStore((state) => state.selectedPartIds)
   const addPart = useCircuitStore((state) => state.addPart)
   const addWire = useCircuitStore((state) => state.addWire)
@@ -739,6 +934,16 @@ export function CircuitCanvas(): JSX.Element {
     }
   }, [endPan])
 
+  // Cancel pending requestAnimationFrame on unmount
+  useEffect(() => {
+    return () => {
+      if (pointerRafRef.current !== null) {
+        cancelAnimationFrame(pointerRafRef.current)
+        pointerRafRef.current = null
+      }
+    }
+  }, [])
+
   const handleStageMouseDown = useCallback(
     (event: KonvaEventObject<MouseEvent>): void => {
       const stage = event.target.getStage()
@@ -825,7 +1030,15 @@ export function CircuitCanvas(): JSX.Element {
       panStart.current = { ...panning, pointer }
       return
     }
-    setPointerWorld(pointerInWorld())
+    // Throttle pointerWorld updates with requestAnimationFrame
+    latestPointerRef.current = pointerInWorld()
+    if (pointerRafRef.current === null) {
+      pointerRafRef.current = requestAnimationFrame(() => {
+        pointerRafRef.current = null
+        const p = latestPointerRef.current
+        if (p !== null) setPointerWorld(p)
+      })
+    }
   }, [panBy, pointerInWorld])
 
   const handleAddWaypoint = useCallback(
@@ -1053,12 +1266,14 @@ export function CircuitCanvas(): JSX.Element {
           scaleX={viewport.scale}
           scaleY={viewport.scale}
         >
-          {breadboards.map((part) => (
+          {visibleBreadboards.map((part) => (
             <PartNode
               key={part.id}
               partId={part.id}
               selected={selectedPartIds.includes(part.id)}
               routing={draft !== null}
+              breadboards={[]}
+              setDragBreadboardSnap={() => {}}
             />
           ))}
         </Layer>
@@ -1071,7 +1286,7 @@ export function CircuitCanvas(): JSX.Element {
           scaleX={viewport.scale}
           scaleY={viewport.scale}
         >
-          {breadboards.map((part) => (
+          {visibleBreadboards.map((part) => (
             <PartPins
               key={part.id}
               partId={part.id}
@@ -1084,6 +1299,24 @@ export function CircuitCanvas(): JSX.Element {
               onPointerDownPin={handlePointerDownPin}
             />
           ))}
+          {/* Breadboard snap preview: highlight holes that would connect when dropping a component */}
+          {dragBreadboardSnap !== null && (
+            <Group>
+              {dragBreadboardSnap.connections.map((conn) => (
+                <Circle
+                  key={`${conn.boardId}-${conn.boardPinId}`}
+                  x={conn.boardPinPos.x}
+                  y={conn.boardPinPos.y}
+                  radius={6 / viewport.scale}
+                  fill="#ffc928"
+                  opacity={0.3}
+                  stroke="#ffc928"
+                  strokeWidth={2 / viewport.scale}
+                  listening={false}
+                />
+              ))}
+            </Group>
+          )}
         </Layer>
 
         <Layer
@@ -1092,12 +1325,14 @@ export function CircuitCanvas(): JSX.Element {
           scaleX={viewport.scale}
           scaleY={viewport.scale}
         >
-          {components.map((part) => (
+          {visibleComponents.map((part) => (
             <PartNode
               key={part.id}
               partId={part.id}
               selected={selectedPartIds.includes(part.id)}
               routing={draft !== null}
+              breadboards={breadboards}
+              setDragBreadboardSnap={setDragBreadboardSnap}
             />
           ))}
         </Layer>
@@ -1110,7 +1345,7 @@ export function CircuitCanvas(): JSX.Element {
           scaleX={viewport.scale}
           scaleY={viewport.scale}
         >
-          {wires.map((wire) => (
+          {visibleWires.map((wire) => (
             <WireNode
               key={wire.id}
               wireId={wire.id}
@@ -1129,7 +1364,7 @@ export function CircuitCanvas(): JSX.Element {
           scaleX={viewport.scale}
           scaleY={viewport.scale}
         >
-          {components.map((part) => (
+          {visibleComponents.map((part) => (
             <PartPins
               key={part.id}
               partId={part.id}
@@ -1151,7 +1386,7 @@ export function CircuitCanvas(): JSX.Element {
           scaleY={viewport.scale}
           listening={draft === null}
         >
-          {notes.map((note) => (
+          {visibleNotes.map((note) => (
             <NoteNode
               key={note.id}
               note={note}

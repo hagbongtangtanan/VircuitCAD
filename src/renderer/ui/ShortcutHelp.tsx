@@ -1,5 +1,3 @@
-import { useGSAP } from '@gsap/react'
-import gsap from 'gsap'
 import { useEffect, useRef, type JSX } from 'react'
 import { Icon } from './Icon'
 
@@ -75,26 +73,32 @@ export function ShortcutHelp({ onClose }: ShortcutHelpProps): JSX.Element {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [onClose])
 
-  useGSAP(
-    () => {
-      gsap.from('.cb-shortcuts', {
-        opacity: 0,
-        y: 16,
-        scale: 0.98,
-        duration: 0.24,
-        ease: 'power3.out',
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+    const modal = root.querySelector('.cb-shortcuts')
+    if (modal) {
+      const el = modal as HTMLElement
+      el.style.opacity = '0'
+      el.style.transform = 'translateY(16px) scale(0.98)'
+      requestAnimationFrame(() => {
+        el.style.transition = 'opacity 0.24s ease-out, transform 0.24s ease-out'
+        el.style.opacity = '1'
+        el.style.transform = 'translateY(0) scale(1)'
       })
-      gsap.from('.cb-shortcut-group', {
-        opacity: 0,
-        y: 10,
-        duration: 0.28,
-        stagger: 0.05,
-        ease: 'power2.out',
-        delay: 0.06,
+    }
+    const groups = root.querySelectorAll('.cb-shortcut-group')
+    groups.forEach((group, index) => {
+      const el = group as HTMLElement
+      el.style.opacity = '0'
+      el.style.transform = 'translateY(10px)'
+      requestAnimationFrame(() => {
+        el.style.transition = `opacity 0.28s ease-out ${0.06 + index * 0.05}s, transform 0.28s ease-out ${0.06 + index * 0.05}s`
+        el.style.opacity = '1'
+        el.style.transform = 'translateY(0)'
       })
-    },
-    { scope: rootRef }
-  )
+    })
+  }, [])
 
   return (
     <div

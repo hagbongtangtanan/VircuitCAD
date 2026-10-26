@@ -52,7 +52,10 @@ export interface SimulationFrame {
   readonly pinVoltages: ReadonlyMap<string, number | null>
   /** 0 to 1 rotor speed per DC motor part id. */
   readonly motorSpeed: ReadonlyMap<string, number>
+  readonly buzzerCurrents: ReadonlyMap<string, number>
   readonly elapsedMs: number
+  /** Parts permanently damaged by overload or reverse bias. */
+  readonly failedParts: ReadonlySet<string>
 }
 
 function brightnessFor(amps: number): number {
@@ -135,6 +138,7 @@ export class ArduinoSimulation {
   private readonly irReceiverChannels: IrReceiverChannel[] = []
   private lastDriversSignature = ''
   private lastSolve: SolveResult | null = null
+  private failedParts = new Set<string>()
 
   onSerialByte: ((byte: number) => void) | null = null
   /** Pulled every frame so UI input (buttons, pots) reaches the solver. */
@@ -491,7 +495,11 @@ export class ArduinoSimulation {
       .join(',')
     signature += `|pressed:${pressed}|pots:${pots}|switches:${switches}|sensors:${sensors}|dip:${dipBits}|keys:${keypadKeys}`
     if (signature !== this.lastDriversSignature) {
-      this.lastSolve = solveCircuit(this.document, this.netlist, drivers, inputs)
+      this.lastSolve = solveCircuit(this.document, this.netlist, drivers, {
+        ...inputs,
+        failedParts: this.failedParts,
+      })
+      this.failedParts = new Set(this.lastSolve?.failedParts ?? [])
       this.lastDriversSignature = signature
       this.syncInputs()
     }
@@ -506,6 +514,6 @@ export class ArduinoSimulation {
       motorSpeed.set(partId, Math.min(1, amps / MOTOR_FULL_CURRENT_AMPS))
     }
 
-    return { ledBrightness, pinVoltages, motorSpeed, elapsedMs: this.elapsedMs }
+    return { ledBrightness, pinVoltages, motorSpeed, buzzerCurrents: new Map(this.lastSolve?.buzzerCurrents ?? []), elapsedMs: this.elapsedMs, failedParts: this.failedParts }
   }
 }

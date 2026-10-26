@@ -248,13 +248,13 @@ function buttonCircuit(): CircuitDocument {
       {
         id: 'w1',
         from: { partId: 'uno', pinId: 'D2' },
-        to: { partId: 'btn', pinId: '1' },
+        to: { partId: 'btn', pinId: '1A' },
         color: '#4f9cf9',
         waypoints: [],
       },
       {
         id: 'w2',
-        from: { partId: 'btn', pinId: '2' },
+        from: { partId: 'btn', pinId: '2A' },
         to: { partId: 'uno', pinId: 'GND' },
         color: '#4f9cf9',
         waypoints: [],
