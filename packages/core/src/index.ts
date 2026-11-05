@@ -9,5 +9,6 @@ export * from './model/circuit';
 export * from './parts/manifest';
 export * from './parts/registry';
 export * from './parts/catalog';
+export * from './board/geometry';
 
 export const packageName = '@vircuitcad/core';

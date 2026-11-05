@@ -9,7 +9,7 @@ A pure, fully tested circuit model: schema, part manifests, breadboard hole conn
 ## Tasks
 - [x] **S01-T01** Zod schema + types: `Circuit`, `PartInstance` (id, partId, position, rotation, params), `Wire` (endpoints = pin/hole refs, waypoints, colour), `Board`; `schemaVersion = 1`; stable ids (nanoid). → round-trip tests.
 - [x] **S01-T02** Part manifest schema + registry: pins (id, name, position, electrical role), params with units/ranges, `simModel` id, svg ref; register 3 placeholder parts (resistor, LED, battery). → invalid manifests rejected with clear errors.
-- [ ] **S01-T03** Breadboard geometry generator (full + half): holes, 5-hole strips, power rails (with the **mid-board rail split** on full boards), column/row labels. → unit tests on counts and groups.
+- [x] **S01-T03** Breadboard geometry generator (full + half): holes, 5-hole strips, power rails (with the **mid-board rail split** on full boards), column/row labels. → unit tests on counts and groups.
 - [ ] **S01-T04** Netlist extractor: union-find over pins, wires and hole groups; nets named deterministically (sorted); ground detection; floating-pin report; parts straddling strips. → golden netlist fixtures.
 - [ ] **S01-T05** Property tests (fast-check): netlist invariant to wire order, which hole of a strip is used, part rotation, id regeneration. → ≥ 5 properties, 1000 runs.
 - [ ] **S01-T06** Serialization `.vcad` (JSON) + migration framework (`migrate(v → v+1)` chain) + `fixtures/vcad/v1/*.vcad`. → loading a v1 fixture works; a fake v2 migration test proves the chain.
