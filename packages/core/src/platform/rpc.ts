@@ -4,6 +4,7 @@ import { decodeBase64, encodeBase64 } from './base64';
 import {
   CompileRequestSchema,
   PlatformError,
+  PlatformErrorCodeSchema,
   type PlatformAdapter,
   type PlatformErrorCode,
 } from './types';
@@ -25,9 +26,23 @@ export const WriteFileParamsSchema = z.object({
 });
 export type WriteFileParams = z.infer<typeof WriteFileParamsSchema>;
 
+export const RpcResponseSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), result: z.unknown() }),
+  z.object({
+    ok: z.literal(false),
+    error: z.object({ code: PlatformErrorCodeSchema, message: z.string() }),
+  }),
+]);
+
 export type RpcSuccess = { ok: true; result: unknown };
 export type RpcFailure = { ok: false; error: { code: PlatformErrorCode; message: string } };
 export type RpcResponse = RpcSuccess | RpcFailure;
+
+export function unwrapRpc(payload: unknown): unknown {
+  const response = RpcResponseSchema.parse(payload);
+  if (!response.ok) throw new PlatformError(response.error.code, response.error.message);
+  return response.result;
+}
 
 async function dispatch(
   adapter: PlatformAdapter,
@@ -69,7 +84,8 @@ async function dispatch(
 export async function handleRpc(adapter: PlatformAdapter, request: unknown): Promise<RpcResponse> {
   try {
     const { method, params } = RpcRequestSchema.parse(request);
-    return { ok: true, result: await dispatch(adapter, method, params) };
+    const result = await dispatch(adapter, method, params);
+    return { ok: true, result: result ?? null };
   } catch (error) {
     if (error instanceof PlatformError) {
       return { ok: false, error: { code: error.code, message: error.message } };
