@@ -6,5 +6,8 @@ export { createInMemoryPlatformAdapter, type InMemoryPlatformAdapter } from './p
 
 export * from './model/ids';
 export * from './model/circuit';
+export * from './parts/manifest';
+export * from './parts/registry';
+export * from './parts/catalog';
 
 export const packageName = '@vircuitcad/core';
