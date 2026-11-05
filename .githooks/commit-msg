@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+msg=$(head -n1 "$1")
+case "$msg" in Merge\ *|Revert\ *|fixup!*|squash!*) exit 0;; esac
+re='^(feat|fix|chore|docs|test|refactor|perf|build|ci|style|revert|wip)(\([a-z0-9._/-]+\))?!?: .{3,}'
+if ! printf '%s' "$msg" | grep -Eq "$re"; then
+  echo "✖ commit message must be conventional: type(scope): description"
+  echo "  got: $msg"; exit 1
+fi

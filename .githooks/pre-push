@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+zero=0000000000000000000000000000000000000000
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/master)
+      [ "${VC_ALLOW_MAIN:-0}" = 1 ] || { echo "✖ direct push to main blocked (VC_ALLOW_MAIN=1 only for the bootstrap push)"; exit 1; };;
+  esac
+  if [ "$local_sha" != "$zero" ] && [ "$remote_sha" != "$zero" ]; then
+    git merge-base --is-ancestor "$remote_sha" "$local_sha" 2>/dev/null || { echo "✖ non-fast-forward push blocked"; exit 1; }
+  fi
+done
