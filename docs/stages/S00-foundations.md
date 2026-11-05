@@ -17,7 +17,7 @@ A green, strict monorepo with CI on ubuntu + windows, a `PlatformAdapter` with t
 - [x] **S00-T08** `apps/desktop`: Electron main/preload/renderer (Vite), `contextIsolation` on, `nodeIntegration` off, `sandbox` on, strict CSP, typed IPC validated by zod, Electron adapter impl; renderer mounts a blank Pixi canvas and shows the app version. → app builds; unit tests for IPC validation.
 - [x] **S00-T09** Packaging: electron-builder with NSIS (per-user) + portable targets, `extraResources` placeholder for the toolchain, own placeholder icon, version from package.json. → `package-windows` job produces installer + portable exe artifacts.
 - [x] **S00-T10** Offline guard: Playwright (dev-web, headless) test that fails on any non-localhost request and asserts CSP; `THIRD_PARTY.md` seed + license-check script (allow MIT/Apache-2.0/BSD/ISC). → both run in `verify`.
-- [ ] **S00-T11** Docs: `README.md` (WSL dev loop, how to fetch/test the Windows artifact), `CONTRIBUTING.md` pointing to AGENTS.md, ADR 0002 (adapter design). → links valid.
+- [x] **S00-T11** Docs: `README.md` (WSL dev loop, how to fetch/test the Windows artifact), `CONTRIBUTING.md` pointing to AGENTS.md, ADR 0002 (adapter design). → links valid.
 
 ## Pitfalls (known in advance)
 - electron-builder + pnpm often needs hoisted modules for the desktop app (`.npmrc node-linker=hoisted` scoped to it, or `public-hoist-pattern`).
