@@ -10,6 +10,7 @@
     "./contract": "./src/platform/contract.ts"
   },
   "dependencies": {
+    "nanoid": "6.0.2",
     "zod": "4.6.7"
   },
   "scripts": {
