@@ -50,6 +50,8 @@ importers:
 
   packages/ui: {}
 
+  tools/lint-boundaries: {}
+
 packages:
 
   '@cacheable/memory@2.2.0':
