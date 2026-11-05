@@ -1,0 +1,31 @@
+{
+  "name": "vircuitcad",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test",
+    "test:fast": "pnpm -r --if-present test:fast",
+    "build": "pnpm -r --if-present build",
+    "dev:web": "pnpm --filter @vircuitcad/dev-server dev",
+    "dev:desktop": "pnpm --filter @vircuitcad/desktop dev",
+    "test:e2e": "playwright test",
+    "check:licenses": "node tools/license-check/check.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "22.20.5",
+    "eslint": "10.14.0",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vitest": "5.1.0"
+  }
+}

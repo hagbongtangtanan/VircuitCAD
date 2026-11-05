@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm -r --if-present typecheck
+      - name: Lint
+        run: pnpm -r --if-present lint
+      - name: Test
+        run: pnpm -r --if-present test
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+      - name: E2E offline guard
+        run: pnpm test:e2e
+      - name: License check
+        run: pnpm check:licenses
+      - name: Audit (non-blocking)
+        run: pnpm audit --prod
+        continue-on-error: true
+
+  package-windows:
+    name: package-windows
+    needs: verify
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build desktop
+        run: pnpm --filter @vircuitcad/desktop run --if-present build
+      - name: Package desktop (NSIS + portable)
+        run: pnpm --filter @vircuitcad/desktop run --if-present package
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vircuitcad-win
+          path: apps/desktop/release/**
+          if-no-files-found: warn
+          retention-days: 14

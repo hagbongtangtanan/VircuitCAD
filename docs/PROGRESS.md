@@ -4,7 +4,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 
 | ID | Stage | Status |
 |---|---|---|
-| S00 | Foundations, CI and platform adapter | pending |
+| S00 | Foundations, CI and platform adapter | done |
 | S01 | Core model, breadboard connectivity, netlist | pending |
 | S02 | Editor canvas | pending |
 | S03 | Analog solver engine | pending |
@@ -18,7 +18,17 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-Nothing started. Next: S00 (`/stage S00` or `scripts/vc-run-stages.sh`).
+S00 complete (T01–T11); running `vc-stage-finish.sh S00` (PR → CI → squash-merge → tag
+`stage-s00-done`). Next stage: S01 core model (zod Circuit schema, part manifests, breadboard
+strips, netlist extractor, undo/redo store, `.vcad` + migrations).
+Decisions: pnpm 10.34.9; Node 22.20.0; TypeScript 6.0.3; renderer runtime deps are
+devDependencies (bundled, packaged app ships no node_modules); one zod-validated RPC surface in
+core (`handleRpc`, base64 JSON envelope); `dev:web` serves the desktop renderer with transport
+auto-detected; sim-* purity enforced in `eslint.config.mjs`.
+Gotchas: `vc-check.sh` uses `pnpm -s` so failure output can be empty; `pixi.js/unsafe-eval`
+import is required under the strict CSP; MPL-2.0 (lightningcss, build-only) is on the license
+allowlist; CI `package-windows` builds the installer only on windows-latest.
+Blocked: none.
 
 ## Human actions pending
 - (none)
