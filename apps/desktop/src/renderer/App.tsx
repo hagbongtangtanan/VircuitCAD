@@ -1,7 +1,9 @@
+import 'pixi.js/unsafe-eval';
+
 import { Application } from 'pixi.js';
 import { useEffect, useRef, useState } from 'react';
 
-import { createDesktopClient } from './client';
+import { createClient } from './client';
 
 export function App() {
   const host = useRef<HTMLDivElement>(null);
@@ -30,7 +32,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    createDesktopClient()
+    createClient()
       .app.info()
       .then((info) => setVersion(info.version))
       .catch(() => setVersion('unavailable'));

@@ -16,7 +16,7 @@ A green, strict monorepo with CI on ubuntu + windows, a `PlatformAdapter` with t
 - [x] **S00-T07** `apps/dev-server`: Node server exposing the adapter on `127.0.0.1` only, path-traversal protected; browser client implementation; `pnpm dev:web` runs Vite + server. → contract suite passes against dev-web impl.
 - [x] **S00-T08** `apps/desktop`: Electron main/preload/renderer (Vite), `contextIsolation` on, `nodeIntegration` off, `sandbox` on, strict CSP, typed IPC validated by zod, Electron adapter impl; renderer mounts a blank Pixi canvas and shows the app version. → app builds; unit tests for IPC validation.
 - [x] **S00-T09** Packaging: electron-builder with NSIS (per-user) + portable targets, `extraResources` placeholder for the toolchain, own placeholder icon, version from package.json. → `package-windows` job produces installer + portable exe artifacts.
-- [ ] **S00-T10** Offline guard: Playwright (dev-web, headless) test that fails on any non-localhost request and asserts CSP; `THIRD_PARTY.md` seed + license-check script (allow MIT/Apache-2.0/BSD/ISC). → both run in `verify`.
+- [x] **S00-T10** Offline guard: Playwright (dev-web, headless) test that fails on any non-localhost request and asserts CSP; `THIRD_PARTY.md` seed + license-check script (allow MIT/Apache-2.0/BSD/ISC). → both run in `verify`.
 - [ ] **S00-T11** Docs: `README.md` (WSL dev loop, how to fetch/test the Windows artifact), `CONTRIBUTING.md` pointing to AGENTS.md, ADR 0002 (adapter design). → links valid.
 
 ## Pitfalls (known in advance)

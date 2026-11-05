@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  root: 'web',
+  root: '../desktop/src/renderer',
+  esbuild: { jsx: 'automatic' },
   server: {
     host: '127.0.0.1',
     port: 5173,

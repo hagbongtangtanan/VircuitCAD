@@ -5,6 +5,9 @@ release/
 coverage/
 .vc/
 resources/toolchain/
+test-results/
+playwright-report/
+blob-report/
 *.log
 .DS_Store
 .env
