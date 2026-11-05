@@ -18,7 +18,20 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-Nothing started. Next: S00 (`/stage S00` or `scripts/vc-run-stages.sh`).
+Stage S00, branch `stage/s00-foundations`. Done: T01–T06 (pnpm workspace +
+strict tsconfig/lint/format; package & app skeletons with vitest; sim-* boundary
+lint + negative fixture; vc-check verified; CI verify + package-windows;
+PlatformAdapter + in-memory fake + reusable contract suite).
+Next: S00-T07 `apps/dev-server` (adapter bound to 127.0.0.1, path-traversal
+guard, browser client, `dev:web`) — run it against `@vircuitcad/core/contract`.
+Then T08 desktop (Electron CSP/security), T09 packaging, T10 offline guard +
+THIRD_PARTY/license script, T11 README/CONTRIBUTING/ADR 0002.
+Decisions: pnpm 10.34.9; Node 22.20.0 (.nvmrc); TypeScript 6.0.3 (typescript-eslint
+peer requires <6.1.0); sim-* boundaries live in `eslint.config.mjs`.
+Gotchas: `vc-check.sh` runs `pnpm -s`, so failure output can be empty (tsc errors
+suppressed); CI `package-windows` build/package are no-ops until T08/T09. Bundle
+was flattened to repo root and bootstrapped on `main`.
+Blocked: none.
 
 ## Human actions pending
 - (none)
