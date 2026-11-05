@@ -30,6 +30,7 @@ export type BoardGeometry = {
   hole(id: string): Hole | undefined;
   stripOf(holeId: string): string | undefined;
   holeAt(row: string, column: number): Hole | undefined;
+  holeByPosition(x: number, y: number): Hole | undefined;
 };
 
 type RailLine = { row: string; y: number };
@@ -132,6 +133,9 @@ export function generateBoardGeometry(kind: BoardKind): BoardGeometry {
 
   const holesById = new Map(holes.map((hole) => [hole.id, hole]));
   const stripOfHole = new Map(holes.map((hole) => [hole.id, hole.strip]));
+  const holesByPosition = new Map(
+    holes.map((hole) => [`${hole.position.x},${hole.position.y}`, hole]),
+  );
   const rows = [
     ...RAIL_TOP.map((line) => line.row),
     ...TERMINAL_ROWS_TOP,
@@ -147,5 +151,6 @@ export function generateBoardGeometry(kind: BoardKind): BoardGeometry {
     hole: (id) => holesById.get(id),
     stripOf: (holeId) => stripOfHole.get(holeId),
     holeAt: (row, column) => holesById.get(`${row}${column}`),
+    holeByPosition: (x, y) => holesByPosition.get(`${x},${y}`),
   };
 }
