@@ -1,0 +1,31 @@
+appId: com.vircuitcad.app
+productName: VircuitCAD
+copyright: Copyright (c) 2026 VircuitCAD
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**/*
+  - package.json
+asar: true
+extraResources:
+  - from: ../../resources/toolchain
+    to: toolchain
+    filter:
+      - '**/*'
+win:
+  icon: build/icon.png
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  artifactName: VircuitCAD-Setup-${version}.${ext}
+portable:
+  artifactName: VircuitCAD-${version}-portable.${ext}
