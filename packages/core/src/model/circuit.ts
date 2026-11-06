@@ -74,6 +74,19 @@ export type Circuit = z.infer<typeof CircuitSchema>;
 
 export const DEFAULT_WIRE_COLOR = '#22c55e';
 
+export function rotateGridVector(vec: Vec2, rotation: Rotation): Vec2 {
+  switch (rotation) {
+    case 0:
+      return vec;
+    case 90:
+      return { x: -vec.y, y: vec.x };
+    case 180:
+      return { x: -vec.x, y: -vec.y };
+    case 270:
+      return { x: vec.y, y: -vec.x };
+  }
+}
+
 export function createBoard(kind: BoardKind = 'full', id: string = createId()): Board {
   return { id, kind };
 }

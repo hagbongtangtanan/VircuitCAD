@@ -8,7 +8,7 @@ A usable breadboard editor: pan/zoom, place/move/rotate/delete parts, wire tool,
 
 ## Tasks
 - [x] **S02-T01** `packages/editor`: Pixi app mount/unmount, resize, device-pixel-ratio, pan (middle-drag/space-drag) + wheel zoom around cursor, grid. → Playwright asserts canvas present and zoom changes transform.
-- [ ] **S02-T02** Render breadboard + parts from SVG textures with a texture cache; imperative Pixi layer subscribing to the store (no React re-render per frame). → 5 000 holes render ≥ 60 fps in a benchmark note.
+- [x] **S02-T02** Render breadboard + parts from SVG textures with a texture cache; imperative Pixi layer subscribing to the store (no React re-render per frame). → 5 000 holes render ≥ 60 fps in a benchmark note.
 - [ ] **S02-T03** Spatial index (rbush) and hit-testing, **pin-first**, then part body, then wire. → unit tests for priority and tolerance.
 - [ ] **S02-T04** Tools: select, place (drag from bin), move, rotate (R), delete (Del), duplicate; snap pins to breadboard holes; ghost preview; invalid-placement feedback. → store commands only (no direct mutation).
 - [ ] **S02-T05** Wire tool: click pin/hole → waypoints → click end; snapping, colour choice, delete, move endpoint, wire-over-wire without implicit junction. → netlist updates correctly in tests.

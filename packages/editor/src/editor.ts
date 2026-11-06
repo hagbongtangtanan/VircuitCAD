@@ -2,28 +2,41 @@ import 'pixi.js/unsafe-eval';
 
 import { Application, Container, Graphics } from 'pixi.js';
 
+import type { DocumentStore, PartRegistry } from '@vircuitcad/core';
+
+import { Scene } from './render/scene';
 import { type Viewport, panBy, screenToWorld, zoomAt } from './viewport';
 
 export type EditorOptions = {
   background?: number;
   gridSize?: number;
   minGridScreenPx?: number;
+  cellSize?: number;
+  store?: DocumentStore;
+  registry?: PartRegistry;
 };
 
 export class Editor {
   private app: Application | undefined = undefined;
   private world: Container | undefined = undefined;
   private grid: Graphics | undefined = undefined;
+  private scene: Scene | undefined = undefined;
   private viewport: Viewport = { scale: 1, x: 0, y: 0 };
-  private readonly options: Required<EditorOptions>;
   private cleanup: Array<() => void> = [];
+  private readonly background: number;
+  private readonly gridSize: number;
+  private readonly minGridScreenPx: number;
+  private readonly cellSize: number;
+  private readonly store: DocumentStore | undefined;
+  private readonly registry: PartRegistry | undefined;
 
   constructor(options: EditorOptions = {}) {
-    this.options = {
-      background: options.background ?? 0x0f172a,
-      gridSize: options.gridSize ?? 20,
-      minGridScreenPx: options.minGridScreenPx ?? 6,
-    };
+    this.background = options.background ?? 0x0f172a;
+    this.gridSize = options.gridSize ?? 20;
+    this.minGridScreenPx = options.minGridScreenPx ?? 6;
+    this.cellSize = options.cellSize ?? this.gridSize;
+    this.store = options.store;
+    this.registry = options.registry;
   }
 
   async mount(element: HTMLElement): Promise<void> {
@@ -31,7 +44,7 @@ export class Editor {
 
     const app = new Application();
     await app.init({
-      background: this.options.background,
+      background: this.background,
       resizeTo: element,
       antialias: true,
       autoDensity: true,
@@ -46,6 +59,11 @@ export class Editor {
     this.grid = new Graphics();
     world.addChild(this.grid);
 
+    if (this.store && this.registry) {
+      this.scene = new Scene(app.renderer, this.store, this.registry, { cellSize: this.cellSize });
+      world.addChild(this.scene.root);
+    }
+
     this.applyViewport();
     this.attachInteractions(app.canvas, element);
 
@@ -56,6 +74,8 @@ export class Editor {
 
   unmount(): void {
     for (const dispose of this.cleanup.splice(0)) dispose();
+    this.scene?.destroy();
+    this.scene = undefined;
     this.app?.destroy(true, { children: true });
     this.app = undefined;
     this.world = undefined;
@@ -64,6 +84,10 @@ export class Editor {
 
   isMounted(): boolean {
     return this.app !== undefined;
+  }
+
+  getScene(): Scene | undefined {
+    return this.scene;
   }
 
   getViewport(): Viewport {
@@ -98,22 +122,22 @@ export class Editor {
     if (!grid || !app) return;
     grid.clear();
 
-    const spacing = this.options.gridSize * this.viewport.scale;
-    if (spacing < this.options.minGridScreenPx) return;
+    const spacing = this.gridSize * this.viewport.scale;
+    if (spacing < this.minGridScreenPx) return;
 
     const width = app.screen.width;
     const height = app.screen.height;
     const topLeft = screenToWorld(this.viewport, 0, 0);
     const bottomRight = screenToWorld(this.viewport, width, height);
 
-    const startX = Math.floor(topLeft.x / this.options.gridSize) * this.options.gridSize;
-    const startY = Math.floor(topLeft.y / this.options.gridSize) * this.options.gridSize;
+    const startX = Math.floor(topLeft.x / this.gridSize) * this.gridSize;
+    const startY = Math.floor(topLeft.y / this.gridSize) * this.gridSize;
 
-    for (let x = startX; x <= bottomRight.x; x += this.options.gridSize) {
+    for (let x = startX; x <= bottomRight.x; x += this.gridSize) {
       grid.moveTo(x, topLeft.y);
       grid.lineTo(x, bottomRight.y);
     }
-    for (let y = startY; y <= bottomRight.y; y += this.options.gridSize) {
+    for (let y = startY; y <= bottomRight.y; y += this.gridSize) {
       grid.moveTo(topLeft.x, y);
       grid.lineTo(bottomRight.x, y);
     }

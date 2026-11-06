@@ -1,3 +1,4 @@
+import { DocumentStore, createDefaultPartRegistry, createEmptyCircuit } from '@vircuitcad/core';
 import { Editor } from '@vircuitcad/editor';
 import { useEffect, useRef, useState } from 'react';
 
@@ -11,7 +12,8 @@ export function App() {
     const element = host.current;
     if (!element) return;
 
-    const editor = new Editor();
+    const store = new DocumentStore(createEmptyCircuit({ board: 'full' }));
+    const editor = new Editor({ store, registry: createDefaultPartRegistry() });
     window.__editor = editor;
     void editor.mount(element);
 
