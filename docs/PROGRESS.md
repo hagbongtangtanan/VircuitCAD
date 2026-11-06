@@ -5,7 +5,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | ID | Stage | Status |
 |---|---|---|
 | S00 | Foundations, CI and platform adapter | done |
-| S01 | Core model, breadboard connectivity, netlist | pending |
+| S01 | Core model, breadboard connectivity, netlist | done |
 | S02 | Editor canvas | pending |
 | S03 | Analog solver engine | pending |
 | S04 | Vertical slice: battery + resistor + LED lights up | pending |
