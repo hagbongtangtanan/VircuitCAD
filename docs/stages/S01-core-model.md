@@ -13,7 +13,7 @@ A pure, fully tested circuit model: schema, part manifests, breadboard hole conn
 - [x] **S01-T04** Netlist extractor: union-find over pins, wires and hole groups; nets named deterministically (sorted); ground detection; floating-pin report; parts straddling strips. → golden netlist fixtures.
 - [x] **S01-T05** Property tests (fast-check): netlist invariant to wire order, which hole of a strip is used, part rotation, id regeneration. → ≥ 5 properties, 1000 runs.
 - [x] **S01-T06** Serialization `.vcad` (JSON) + migration framework (`migrate(v → v+1)` chain) + `fixtures/vcad/v1/*.vcad`. → loading a v1 fixture works; a fake v2 migration test proves the chain.
-- [ ] **S01-T07** Document store (Zustand + Immer patches): commands (add/move/rotate/delete part, add/delete wire, set param), undo/redo via inverse patches, change events for autosave. → headless tests incl. 100-step undo/redo round-trip.
+- [x] **S01-T07** Document store (Zustand + Immer patches): commands (add/move/rotate/delete part, add/delete wire, set param), undo/redo via inverse patches, change events for autosave. → headless tests incl. 100-step undo/redo round-trip.
 
 ## Pitfalls
 - Two pins in the same hole, wire from a hole to itself, duplicate wires → must be no-ops or clear errors, never crashes.

@@ -10,8 +10,10 @@
     "./contract": "./src/platform/contract.ts"
   },
   "dependencies": {
+    "immer": "11.2.9",
     "nanoid": "6.0.2",
-    "zod": "4.6.7"
+    "zod": "4.6.7",
+    "zustand": "5.0.16"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
