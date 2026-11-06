@@ -1,6 +1,4 @@
-import 'pixi.js/unsafe-eval';
-
-import { Application } from 'pixi.js';
+import { Editor } from '@vircuitcad/editor';
 import { useEffect, useRef, useState } from 'react';
 
 import { createClient } from './client';
@@ -10,24 +8,16 @@ export function App() {
   const [version, setVersion] = useState('…');
 
   useEffect(() => {
-    const instance = new Application();
-    let active = true;
-    let mounted: Application | undefined;
+    const element = host.current;
+    if (!element) return;
 
-    void instance
-      .init({ background: '#0f172a', width: 640, height: 360, antialias: true })
-      .then(() => {
-        if (!active) {
-          instance.destroy();
-          return;
-        }
-        mounted = instance;
-        host.current?.appendChild(instance.canvas);
-      });
+    const editor = new Editor();
+    window.__editor = editor;
+    void editor.mount(element);
 
     return () => {
-      active = false;
-      mounted?.destroy();
+      editor.unmount();
+      if (window.__editor === editor) window.__editor = undefined;
     };
   }, []);
 
@@ -39,10 +29,21 @@ export function App() {
   }, []);
 
   return (
-    <main>
-      <h1>VircuitCAD</h1>
-      <p data-testid="version">v{version}</p>
-      <div ref={host} />
+    <main style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <header
+        style={{
+          display: 'flex',
+          gap: 8,
+          padding: '8px 12px',
+          font: '14px system-ui, sans-serif',
+          color: '#e2e8f0',
+          background: '#111827',
+        }}
+      >
+        <strong>VircuitCAD</strong>
+        <span data-testid="version">v{version}</span>
+      </header>
+      <div ref={host} data-testid="canvas-host" style={{ flex: 1, minHeight: 0 }} />
     </main>
   );
 }

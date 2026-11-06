@@ -50,6 +50,9 @@ importers:
       '@vircuitcad/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@vircuitcad/editor':
+        specifier: workspace:*
+        version: link:../../packages/editor
       electron:
         specifier: 45.2.3
         version: 45.2.3
@@ -59,9 +62,6 @@ importers:
       esbuild:
         specifier: 0.28.2
         version: 0.28.2
-      pixi.js:
-        specifier: 8.22.0
-        version: 8.22.0
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -103,7 +103,14 @@ importers:
         specifier: 5.0.16
         version: 5.0.16(@types/react@19.3.0)(immer@11.2.9)(react@19.3.1)
 
-  packages/editor: {}
+  packages/editor:
+    dependencies:
+      '@vircuitcad/core':
+        specifier: workspace:*
+        version: link:../core
+      pixi.js:
+        specifier: 8.22.0
+        version: 8.22.0
 
   packages/parts: {}
 
