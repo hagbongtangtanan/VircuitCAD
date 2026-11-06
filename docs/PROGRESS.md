@@ -6,7 +6,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 |---|---|---|
 | S00 | Foundations, CI and platform adapter | done |
 | S01 | Core model, breadboard connectivity, netlist | done |
-| S02 | Editor canvas | pending |
+| S02 | Editor canvas | done |
 | S03 | Analog solver engine | pending |
 | S04 | Vertical slice: battery + resistor + LED lights up | pending |
 | S05 | Offline Arduino toolchain and compile service | pending |
