@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "fixture-led-series",
+  "name": "LED series",
+  "board": { "id": "board-1", "kind": "full" },
+  "parts": [
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": { "x": 0, "y": 5 },
+      "rotation": 0,
+      "params": { "resistance": 220 }
+    },
+    {
+      "id": "d1",
+      "partId": "led",
+      "position": { "x": 4, "y": 5 },
+      "rotation": 0,
+      "params": { "color": "red", "forwardVoltage": 2 }
+    },
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": { "x": 8, "y": 5 },
+      "rotation": 0,
+      "params": { "voltage": 9 }
+    }
+  ],
+  "wires": [
+    {
+      "id": "w1",
+      "from": { "kind": "hole", "holeId": "c9" },
+      "to": { "kind": "hole", "holeId": "c1" },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "w2",
+      "from": { "kind": "hole", "holeId": "c11" },
+      "to": { "kind": "hole", "holeId": "c7" },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ]
+}
