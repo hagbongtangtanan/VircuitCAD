@@ -2,9 +2,11 @@ import 'pixi.js/unsafe-eval';
 
 import { Application, Container, Graphics } from 'pixi.js';
 
-import type { DocumentStore, PartRegistry } from '@vircuitcad/core';
+import type { DocumentStore, PartRegistry, Vec2 } from '@vircuitcad/core';
 
+import { HitTester, buildHitTestScene } from './hit/scene-index';
 import { Scene } from './render/scene';
+import { ToolController } from './tools/tool-controller';
 import { type Viewport, panBy, screenToWorld, zoomAt } from './viewport';
 
 export type EditorOptions = {
@@ -21,6 +23,8 @@ export class Editor {
   private world: Container | undefined = undefined;
   private grid: Graphics | undefined = undefined;
   private scene: Scene | undefined = undefined;
+  private hitTester: HitTester | undefined = undefined;
+  private controller: ToolController | undefined = undefined;
   private viewport: Viewport = { scale: 1, x: 0, y: 0 };
   private cleanup: Array<() => void> = [];
   private readonly background: number;
@@ -60,8 +64,24 @@ export class Editor {
     world.addChild(this.grid);
 
     if (this.store && this.registry) {
-      this.scene = new Scene(app.renderer, this.store, this.registry, { cellSize: this.cellSize });
-      world.addChild(this.scene.root);
+      const scene = new Scene(app.renderer, this.store, this.registry, { cellSize: this.cellSize });
+      this.scene = scene;
+      world.addChild(scene.root);
+
+      this.hitTester = this.buildIndex();
+      this.controller = new ToolController({
+        store: this.store,
+        registry: this.registry,
+        geometry: scene.getGeometry(),
+        cellSize: this.cellSize,
+        scene,
+        hitTest: () => this.ensureIndex(),
+      });
+      this.cleanup.push(
+        this.store.onChange(() => {
+          this.hitTester = this.buildIndex();
+        }),
+      );
     }
 
     this.applyViewport();
@@ -76,6 +96,8 @@ export class Editor {
     for (const dispose of this.cleanup.splice(0)) dispose();
     this.scene?.destroy();
     this.scene = undefined;
+    this.controller = undefined;
+    this.hitTester = undefined;
     this.app?.destroy(true, { children: true });
     this.app = undefined;
     this.world = undefined;
@@ -88,6 +110,10 @@ export class Editor {
 
   getScene(): Scene | undefined {
     return this.scene;
+  }
+
+  getToolController(): ToolController | undefined {
+    return this.controller;
   }
 
   getViewport(): Viewport {
@@ -107,6 +133,27 @@ export class Editor {
   panByScreen(dx: number, dy: number): void {
     this.viewport = panBy(this.viewport, dx, dy);
     this.applyViewport();
+  }
+
+  private buildIndex(): HitTester {
+    const store = this.store;
+    const registry = this.registry;
+    const scene = this.scene;
+    if (!store || !registry || !scene) throw new Error('Editor is not ready');
+    return new HitTester(
+      buildHitTestScene(store.getCircuit(), registry, scene.getGeometry(), this.cellSize),
+    );
+  }
+
+  private ensureIndex(): HitTester {
+    if (!this.hitTester) this.hitTester = this.buildIndex();
+    return this.hitTester;
+  }
+
+  private toGrid(clientX: number, clientY: number, element: HTMLElement): Vec2 {
+    const rect = element.getBoundingClientRect();
+    const world = screenToWorld(this.viewport, clientX - rect.left, clientY - rect.top);
+    return { x: world.x / this.cellSize, y: world.y / this.cellSize };
   }
 
   private applyViewport(): void {
@@ -146,29 +193,49 @@ export class Editor {
 
   private attachInteractions(canvas: HTMLCanvasElement, element: HTMLElement): void {
     let panning = false;
+    let toolDragging = false;
     let lastX = 0;
     let lastY = 0;
     let spaceDown = false;
 
     const onPointerDown = (event: PointerEvent): void => {
-      if (event.button !== 1 && !spaceDown) return;
-      panning = true;
-      lastX = event.clientX;
-      lastY = event.clientY;
-      canvas.setPointerCapture(event.pointerId);
-      canvas.style.cursor = 'grabbing';
+      if (event.button === 1 || spaceDown) {
+        panning = true;
+        lastX = event.clientX;
+        lastY = event.clientY;
+        canvas.setPointerCapture(event.pointerId);
+        canvas.style.cursor = 'grabbing';
+        return;
+      }
+      if (event.button === 0 && this.controller) {
+        toolDragging = true;
+        canvas.setPointerCapture(event.pointerId);
+        this.controller.pointerDown(this.toGrid(event.clientX, event.clientY, element));
+      }
     };
     const onPointerMove = (event: PointerEvent): void => {
-      if (!panning) return;
-      this.panByScreen(event.clientX - lastX, event.clientY - lastY);
-      lastX = event.clientX;
-      lastY = event.clientY;
+      if (panning) {
+        this.panByScreen(event.clientX - lastX, event.clientY - lastY);
+        lastX = event.clientX;
+        lastY = event.clientY;
+        return;
+      }
+      if (this.controller && (toolDragging || this.controller.getTool() === 'place')) {
+        this.controller.pointerMove(this.toGrid(event.clientX, event.clientY, element));
+      }
     };
     const onPointerUp = (event: PointerEvent): void => {
-      if (!panning) return;
-      panning = false;
-      canvas.style.cursor = spaceDown ? 'grab' : 'default';
-      if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+      if (panning) {
+        panning = false;
+        canvas.style.cursor = spaceDown ? 'grab' : 'default';
+        if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+        return;
+      }
+      if (toolDragging) {
+        toolDragging = false;
+        this.controller?.pointerUp();
+        if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+      }
     };
     const onWheel = (event: WheelEvent): void => {
       event.preventDefault();
@@ -176,10 +243,19 @@ export class Editor {
       const factor = Math.exp(-event.deltaY * 0.0015);
       this.zoomBy(factor, event.clientX - rect.left, event.clientY - rect.top);
     };
+    const isTypingTarget = (target: EventTarget | null): boolean => {
+      const node = target as HTMLElement | null;
+      if (!node) return false;
+      return node.tagName === 'INPUT' || node.tagName === 'TEXTAREA' || node.isContentEditable;
+    };
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.code !== 'Space') return;
-      spaceDown = true;
-      canvas.style.cursor = 'grab';
+      if (event.code === 'Space') {
+        spaceDown = true;
+        canvas.style.cursor = 'grab';
+        return;
+      }
+      if (isTypingTarget(event.target)) return;
+      if (this.controller?.keyDown(event.key)) event.preventDefault();
     };
     const onKeyUp = (event: KeyboardEvent): void => {
       if (event.code !== 'Space') return;

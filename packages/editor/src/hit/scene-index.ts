@@ -189,4 +189,22 @@ export class HitTester {
     }
     return best?.hit ?? null;
   }
+
+  nearest(point: Vec2, tolerance: number, kinds?: readonly HitKind[]): Hit | null {
+    const candidates = this.index.search({
+      minX: point.x - tolerance,
+      minY: point.y - tolerance,
+      maxX: point.x + tolerance,
+      maxY: point.y + tolerance,
+    });
+
+    let best: { hit: Hit; distance: number } | null = null;
+    for (const item of candidates) {
+      if (kinds && !kinds.includes(item.hit.kind)) continue;
+      const distance = distanceToHit(item.hit, point);
+      if (distance > tolerance) continue;
+      if (!best || distance < best.distance) best = { hit: item.hit, distance };
+    }
+    return best?.hit ?? null;
+  }
 }

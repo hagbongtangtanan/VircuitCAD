@@ -1,5 +1,20 @@
 export { Editor, type EditorOptions } from './editor';
-export { Scene, type SceneOptions } from './render/scene';
+export { Scene, type PreviewState, type SceneOptions } from './render/scene';
+export {
+  ToolController,
+  type ToolControllerDeps,
+  type ToolName,
+} from './tools/tool-controller';
+export {
+  boardGridBounds,
+  isPlacementValid,
+  partGridBounds,
+  rectsOverlap,
+  snapPartPosition,
+  type GridRect,
+  type HoleLookup,
+  type SnapResult,
+} from './tools/placement';
 export {
   HitTester,
   buildHitTestScene,
