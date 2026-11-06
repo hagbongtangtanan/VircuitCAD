@@ -4,4 +4,14 @@ export * from './platform/rpc';
 export * from './platform/client';
 export { createInMemoryPlatformAdapter, type InMemoryPlatformAdapter } from './platform/fake';
 
+export * from './model/ids';
+export * from './model/circuit';
+export * from './model/serialize';
+export * from './parts/manifest';
+export * from './parts/registry';
+export * from './parts/catalog';
+export * from './board/geometry';
+export * from './board/netlist';
+export * from './store/document-store';
+
 export const packageName = '@vircuitcad/core';

@@ -5,7 +5,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | ID | Stage | Status |
 |---|---|---|
 | S00 | Foundations, CI and platform adapter | done |
-| S01 | Core model, breadboard connectivity, netlist | pending |
+| S01 | Core model, breadboard connectivity, netlist | done |
 | S02 | Editor canvas | pending |
 | S03 | Analog solver engine | pending |
 | S04 | Vertical slice: battery + resistor + LED lights up | pending |
@@ -18,16 +18,19 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S00 complete (T01–T11); running `vc-stage-finish.sh S00` (PR → CI → squash-merge → tag
-`stage-s00-done`). Next stage: S01 core model (zod Circuit schema, part manifests, breadboard
-strips, netlist extractor, undo/redo store, `.vcad` + migrations).
-Decisions: pnpm 10.34.9; Node 22.20.0; TypeScript 6.0.3; renderer runtime deps are
-devDependencies (bundled, packaged app ships no node_modules); one zod-validated RPC surface in
-core (`handleRpc`, base64 JSON envelope); `dev:web` serves the desktop renderer with transport
-auto-detected; sim-* purity enforced in `eslint.config.mjs`.
-Gotchas: `vc-check.sh` uses `pnpm -s` so failure output can be empty; `pixi.js/unsafe-eval`
-import is required under the strict CSP; MPL-2.0 (lightningcss, build-only) is on the license
-allowlist; CI `package-windows` builds the installer only on windows-latest.
+S01 complete (T01–T07 + netlist coverage gate); running `vc-stage-finish.sh S01`. Next: S02 editor
+canvas (pan/zoom, place/move/rotate/delete, wire tool, parts bin, inspector, save/load, E2E).
+core public API: model (`Circuit`/`PartInstance`/`Wire`/`Board`, `createEmptyCircuit`,
+`createPartInstance`, `createWire`, `schemaVersion=1`); parts (`PartManifest`, `PartRegistry`,
+`createDefaultPartRegistry` = resistor/led/battery); board (`generateBoardGeometry`,
+`extractNetlist` → `{ nets: {name,isGround,pins,holes}[], floatingPins }`); serialize
+(`serializeCircuit`/`deserializeCircuit`, `runMigrations`); store (`DocumentStore`: addParts,
+move/rotate/deletePart, addWire/deleteWire, setParam, transaction, undo/redo, onChange).
+Decisions: rotation is CCW (90 → (-y,x)); a part's `position` is the pin origin for rotated pin
+offsets; nets named N1.. with the ground net as GND, ordered by a canonical pin+hole key; `.vcad`
+migrations run through a v→v+1 chain.
+Gotchas: `vc-check.sh` uses `pnpm -s` (failure output can be empty); core `tsconfig` sets
+`types:[node]` for fixture reads; netlist coverage is enforced on demand via vitest `--coverage`.
 Blocked: none.
 
 ## Human actions pending
