@@ -18,26 +18,25 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S02 IN PROGRESS, branch `stage/s02-editor-canvas`. Done: T01 (Pixi mount/zoom/pan/grid), T02
-(`Scene` batches board holes + cached part textures, imperative store subscription), T03
-(`HitTester` rbush; pin > hole > part > wire), T04 (`ToolController` select/place/move/rotate/
-delete/duplicate via `DocumentStore`; selection + ghost), T05 (wire tool + `moveWireEndpoint`/
-`setWireColor` in core), T06 (`@vircuitcad/ui` PartsBin/Inspector/Toolbar/StatusBar with
-testing-library+jsdom component tests).
-Next: T07 wire the desktop renderer (compose `ui` panels + `Editor` + `DocumentStore`) and add
-save/load via adapter dialogs + recent files + dirty indicator + autosave journal to app-data;
-T08 Playwright editing E2E (place/wire/undo/redo/rotate/delete/save-load) + record the 100-part fps
-note; then `/stage-finish S02`.
-APIs: `Editor({store,registry})` → `mount/unmount`, viewport helpers, `getScene`, `getToolController`;
-`ToolController.setTool('select'|'place'|'wire', partId?)`, `pointerDown/Move/Up(gridPoint)`,
-`keyDown(key)`, `setWireColor`, `getSelectedPartId/WireId`; `Scene.setSelection/setPreview/
-setWirePreview`. ui exports `PartsBin/Inspector/Toolbar(ToolbarTool)/StatusBar`.
-Decisions: world = grid × `cellSize` (20); wires join only at shared endpoints/strips; placeholder
-part textures until real SVG art lands.
-Gotchas for T07/T08: the dev-web adapter's `dialogs.openFile/saveFile` return `null`, so save/load
-must fall back to an app-data path (or add a path param) for the E2E "save → reload → identical";
-`DocumentStore` has no "replace circuit" command yet (add one for load). `vc-check` uses `pnpm -s`
-(empty failure output); editor typecheck needs `@types/rbush` (root).
+S02 complete (T01–T08); running `vc-stage-finish.sh S02` → tag `stage-s02-done`. Next: S03 analog
+solver (MNA/Newton; consumes the netlist contract).
+Editor API: `new Editor({store,registry,cellSize?,gridSize?})` → `mount/unmount`,
+`getViewport/zoomBy/panByScreen`, `onViewportChange`, `getScene`, `getToolController`;
+`Scene(renderer,store,registry)` renders the board (one batched Graphics), wires and parts (cached
+textures) plus selection/preview; `HitTester(scene).hitTest/nearest`; `buildHitTestScene`;
+`ToolController.setTool('select'|'place'|'wire',partId?)`, `pointerDown/Move/Up(gridPoint)`,
+`keyDown(key)`; placement helpers `snapPartPosition`/`isPlacementValid`.
+Add a part visual: swap `createPlaceholderPartTexture` for the manifest's `svg` asset (loaded via
+`TextureCache`, keyed by `manifest.id`+rotation); real SVG art will live in `packages/parts`.
+App/UI: desktop `App` composes `@vircuitcad/ui` (PartsBin/Inspector/Toolbar/StatusBar) with the
+editor, save/load via adapter dialogs (app-data fallback for dev-web) + autosave journal + dirty
+flag; `window.__app`/`window.__editor` for E2E.
+Perf note: ≈50 fps at 100 parts under SwiftShader (no GPU, 1 worker); ~30 fps with 4 parallel
+workers; board stays constant draw calls (one sprite per part).
+Decisions: world = grid × `cellSize` (20); wires join only at shared endpoints/strips;
+`DocumentStore.replace` added for load; dev-web dialogs return null → app-data fallback path.
+Gotchas: `vc-check` uses `pnpm -s` (empty failure output); editor typecheck needs `@types/rbush`;
+ui tests need jsdom + testing-library at the workspace root.
 Blocked: none.
 
 ## Human actions pending
