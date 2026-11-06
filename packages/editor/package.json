@@ -8,6 +8,11 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "dependencies": {
+    "@vircuitcad/core": "workspace:*",
+    "pixi.js": "8.22.0",
+    "rbush": "4.0.1"
+  },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",

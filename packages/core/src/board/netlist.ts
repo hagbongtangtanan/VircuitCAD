@@ -1,5 +1,5 @@
 import { generateBoardGeometry, type BoardGeometry } from '../board/geometry';
-import type { Circuit, Endpoint, PartInstance, Rotation, Vec2 } from '../model/circuit';
+import { rotateGridVector, type Circuit, type Endpoint, type PartInstance, type Vec2 } from '../model/circuit';
 import type { Pin } from '../parts/manifest';
 import type { PartRegistry } from '../parts/registry';
 
@@ -37,21 +37,8 @@ class UnionFind {
   }
 }
 
-function rotateVector(vec: Vec2, rotation: Rotation): Vec2 {
-  switch (rotation) {
-    case 0:
-      return vec;
-    case 90:
-      return { x: -vec.y, y: vec.x };
-    case 180:
-      return { x: -vec.x, y: -vec.y };
-    case 270:
-      return { x: vec.y, y: -vec.x };
-  }
-}
-
 function absolutePinPosition(part: PartInstance, pin: Pin): Vec2 {
-  const rotated = rotateVector(pin.position, part.rotation);
+  const rotated = rotateGridVector(pin.position, part.rotation);
   return { x: part.position.x + rotated.x, y: part.position.y + rotated.y };
 }
 

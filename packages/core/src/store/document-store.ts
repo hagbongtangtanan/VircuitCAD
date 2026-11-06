@@ -70,6 +70,13 @@ export class DocumentStore {
     return () => this.listeners.delete(listener);
   }
 
+  replace(circuit: Circuit): void {
+    this.store.setState({ circuit });
+    this.undoStack.length = 0;
+    this.redoStack.length = 0;
+    this.emit('load');
+  }
+
   canUndo(): boolean {
     return this.undoStack.length > 0;
   }
@@ -154,6 +161,20 @@ export class DocumentStore {
     return this.mutate('deleteWire', (draft) => {
       const index = draft.wires.findIndex((candidate) => candidate.id === wireId);
       if (index !== -1) draft.wires.splice(index, 1);
+    });
+  }
+
+  moveWireEndpoint(wireId: string, end: 'from' | 'to', endpoint: Endpoint): boolean {
+    return this.mutate('moveWireEndpoint', (draft) => {
+      const wire = draft.wires.find((candidate) => candidate.id === wireId);
+      if (wire) wire[end] = endpoint;
+    });
+  }
+
+  setWireColor(wireId: string, color: string): boolean {
+    return this.mutate('setWireColor', (draft) => {
+      const wire = draft.wires.find((candidate) => candidate.id === wireId);
+      if (wire) wire.color = color;
     });
   }
 
