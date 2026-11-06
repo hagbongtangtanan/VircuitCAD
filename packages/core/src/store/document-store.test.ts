@@ -128,6 +128,20 @@ it('round-trips a 100-step undo/redo history', () => {
   expect(store.getCircuit()).toEqual(final);
 });
 
+it('moves a wire endpoint and updates its colour', () => {
+  const store = storeWithResistor();
+  store.addWire({ kind: 'hole', holeId: 'c1' }, { kind: 'hole', holeId: 'c5' }, { id: 'w1' });
+
+  expect(store.moveWireEndpoint('w1', 'to', { kind: 'hole', holeId: 'c9' })).toBe(true);
+  expect(store.getCircuit().wires[0]?.to).toEqual({ kind: 'hole', holeId: 'c9' });
+
+  expect(store.setWireColor('w1', '#ef4444')).toBe(true);
+  expect(store.getCircuit().wires[0]?.color).toBe('#ef4444');
+
+  store.undo();
+  expect(store.getCircuit().wires[0]?.color).toBe('#22c55e');
+});
+
 it('ignores commands for unknown parts', () => {
   const store = storeWithResistor();
   expect(store.movePart('missing', { x: 1, y: 1 })).toBe(false);

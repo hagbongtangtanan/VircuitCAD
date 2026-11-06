@@ -11,6 +11,7 @@ import {
   type Vec2,
 } from '@vircuitcad/core';
 
+import { buildHitTestScene } from '../hit/scene-index';
 import { layoutPart } from './part-layout';
 import { createPlaceholderPartTexture } from './part-textures';
 import { TextureCache } from './texture-cache';
@@ -40,9 +41,11 @@ const CATEGORY_COLORS: Record<PartCategory, number> = {
 export class Scene {
   readonly root = new Container();
   private readonly boardLayer = new Container();
+  private readonly wiresLayer = new Container();
   private readonly partsLayer = new Container();
   private readonly overlayLayer = new Container();
   private readonly selectionGraphics = new Graphics();
+  private readonly wirePreview = new Graphics();
   private readonly cache = new TextureCache<Texture>();
   private readonly geometry: BoardGeometry;
   private readonly cellSize: number;
@@ -58,13 +61,13 @@ export class Scene {
     options: SceneOptions = {},
   ) {
     this.cellSize = options.cellSize ?? 20;
-    this.root.addChild(this.boardLayer, this.partsLayer, this.overlayLayer);
-    this.overlayLayer.addChild(this.selectionGraphics);
+    this.root.addChild(this.boardLayer, this.wiresLayer, this.partsLayer, this.overlayLayer);
+    this.overlayLayer.addChild(this.selectionGraphics, this.wirePreview);
     this.geometry = generateBoardGeometry(store.getCircuit().board.kind);
     this.drawBoard(options);
-    this.renderParts();
+    this.renderCircuit();
     this.unsubscribe = store.onChange(() => {
-      this.renderParts();
+      this.renderCircuit();
       this.refreshSelection();
     });
   }
@@ -156,9 +159,33 @@ export class Scene {
     this.boardLayer.addChild(graphics);
   }
 
-  private renderParts(): void {
+  setWirePreview(points: Vec2[] | null): void {
+    this.wirePreview.clear();
+    const [first, ...rest] = points ?? [];
+    if (!first) return;
+    this.wirePreview.moveTo(first.x, first.y);
+    for (const point of rest) this.wirePreview.lineTo(point.x, point.y);
+    this.wirePreview.stroke({ width: 2, color: 0xf59e0b, alpha: 0.85 });
+  }
+
+  private renderCircuit(): void {
+    const circuit = this.store.getCircuit();
+    const hitScene = buildHitTestScene(circuit, this.registry, this.geometry, this.cellSize);
+
+    for (const child of this.wiresLayer.removeChildren()) child.destroy();
+    const wires = new Graphics();
+    hitScene.wires.forEach((wire, index) => {
+      const [first, ...rest] = wire.points;
+      if (!first) return;
+      const color = circuit.wires[index]?.color ?? '#22c55e';
+      wires.moveTo(first.x, first.y);
+      for (const point of rest) wires.lineTo(point.x, point.y);
+      wires.stroke({ width: 2, color: Number.parseInt(color.slice(1), 16), alpha: 0.9 });
+    });
+    this.wiresLayer.addChild(wires);
+
     for (const child of this.partsLayer.removeChildren()) child.destroy();
-    for (const part of this.store.getCircuit().parts) {
+    for (const part of circuit.parts) {
       const manifest = this.registry.get(part.partId);
       if (!manifest) continue;
       this.partsLayer.addChild(this.createSprite(manifest, part.position, part.rotation));

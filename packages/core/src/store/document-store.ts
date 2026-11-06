@@ -157,6 +157,20 @@ export class DocumentStore {
     });
   }
 
+  moveWireEndpoint(wireId: string, end: 'from' | 'to', endpoint: Endpoint): boolean {
+    return this.mutate('moveWireEndpoint', (draft) => {
+      const wire = draft.wires.find((candidate) => candidate.id === wireId);
+      if (wire) wire[end] = endpoint;
+    });
+  }
+
+  setWireColor(wireId: string, color: string): boolean {
+    return this.mutate('setWireColor', (draft) => {
+      const wire = draft.wires.find((candidate) => candidate.id === wireId);
+      if (wire) wire.color = color;
+    });
+  }
+
   asPart(id: string): PartInstance | undefined {
     return this.getCircuit().parts.find((part) => part.id === id);
   }
