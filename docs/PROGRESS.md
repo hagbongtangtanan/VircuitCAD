@@ -18,25 +18,25 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S02 complete (T01–T08); running `vc-stage-finish.sh S02` → tag `stage-s02-done`. Next: S03 analog
-solver (MNA/Newton; consumes the netlist contract).
-Editor API: `new Editor({store,registry,cellSize?,gridSize?})` → `mount/unmount`,
-`getViewport/zoomBy/panByScreen`, `onViewportChange`, `getScene`, `getToolController`;
-`Scene(renderer,store,registry)` renders the board (one batched Graphics), wires and parts (cached
-textures) plus selection/preview; `HitTester(scene).hitTest/nearest`; `buildHitTestScene`;
-`ToolController.setTool('select'|'place'|'wire',partId?)`, `pointerDown/Move/Up(gridPoint)`,
-`keyDown(key)`; placement helpers `snapPartPosition`/`isPlacementValid`.
-Add a part visual: swap `createPlaceholderPartTexture` for the manifest's `svg` asset (loaded via
-`TextureCache`, keyed by `manifest.id`+rotation); real SVG art will live in `packages/parts`.
-App/UI: desktop `App` composes `@vircuitcad/ui` (PartsBin/Inspector/Toolbar/StatusBar) with the
-editor, save/load via adapter dialogs (app-data fallback for dev-web) + autosave journal + dirty
-flag; `window.__app`/`window.__editor` for E2E.
-Perf note: ≈50 fps at 100 parts under SwiftShader (no GPU, 1 worker); ~30 fps with 4 parallel
-workers; board stays constant draw calls (one sprite per part).
-Decisions: world = grid × `cellSize` (20); wires join only at shared endpoints/strips;
-`DocumentStore.replace` added for load; dev-web dialogs return null → app-data fallback path.
-Gotchas: `vc-check` uses `pnpm -s` (empty failure output); editor typecheck needs `@types/rbush`;
-ui tests need jsdom + testing-library at the workspace root.
+S03 IN PROGRESS, branch `stage/s03-analog-engine`. Done: T01 (dense LU solver on Float64Array
+buffers, partial pivoting, singularity flag), T02 (`MnaSystem` stamps + deterministic `buildNodeMap`
++ `Device`/`MnaContext` interfaces + gmin), T03 (linear devices: resistor, DC voltage source with
+series internal R, current source, open/closed switch; `setup`/`stamp` phases).
+Next: T04 DC operating point (Newton, abstol/reltol/vntol, gmin then source stepping), T05
+nonlinear (diode/LED/Zener + `pnjlim`), T06 transient (C/L companions, BE+trap, adaptive dt), T07
+typed `SimError` + one test circuit each, T08 ngspice golden harness + 20 circuits + committed JSON,
+T09 bench + `docs/MODELS.md`; then `/stage-finish S03`.
+sim-analog API: `LuDecomposition`; `MnaSystem(nodeCount)` with `addConductance/addCurrent/
+reserveVoltageSource/stampVoltageSource/addBranchResistance/setVoltageSource/addGmin/solve/
+nodeVoltage/branchCurrent/isSingular`; `buildNodeMap(netlist)` (ground net = 0, others sorted);
+`Device { name, nodes, setup?, stamp, update?, limit?, breakpoints? }`; `createMnaContext`,
+`setupDevices`, `stampDevices(system, devices, previous?, gmin)`; devices `createResistor`,
+`createVoltageSource(name, p, n, v, internalR=1e-6)`, `createCurrentSource`, `createSwitch`.
+Decisions: netlist nets → nodes via `buildNodeMap`; voltage-source branch indices are reserved in
+`setup()` so re-stamping after `reset()` stays stable; internal R uses the branch diagonal
+(`-R`), no hidden node; gmin (1e-12) every stamp.
+Gotchas: `vc-check` uses `pnpm -s` (failure output can be empty); MnaSystem branch row is
+`nodeCount + branch + 1` in 1-based stamps (off-by-one bug already fixed).
 Blocked: none.
 
 ## Human actions pending
