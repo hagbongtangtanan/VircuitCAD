@@ -18,25 +18,23 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S03 IN PROGRESS, branch `stage/s03-analog-engine`. Done: T01 (dense LU solver on Float64Array
-buffers, partial pivoting, singularity flag), T02 (`MnaSystem` stamps + deterministic `buildNodeMap`
-+ `Device`/`MnaContext` interfaces + gmin), T03 (linear devices: resistor, DC voltage source with
-series internal R, current source, open/closed switch; `setup`/`stamp` phases).
-Next: T04 DC operating point (Newton, abstol/reltol/vntol, gmin then source stepping), T05
-nonlinear (diode/LED/Zener + `pnjlim`), T06 transient (C/L companions, BE+trap, adaptive dt), T07
-typed `SimError` + one test circuit each, T08 ngspice golden harness + 20 circuits + committed JSON,
-T09 bench + `docs/MODELS.md`; then `/stage-finish S03`.
-sim-analog API: `LuDecomposition`; `MnaSystem(nodeCount)` with `addConductance/addCurrent/
-reserveVoltageSource/stampVoltageSource/addBranchResistance/setVoltageSource/addGmin/solve/
-nodeVoltage/branchCurrent/isSingular`; `buildNodeMap(netlist)` (ground net = 0, others sorted);
-`Device { name, nodes, setup?, stamp, update?, limit?, breakpoints? }`; `createMnaContext`,
-`setupDevices`, `stampDevices(system, devices, previous?, gmin)`; devices `createResistor`,
-`createVoltageSource(name, p, n, v, internalR=1e-6)`, `createCurrentSource`, `createSwitch`.
-Decisions: netlist nets → nodes via `buildNodeMap`; voltage-source branch indices are reserved in
-`setup()` so re-stamping after `reset()` stays stable; internal R uses the branch diagonal
-(`-R`), no hidden node; gmin (1e-12) every stamp.
-Gotchas: `vc-check` uses `pnpm -s` (failure output can be empty); MnaSystem branch row is
-`nodeCount + branch + 1` in 1-based stamps (off-by-one bug already fixed).
+S03 IN PROGRESS, branch `stage/s03-analog-engine`. Done: T01 (dense LU solver), T02 (`MnaSystem` +
+`buildNodeMap` + `Device`/`MnaContext` + gmin), T03 (linear devices R/V/I/switch), T04
+(`solveOperatingPoint`: Newton with reltol/vntol/abstol + iteration cap, then gmin stepping, then
+optional source stepping via a `setSourceScale` hook).
+Next: T05 nonlinear (diode/LED/Zener + `pnjlim`), T06 transient (C/L companions, BE + trap,
+adaptive dt with breakpoints), T07 typed `SimError` + one test circuit each, T08 ngspice golden
+harness + 20 circuits + committed JSON, T09 bench + `docs/MODELS.md`; then `/stage-finish S03`.
+sim-analog API: `solveOperatingPoint(system, devices, initial?, options?) →
+{ solution, converged, iterations, method: 'newton'|'gmin'|'source' }`; `SolverOptions`
+`{ maxIterations, reltol, vntol, abstol, gmin, gminSteps, sourceSteps, setSourceScale }`. Nonlinear
+devices linearize from `ctx.voltage(node)` (previous iterate) and add a companion current source
+(`I(v0) - g(v0)*v0`); source stepping needs the caller's `setSourceScale` to rescale V/I sources.
+Decisions: netlist nets → nodes via `buildNodeMap`; voltage-source branch indices reserved in
+`setup()`; internal R uses the branch diagonal (`-R`); gmin 1e-12 per stamp; linear DC needs 2
+Newton iterations (stamp + confirm).
+Gotchas: `vc-check` uses `pnpm -s` (empty failure output); `Float64Array` is generic over its
+buffer in TS6 — annotate `let current: Float64Array`; MnaSystem branch row is `nodeCount + branch + 1`.
 Blocked: none.
 
 ## Human actions pending
