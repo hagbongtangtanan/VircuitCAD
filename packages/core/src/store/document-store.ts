@@ -70,6 +70,13 @@ export class DocumentStore {
     return () => this.listeners.delete(listener);
   }
 
+  replace(circuit: Circuit): void {
+    this.store.setState({ circuit });
+    this.undoStack.length = 0;
+    this.redoStack.length = 0;
+    this.emit('load');
+  }
+
   canUndo(): boolean {
     return this.undoStack.length > 0;
   }

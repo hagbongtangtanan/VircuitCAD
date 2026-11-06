@@ -52,9 +52,19 @@ export class ToolController {
   private pending: PendingWire | undefined = undefined;
   private wireColor = DEFAULT_WIRE_COLOR;
   private readonly board;
+  private readonly listeners = new Set<() => void>();
 
   constructor(private readonly deps: ToolControllerDeps) {
     this.board = boardGridBounds(deps.geometry);
+  }
+
+  onStateChange(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notify(): void {
+    for (const listener of this.listeners) listener();
   }
 
   getTool(): ToolName {
@@ -75,6 +85,7 @@ export class ToolController {
 
   setWireColor(color: string): void {
     this.wireColor = color;
+    this.notify();
   }
 
   setTool(tool: ToolName, partId?: string): void {
@@ -83,9 +94,15 @@ export class ToolController {
     this.drag = undefined;
     this.cancelWire();
     this.deps.scene.setPreview(null);
+    this.notify();
   }
 
   pointerDown(gridPoint: Vec2): void {
+    this.pointerDownImpl(gridPoint);
+    this.notify();
+  }
+
+  private pointerDownImpl(gridPoint: Vec2): void {
     if (this.tool === 'place') {
       this.commitPlacement(gridPoint);
       return;
@@ -125,6 +142,12 @@ export class ToolController {
   }
 
   keyDown(key: string): boolean {
+    const handled = this.keyDownImpl(key);
+    this.notify();
+    return handled;
+  }
+
+  private keyDownImpl(key: string): boolean {
     if (key === 'Delete' || key === 'Backspace') {
       if (this.selectedWireId) {
         const wireId = this.selectedWireId;
@@ -166,6 +189,7 @@ export class ToolController {
     });
     this.selectedPartId = id;
     this.deps.scene.setSelection(id);
+    this.notify();
     return id;
   }
 

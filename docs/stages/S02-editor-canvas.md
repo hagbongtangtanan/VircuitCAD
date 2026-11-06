@@ -13,7 +13,7 @@ A usable breadboard editor: pan/zoom, place/move/rotate/delete parts, wire tool,
 - [x] **S02-T04** Tools: select, place (drag from bin), move, rotate (R), delete (Del), duplicate; snap pins to breadboard holes; ghost preview; invalid-placement feedback. → store commands only (no direct mutation).
 - [x] **S02-T05** Wire tool: click pin/hole → waypoints → click end; snapping, colour choice, delete, move endpoint, wire-over-wire without implicit junction. → netlist updates correctly in tests.
 - [x] **S02-T06** React panels in `packages/ui`: parts bin (search, categories), inspector (typed param editors with units/validation), toolbar, status bar. → component tests.
-- [ ] **S02-T07** Save/load via adapter dialogs, recent files, dirty indicator, autosave journal to app-data (restore prompt stubbed). → E2E: save → reload → identical.
+- [x] **S02-T07** Save/load via adapter dialogs, recent files, dirty indicator, autosave journal to app-data (restore prompt stubbed). → E2E: save → reload → identical.
 - [ ] **S02-T08** Playwright E2E (dev-web): place resistor, wire it, undo/redo, rotate, delete, save/load. → in `verify`, with software GL flags.
 
 ## Pitfalls

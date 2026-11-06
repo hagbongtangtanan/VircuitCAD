@@ -142,6 +142,17 @@ it('moves a wire endpoint and updates its colour', () => {
   expect(store.getCircuit().wires[0]?.color).toBe('#22c55e');
 });
 
+it('replaces the circuit and clears history', () => {
+  const store = storeWithResistor();
+  expect(store.canUndo()).toBe(true);
+
+  store.replace(createEmptyCircuit({ name: 'loaded' }));
+  expect(store.getCircuit().name).toBe('loaded');
+  expect(store.getCircuit().parts).toHaveLength(0);
+  expect(store.canUndo()).toBe(false);
+  expect(store.canRedo()).toBe(false);
+});
+
 it('ignores commands for unknown parts', () => {
   const store = storeWithResistor();
   expect(store.movePart('missing', { x: 1, y: 1 })).toBe(false);

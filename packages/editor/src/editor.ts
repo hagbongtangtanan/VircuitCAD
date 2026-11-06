@@ -27,6 +27,7 @@ export class Editor {
   private controller: ToolController | undefined = undefined;
   private viewport: Viewport = { scale: 1, x: 0, y: 0 };
   private cleanup: Array<() => void> = [];
+  private readonly viewportListeners = new Set<() => void>();
   private readonly background: number;
   private readonly gridSize: number;
   private readonly minGridScreenPx: number;
@@ -116,6 +117,11 @@ export class Editor {
     return this.controller;
   }
 
+  onViewportChange(listener: () => void): () => void {
+    this.viewportListeners.add(listener);
+    return () => this.viewportListeners.delete(listener);
+  }
+
   getViewport(): Viewport {
     return { ...this.viewport };
   }
@@ -161,6 +167,7 @@ export class Editor {
     this.world.scale.set(this.viewport.scale);
     this.world.position.set(this.viewport.x, this.viewport.y);
     this.drawGrid();
+    for (const listener of this.viewportListeners) listener();
   }
 
   private drawGrid(): void {

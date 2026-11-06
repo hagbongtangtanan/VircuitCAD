@@ -65,6 +65,9 @@ importers:
       '@vircuitcad/editor':
         specifier: workspace:*
         version: link:../../packages/editor
+      '@vircuitcad/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       electron:
         specifier: 45.2.3
         version: 45.2.3

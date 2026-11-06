@@ -20,6 +20,7 @@
     "@types/react-dom": "19.3.0",
     "@vircuitcad/core": "workspace:*",
     "@vircuitcad/editor": "workspace:*",
+    "@vircuitcad/ui": "workspace:*",
     "electron": "45.2.3",
     "electron-builder": "26.18.0",
     "esbuild": "0.28.2",
