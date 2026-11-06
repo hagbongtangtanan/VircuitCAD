@@ -7,7 +7,7 @@ A pure TypeScript MNA engine (`sim-analog`) with DC and transient analysis, robu
 `docs/ARCHITECTURE.md` (Simulation notes), netlist shape from S01 Handoff, `docs/RISKS.md` rows on convergence/shorts.
 
 ## Tasks
-- [ ] **S03-T01** Linear algebra: dense matrix + LU with partial pivoting, singularity detection, reusable factorization buffers (typed arrays). → tests on known systems; bench at 50/100/200 nodes.
+- [x] **S03-T01** Linear algebra: dense matrix + LU with partial pivoting, singularity detection, reusable factorization buffers (typed arrays). → tests on known systems; bench at 50/100/200 nodes.
 - [ ] **S03-T02** MNA framework: node indexing from netlist, `Device` interface (`stamp`, `update`, `limit`, `breakpoints`), gmin on every node. → floating-node circuit solves without singularity.
 - [ ] **S03-T03** Linear devices: resistor, DC voltage source (with small internal R), current source, switch/pushbutton. → analytic checks (divider, Thevenin).
 - [ ] **S03-T04** DC operating point: Newton-Raphson loop, convergence criteria (abstol/reltol/vntol), iteration cap, gmin stepping then source stepping fallback. → hard circuits converge in tests.
