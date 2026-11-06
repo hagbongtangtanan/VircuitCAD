@@ -37,15 +37,29 @@ export class MnaSystem {
     this.stampZ(to, current);
   }
 
-  addVoltageSource(positive: number, negative: number): number {
+  reserveVoltageSource(): number {
     const branch = this.branchCount;
     this.branchCount += 1;
     this.reallocate();
+    return branch;
+  }
+
+  stampVoltageSource(positive: number, negative: number, branch: number): void {
     const row = this.nodeCount + branch + 1;
     this.stampA(positive, row, 1);
     this.stampA(negative, row, -1);
     this.stampA(row, positive, 1);
     this.stampA(row, negative, -1);
+  }
+
+  addBranchResistance(branch: number, resistance: number): void {
+    const row = this.nodeCount + branch + 1;
+    this.stampA(row, row, -resistance);
+  }
+
+  addVoltageSource(positive: number, negative: number): number {
+    const branch = this.reserveVoltageSource();
+    this.stampVoltageSource(positive, negative, branch);
     return branch;
   }
 
