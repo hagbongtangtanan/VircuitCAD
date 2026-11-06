@@ -18,23 +18,25 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S02 IN PROGRESS, branch `stage/s02-editor-canvas`. Done: T01 (Pixi mount/unmount/resize/DPR,
-cursor-anchored zoom + middle/space pan, grid, `window.__editor`), T02 (`Scene` renders board
-holes as one batched Graphics + parts via `TextureCache`, subscribes to `DocumentStore` — no React
-re-render per frame), T03 (`HitTester` with rbush; priority pin > hole > part body > wire, world
-tolerance, kind filter; `buildHitTestScene`).
-Next: T04 tools (select/place/move/rotate/delete/duplicate via `DocumentStore` commands only,
-snap, ghost, invalid feedback), T05 wire tool, T06 React panels in `packages/ui`, T07 save/load via
-adapter + autosave journal, T08 Playwright E2E.
-Editor API: `new Editor({ store, registry, cellSize?, gridSize? })` → `mount/unmount`,
-`getViewport/zoomBy/panByScreen`, `getScene`; `Scene(renderer, store, registry)`;
-`HitTester(scene).hitTest(point, tolerance, kinds?)`; `buildHitTestScene(circuit, registry,
-geometry, cellSize)`.
-Decisions: world units = grid units × `cellSize` (20); board is constant draw calls; parts use
-cached placeholder textures (real SVG art pending under `packages/parts`); rotation shared via
-core `rotateGridVector`.
+S02 IN PROGRESS, branch `stage/s02-editor-canvas`. Done: T01 (Pixi mount/zoom/pan/grid), T02
+(`Scene` batches board holes + cached part textures, imperative store subscription), T03
+(`HitTester` rbush; pin > hole > part > wire, tolerance, kind filter; `buildHitTestScene`), T04
+(`ToolController`: select/drag-move with hole snap, click-place with ghost + validity, R rotate,
+Del delete, D duplicate — all via `DocumentStore`; `Scene` selection + preview), T05 (wire tool:
+pin/hole → waypoints → pin/hole, ghost line, colour, endpoint editing; select+delete wires; core
+gains `moveWireEndpoint`/`setWireColor`).
+Next: T06 React panels in `packages/ui` (parts bin, inspector, toolbar, status bar), T07 save/load
+via adapter dialogs + recent files + dirty/autosave journal, T08 Playwright editing E2E (place,
+wire, undo/redo, rotate, delete, save/load) + record the 100-part fps note, then `/stage-finish S02`.
+Editor API: `new Editor({ store, registry, cellSize?, gridSize? })` → `mount/unmount`, viewport
+helpers, `getScene`, `getToolController`; `ToolController.setTool('select'|'place'|'wire', partId?)`,
+`pointerDown/Move/Up(gridPoint)`, `keyDown(key)`, `setWireColor`; `Scene.setSelection/setPreview/
+setWirePreview`.
+Decisions: world units = grid units × `cellSize` (20); wires only connect at shared endpoints/strips
+(no mid-segment junctions); parts use cached placeholder textures (real SVG art pending under
+`packages/parts`).
 Gotchas: `vc-check.sh` uses `pnpm -s` (failure output can be empty); editor typecheck needs
-`@types/rbush` (root); the 100-part / 5000-hole fps benchmark note is still to be recorded at T08.
+`@types/rbush` (root); fps benchmark note still pending for T08.
 Blocked: none.
 
 ## Human actions pending
