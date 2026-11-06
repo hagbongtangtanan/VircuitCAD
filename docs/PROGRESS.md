@@ -18,19 +18,23 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S01 complete (T01–T07 + netlist coverage gate); running `vc-stage-finish.sh S01`. Next: S02 editor
-canvas (pan/zoom, place/move/rotate/delete, wire tool, parts bin, inspector, save/load, E2E).
-core public API: model (`Circuit`/`PartInstance`/`Wire`/`Board`, `createEmptyCircuit`,
-`createPartInstance`, `createWire`, `schemaVersion=1`); parts (`PartManifest`, `PartRegistry`,
-`createDefaultPartRegistry` = resistor/led/battery); board (`generateBoardGeometry`,
-`extractNetlist` → `{ nets: {name,isGround,pins,holes}[], floatingPins }`); serialize
-(`serializeCircuit`/`deserializeCircuit`, `runMigrations`); store (`DocumentStore`: addParts,
-move/rotate/deletePart, addWire/deleteWire, setParam, transaction, undo/redo, onChange).
-Decisions: rotation is CCW (90 → (-y,x)); a part's `position` is the pin origin for rotated pin
-offsets; nets named N1.. with the ground net as GND, ordered by a canonical pin+hole key; `.vcad`
-migrations run through a v→v+1 chain.
-Gotchas: `vc-check.sh` uses `pnpm -s` (failure output can be empty); core `tsconfig` sets
-`types:[node]` for fixture reads; netlist coverage is enforced on demand via vitest `--coverage`.
+S02 IN PROGRESS, branch `stage/s02-editor-canvas`. Done: T01 (Pixi mount/unmount/resize/DPR,
+cursor-anchored zoom + middle/space pan, grid, `window.__editor`), T02 (`Scene` renders board
+holes as one batched Graphics + parts via `TextureCache`, subscribes to `DocumentStore` — no React
+re-render per frame), T03 (`HitTester` with rbush; priority pin > hole > part body > wire, world
+tolerance, kind filter; `buildHitTestScene`).
+Next: T04 tools (select/place/move/rotate/delete/duplicate via `DocumentStore` commands only,
+snap, ghost, invalid feedback), T05 wire tool, T06 React panels in `packages/ui`, T07 save/load via
+adapter + autosave journal, T08 Playwright E2E.
+Editor API: `new Editor({ store, registry, cellSize?, gridSize? })` → `mount/unmount`,
+`getViewport/zoomBy/panByScreen`, `getScene`; `Scene(renderer, store, registry)`;
+`HitTester(scene).hitTest(point, tolerance, kinds?)`; `buildHitTestScene(circuit, registry,
+geometry, cellSize)`.
+Decisions: world units = grid units × `cellSize` (20); board is constant draw calls; parts use
+cached placeholder textures (real SVG art pending under `packages/parts`); rotation shared via
+core `rotateGridVector`.
+Gotchas: `vc-check.sh` uses `pnpm -s` (failure output can be empty); editor typecheck needs
+`@types/rbush` (root); the 100-part / 5000-hole fps benchmark note is still to be recorded at T08.
 Blocked: none.
 
 ## Human actions pending
