@@ -12,5 +12,13 @@ export {
   type OperatingPointResult,
   type SolverOptions,
 } from './solver';
+export {
+  createDiode,
+  createLed,
+  createZener,
+  pnjlim,
+  type DiodeDevice,
+  type DiodeOptions,
+} from './devices/nonlinear';
 
 export const packageName = '@vircuitcad/sim-analog';

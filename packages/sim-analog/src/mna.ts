@@ -1,15 +1,26 @@
 import { LuDecomposition } from './linalg';
 
 export class MnaSystem {
-  readonly nodeCount: number;
+  private nodeCountValue: number;
   private branchCount = 0;
   private a = new Float64Array(0);
   private z = new Float64Array(0);
   private readonly lu = new LuDecomposition();
 
   constructor(nodeCount: number) {
-    this.nodeCount = nodeCount;
+    this.nodeCountValue = nodeCount;
     this.reallocate();
+  }
+
+  get nodeCount(): number {
+    return this.nodeCountValue;
+  }
+
+  /** Allocates an internal node (device-only, before any stamping). */
+  addNode(): number {
+    this.nodeCountValue += 1;
+    this.reallocate();
+    return this.nodeCountValue;
   }
 
   get branchCount_(): number {

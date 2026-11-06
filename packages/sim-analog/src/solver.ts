@@ -49,7 +49,8 @@ function converged(
     const b = next[index] ?? 0;
     const delta = Math.abs(b - a);
     if (index >= system.nodeCount) {
-      if (delta > options.abstol) return false;
+      const tolerance = options.abstol + options.reltol * Math.max(Math.abs(a), Math.abs(b));
+      if (delta > tolerance) return false;
     } else {
       const tolerance = options.reltol * Math.max(Math.abs(a), Math.abs(b)) + options.vntol;
       if (delta > tolerance) return false;
