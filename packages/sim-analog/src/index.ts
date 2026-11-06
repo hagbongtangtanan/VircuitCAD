@@ -7,5 +7,10 @@ export { createResistor } from './devices/resistor';
 export { createVoltageSource } from './devices/voltage-source';
 export { createCurrentSource } from './devices/current-source';
 export { createSwitch, type SwitchDevice, type SwitchOptions } from './devices/switch';
+export {
+  solveOperatingPoint,
+  type OperatingPointResult,
+  type SolverOptions,
+} from './solver';
 
 export const packageName = '@vircuitcad/sim-analog';
