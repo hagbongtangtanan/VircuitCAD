@@ -15,7 +15,7 @@ A pure TypeScript MNA engine (`sim-analog`) with DC and transient analysis, robu
 - [x] **S03-T06** Transient: capacitor, inductor (companion models), backward-Euler + trapezoidal, adaptive timestep with breakpoints. → RC/RL/RLC step-response tests within 1 %.
 - [x] **S03-T07** Diagnostics: typed `SimError` (`SHORT_CIRCUIT`, `NO_GROUND`, `FLOATING`, `NO_CONVERGENCE`, `SOURCE_LOOP`) carrying node/part refs. → each has a test circuit.
 - [x] **S03-T08** Golden harness: runner for native ngspice (skips if absent), 20+ circuit netlists, tolerance compare, **committed result JSON** so tests run without ngspice; script to regenerate. → tests tagged `golden`.
-- [ ] **S03-T09** Benchmark (`bench/`) reporting steps/sec; `docs/MODELS.md` created with equations, tolerances and limits. → numbers recorded in Handoff.
+- [x] **S03-T09** Benchmark (`bench/`) reporting steps/sec; `docs/MODELS.md` created with equations, tolerances and limits. → numbers recorded in Handoff.
 
 ## Pitfalls
 - LED/diode exponentials overflow: clamp and limit voltage steps; start Newton from previous solution.
