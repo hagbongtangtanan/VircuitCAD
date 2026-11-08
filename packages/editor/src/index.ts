@@ -1,4 +1,5 @@
 export { Editor, type EditorOptions } from './editor';
+export { SimulationHost } from './sim/worker-host';
 export { Scene, type PreviewState, type SceneOptions } from './render/scene';
 export {
   ToolController,

@@ -117,9 +117,8 @@ function buildDiode(
       state.vd = vd;
       const { current } = currentAndConductance(vd);
       state.current = current;
-      if (options.maxCurrent !== undefined && Math.abs(current) > options.maxCurrent) {
-        state.burnedOut = true;
-      }
+      state.burnedOut =
+        options.maxCurrent !== undefined && Math.abs(current) > options.maxCurrent;
     },
     get burnedOut() {
       return state.burnedOut;
