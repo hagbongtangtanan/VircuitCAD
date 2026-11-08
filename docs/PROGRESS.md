@@ -18,21 +18,22 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S03 complete (T01–T09); running `vc-stage-finish.sh S03` → tag `stage-s03-done`. Next: S04 vertical
-slice (battery + resistor + LED lights up) — consume this engine.
-Engine API: `solveOperatingPoint(system, devices, initial?, options) → { solution, converged,
-iterations, method }`; `solveDcOrThrow(system, devices, options)` (throws `SimError`);
-`runTransient(system, devices, { tstop, dt?, method?: 'be'|'trapezoidal', adaptive?, breakpoints? })
-→ { time, solution }[]`; `MnaSystem`, `buildNodeMap(netlist)`, `setupDevices`, `stampDevices`.
-Devices (each carries `kind`): `createResistor`, `createVoltageSource(name,p,n,v,internalR?)`,
-`createCurrentSource`, `createSwitch`, `createDiode`, `createLed(name,color,a,b)`,
-`createZener(name,a,b,vz)`, `createCapacitor`, `createInductor`; branches/nodes are allocated in
-`setup()`. Map a core netlist to devices via `buildNodeMap` (pin → net) + `manifest.simModel`.
-Errors: `SimError { code: SHORT_CIRCUIT | NO_GROUND | FLOATING | NO_CONVERGENCE | SOURCE_LOOP, refs }`.
-Benchmark: 21-node RC ladder ≈ 42 000 transient steps/sec. Golden: 20 circuits + closed-form oracle
-+ committed `results.json`; `tools/ngspice/` runs native ngspice (skips when absent).
-Gotchas: keep ngspice out of runtime code (only `tools/` and tests); TS6 `Float64Array` is generic
-over its buffer (annotate); the sim-* lint forbids Node built-ins even in `bench/`.
+S04 IN PROGRESS, branch `stage/s04-vertical-slice`. Done: T01 (`buildSimulation(circuit, registry)` +
+`solveSimulation` source stepping; zod worker protocol; `@vircuitcad/editor` `solver.worker` +
+`SimulationHost`).
+Next: T02 run controls + status bar + error toast + `SimError` canvas highlight, T03 part art/models
+(own SVG), T04 LED glow/burnout visual + net colouring toggle, T05 multimeter + bench supply, T06
+`examples/*.vcad` + E2E, T07 perf baseline + ADR 0003 + MODELS update; then `/stage-finish S04` —
+**S04 is a HUMAN REVIEW GATE** (finish exits 10, PR left open).
+APIs: `buildSimulation(circuit, registry) → Simulation { system, devices, nodeMap, netlist, nodeOf,
+deviceByName }`; `solveSimulation(sim) → OperatingPointResult` (source stepping via `setScale` on
+voltage sources); `WorkerCommandSchema`/`WorkerEventSchema`/`SimSnapshot`; editor `SimulationHost`
+(`start(circuit)`, `stop/pause/resume`, `setParam`, `onSnapshot/onStatus/onError`, `dispose`).
+Decisions: the worker gets the full `Circuit` in `start` (zod-validated); LED burnout is
+non-latching (converged current only); parts wired pin-to-pin must be placed off the rail (`y≈20`)
+or they short through board strips; sim-analog now depends on `zod`.
+Gotchas: `vc-check` uses `pnpm -s` (empty failure output); the worker script imports only
+`sim-analog` (no DOM); the internal LED node is allocated in `setup()` (called by `buildSimulation`).
 Blocked: none.
 
 ## Human actions pending
