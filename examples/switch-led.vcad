@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "id": "dUasvgbApAKjJX2YxC6iY",
+  "name": "Switch + LED",
+  "board": {
+    "id": "0Dz_JLQQP0scdv-rbMVoL",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "pack1",
+      "partId": "battery-pack",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 4.5
+      }
+    },
+    {
+      "id": "sw1",
+      "partId": "slide-switch",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "closed": true
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 100
+      }
+    },
+    {
+      "id": "d1",
+      "partId": "led",
+      "position": {
+        "x": 0,
+        "y": 26
+      },
+      "rotation": 0,
+      "params": {
+        "color": "green"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "1Us5jdGyCrHG6fMzotLXm",
+      "from": {
+        "kind": "pin",
+        "partId": "pack1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "sw1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "j5P2rH1ygwwr0npLxmIl7",
+      "from": {
+        "kind": "pin",
+        "partId": "sw1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "tKpwxBtyelZatQ4m1u1k8",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "anode"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "S1k3qymBHGLlPr2Wucuhq",
+      "from": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "cathode"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "pack1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ]
+}

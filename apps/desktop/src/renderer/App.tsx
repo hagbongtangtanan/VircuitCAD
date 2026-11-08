@@ -179,7 +179,14 @@ export function App() {
 
     void client.app.info().then((info) => setVersion(info.version)).catch(() => setVersion('unavailable'));
 
-    window.__app = { store, getCircuit: () => store.getCircuit(), save, load, refresh };
+    window.__app = {
+      store,
+      getCircuit: () => store.getCircuit(),
+      save,
+      load,
+      refresh,
+      loadText: (text: string) => store.replace(deserializeCircuit(text)),
+    };
 
     return () => {
       disposed = true;

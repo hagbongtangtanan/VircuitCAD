@@ -14,6 +14,7 @@ declare global {
           save: () => Promise<void>;
           load: () => Promise<void>;
           refresh: () => void;
+          loadText: (text: string) => void;
         }
       | undefined;
   }
