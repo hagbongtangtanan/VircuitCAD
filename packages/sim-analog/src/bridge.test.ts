@@ -57,6 +57,56 @@ it('maps a battery-resistor-LED circuit to devices and solves', () => {
   expect(led?.burnedOut).toBe(false);
 });
 
+it('models a pushbutton and a battery pack', () => {
+  const currentFor = (pressed: boolean): number => {
+    const circuit = createEmptyCircuit({ board: 'full' });
+    circuit.parts.push(
+      createPartInstance('battery-pack', {
+        id: 'pack',
+        position: { x: 0, y: 20 },
+        params: { voltage: 4.5 },
+      }),
+    );
+    circuit.parts.push(
+      createPartInstance('resistor', {
+        id: 'r1',
+        position: { x: 0, y: 22 },
+        params: { resistance: 100 },
+      }),
+    );
+    circuit.parts.push(
+      createPartInstance('pushbutton', {
+        id: 'sw1',
+        position: { x: 0, y: 24 },
+        params: { pressed },
+      }),
+    );
+    circuit.wires.push(
+      createWire(
+        { kind: 'pin', partId: 'pack', pinId: 'positive' },
+        { kind: 'pin', partId: 'r1', pinId: 'a' },
+      ),
+      createWire(
+        { kind: 'pin', partId: 'r1', pinId: 'b' },
+        { kind: 'pin', partId: 'sw1', pinId: 'a' },
+      ),
+      createWire(
+        { kind: 'pin', partId: 'sw1', pinId: 'b' },
+        { kind: 'pin', partId: 'pack', pinId: 'negative' },
+      ),
+    );
+    const simulation = buildSimulation(circuit, createDefaultPartRegistry());
+    const result = solveSimulation(simulation);
+    const pack = simulation.deviceByName('pack') as unknown as {
+      readCurrent(s: Float64Array): number;
+    };
+    return Math.abs(pack.readCurrent(result.solution));
+  };
+
+  expect(currentFor(false)).toBeLessThan(0.001);
+  expect(currentFor(true)).toBeGreaterThan(0.03);
+});
+
 it('burns the LED when the resistor is too small', () => {
   const circuit = seriesCircuit();
   const resistor = circuit.parts.find((part) => part.id === 'r1');

@@ -78,12 +78,13 @@ export function buildSimulation(circuit: Circuit, registry: PartRegistry): Simul
         );
         break;
       case 'battery':
+      case 'battery-pack':
         devices.push(
           createVoltageSource(
             part.id,
             nodeOf(part.id, 'positive'),
             nodeOf(part.id, 'negative'),
-            numericParam(params, manifest, 'voltage', 9),
+            numericParam(params, manifest, 'voltage', manifest.simModel === 'battery' ? 9 : 4.5),
           ),
         );
         break;
@@ -93,6 +94,28 @@ export function buildSimulation(circuit: Circuit, registry: PartRegistry): Simul
             closed: booleanParam(params, 'closed', false),
           }),
         );
+        break;
+      case 'pushbutton':
+        devices.push(
+          createSwitch(part.id, nodeOf(part.id, 'a'), nodeOf(part.id, 'b'), {
+            closed: booleanParam(params, 'pressed', false),
+          }),
+        );
+        break;
+      case 'slide-switch':
+        devices.push(
+          createSwitch(part.id, nodeOf(part.id, 'a'), nodeOf(part.id, 'b'), {
+            closed: booleanParam(params, 'closed', true),
+          }),
+        );
+        break;
+      case 'inductor':
+        devices.push(
+          createResistor(part.id, nodeOf(part.id, 'a'), nodeOf(part.id, 'b'), 1e-3),
+        );
+        break;
+      case 'capacitor':
+        // open in DC operating point
         break;
       case 'diode':
         devices.push(createDiode(part.id, nodeOf(part.id, 'anode'), nodeOf(part.id, 'cathode')));

@@ -4,7 +4,6 @@ import {
   generateBoardGeometry,
   type BoardGeometry,
   type DocumentStore,
-  type PartCategory,
   type PartManifest,
   type PartRegistry,
   type Rotation,
@@ -13,7 +12,7 @@ import {
 
 import { buildHitTestScene } from '../hit/scene-index';
 import { layoutPart } from './part-layout';
-import { createPlaceholderPartTexture } from './part-textures';
+import { createPartTexture, createPlaceholderPartTexture } from './part-textures';
 import { TextureCache } from './texture-cache';
 
 export type SceneOptions = {
@@ -27,15 +26,6 @@ export type PreviewState = {
   position: Vec2;
   rotation: Rotation;
   valid: boolean;
-};
-
-const CATEGORY_COLORS: Record<PartCategory, number> = {
-  passive: 0xd6b98a,
-  opto: 0xef4444,
-  power: 0x64748b,
-  digital: 0x38bdf8,
-  mcu: 0x22c55e,
-  instrument: 0xa78bfa,
 };
 
 export class Scene {
@@ -224,12 +214,11 @@ export class Scene {
     const layout = layoutPart(manifest, position, rotation);
     const width = Math.max(1, layout.bounds.width) * this.cellSize;
     const height = Math.max(1, layout.bounds.height) * this.cellSize;
-    const color = CATEGORY_COLORS[manifest.category];
 
     const texture = this.cache.get(`part:${manifest.id}:${rotation}`, () =>
-      createPlaceholderPartTexture(
+      createPartTexture(
         this.renderer,
-        color,
+        manifest,
         Math.round(width),
         Math.round(height),
         this.renderer.resolution,
