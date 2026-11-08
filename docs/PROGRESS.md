@@ -8,7 +8,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S01 | Core model, breadboard connectivity, netlist | done |
 | S02 | Editor canvas | done |
 | S03 | Analog solver engine | done |
-| S04 | Vertical slice: battery + resistor + LED lights up | pending |
+| S04 | Vertical slice: battery + resistor + LED lights up | done |
 | S05 | Offline Arduino toolchain and compile service | pending |
 | S06 | AVR emulation and mixed-signal bridge | pending |
 | S07 | Code editor, upload flow, serial monitor | pending |
