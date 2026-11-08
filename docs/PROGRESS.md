@@ -18,24 +18,25 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S03 IN PROGRESS, branch `stage/s03-analog-engine`. Done: T01 (LU solver), T02 (`MnaSystem` +
-`buildNodeMap` + `Device`/`MnaContext` + gmin + `addNode()`), T03 (linear devices R/V/I/switch), T04
-(`solveOperatingPoint` + gmin/source stepping), T05 (nonlinear diode/LED/Zener + `pnjlim`), T06
-(transient: capacitor/inductor companion models, BE + trapezoidal, breakpoint clamping + adaptive dt,
-`runTransient`).
-Next: T07 typed `SimError` (`SHORT_CIRCUIT`/`NO_GROUND`/`FLOATING`/`NO_CONVERGENCE`/`SOURCE_LOOP`)
-with a test circuit each, T08 ngspice golden harness + 20 circuits + committed result JSON, T09
-`bench/` steps/sec + `docs/MODELS.md`; then `/stage-finish S03`.
-sim-analog API: `runTransient(system, devices, { tstop, dt?, method?, adaptive?, breakpoints?,
-maxIterations?, ... }) → { time, solution }[]`; reactive devices `createCapacitor(name,a,b,C)` /
-`createInductor(name,a,b,L)` implement `ReactiveLike` (`setTimeStep(dt, method)`, `commit(solution)`).
-Reactive state advances in `commit` (once per step, not per Newton iteration). Inductor uses an MNA
-branch reserved in `setup()`.
-Decisions: node/branch allocation only in `setup()`; nonlinear `limit()` clamps forward (`pnjlim`)
-and reverse breakdown (−vz − 30·vt); solver branch convergence uses a relative tolerance; reactive
-companions: BE g=C/dt, trap g=2C/dt; inductor R=L/dt (BE) or 2L/dt (trap) with RHS −R·i_prev (BE).
+S03 IN PROGRESS, branch `stage/s03-analog-engine`. Done: T01 (LU), T02 (`MnaSystem` + `buildNodeMap`
++ `Device`/`MnaContext` + gmin + `addNode()`), T03 (linear R/V/I/switch), T04 (`solveOperatingPoint`),
+T05 (nonlinear diode/LED/Zener + `pnjlim`), T06 (transient C/L companions + `runTransient`), T07
+(typed `SimError` + `solveDcOrThrow` + one test circuit per code).
+Next: T08 ngspice golden harness — `tools/` runner that shells out to native ngspice (skip if
+absent), 20+ circuit specs, tolerance compare, and a **committed result JSON** so `golden`-tagged
+tests run without ngspice; T09 `bench/` steps-per-sec report + `docs/MODELS.md`; then
+`/stage-finish S03`.
+sim-analog API (complete): solver, devices, `runTransient`, `SimError`/`solveDcOrThrow`; devices
+carry `kind`; nonlinear devices register internal nodes in `setup()` so `findFloatingNodes` is
+exact. `buildNodeMap(netlist)` maps core netlist nets → nodes (ground = 0).
+Decisions: node/branch allocation only in `setup()`; nonlinear `limit()` clamps forward + reverse
+breakdown; branch convergence uses a relative tolerance; devices `kind` drives diagnostics
+(`countVoltageSources`). Exit gate still needs: ≥20 golden circuits within documented tolerance and
+a benchmark note (≥20 000 transient steps/s on a 20-node circuit).
 Gotchas: `vc-check` uses `pnpm -s` (empty failure output); `Float64Array` is generic over its buffer
-in TS6 — annotate `let current: Float64Array`; exponentials clamped to ±80·vt.
+in TS6 — annotate `let current: Float64Array`; ngspice must stay out of runtime code (only `tools/`
+and tests); build the golden JSON from an independent oracle (ngspice if present, else closed-form
+reference) since WSL has no ngspice here.
 Blocked: none.
 
 ## Human actions pending
