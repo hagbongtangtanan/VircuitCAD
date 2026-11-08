@@ -1,6 +1,7 @@
 import { createDefaultPartRegistry, type Circuit } from '@vircuitcad/core';
 import {
   buildSimulation,
+  readMeters,
   SimError,
   solveSimulation,
   WorkerCommandSchema,
@@ -36,7 +37,8 @@ function snapshotOf(simulation: Simulation, solution: Float64Array): SimSnapshot
       };
     });
 
-  return { type: 'snapshot', time: 0, nodeVoltages, leds };
+  const meters = current ? readMeters(current, registry, simulation, solution) : [];
+  return { type: 'snapshot', time: 0, nodeVoltages, leds, meters };
 }
 
 let lastSimulation: Simulation | undefined;

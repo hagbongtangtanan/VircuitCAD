@@ -6,7 +6,7 @@ import {
 } from '@vircuitcad/core';
 import { expect, it } from 'vitest';
 
-import { buildSimulation, solveSimulation } from './bridge';
+import { buildSimulation, readMeters, solveSimulation } from './bridge';
 import type { DiodeDevice } from './devices/nonlinear';
 
 function seriesCircuit() {
@@ -105,6 +105,52 @@ it('models a pushbutton and a battery pack', () => {
 
   expect(currentFor(false)).toBeLessThan(0.001);
   expect(currentFor(true)).toBeGreaterThan(0.03);
+});
+
+it('reads a bench supply and an ammeter', () => {
+  const circuit = createEmptyCircuit({ board: 'full' });
+  circuit.parts.push(
+    createPartInstance('power-supply', {
+      id: 'ps1',
+      position: { x: 0, y: 20 },
+      params: { voltage: 5 },
+    }),
+  );
+  circuit.parts.push(
+    createPartInstance('resistor', {
+      id: 'r1',
+      position: { x: 0, y: 22 },
+      params: { resistance: 1000 },
+    }),
+  );
+  circuit.parts.push(
+    createPartInstance('multimeter', {
+      id: 'm1',
+      position: { x: 0, y: 24 },
+      params: { mode: 'A' },
+    }),
+  );
+  circuit.wires.push(
+    createWire(
+      { kind: 'pin', partId: 'ps1', pinId: 'positive' },
+      { kind: 'pin', partId: 'r1', pinId: 'a' },
+    ),
+    createWire(
+      { kind: 'pin', partId: 'r1', pinId: 'b' },
+      { kind: 'pin', partId: 'm1', pinId: 'probe+' },
+    ),
+    createWire(
+      { kind: 'pin', partId: 'm1', pinId: 'probe-' },
+      { kind: 'pin', partId: 'ps1', pinId: 'negative' },
+    ),
+  );
+
+  const registry = createDefaultPartRegistry();
+  const simulation = buildSimulation(circuit, registry);
+  const result = solveSimulation(simulation);
+  const readings = readMeters(circuit, registry, simulation, result.solution);
+  expect(readings).toHaveLength(1);
+  expect(Math.abs(readings[0]?.value ?? 0)).toBeCloseTo(0.005, 4);
 });
 
 it('burns the LED when the resistor is too small', () => {

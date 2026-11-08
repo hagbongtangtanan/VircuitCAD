@@ -22,11 +22,19 @@ export type WorkerCommand = z.infer<typeof WorkerCommandSchema>;
 
 export const LedCurrentSchema = z.object({ partId: z.string(), current: z.number(), burnedOut: z.boolean() });
 
+export const MeterReadingSchema = z.object({
+  partId: z.string(),
+  mode: z.string(),
+  value: z.number().nullable(),
+  unit: z.string(),
+});
+
 export const SnapshotSchema = z.object({
   type: z.literal('snapshot'),
   time: z.number(),
   nodeVoltages: z.record(z.string(), z.number()),
   leds: z.array(LedCurrentSchema),
+  meters: z.array(MeterReadingSchema).optional(),
 });
 export type SimSnapshot = z.infer<typeof SnapshotSchema>;
 

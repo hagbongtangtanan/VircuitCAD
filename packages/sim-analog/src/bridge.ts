@@ -117,6 +117,29 @@ export function buildSimulation(circuit: Circuit, registry: PartRegistry): Simul
       case 'capacitor':
         // open in DC operating point
         break;
+      case 'power-supply':
+        devices.push(
+          createVoltageSource(
+            part.id,
+            nodeOf(part.id, 'positive'),
+            nodeOf(part.id, 'negative'),
+            numericParam(params, manifest, 'voltage', 5),
+          ),
+        );
+        break;
+      case 'multimeter':
+        if (String(params.mode ?? 'V') === 'A') {
+          devices.push(
+            createVoltageSource(
+              part.id,
+              nodeOf(part.id, 'probe+'),
+              nodeOf(part.id, 'probe-'),
+              0,
+              1e-3,
+            ),
+          );
+        }
+        break;
       case 'diode':
         devices.push(createDiode(part.id, nodeOf(part.id, 'anode'), nodeOf(part.id, 'cathode')));
         break;
@@ -138,6 +161,43 @@ export function buildSimulation(circuit: Circuit, registry: PartRegistry): Simul
     nodeOf,
     deviceByName: (name) => byName.get(name),
   };
+}
+
+export type MeterReading = {
+  partId: string;
+  mode: string;
+  value: number | null;
+  unit: string;
+};
+
+/** Reads multimeter values from a solved operating point (Ω is power-off only, returned as null). */
+export function readMeters(
+  circuit: Circuit,
+  registry: PartRegistry,
+  simulation: Simulation,
+  solution: Float64Array,
+): MeterReading[] {
+  const readings: MeterReading[] = [];
+  for (const part of circuit.parts) {
+    const manifest = registry.get(part.partId);
+    if (!manifest || manifest.simModel !== 'multimeter') continue;
+    const mode = String(part.params.mode ?? 'V');
+
+    if (mode === 'V') {
+      const value =
+        simulation.system.nodeVoltage(solution, simulation.nodeOf(part.id, 'probe+')) -
+        simulation.system.nodeVoltage(solution, simulation.nodeOf(part.id, 'probe-'));
+      readings.push({ partId: part.id, mode, value, unit: 'V' });
+    } else if (mode === 'A') {
+      const device = simulation.deviceByName(part.id) as
+        | { readCurrent?: (current: Float64Array) => number }
+        | undefined;
+      readings.push({ partId: part.id, mode, value: device?.readCurrent?.(solution) ?? null, unit: 'A' });
+    } else {
+      readings.push({ partId: part.id, mode, value: null, unit: 'Ω' });
+    }
+  }
+  return readings;
 }
 
 /** Solves the operating point with source stepping (robust for tiny saturation currents). */

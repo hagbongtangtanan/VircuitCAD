@@ -31,7 +31,13 @@ export {
   type TransientSample,
 } from './transient';
 
-export { buildSimulation, solveSimulation, type Simulation } from './bridge';
+export {
+  buildSimulation,
+  readMeters,
+  solveSimulation,
+  type MeterReading,
+  type Simulation,
+} from './bridge';
 export {
   LedCurrentSchema,
   SimErrorEventSchema,

@@ -11,11 +11,13 @@ import {
 import { Editor, SimulationHost } from '@vircuitcad/editor';
 import {
   Inspector,
+  InstrumentPanel,
   PartsBin,
   RunControls,
   StatusBar,
   Toast,
   Toolbar,
+  type MeterReading,
   type SimRunState,
   type ToolbarTool,
 } from '@vircuitcad/ui';
@@ -47,6 +49,7 @@ export function App() {
   const [simTime, setSimTime] = useState(0);
   const [toast, setToast] = useState<string | undefined>(undefined);
   const [netColoring, setNetColoringState] = useState(false);
+  const [meters, setMeters] = useState<MeterReading[]>([]);
 
   const toggleNetColoring = (): void => {
     setNetColoringState((previous) => {
@@ -150,6 +153,7 @@ export function App() {
     host.onSnapshot = (snapshot) => {
       editor.getScene()?.setSimulation(snapshot);
       setSimTime(snapshot.time);
+      setMeters(snapshot.meters ?? []);
     };
     host.onError = (event) => {
       setToast(event.message);
@@ -258,6 +262,7 @@ export function App() {
               if (selected) store.setParam(selected.id, key, value);
             }}
           />
+          <InstrumentPanel readings={meters} />
         </aside>
       </div>
     </main>

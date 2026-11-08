@@ -4,5 +4,10 @@ export { Toolbar, type ToolbarProps, type ToolbarTool } from './components/Toolb
 export { StatusBar, type StatusBarProps } from './components/StatusBar';
 export { RunControls, type RunControlsProps, type SimRunState } from './components/RunControls';
 export { Toast, type ToastProps } from './components/Toast';
+export {
+  InstrumentPanel,
+  type InstrumentPanelProps,
+  type MeterReading,
+} from './components/InstrumentPanel';
 
 export const packageName = '@vircuitcad/ui';

@@ -25,6 +25,8 @@ it('registers the three placeholder parts', () => {
     'capacitor',
     'inductor',
     'led',
+    'multimeter',
+    'power-supply',
     'pushbutton',
     'resistor',
     'slide-switch',

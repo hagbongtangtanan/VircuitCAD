@@ -107,6 +107,33 @@ export const placeholderManifests: PartManifest[] = [
     simModel: 'inductor',
     svg: 'parts/inductor.svg',
   }),
+  parsePartManifest({
+    id: 'power-supply',
+    name: 'Bench Supply',
+    category: 'power',
+    pins: [
+      { id: 'positive', name: '+', position: { x: 0, y: 0 }, role: 'power' },
+      { id: 'negative', name: '-', position: { x: 2, y: 0 }, role: 'ground' },
+    ],
+    params: [
+      { id: 'voltage', label: 'Voltage', unit: 'V', min: 0.1, max: 24, default: 5 },
+      { id: 'currentLimit', label: 'Current limit', unit: 'A', min: 0.001, max: 5, default: 1 },
+    ],
+    simModel: 'power-supply',
+    svg: 'parts/power-supply.svg',
+  }),
+  parsePartManifest({
+    id: 'multimeter',
+    name: 'Multimeter',
+    category: 'instrument',
+    pins: [
+      { id: 'probe+', name: 'VΩA+', position: { x: 0, y: 0 }, role: 'passive' },
+      { id: 'probe-', name: 'COM', position: { x: 2, y: 0 }, role: 'passive' },
+    ],
+    params: [{ id: 'mode', label: 'Mode', default: 'V' }],
+    simModel: 'multimeter',
+    svg: 'parts/multimeter.svg',
+  }),
 ];
 
 export function createDefaultPartRegistry(): PartRegistry {
