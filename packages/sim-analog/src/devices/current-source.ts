@@ -8,6 +8,7 @@ export function createCurrentSource(
 ): Device {
   return {
     name,
+    kind: 'current-source',
     nodes: [from, to],
     stamp: (ctx) => ctx.addCurrent(from, to, current),
   };

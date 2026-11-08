@@ -21,6 +21,8 @@ export {
   type DiodeOptions,
 } from './devices/nonlinear';
 export { createCapacitor, createInductor, type ReactiveDevice } from './devices/reactive';
+export { SimError, type SimErrorCode, type SimErrorRef } from './errors';
+export { assertHasGround, countVoltageSources, findFloatingNodes, solveDcOrThrow } from './diagnostics';
 export type { IntegrationMethod } from './integration';
 export {
   runTransient,

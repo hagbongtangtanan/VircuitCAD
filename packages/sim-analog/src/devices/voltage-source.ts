@@ -10,6 +10,7 @@ export function createVoltageSource(
   let branch = -1;
   return {
     name,
+    kind: 'voltage-source',
     nodes: [positive, negative],
     setup: (system) => {
       branch = system.reserveVoltageSource();

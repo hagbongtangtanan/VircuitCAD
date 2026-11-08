@@ -25,6 +25,7 @@ export function createCapacitor(
 
   return {
     name,
+    kind: 'capacitor',
     nodes: [nodeA, nodeB],
     setTimeStep: (nextDt, nextMethod) => {
       dt = nextDt;
@@ -62,6 +63,7 @@ export function createInductor(
 
   return {
     name,
+    kind: 'inductor',
     nodes: [nodeA, nodeB],
     setup: (system) => {
       branch = system.reserveVoltageSource();

@@ -12,6 +12,7 @@ export type MnaContext = {
 
 export interface Device {
   readonly name: string;
+  readonly kind?: string;
   readonly nodes: readonly number[];
   setup?(system: MnaSystem): void;
   stamp(ctx: MnaContext): void;

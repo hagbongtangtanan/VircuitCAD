@@ -21,6 +21,7 @@ export function createSwitch(
 
   return {
     name,
+    kind: 'switch',
     nodes: [nodeA, nodeB],
     get closed() {
       return closed;

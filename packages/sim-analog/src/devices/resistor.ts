@@ -9,6 +9,7 @@ export function createResistor(
   const conductance = resistance > 0 ? 1 / resistance : 1e12;
   return {
     name,
+    kind: 'resistor',
     nodes: [nodeA, nodeB],
     stamp: (ctx) => ctx.addConductance(nodeA, nodeB, conductance),
   };

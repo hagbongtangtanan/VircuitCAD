@@ -64,6 +64,7 @@ function buildDiode(
   const state: DiodeState = { vd: 0, current: 0, burnedOut: false };
 
   let internal = -1;
+  const nodes: number[] = [anode, cathode];
   const anodeNode = (): number => (rs > 0 ? internal : anode);
 
   const currentAndConductance = (vd: number): { current: number; conductance: number } => {
@@ -80,9 +81,13 @@ function buildDiode(
 
   return {
     name,
-    nodes: [anode, cathode],
+    kind: 'nonlinear',
+    nodes,
     setup: (system: MnaSystem) => {
-      if (rs > 0) internal = system.addNode();
+      if (rs > 0) {
+        internal = system.addNode();
+        nodes.push(internal);
+      }
     },
     stamp: (ctx) => {
       if (rs > 0) ctx.addConductance(anode, internal, 1 / rs);
