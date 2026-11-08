@@ -3,12 +3,22 @@ import {
   createDefaultPartRegistry,
   createEmptyCircuit,
   deserializeCircuit,
+  extractNetlist,
   serializeCircuit,
   type ParamValue,
   type PartInstance,
 } from '@vircuitcad/core';
-import { Editor } from '@vircuitcad/editor';
-import { Inspector, PartsBin, StatusBar, Toolbar, type ToolbarTool } from '@vircuitcad/ui';
+import { Editor, SimulationHost } from '@vircuitcad/editor';
+import {
+  Inspector,
+  PartsBin,
+  RunControls,
+  StatusBar,
+  Toast,
+  Toolbar,
+  type SimRunState,
+  type ToolbarTool,
+} from '@vircuitcad/ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { createClient } from './client';
@@ -19,6 +29,7 @@ const CIRCUIT_FILE = 'circuit.vcad';
 export function App() {
   const hostRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<Editor | null>(null);
+  const simHostRef = useRef<SimulationHost | undefined>(undefined);
   const autosaveTimer = useRef<number | undefined>(undefined);
   const [store] = useState(() => new DocumentStore(createEmptyCircuit({ board: 'full' })));
   const registry = useMemo(() => createDefaultPartRegistry(), []);
@@ -32,6 +43,9 @@ export function App() {
   const [zoom, setZoom] = useState(1);
   const [dirty, setDirty] = useState(false);
   const [hint, setHint] = useState('Ready');
+  const [simState, setSimState] = useState<SimRunState>('idle');
+  const [simTime, setSimTime] = useState(0);
+  const [toast, setToast] = useState<string | undefined>(undefined);
 
   const refresh = (): void => {
     const editor = editorRef.current;
@@ -48,6 +62,28 @@ export function App() {
 
   const circuitPath = async (): Promise<string> =>
     `${(await client.app.info()).paths.appData}/${CIRCUIT_FILE}`;
+
+  const highlightError = (nets: readonly string[]): void => {
+    const scene = editorRef.current?.getScene();
+    if (!scene) return;
+    if (nets.length === 0) {
+      scene.setHighlight([]);
+      return;
+    }
+    const netlist = extractNetlist(store.getCircuit(), registry);
+    const partIds = new Set<string>();
+    for (const net of netlist.nets) {
+      if (nets.includes(net.name)) for (const pin of net.pins) partIds.add(pin.partId);
+    }
+    scene.setHighlight([...partIds]);
+  };
+
+  const runSim = (): void => simHostRef.current?.start(store.getCircuit());
+  const stopSim = (): void => simHostRef.current?.stop();
+  const togglePause = (): void => {
+    if (simState === 'paused') simHostRef.current?.resume();
+    else simHostRef.current?.pause();
+  };
 
   const scheduleAutosave = (): void => {
     window.clearTimeout(autosaveTimer.current);
@@ -99,6 +135,19 @@ export function App() {
     window.__editor = editor;
     const disposers: Array<() => void> = [];
 
+    const host = new SimulationHost();
+    simHostRef.current = host;
+    host.onStatus = (status) => setSimState(status.state);
+    host.onSnapshot = (snapshot) => {
+      editor.getScene()?.setSimulation(snapshot);
+      setSimTime(snapshot.time);
+    };
+    host.onError = (event) => {
+      setToast(event.message);
+      highlightError(event.nets ?? []);
+    };
+    disposers.push(() => host.dispose());
+
     void editor.mount(element).then(() => {
       if (disposed) return;
       const controller = editor.getToolController();
@@ -125,6 +174,7 @@ export function App() {
       for (const dispose of disposers) dispose();
       editor.unmount();
       editorRef.current = null;
+      simHostRef.current = undefined;
       window.__editor = undefined;
       window.__app = undefined;
     };
@@ -172,13 +222,22 @@ export function App() {
             onDelete={() => controller()?.keyDown('Delete')}
             onDuplicate={() => controller()?.keyDown('d')}
           />
+          <RunControls
+            state={simState}
+            onRun={runSim}
+            onTogglePause={togglePause}
+            onStop={stopSim}
+          />
           <div ref={hostRef} data-testid="canvas-host" style={{ flex: 1, minHeight: 0 }} />
           <StatusBar
             partCount={counts.parts}
             wireCount={counts.wires}
             zoom={zoom}
             hint={dirty ? 'Unsaved changes' : hint}
+            simState={simState}
+            simTime={simTime}
           />
+          <Toast message={toast} onDismiss={() => setToast(undefined)} />
         </section>
         <aside style={{ width: 220, background: '#111827', overflow: 'auto', padding: 8 }}>
           <Inspector

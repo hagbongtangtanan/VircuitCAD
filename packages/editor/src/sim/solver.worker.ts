@@ -39,17 +39,51 @@ function snapshotOf(simulation: Simulation, solution: Float64Array): SimSnapshot
   return { type: 'snapshot', time: 0, nodeVoltages, leds };
 }
 
+let lastSimulation: Simulation | undefined;
+
+function netsFor(error: SimError): string[] {
+  if (!lastSimulation) return [];
+  const byNode = new Map<number, string>();
+  for (const [name, node] of lastSimulation.nodeMap) byNode.set(node, name);
+  const nets: string[] = [];
+  for (const ref of error.refs) {
+    if (ref.kind === 'node') {
+      const name = byNode.get(Number(ref.id));
+      if (name) nets.push(name);
+    }
+  }
+  return nets;
+}
+
 function run(): void {
   if (!current) return;
   scope.postMessage({ type: 'status', state: 'running', time: 0 });
   try {
     const simulation = buildSimulation(current, registry);
+    lastSimulation = simulation;
     const result = solveSimulation(simulation);
     if (!result.converged) throw new SimError('NO_CONVERGENCE', 'did not converge');
+
+    for (const device of simulation.devices) {
+      const read = (device as { readCurrent?: (solution: Float64Array) => number }).readCurrent;
+      if (read && Math.abs(read(result.solution)) > 100) {
+        throw new SimError(
+          'SHORT_CIRCUIT',
+          'short circuit: excessive source current',
+          device.nodes.map((node) => ({ kind: 'node' as const, id: String(node) })),
+        );
+      }
+    }
+
     scope.postMessage(snapshotOf(simulation, result.solution));
   } catch (error) {
     if (error instanceof SimError) {
-      scope.postMessage({ type: 'error', code: error.code, message: error.message });
+      scope.postMessage({
+        type: 'error',
+        code: error.code,
+        message: error.message,
+        nets: netsFor(error),
+      });
     } else {
       scope.postMessage({ type: 'error', code: 'UNKNOWN', message: String(error) });
     }

@@ -41,6 +41,7 @@ export const SimErrorEventSchema = z.object({
   type: z.literal('error'),
   code: z.string(),
   message: z.string(),
+  nets: z.array(z.string()).optional(),
 });
 export type SimErrorEvent = z.infer<typeof SimErrorEventSchema>;
 

@@ -3,14 +3,22 @@ export type StatusBarProps = {
   wireCount: number;
   zoom: number;
   hint?: string;
+  simState?: string;
+  simTime?: number;
 };
 
-export function StatusBar({ partCount, wireCount, zoom, hint }: StatusBarProps) {
+export function StatusBar({ partCount, wireCount, zoom, hint, simState, simTime }: StatusBarProps) {
   return (
     <div className="status-bar" role="status">
       <span data-testid="status-parts">{partCount} parts</span>
       <span data-testid="status-wires">{wireCount} wires</span>
       <span data-testid="status-zoom">{Math.round(zoom * 100)}%</span>
+      {simState && simState !== 'idle' ? (
+        <span data-testid="status-sim">
+          {simState}
+          {simTime !== undefined ? ` ${(simTime * 1000).toFixed(0)} ms` : ''}
+        </span>
+      ) : null}
       {hint ? <span data-testid="status-hint">{hint}</span> : null}
     </div>
   );

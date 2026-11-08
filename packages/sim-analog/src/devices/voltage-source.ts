@@ -2,6 +2,7 @@ import type { Device } from '../device';
 
 export type VoltageSourceDevice = Device & {
   setScale(scale: number): void;
+  readCurrent(solution: Float64Array): number;
 };
 
 export function createVoltageSource(
@@ -13,13 +14,16 @@ export function createVoltageSource(
 ): VoltageSourceDevice {
   let branch = -1;
   let scale = 1;
+  let nodeCount = 0;
   return {
     name,
     kind: 'voltage-source',
     nodes: [positive, negative],
     setup: (system) => {
       branch = system.reserveVoltageSource();
+      nodeCount = system.nodeCount;
     },
+    readCurrent: (solution) => solution[nodeCount + branch] ?? 0,
     setScale: (next) => {
       scale = next;
     },

@@ -45,7 +45,9 @@ export class Scene {
   private readonly partsLayer = new Container();
   private readonly overlayLayer = new Container();
   private readonly selectionGraphics = new Graphics();
+  private readonly highlightGraphics = new Graphics();
   private readonly wirePreview = new Graphics();
+  private ledById = new Map<string, { current: number; burnedOut: boolean }>();
   private readonly cache = new TextureCache<Texture>();
   private readonly geometry: BoardGeometry;
   private readonly cellSize: number;
@@ -62,7 +64,7 @@ export class Scene {
   ) {
     this.cellSize = options.cellSize ?? 20;
     this.root.addChild(this.boardLayer, this.wiresLayer, this.partsLayer, this.overlayLayer);
-    this.overlayLayer.addChild(this.selectionGraphics, this.wirePreview);
+    this.overlayLayer.addChild(this.selectionGraphics, this.highlightGraphics, this.wirePreview);
     this.geometry = generateBoardGeometry(store.getCircuit().board.kind);
     this.drawBoard(options);
     this.renderCircuit();
@@ -188,11 +190,37 @@ export class Scene {
     for (const part of circuit.parts) {
       const manifest = this.registry.get(part.partId);
       if (!manifest) continue;
-      this.partsLayer.addChild(this.createSprite(manifest, part.position, part.rotation));
+      this.partsLayer.addChild(this.createSprite(part.id, manifest, part.position, part.rotation));
     }
   }
 
-  private createSprite(manifest: PartManifest, position: Vec2, rotation: Rotation): Sprite {
+  setSimulation(
+    snapshot: { leds: { partId: string; current: number; burnedOut: boolean }[] } | null,
+  ): void {
+    this.ledById = new Map((snapshot?.leds ?? []).map((led) => [led.partId, led]));
+    this.renderCircuit();
+  }
+
+  setHighlight(partIds: readonly string[]): void {
+    this.highlightGraphics.clear();
+    for (const partId of partIds) {
+      const part = this.store.getCircuit().parts.find((candidate) => candidate.id === partId);
+      const manifest = part ? this.registry.get(part.partId) : undefined;
+      if (!part || !manifest) continue;
+      const layout = layoutPart(manifest, part.position, part.rotation);
+      const pad = this.cellSize * 0.4;
+      this.highlightGraphics
+        .rect(
+          layout.bounds.minX * this.cellSize - pad,
+          layout.bounds.minY * this.cellSize - pad,
+          Math.max(layout.bounds.width * this.cellSize, 1) + pad * 2,
+          Math.max(layout.bounds.height * this.cellSize, 1) + pad * 2,
+        )
+        .stroke({ width: 3, color: 0xef4444, alpha: 1 });
+    }
+  }
+
+  private createSprite(partId: string, manifest: PartManifest, position: Vec2, rotation: Rotation): Sprite {
     const layout = layoutPart(manifest, position, rotation);
     const width = Math.max(1, layout.bounds.width) * this.cellSize;
     const height = Math.max(1, layout.bounds.height) * this.cellSize;
@@ -210,6 +238,11 @@ export class Scene {
 
     const sprite = new Sprite(texture);
     sprite.position.set(layout.bounds.minX * this.cellSize, layout.bounds.minY * this.cellSize);
+
+    const led = this.ledById.get(partId);
+    if (led) {
+      sprite.tint = led.burnedOut ? 0x333333 : led.current > 0.001 ? 0xff5555 : 0x552222;
+    }
     return sprite;
   }
 }
