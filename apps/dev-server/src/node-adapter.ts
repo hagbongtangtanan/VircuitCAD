@@ -8,6 +8,7 @@ import {
   type PlatformAdapter,
   type ToolchainInfo,
 } from '@vircuitcad/core';
+import { CompileService, locateToolchain, type ToolchainLayout } from '@vircuitcad/toolchain';
 
 export type NodePlatformOptions = {
   appData: string;
@@ -109,19 +110,35 @@ export function createNodePlatformAdapter(options: NodePlatformOptions): Platfor
     },
   };
 
+  const toolchainRoot = path.resolve('resources/toolchain');
+  let layout: ToolchainLayout | undefined;
+  try {
+    layout = locateToolchain({ devRoots: [toolchainRoot], platform: process.platform });
+  } catch {
+    layout = undefined;
+  }
+
   const compile: PlatformAdapter['compile'] = {
     async compile(request) {
       const parsed = CompileRequestSchema.parse(request);
       if (parsed.source.trim().length === 0) {
         return { ok: false, diagnostics: [{ severity: 'error', message: 'Empty sketch' }] };
       }
-      return { ok: true, hex: ':00000001FF', diagnostics: [] };
+      if (!layout) {
+        return {
+          ok: false,
+          diagnostics: [
+            { severity: 'error', message: 'Arduino toolchain not installed (run tools/fetch-toolchain.mjs)' },
+          ],
+        };
+      }
+      return new CompileService({ layout }).compile(parsed);
     },
   };
 
   const toolchain: PlatformAdapter['toolchain'] = {
     async info(): Promise<ToolchainInfo> {
-      return { installed: false };
+      return layout ? { installed: true, version: 'arduino-cli' } : { installed: false };
     },
   };
 

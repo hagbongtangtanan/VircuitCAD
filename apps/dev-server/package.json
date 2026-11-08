@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@vircuitcad/core": "workspace:*",
+    "@vircuitcad/toolchain": "workspace:*",
     "zod": "4.6.7"
   },
   "devDependencies": {
