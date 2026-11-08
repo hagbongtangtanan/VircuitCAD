@@ -18,22 +18,21 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S04 IN PROGRESS, branch `stage/s04-vertical-slice`. Done: T01 (`buildSimulation(circuit, registry)` +
-`solveSimulation` source stepping; zod worker protocol; `@vircuitcad/editor` `solver.worker` +
-`SimulationHost`).
-Next: T02 run controls + status bar + error toast + `SimError` canvas highlight, T03 part art/models
-(own SVG), T04 LED glow/burnout visual + net colouring toggle, T05 multimeter + bench supply, T06
-`examples/*.vcad` + E2E, T07 perf baseline + ADR 0003 + MODELS update; then `/stage-finish S04` —
-**S04 is a HUMAN REVIEW GATE** (finish exits 10, PR left open).
-APIs: `buildSimulation(circuit, registry) → Simulation { system, devices, nodeMap, netlist, nodeOf,
-deviceByName }`; `solveSimulation(sim) → OperatingPointResult` (source stepping via `setScale` on
-voltage sources); `WorkerCommandSchema`/`WorkerEventSchema`/`SimSnapshot`; editor `SimulationHost`
-(`start(circuit)`, `stop/pause/resume`, `setParam`, `onSnapshot/onStatus/onError`, `dispose`).
-Decisions: the worker gets the full `Circuit` in `start` (zod-validated); LED burnout is
-non-latching (converged current only); parts wired pin-to-pin must be placed off the rail (`y≈20`)
-or they short through board strips; sim-analog now depends on `zod`.
-Gotchas: `vc-check` uses `pnpm -s` (empty failure output); the worker script imports only
-`sim-analog` (no DOM); the internal LED node is allocated in `setup()` (called by `buildSimulation`).
+S04 IN PROGRESS, branch `stage/s04-vertical-slice`. Done: T01 (`buildSimulation`/`solveSimulation`
+source stepping; zod worker protocol; editor `solver.worker` + `SimulationHost`), T02 (Run/Pause/Stop
+controls, sim status + time, error toast, `SimError` net→part highlight; Scene `setSimulation` LED
+tint + `setHighlight`; worker flags >100 A as SHORT_CIRCUIT; E2E asserts the shorted-battery toast).
+Next: T03 part art/models (own SVG), T04 LED glow/burnout visual + net colouring toggle, T05
+multimeter + bench supply, T06 `examples/*.vcad` + E2E, T07 perf baseline + ADR 0003 + MODELS update;
+then `/stage-finish S04` — **HUMAN REVIEW GATE** (finish exits 10, PR left open for Windows testing).
+APIs: `SimulationHost.start(circuit)/stop/pause/resume/setParam/dispose` with `onSnapshot/onStatus/
+onError`; `SimSnapshot { time, nodeVoltages, leds[] }`; error event carries `nets` for highlighting;
+Scene `setSimulation({leds})`, `setHighlight(partIds)`.
+Decisions: worker gets the full zod-validated `Circuit`; shorts detected by source current >100 A
+(sources have 1e-6 internal R, so parallel/short sources draw huge current rather than going
+singular); LED burnout non-latching; pin-to-pin parts must sit off the rail (`y≈20`).
+Gotchas: `vc-check` uses `pnpm -s` (empty failure output); fps under 4 parallel dev-web workers drops
+to ~6 (single worker ~50); the sim worker needs the CSP fallback `default-src 'self'` (no worker-src).
 Blocked: none.
 
 ## Human actions pending
