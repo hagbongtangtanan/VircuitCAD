@@ -18,25 +18,21 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S03 IN PROGRESS, branch `stage/s03-analog-engine`. Done: T01 (LU), T02 (`MnaSystem` + `buildNodeMap`
-+ `Device`/`MnaContext` + gmin + `addNode()`), T03 (linear R/V/I/switch), T04 (`solveOperatingPoint`),
-T05 (nonlinear diode/LED/Zener + `pnjlim`), T06 (transient C/L companions + `runTransient`), T07
-(typed `SimError` + `solveDcOrThrow` + one test circuit per code).
-Next: T08 ngspice golden harness — `tools/` runner that shells out to native ngspice (skip if
-absent), 20+ circuit specs, tolerance compare, and a **committed result JSON** so `golden`-tagged
-tests run without ngspice; T09 `bench/` steps-per-sec report + `docs/MODELS.md`; then
-`/stage-finish S03`.
-sim-analog API (complete): solver, devices, `runTransient`, `SimError`/`solveDcOrThrow`; devices
-carry `kind`; nonlinear devices register internal nodes in `setup()` so `findFloatingNodes` is
-exact. `buildNodeMap(netlist)` maps core netlist nets → nodes (ground = 0).
-Decisions: node/branch allocation only in `setup()`; nonlinear `limit()` clamps forward + reverse
-breakdown; branch convergence uses a relative tolerance; devices `kind` drives diagnostics
-(`countVoltageSources`). Exit gate still needs: ≥20 golden circuits within documented tolerance and
-a benchmark note (≥20 000 transient steps/s on a 20-node circuit).
-Gotchas: `vc-check` uses `pnpm -s` (empty failure output); `Float64Array` is generic over its buffer
-in TS6 — annotate `let current: Float64Array`; ngspice must stay out of runtime code (only `tools/`
-and tests); build the golden JSON from an independent oracle (ngspice if present, else closed-form
-reference) since WSL has no ngspice here.
+S03 complete (T01–T09); running `vc-stage-finish.sh S03` → tag `stage-s03-done`. Next: S04 vertical
+slice (battery + resistor + LED lights up) — consume this engine.
+Engine API: `solveOperatingPoint(system, devices, initial?, options) → { solution, converged,
+iterations, method }`; `solveDcOrThrow(system, devices, options)` (throws `SimError`);
+`runTransient(system, devices, { tstop, dt?, method?: 'be'|'trapezoidal', adaptive?, breakpoints? })
+→ { time, solution }[]`; `MnaSystem`, `buildNodeMap(netlist)`, `setupDevices`, `stampDevices`.
+Devices (each carries `kind`): `createResistor`, `createVoltageSource(name,p,n,v,internalR?)`,
+`createCurrentSource`, `createSwitch`, `createDiode`, `createLed(name,color,a,b)`,
+`createZener(name,a,b,vz)`, `createCapacitor`, `createInductor`; branches/nodes are allocated in
+`setup()`. Map a core netlist to devices via `buildNodeMap` (pin → net) + `manifest.simModel`.
+Errors: `SimError { code: SHORT_CIRCUIT | NO_GROUND | FLOATING | NO_CONVERGENCE | SOURCE_LOOP, refs }`.
+Benchmark: 21-node RC ladder ≈ 42 000 transient steps/sec. Golden: 20 circuits + closed-form oracle
++ committed `results.json`; `tools/ngspice/` runs native ngspice (skips when absent).
+Gotchas: keep ngspice out of runtime code (only `tools/` and tests); TS6 `Float64Array` is generic
+over its buffer (annotate); the sim-* lint forbids Node built-ins even in `bench/`.
 Blocked: none.
 
 ## Human actions pending
