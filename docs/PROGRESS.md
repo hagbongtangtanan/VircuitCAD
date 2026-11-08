@@ -20,12 +20,12 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 ## Handoff
 S04 IN PROGRESS, branch `stage/s04-vertical-slice`. Done: T01 (bridge + `solveSimulation` source
 stepping; zod worker protocol; editor `solver.worker` + `SimulationHost`), T02 (Run/Pause/Stop,
-sim status, error toast + `SimError` net→part highlight; Scene `setSimulation` LED tint +
-`setHighlight`; >100 A ⇒ SHORT_CIRCUIT; E2E toast), T03 (catalog: battery-pack, pushbutton,
-slide-switch, capacitor, inductor; bridge mappings; own per-model vector art in the editor).
-Next: T04 LED glow/burnout visual + net colouring toggle, T05 multimeter + bench supply, T06
-`examples/*.vcad` + E2E, T07 perf baseline + ADR 0003 + MODELS update; then `/stage-finish S04` —
-**HUMAN REVIEW GATE** (finish exits 10, PR left open for Windows testing).
+sim status, error toast + `SimError` net→part highlight; Scene `setSimulation`/`setHighlight`; >100 A
+⇒ SHORT_CIRCUIT; E2E toast), T03 (catalog + bridge mappings for battery-pack/pushbutton/slide-switch/
+capacitor/inductor + own per-model vector art), T04 (visual mappings `ledGlow`/`ledTint`/
+`voltageToColor` + LED tint/alpha + net-colouring toggle `Editor.setNetColoring` + Toolbar 'Nets').
+Next: T05 multimeter + bench supply, T06 `examples/*.vcad` + E2E, T07 perf baseline + ADR 0003 +
+MODELS update; then `/stage-finish S04` — **HUMAN REVIEW GATE** (finish exits 10, PR left open).
 APIs: `SimulationHost.start(circuit)/stop/pause/resume/setParam/dispose` with `onSnapshot/onStatus/
 onError`; `SimSnapshot { time, nodeVoltages, leds[] }`; error event carries `nets` for highlighting;
 Scene `setSimulation({leds})`, `setHighlight(partIds)`.
