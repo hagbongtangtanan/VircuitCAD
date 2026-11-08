@@ -46,6 +46,15 @@ export function App() {
   const [simState, setSimState] = useState<SimRunState>('idle');
   const [simTime, setSimTime] = useState(0);
   const [toast, setToast] = useState<string | undefined>(undefined);
+  const [netColoring, setNetColoringState] = useState(false);
+
+  const toggleNetColoring = (): void => {
+    setNetColoringState((previous) => {
+      const next = !previous;
+      editorRef.current?.setNetColoring(next);
+      return next;
+    });
+  };
 
   const refresh = (): void => {
     const editor = editorRef.current;
@@ -221,6 +230,8 @@ export function App() {
             onRotate={() => controller()?.keyDown('r')}
             onDelete={() => controller()?.keyDown('Delete')}
             onDuplicate={() => controller()?.keyDown('d')}
+            netColoring={netColoring}
+            onToggleNetColoring={toggleNetColoring}
           />
           <RunControls
             state={simState}

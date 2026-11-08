@@ -1,6 +1,7 @@
 import { Container, Graphics, Sprite, type Renderer, type Texture } from 'pixi.js';
 
 import {
+  extractNetlist,
   generateBoardGeometry,
   type BoardGeometry,
   type DocumentStore,
@@ -13,6 +14,7 @@ import {
 import { buildHitTestScene } from '../hit/scene-index';
 import { layoutPart } from './part-layout';
 import { createPartTexture, createPlaceholderPartTexture } from './part-textures';
+import { ledGlow, ledTint, voltageToColor } from './visuals';
 import { TextureCache } from './texture-cache';
 
 export type SceneOptions = {
@@ -38,6 +40,8 @@ export class Scene {
   private readonly highlightGraphics = new Graphics();
   private readonly wirePreview = new Graphics();
   private ledById = new Map<string, { current: number; burnedOut: boolean }>();
+  private nodeVoltages: Record<string, number> = {};
+  private netColoring = false;
   private readonly cache = new TextureCache<Texture>();
   private readonly geometry: BoardGeometry;
   private readonly cellSize: number;
@@ -166,13 +170,39 @@ export class Scene {
 
     for (const child of this.wiresLayer.removeChildren()) child.destroy();
     const wires = new Graphics();
+
+    let wireColors: number[] | undefined;
+    if (this.netColoring) {
+      const values = Object.values(this.nodeVoltages);
+      if (values.length > 0) {
+        const netOf = new Map<string, string>();
+        for (const net of extractNetlist(circuit, this.registry).nets) {
+          for (const pin of net.pins) netOf.set(`pin:${pin.partId}:${pin.pinId}`, net.name);
+          for (const hole of net.holes) netOf.set(`hole:${hole}`, net.name);
+        }
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        wireColors = circuit.wires.map((wire) => {
+          const key =
+            wire.from.kind === 'pin'
+              ? `pin:${wire.from.partId}:${wire.from.pinId}`
+              : `hole:${wire.from.holeId}`;
+          const name = netOf.get(key);
+          const voltage = name !== undefined ? this.nodeVoltages[name] : undefined;
+          return voltage === undefined ? 0x22c55e : voltageToColor(voltage, min, max);
+        });
+      }
+    }
+
     hitScene.wires.forEach((wire, index) => {
       const [first, ...rest] = wire.points;
       if (!first) return;
-      const color = circuit.wires[index]?.color ?? '#22c55e';
+      const color =
+        wireColors?.[index] ??
+        Number.parseInt((circuit.wires[index]?.color ?? '#22c55e').slice(1), 16);
       wires.moveTo(first.x, first.y);
       for (const point of rest) wires.lineTo(point.x, point.y);
-      wires.stroke({ width: 2, color: Number.parseInt(color.slice(1), 16), alpha: 0.9 });
+      wires.stroke({ width: 2, color, alpha: 0.9 });
     });
     this.wiresLayer.addChild(wires);
 
@@ -185,9 +215,18 @@ export class Scene {
   }
 
   setSimulation(
-    snapshot: { leds: { partId: string; current: number; burnedOut: boolean }[] } | null,
+    snapshot: {
+      nodeVoltages?: Record<string, number>;
+      leds: { partId: string; current: number; burnedOut: boolean }[];
+    } | null,
   ): void {
     this.ledById = new Map((snapshot?.leds ?? []).map((led) => [led.partId, led]));
+    this.nodeVoltages = snapshot?.nodeVoltages ?? {};
+    this.renderCircuit();
+  }
+
+  setNetColoring(enabled: boolean): void {
+    this.netColoring = enabled;
     this.renderCircuit();
   }
 
@@ -230,7 +269,9 @@ export class Scene {
 
     const led = this.ledById.get(partId);
     if (led) {
-      sprite.tint = led.burnedOut ? 0x333333 : led.current > 0.001 ? 0xff5555 : 0x552222;
+      const glow = ledGlow(led.current);
+      sprite.tint = ledTint(glow, led.burnedOut);
+      sprite.alpha = led.burnedOut ? 0.5 : 0.5 + 0.5 * glow;
     }
     return sprite;
   }
