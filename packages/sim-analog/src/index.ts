@@ -20,5 +20,13 @@ export {
   type DiodeDevice,
   type DiodeOptions,
 } from './devices/nonlinear';
+export { createCapacitor, createInductor, type ReactiveDevice } from './devices/reactive';
+export type { IntegrationMethod } from './integration';
+export {
+  runTransient,
+  type ReactiveLike,
+  type TransientOptions,
+  type TransientSample,
+} from './transient';
 
 export const packageName = '@vircuitcad/sim-analog';

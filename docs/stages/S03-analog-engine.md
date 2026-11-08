@@ -12,7 +12,7 @@ A pure TypeScript MNA engine (`sim-analog`) with DC and transient analysis, robu
 - [x] **S03-T03** Linear devices: resistor, DC voltage source (with small internal R), current source, switch/pushbutton. → analytic checks (divider, Thevenin).
 - [x] **S03-T04** DC operating point: Newton-Raphson loop, convergence criteria (abstol/reltol/vntol), iteration cap, gmin stepping then source stepping fallback. → hard circuits converge in tests.
 - [x] **S03-T05** Nonlinear devices: diode, LED (colour-dependent Vf, series R, burnout flag at over-current), Zener; junction limiting (`pnjlim`). → I-V curve tests vs analytic.
-- [ ] **S03-T06** Transient: capacitor, inductor (companion models), backward-Euler + trapezoidal, adaptive timestep with breakpoints. → RC/RL/RLC step-response tests within 1 %.
+- [x] **S03-T06** Transient: capacitor, inductor (companion models), backward-Euler + trapezoidal, adaptive timestep with breakpoints. → RC/RL/RLC step-response tests within 1 %.
 - [ ] **S03-T07** Diagnostics: typed `SimError` (`SHORT_CIRCUIT`, `NO_GROUND`, `FLOATING`, `NO_CONVERGENCE`, `SOURCE_LOOP`) carrying node/part refs. → each has a test circuit.
 - [ ] **S03-T08** Golden harness: runner for native ngspice (skips if absent), 20+ circuit netlists, tolerance compare, **committed result JSON** so tests run without ngspice; script to regenerate. → tests tagged `golden`.
 - [ ] **S03-T09** Benchmark (`bench/`) reporting steps/sec; `docs/MODELS.md` created with equations, tolerances and limits. → numbers recorded in Handoff.
