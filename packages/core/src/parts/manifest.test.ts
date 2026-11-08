@@ -19,7 +19,18 @@ const valid: PartManifest = {
 
 it('registers the three placeholder parts', () => {
   const registry = createDefaultPartRegistry();
-  expect(registry.list().map((manifest) => manifest.id)).toEqual(['battery', 'led', 'resistor']);
+  expect(registry.list().map((manifest) => manifest.id)).toEqual([
+    'battery',
+    'battery-pack',
+    'capacitor',
+    'inductor',
+    'led',
+    'multimeter',
+    'power-supply',
+    'pushbutton',
+    'resistor',
+    'slide-switch',
+  ]);
   expect(registry.require('led').pins).toHaveLength(2);
 });
 

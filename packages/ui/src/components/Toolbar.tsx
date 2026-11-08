@@ -10,6 +10,8 @@ export type ToolbarProps = {
   onRotate: () => void;
   onDelete: () => void;
   onDuplicate: () => void;
+  netColoring?: boolean;
+  onToggleNetColoring?: () => void;
 };
 
 function ToolButton({
@@ -38,6 +40,8 @@ export function Toolbar({
   onRotate,
   onDelete,
   onDuplicate,
+  netColoring = false,
+  onToggleNetColoring,
 }: ToolbarProps) {
   return (
     <div className="toolbar" role="toolbar" aria-label="Tools">
@@ -52,6 +56,11 @@ export function Toolbar({
       <ToolButton onClick={onDelete}>Delete</ToolButton>
       <ToolButton onClick={onUndo}>Undo</ToolButton>
       <ToolButton onClick={onRedo}>Redo</ToolButton>
+      {onToggleNetColoring ? (
+        <ToolButton active={netColoring} onClick={onToggleNetColoring}>
+          Nets
+        </ToolButton>
+      ) : null}
       <span className="toolbar-state">
         {canUndo ? 'undo:yes' : 'undo:no'} {canRedo ? 'redo:yes' : 'redo:no'}
       </span>

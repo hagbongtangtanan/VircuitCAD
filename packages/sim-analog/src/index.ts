@@ -31,4 +31,27 @@ export {
   type TransientSample,
 } from './transient';
 
+export {
+  buildSimulation,
+  readMeters,
+  solveSimulation,
+  type MeterReading,
+  type Simulation,
+} from './bridge';
+export {
+  LedCurrentSchema,
+  SimErrorEventSchema,
+  SimStateSchema,
+  SnapshotSchema,
+  StatusSchema,
+  WorkerCommandSchema,
+  WorkerEventSchema,
+  type SimErrorEvent,
+  type SimSnapshot,
+  type SimState,
+  type SimStatus,
+  type WorkerCommand,
+  type WorkerEvent,
+} from './worker/protocol';
+
 export const packageName = '@vircuitcad/sim-analog';

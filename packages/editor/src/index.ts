@@ -1,4 +1,5 @@
 export { Editor, type EditorOptions } from './editor';
+export { SimulationHost } from './sim/worker-host';
 export { Scene, type PreviewState, type SceneOptions } from './render/scene';
 export {
   ToolController,
@@ -25,6 +26,7 @@ export {
 } from './hit/scene-index';
 export { layoutPart, type PartBounds, type PartLayout, type PartPinLayout } from './render/part-layout';
 export { TextureCache } from './render/texture-cache';
+export { ledGlow, ledTint, voltageToColor } from './render/visuals';
 export {
   MAX_SCALE,
   MIN_SCALE,

@@ -117,6 +117,10 @@ export class Editor {
     return this.controller;
   }
 
+  setNetColoring(enabled: boolean): void {
+    this.scene?.setNetColoring(enabled);
+  }
+
   onViewportChange(listener: () => void): () => void {
     this.viewportListeners.add(listener);
     return () => this.viewportListeners.delete(listener);

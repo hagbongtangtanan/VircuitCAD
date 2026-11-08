@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "G9OJeMtysJhbM4xpAJPCa",
+  "name": "RC charge",
+  "board": {
+    "id": "OOoGZfhkgONyyK9xodpFP",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "ps1",
+      "partId": "power-supply",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 5
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 1000
+      }
+    },
+    {
+      "id": "c1",
+      "partId": "capacitor",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "capacitance": 0.000001
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "obczJ98GS6mSDOrDVPBwm",
+      "from": {
+        "kind": "pin",
+        "partId": "ps1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "xF0K6RNGUFAmMwoHshinn",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "c1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "yZWbhPm5sn5wWmaPBMnXE",
+      "from": {
+        "kind": "pin",
+        "partId": "c1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "ps1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ]
+}

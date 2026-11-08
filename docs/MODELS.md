@@ -44,6 +44,24 @@ step to `−Vz − 30·Vt`.
 - No temperature, noise, junction capacitance, or magnetic coupling; parameter values are ideal.
 - Homespun (non-Autodesk) part art only; results are intended for teaching, not sign-off.
 
+## Instruments
+
+- **Bench supply**: ideal source with a configurable voltage; the current limit is not yet enforced
+  in the DC solve (documented limitation).
+- **Multimeter**: `V` reads the net-voltage difference across its probes; `A` inserts a 0 V source
+  (ammeter) and reads branch current; `Ω` is power-off only and currently reported as `null`.
+
+## Worker and snapshots
+
+Simulation runs in a Web Worker (see ADR 0003). The UI receives coalesced snapshots (≤ 60 Hz) with
+node voltages (per net name), LED currents and multimeter readings, validated with zod.
+
+## Performance baseline
+
+- 50-part resistor ladder: ≈ 1.5 ms per DC solve (build + source stepping), measured locally.
+- Editor with 100 parts: ≈ 30 fps under SwiftShader (no GPU, single worker); drops under parallel
+  load. Board rendering stays constant draw calls.
+
 ## Golden harness
 
 `packages/sim-analog/src/golden/` holds 20 circuits, a closed-form oracle, and a committed
