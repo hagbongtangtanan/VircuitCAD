@@ -18,20 +18,23 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S05 IN PROGRESS, branch `stage/s05-toolchain`. Done: T02 (`locateToolchain` dev/packaged roots +
-`isolatedEnv`, fake-layout tests), T03 (`CompileService`: short temp dir, injectable runner with
-timeout/cancel, gcc diagnostic + size parser, hex read; tests), T04 (LRU `CompileCache` keyed by
-sources/libs/board/toolchain version).
-Next: T01 `tools/fetch-toolchain.mjs` + `tools/toolchain.lock.json` (the only networked code; pinned
-arduino-cli + `arduino:avr` core + curated libs into gitignored `resources/toolchain/`), T05 wire
-`compile`/`toolchain` into both adapters (progress + cancel), T06 `tools/make-fixtures.mjs` + committed
-`.hex` fixtures, T07 `toolchain`-tagged integration tests + CI job (fetch then run network-blocked via
-`unshare -rn`; Windows odd-path smoke), T08 electron-builder `extraResources` + `docs/TOOLCHAIN.md`.
+S05 IN PROGRESS, branch `stage/s05-toolchain`. Done: T02 (`locateToolchain` + `isolatedEnv`), T03
+(`CompileService`: short temp dir, injectable runner w/ timeout+cancel, gcc diagnostic + size parser,
+hex read), T04 (LRU `CompileCache` keyed by sources/libs/board/toolchain version), T05 (both adapters
+locate the toolchain and run `CompileService`; absent CLI ⇒ clear diagnostic + `toolchain.info`).
+Next: T01 `tools/fetch-toolchain.mjs` + `tools/toolchain.lock.json` (the ONLY networked code; pinned
+arduino-cli + `arduino:avr` core + curated libs into gitignored `resources/toolchain/`; win32-x64 +
+linux-x64; sha256 verify; idempotent), T06 `tools/make-fixtures.mjs` (compiles `fixtures/sketches/*.ino`
+→ committed `.hex` ≤2 MB + `.json` trace placeholders), T07 `toolchain`-tagged integration tests +
+CI job (fetch then `unshare -rn` network-blocked; Windows odd-path smoke), T08 electron-builder
+`extraResources` (already in `electron-builder.yml`) + installer-size report + `docs/TOOLCHAIN.md`.
+Then `/stage-finish S05`.
 APIs: `locateToolchain({devRoots,packagedRoot,platform}) → ToolchainLayout`; `isolatedEnv(layout)`;
 `new CompileService({layout,tempRoot?,timeoutMs?,runner?}).compile(request,{signal?,onProgress?}) →
 CompileResult`; `parseDiagnostics`/`parseSizeReport`; `CompileCache`/`cacheKey`.
-Gotchas: keep arduino-cli offline (`ARDUINO_*` env), toolchain out of asar, no committed binaries
-(hook refuses); toolchain/`CompileService` is the only Node/network-touching code besides `tools/`.
+Gotchas: arduino-cli must stay offline (`ARDUINO_*` env); keep the toolchain out of asar; no committed
+binaries (pre-commit refuses); dev-web `resources/toolchain` is resolved from cwd — a fetch-T01 run
+from the repo root is required for a real compile.
 Blocked: none.
 
 ## Human actions pending
