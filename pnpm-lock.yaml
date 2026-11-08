@@ -148,7 +148,11 @@ importers:
 
   packages/sim-mcu: {}
 
-  packages/toolchain: {}
+  packages/toolchain:
+    dependencies:
+      '@vircuitcad/core':
+        specifier: workspace:*
+        version: link:../core
 
   packages/ui:
     dependencies:
