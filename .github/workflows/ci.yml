@@ -42,6 +42,25 @@ jobs:
         run: pnpm audit --prod
         continue-on-error: true
 
+  toolchain:
+    name: toolchain
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Fetch toolchain
+        run: node tools/fetch-toolchain.mjs
+      - name: Compile offline (network blocked)
+        run: sudo env "PATH=$PATH" unshare -rn pnpm --filter @vircuitcad/toolchain test
+
   package-windows:
     name: package-windows
     needs: verify
@@ -60,6 +79,13 @@ jobs:
           cache: pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Fetch toolchain
+        run: node tools/fetch-toolchain.mjs
+      - name: Smoke compile with an odd TEMP path
+        shell: bash
+        run: |
+          mkdir -p "/c/vc temp ünicode"
+          TEMP="C:\\vc temp ünicode" TMP="C:\\vc temp ünicode" pnpm --filter @vircuitcad/toolchain test
       - name: Build desktop
         run: pnpm --filter @vircuitcad/desktop run --if-present build
       - name: Package desktop (NSIS + portable)
