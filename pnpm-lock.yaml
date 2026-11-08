@@ -132,7 +132,11 @@ importers:
 
   packages/parts: {}
 
-  packages/sim-analog: {}
+  packages/sim-analog:
+    dependencies:
+      '@vircuitcad/core':
+        specifier: workspace:*
+        version: link:../core
 
   packages/sim-digital: {}
 

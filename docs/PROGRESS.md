@@ -7,7 +7,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S00 | Foundations, CI and platform adapter | done |
 | S01 | Core model, breadboard connectivity, netlist | done |
 | S02 | Editor canvas | done |
-| S03 | Analog solver engine | pending |
+| S03 | Analog solver engine | done |
 | S04 | Vertical slice: battery + resistor + LED lights up | pending |
 | S05 | Offline Arduino toolchain and compile service | pending |
 | S06 | AVR emulation and mixed-signal bridge | pending |
@@ -18,25 +18,21 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S02 complete (T01–T08); running `vc-stage-finish.sh S02` → tag `stage-s02-done`. Next: S03 analog
-solver (MNA/Newton; consumes the netlist contract).
-Editor API: `new Editor({store,registry,cellSize?,gridSize?})` → `mount/unmount`,
-`getViewport/zoomBy/panByScreen`, `onViewportChange`, `getScene`, `getToolController`;
-`Scene(renderer,store,registry)` renders the board (one batched Graphics), wires and parts (cached
-textures) plus selection/preview; `HitTester(scene).hitTest/nearest`; `buildHitTestScene`;
-`ToolController.setTool('select'|'place'|'wire',partId?)`, `pointerDown/Move/Up(gridPoint)`,
-`keyDown(key)`; placement helpers `snapPartPosition`/`isPlacementValid`.
-Add a part visual: swap `createPlaceholderPartTexture` for the manifest's `svg` asset (loaded via
-`TextureCache`, keyed by `manifest.id`+rotation); real SVG art will live in `packages/parts`.
-App/UI: desktop `App` composes `@vircuitcad/ui` (PartsBin/Inspector/Toolbar/StatusBar) with the
-editor, save/load via adapter dialogs (app-data fallback for dev-web) + autosave journal + dirty
-flag; `window.__app`/`window.__editor` for E2E.
-Perf note: ≈50 fps at 100 parts under SwiftShader (no GPU, 1 worker); ~30 fps with 4 parallel
-workers; board stays constant draw calls (one sprite per part).
-Decisions: world = grid × `cellSize` (20); wires join only at shared endpoints/strips;
-`DocumentStore.replace` added for load; dev-web dialogs return null → app-data fallback path.
-Gotchas: `vc-check` uses `pnpm -s` (empty failure output); editor typecheck needs `@types/rbush`;
-ui tests need jsdom + testing-library at the workspace root.
+S03 complete (T01–T09); running `vc-stage-finish.sh S03` → tag `stage-s03-done`. Next: S04 vertical
+slice (battery + resistor + LED lights up) — consume this engine.
+Engine API: `solveOperatingPoint(system, devices, initial?, options) → { solution, converged,
+iterations, method }`; `solveDcOrThrow(system, devices, options)` (throws `SimError`);
+`runTransient(system, devices, { tstop, dt?, method?: 'be'|'trapezoidal', adaptive?, breakpoints? })
+→ { time, solution }[]`; `MnaSystem`, `buildNodeMap(netlist)`, `setupDevices`, `stampDevices`.
+Devices (each carries `kind`): `createResistor`, `createVoltageSource(name,p,n,v,internalR?)`,
+`createCurrentSource`, `createSwitch`, `createDiode`, `createLed(name,color,a,b)`,
+`createZener(name,a,b,vz)`, `createCapacitor`, `createInductor`; branches/nodes are allocated in
+`setup()`. Map a core netlist to devices via `buildNodeMap` (pin → net) + `manifest.simModel`.
+Errors: `SimError { code: SHORT_CIRCUIT | NO_GROUND | FLOATING | NO_CONVERGENCE | SOURCE_LOOP, refs }`.
+Benchmark: 21-node RC ladder ≈ 42 000 transient steps/sec. Golden: 20 circuits + closed-form oracle
++ committed `results.json`; `tools/ngspice/` runs native ngspice (skips when absent).
+Gotchas: keep ngspice out of runtime code (only `tools/` and tests); TS6 `Float64Array` is generic
+over its buffer (annotate); the sim-* lint forbids Node built-ins even in `bench/`.
 Blocked: none.
 
 ## Human actions pending
