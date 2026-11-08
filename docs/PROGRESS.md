@@ -18,23 +18,20 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S05 IN PROGRESS, branch `stage/s05-toolchain`. Done: T02 (`locateToolchain` + `isolatedEnv`), T03
-(`CompileService`: short temp dir, injectable runner w/ timeout+cancel, gcc diagnostic + size parser,
-hex read), T04 (LRU `CompileCache` keyed by sources/libs/board/toolchain version), T05 (both adapters
-locate the toolchain and run `CompileService`; absent CLI ⇒ clear diagnostic + `toolchain.info`).
-Next: T01 `tools/fetch-toolchain.mjs` + `tools/toolchain.lock.json` (the ONLY networked code; pinned
-arduino-cli + `arduino:avr` core + curated libs into gitignored `resources/toolchain/`; win32-x64 +
-linux-x64; sha256 verify; idempotent), T06 `tools/make-fixtures.mjs` (compiles `fixtures/sketches/*.ino`
-→ committed `.hex` ≤2 MB + `.json` trace placeholders), T07 `toolchain`-tagged integration tests +
-CI job (fetch then `unshare -rn` network-blocked; Windows odd-path smoke), T08 electron-builder
-`extraResources` (already in `electron-builder.yml`) + installer-size report + `docs/TOOLCHAIN.md`.
-Then `/stage-finish S05`.
-APIs: `locateToolchain({devRoots,packagedRoot,platform}) → ToolchainLayout`; `isolatedEnv(layout)`;
+S05 complete (T01–T08); running `vc-stage-finish.sh S05` → tag `stage-s05-done`. Next: S06 AVR
+emulation + mixed-signal bridge.
+Compile API: `locateToolchain({devRoots,packagedRoot,platform}) → ToolchainLayout`; `isolatedEnv(layout)`;
 `new CompileService({layout,tempRoot?,timeoutMs?,runner?}).compile(request,{signal?,onProgress?}) →
-CompileResult`; `parseDiagnostics`/`parseSizeReport`; `CompileCache`/`cacheKey`.
-Gotchas: arduino-cli must stay offline (`ARDUINO_*` env); keep the toolchain out of asar; no committed
-binaries (pre-commit refuses); dev-web `resources/toolchain` is resolved from cwd — a fetch-T01 run
-from the repo root is required for a real compile.
+CompileResult { ok, hex?, diagnostics[] }`; `Diagnostic { file, line, column, severity, message }`;
+`parseSizeReport → { sketchBytes?, dataBytes? }`; `CompileCache`/`cacheKey`. Adapters run the service
+(absent CLI ⇒ diagnostic); electron-builder copies `resources/toolchain` via `extraResources` (outside asar).
+Fixtures: `fixtures/sketches/{blink,millis-blink,button-led,serial-hello,pwm-fade,adc-read,timer-isr,
+servo-sweep,lcd-hello}.ino` → `fixtures/hex/*.hex` + `.json` (34 KiB). `tools/fetch-toolchain.mjs` +
+`tools/toolchain.lock.json` (arduino-cli 1.5.1, arduino:avr 1.8.8, Servo/LiquidCrystal/Adafruit NeoPixel);
+`tools/make-fixtures.mjs`. Installer delta ≈ 150 MB (see `docs/TOOLCHAIN.md`).
+Gotchas: `tools/fetch-toolchain.mjs` is the only networked code; `resources/toolchain/` is gitignored;
+the CI `toolchain` job fetches then runs tests network-blocked via `sudo env PATH unshare -rn`; the
+Windows smoke compile uses a spaces + non-ASCII TEMP.
 Blocked: none.
 
 ## Human actions pending
