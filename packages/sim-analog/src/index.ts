@@ -53,5 +53,19 @@ export {
   type WorkerCommand,
   type WorkerEvent,
 } from './worker/protocol';
+export {
+  ADC_REFERENCE,
+  INPUT_HIGH_THRESHOLD,
+  INPUT_LOW_THRESHOLD,
+  LOGIC_VOLTAGE,
+  PIN_RESISTANCE,
+  PULLUP_RESISTANCE,
+  analogRead,
+  createMcuOutput,
+  createPullup,
+  digitalRead,
+  type DigitalPinState,
+  type McuOutputDevice,
+} from './mcu-bridge';
 
 export const packageName = '@vircuitcad/sim-analog';

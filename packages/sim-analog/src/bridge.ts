@@ -143,6 +143,12 @@ export function buildSimulation(circuit: Circuit, registry: PartRegistry): Simul
       case 'diode':
         devices.push(createDiode(part.id, nodeOf(part.id, 'anode'), nodeOf(part.id, 'cathode')));
         break;
+      case 'arduino-uno': {
+        const gnd = nodeOf(part.id, 'GND');
+        devices.push(createVoltageSource(`${part.id}:5V`, nodeOf(part.id, '5V'), gnd, 5));
+        devices.push(createVoltageSource(`${part.id}:3V3`, nodeOf(part.id, '3V3'), gnd, 3.3));
+        break;
+      }
       default:
         break;
     }
