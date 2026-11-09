@@ -19,16 +19,16 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 
 ## Handoff
 S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T02 (sketch in `.vcad`), T03 (`RunController`
-Build/Run/Stop state machine with request-id stale-drop + dirty flag), T05 (`SerialBuffer`/
-`SerialMonitor`), T06 (`findUnknownIncludes`/`libraryMessage`).
+state machine), T04 (diagnostics → Monaco markers + `ProblemsPanel`), T05 (`SerialBuffer`/
+`SerialMonitor`), T06 (library policy).
 Next: T01 Monaco bundled locally (Vite `?worker`, lazy, no CDN; C++ + own Arduino keywords; offline
-Playwright test), T04 diagnostics → Monaco markers + Problems list, T07 lifecycle (edit-while-running
-prompt; recompile resets MCU but keeps circuit; `docs/BEHAVIOUR.md`), T08 E2E (blink compile→LED; serial;
-syntax-error marker) in the `toolchain` CI job. Then `/stage-finish S07`.
-API: `RunController(deps).build()/stop()/cancel()/markEdited()/getState()/onChange`; `Circuit.sketch`,
-`defaultSketch()`, `sketchOf()`; `SerialMonitor`; `findUnknownIncludes`, `libraryMessage`.
-Gotchas: heavy tests need explicit timeouts (toolchain compile 60 s; trace `slow`); jsdom lacks
-`scrollIntoView` (guarded); `vc-check` uses `pnpm -s`.
+Playwright test), T07 lifecycle (edit-while-running prompt; recompile resets MCU but keeps circuit;
+`docs/BEHAVIOUR.md`), T08 E2E (blink compile→LED; serial; syntax-error marker) in the `toolchain` CI
+job. Then `/stage-finish S07`.
+API: `RunController`; `toMarkers`/`markersByFile` (editor) + `ProblemsPanel` (ui); `Circuit.sketch`/
+`defaultSketch`/`sketchOf`; `SerialMonitor`; `findUnknownIncludes`/`libraryMessage`.
+Gotchas: heavy tests need explicit timeouts; jsdom lacks `scrollIntoView`; commit scopes can't contain
+commas; `vc-check` uses `pnpm -s`.
 Blocked: none.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
