@@ -132,6 +132,9 @@ importers:
       '@vircuitcad/sim-analog':
         specifier: workspace:*
         version: link:../sim-analog
+      '@vircuitcad/sim-mcu':
+        specifier: workspace:*
+        version: link:../sim-mcu
       pixi.js:
         specifier: 8.22.0
         version: 8.22.0
@@ -152,7 +155,14 @@ importers:
 
   packages/sim-digital: {}
 
-  packages/sim-mcu: {}
+  packages/sim-mcu:
+    dependencies:
+      avr8js:
+        specifier: 0.21.1
+        version: 0.21.1
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
 
   packages/toolchain:
     dependencies:
@@ -903,6 +913,10 @@ packages:
   at-least-node@1.0.0:
     resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
     engines: {node: '>= 4.0.0'}
+
+  avr8js@0.21.1:
+    resolution: {integrity: sha512-lS1vPaB0gB2GXoPrHFQOUG/5CRORjvnmjbs8SiPZdJpt4HkV0+v6HnNeXxo/X9lPqumqphls2Qyql8zsw9rBaw==}
+    engines: {node: '>= 20.19.0', npm: '>= 10.0.0'}
 
   aws4@1.13.2:
     resolution: {integrity: sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==}
@@ -3094,6 +3108,8 @@ snapshots:
   asynckit@0.4.0: {}
 
   at-least-node@1.0.0: {}
+
+  avr8js@0.21.1: {}
 
   aws4@1.13.2: {}
 

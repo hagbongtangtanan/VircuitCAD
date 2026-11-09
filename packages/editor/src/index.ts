@@ -1,5 +1,7 @@
 export { Editor, type EditorOptions } from './editor';
 export { SimulationHost } from './sim/worker-host';
+export { McuHost } from './sim/mcu-host';
+export { McuCircuit } from './sim/cosim';
 export { Scene, type PreviewState, type SceneOptions } from './render/scene';
 export {
   ToolController,

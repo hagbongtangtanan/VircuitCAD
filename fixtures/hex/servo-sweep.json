@@ -1,5 +1,242 @@
 {
   "board": "arduino:avr:uno",
   "sketch": "servo-sweep.ino",
-  "note": "expected traces filled in S06"
+  "note": "expected traces filled in S06",
+  "trace": [
+    {
+      "cycles": 511,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 845350,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 854526,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 1165399,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 1174750,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 1485447,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 1495118,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 1805496,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 1815350,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 2125548,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 2135558,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 2445608,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 2455958,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 2765655,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 2776159,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 3085703,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 3096366,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 3405751,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 3416750,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 3725806,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 3736967,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 4045855,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 4057187,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 4365903,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 4377558,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 4685951,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 4697766,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 5006000,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 5018003,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 5326048,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 5338368,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 5646095,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 5658583,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 5966145,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 5978798,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 6286191,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 6299183,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 6606243,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 6619390,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 6926295,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 6939598,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 7246343,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 7259983,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 7566392,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 7580198,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 7886448,
+      "port": "B",
+      "value": 2
+    },
+    {
+      "cycles": 7900414,
+      "port": "B",
+      "value": 0
+    }
+  ]
 }

@@ -20,6 +20,7 @@ const valid: PartManifest = {
 it('registers the three placeholder parts', () => {
   const registry = createDefaultPartRegistry();
   expect(registry.list().map((manifest) => manifest.id)).toEqual([
+    'arduino-uno',
     'battery',
     'battery-pack',
     'capacitor',
@@ -32,6 +33,14 @@ it('registers the three placeholder parts', () => {
     'slide-switch',
   ]);
   expect(registry.require('led').pins).toHaveLength(2);
+});
+
+it('defines the Arduino Uno pin map', () => {
+  const uno = createDefaultPartRegistry().require('arduino-uno');
+  expect(uno.pins).toHaveLength(25);
+  for (const id of ['D0', 'D13', 'A0', 'A5', '5V', '3V3', 'GND', 'VIN', 'RESET']) {
+    expect(uno.pins.some((pin) => pin.id === id)).toBe(true);
+  }
 });
 
 it('rejects duplicate pin ids with a clear error', () => {

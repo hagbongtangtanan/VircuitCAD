@@ -78,6 +78,12 @@ export function createPartTexture(
       graphics.roundRect(0, 0, w, h, 2).fill({ color: 0xa78bfa }).stroke(outline);
       break;
     }
+    case 'arduino-uno': {
+      graphics.roundRect(0, 0, w, h, 4).fill({ color: 0x0b6e4f }).stroke(outline);
+      graphics.rect(0, 0, w, h * 0.18).fill({ color: 0x1f2937 });
+      graphics.circle(w * 0.85, h * 0.55, Math.min(w, h) * 0.06).fill({ color: 0xf59e0b });
+      break;
+    }
     default: {
       graphics.roundRect(0, 0, w, h, 3).fill({ color: 0x64748b }).stroke(outline);
     }

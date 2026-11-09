@@ -1,5 +1,17 @@
 {
   "board": "arduino:avr:uno",
   "sketch": "blink.ino",
-  "note": "expected traces filled in S06"
+  "note": "expected traces filled in S06",
+  "trace": [
+    {
+      "cycles": 180,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 231,
+      "port": "B",
+      "value": 32
+    }
+  ]
 }
