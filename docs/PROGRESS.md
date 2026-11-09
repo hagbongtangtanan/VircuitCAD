@@ -18,20 +18,21 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S05 complete (T01–T08); running `vc-stage-finish.sh S05` → tag `stage-s05-done`. Next: S06 AVR
-emulation + mixed-signal bridge.
-Compile API: `locateToolchain({devRoots,packagedRoot,platform}) → ToolchainLayout`; `isolatedEnv(layout)`;
-`new CompileService({layout,tempRoot?,timeoutMs?,runner?}).compile(request,{signal?,onProgress?}) →
-CompileResult { ok, hex?, diagnostics[] }`; `Diagnostic { file, line, column, severity, message }`;
-`parseSizeReport → { sketchBytes?, dataBytes? }`; `CompileCache`/`cacheKey`. Adapters run the service
-(absent CLI ⇒ diagnostic); electron-builder copies `resources/toolchain` via `extraResources` (outside asar).
-Fixtures: `fixtures/sketches/{blink,millis-blink,button-led,serial-hello,pwm-fade,adc-read,timer-isr,
-servo-sweep,lcd-hello}.ino` → `fixtures/hex/*.hex` + `.json` (34 KiB). `tools/fetch-toolchain.mjs` +
-`tools/toolchain.lock.json` (arduino-cli 1.5.1, arduino:avr 1.8.8, Servo/LiquidCrystal/Adafruit NeoPixel);
-`tools/make-fixtures.mjs`. Installer delta ≈ 150 MB (see `docs/TOOLCHAIN.md`).
-Gotchas: `tools/fetch-toolchain.mjs` is the only networked code; `resources/toolchain/` is gitignored;
-the CI `toolchain` job fetches then runs tests network-blocked via `sudo env PATH unshare -rn`; the
-Windows smoke compile uses a spaces + non-ASCII TEMP.
+S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (`@vircuitcad/sim-mcu` Intel HEX parser
+→ program memory with checksum/range validation; parses all S05 fixtures; malformed-hex tests).
+Next: T02 avr8js integration (pin the version; check its supported peripherals first: CPU, timers 0/1/2,
+ports B/C/D, USART, ADC, SPI, TWI; cycle-driven run loop with wall-clock pacing + a deterministic
+cycle mode; blink toggles at 1 Hz ±0.1 %), T03 MCU worker host (zod protocol, pin-change events with
+cycle stamps, ≤ 60 Hz snapshots), T04 Arduino Uno part (manifest + SVG + pin map + D13 LED + supply
+model), T05 mixed-signal bridge (OUTPUT = ~25 Ω Thevenin, INPUT Hi-Z, INPUT_PULLUP 20–50 kΩ, digital
+thresholds with hysteresis, analogRead → 10-bit, re-solve on pin edges only), T06 PWM quasi-static vs
+transient, T07 co-sim scheduler (MCU clock master, backlog limit, speed control), T08 fixture traces,
+T09 examples + E2E (prebuilt hex). Then `/stage-finish S06` — **HUMAN REVIEW GATE**.
+MCU API so far: `parseIntelHex(text, size=0x8000) → { bytes: Uint8Array, highestAddress }`; `HexParseError`.
+Decisions: sim-mcu stays pure TS (no DOM/Node) in runtime; the sim-* eslint boundary now permits Node
+built-ins in `*.test.ts` (fixtures read from disk).
+Gotchas: `resources/toolchain/` gitignored; `tools/fetch-toolchain.mjs` is the only networked code;
+`vc-check` uses `pnpm -s` (empty failure output).
 Blocked: none.
 
 ## Human actions pending
