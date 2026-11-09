@@ -18,18 +18,16 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S08 IN PROGRESS, branch `stage/s08-parts-wave1`. Done: T04 (LDR/NTC/potentiometer manifests + sim
-models; `ldrResistance`/`ntcResistance`/`potentiometerResistances` in `sim-analog/src/sensors.ts`; the
-bridge splits the pot into two legs).
-Next: T01 part-authoring kit (`docs/PARTS.md`, `pnpm new-part`, manifest validator + lint that every part
-has a demo+test), T02 BJT/MOSFET/Schottky/Zener, T03 op-amp/comparator, T05 relay, T06 `sim-digital`
-event-driven engine (`0/1/Z/X`, delays, Thevenin boundary), T07 74xx/74HC161/595/4017, T08 555, T09
-7-segment/LED bar/RGB, T10 demo+test for every part + MODELS/THIRD_PARTY updates. Then `/stage-finish S08`.
-Sensors API: `ldrResistance(lux,{r10,gamma})`, `ntcResistance(celsius,{r25,beta})`,
-`potentiometerResistances(total, position) → {low,high}`.
-Gotchas: 3-terminal nonlinear devices (BJT/MOSFET) need VCCS stamping on `MnaSystem` (not yet exposed via
-`MnaContext`) — plan to add a `stampTransconductance` before T02; heavy tests need timeouts; `vc-check`
-uses `pnpm -s`.
+S08 IN PROGRESS, branch `stage/s08-parts-wave1`. Done: T02 PARTIAL (Schottky diode + level-1 N/P MOSFET;
+`MnaSystem`/`MnaContext` gained `stampTransconductance`; **BJT deferred** — Ebers-Moll stamping was
+unstable), T04 (LDR/NTC/potentiometer sensors).
+Next: BJT (revisit Ebers-Moll with junction limiting), T01 part-authoring kit (`docs/PARTS.md`,
+`pnpm new-part`, manifest validator + lint requiring a demo+test per part), T03 op-amp/comparator, T05
+relay, T06 `sim-digital` event engine (`0/1/Z/X`, delays, Thevenin boundary), T07 74xx/74HC161/595/4017,
+T08 555, T09 7-segment/LED bar/RGB, T10 demos+tests + MODELS/THIRD_PARTY. Then `/stage-finish S08`.
+APIs: `createMosfet(name,d,g,s,{type,threshold,k,lambda})`, `createSchottky(name,a,b)`,
+`stampTransconductance(d,s,c+,c-,gm)`; `ldrResistance`/`ntcResistance`/`potentiometerResistances`.
+Gotchas: BJT needs care (signs/limiting); heavy tests need timeouts; `vc-check` uses `pnpm -s`.
 Blocked: none.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
