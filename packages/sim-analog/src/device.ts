@@ -5,6 +5,13 @@ export type MnaContext = {
   voltage(node: number): number;
   addConductance(a: number, b: number, conductance: number): void;
   addCurrent(from: number, to: number, current: number): void;
+  stampTransconductance(
+    drain: number,
+    source: number,
+    controlPositive: number,
+    controlNegative: number,
+    gm: number,
+  ): void;
   stampVoltageSource(positive: number, negative: number, branch: number): void;
   addBranchResistance(branch: number, resistance: number): void;
   setVoltageSource(branch: number, voltage: number): void;

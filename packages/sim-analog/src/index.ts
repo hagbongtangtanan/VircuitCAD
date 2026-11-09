@@ -13,9 +13,11 @@ export {
   type OperatingPointResult,
   type SolverOptions,
 } from './solver';
+export { createMosfet, type MosfetOptions } from './devices/semiconductors';
 export {
   createDiode,
   createLed,
+  createSchottky,
   createZener,
   pnjlim,
   type DiodeDevice,
