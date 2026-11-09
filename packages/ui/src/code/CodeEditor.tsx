@@ -22,7 +22,6 @@ export function CodeEditor({ value, onChange, theme = 'dark', readOnly = false }
     let disposed = false;
 
     void (async () => {
-      // The host app is responsible for setting self.MonacoEnvironment (worker wiring).
       const monaco = await import('monaco-editor');
       if (disposed || !host.current) return;
 

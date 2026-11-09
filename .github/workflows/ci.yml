@@ -60,6 +60,10 @@ jobs:
         run: node tools/fetch-toolchain.mjs
       - name: Compile offline (network blocked)
         run: sudo env "PATH=$PNPM_HOME:$PATH" unshare -n pnpm --filter @vircuitcad/toolchain test
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+      - name: E2E with the toolchain present
+        run: pnpm test:e2e
 
   package-windows:
     name: package-windows
