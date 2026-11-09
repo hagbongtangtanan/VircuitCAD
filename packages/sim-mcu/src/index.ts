@@ -1,5 +1,5 @@
 export { HexParseError, parseIntelHex, type ProgramMemory } from './intel-hex';
-export { CLOCK_HZ, McuCpu, type PortName } from './mcu';
+export { CLOCK_HZ, McuCpu, type PinMode, type PortName } from './mcu';
 export { Pacer, type PacerOptions, type PacerTick } from './pacer';
 export { recordTrace, type TraceChange } from './trace';
 export {

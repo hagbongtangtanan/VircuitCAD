@@ -3,6 +3,7 @@ import {
   AVRUSART,
   AVRTimer,
   CPU,
+  PinState,
   avrInstruction,
   portBConfig,
   portCConfig,
@@ -17,6 +18,7 @@ import {
 import { parseIntelHex } from './intel-hex';
 
 export type PortName = 'B' | 'C' | 'D';
+export type PinMode = 'high' | 'low' | 'input' | 'input-pullup';
 export const CLOCK_HZ = 16_000_000;
 const BYTES_PER_MICRO = CLOCK_HZ / 1e6;
 
@@ -78,6 +80,14 @@ export class McuCpu {
 
   setPin(port: PortName, bit: number, high: boolean): void {
     this.ports[port].setPin(bit, high);
+  }
+
+  pinState(port: PortName, bit: number): PinMode {
+    const state = this.ports[port].pinState(bit);
+    if (state === PinState.High) return 'high';
+    if (state === PinState.Low) return 'low';
+    if (state === PinState.InputPullUp) return 'input-pullup';
+    return 'input';
   }
 
   onSerial(listener: (value: number) => void): void {

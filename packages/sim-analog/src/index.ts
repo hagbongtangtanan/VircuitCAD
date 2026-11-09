@@ -61,6 +61,7 @@ export {
   PIN_RESISTANCE,
   PULLUP_RESISTANCE,
   analogRead,
+  createDynamicPin,
   createMcuOutput,
   createPullup,
   createPwmOutput,
@@ -68,6 +69,7 @@ export {
   hasReactiveParts,
   pwmAverageVoltage,
   type DigitalPinState,
+  type DynamicPinOptions,
   type McuOutputDevice,
   type PwmOutputDevice,
 } from './mcu-bridge';

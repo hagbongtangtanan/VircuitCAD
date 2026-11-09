@@ -124,6 +124,51 @@ export function createPwmOutput(
   };
 }
 
+export type DynamicPinOptions = {
+  railNode: number;
+  onResistance?: number;
+  pullupResistance?: number;
+  highLevel?: number;
+};
+
+/** A pin whose electrical model follows the live MCU state (output/pull-up/Hi-Z). */
+export function createDynamicPin(
+  name: string,
+  node: number,
+  getState: () => DigitalPinState,
+  options: DynamicPinOptions,
+): Device {
+  const resistance = options.onResistance ?? PIN_RESISTANCE;
+  const pullup = options.pullupResistance ?? PULLUP_RESISTANCE;
+  const level = options.highLevel ?? LOGIC_VOLTAGE;
+  let internal = -1;
+  let branch = -1;
+
+  return {
+    name,
+    kind: 'mcu-pin',
+    nodes: [node, options.railNode],
+    setup: (system) => {
+      internal = system.addNode();
+      branch = system.reserveVoltageSource();
+    },
+    stamp: (ctx) => {
+      const state = getState();
+      // Always stamp the branch (a driving source) so the matrix stays non-singular;
+      // the pin connects to it only when driving as an output.
+      ctx.stampVoltageSource(internal, 0, branch);
+      ctx.addBranchResistance(branch, 1e-3);
+      if (state === 'output-high' || state === 'output-low') {
+        ctx.setVoltageSource(branch, state === 'output-high' ? level : 0);
+        ctx.addConductance(node, internal, 1 / resistance);
+      } else {
+        ctx.setVoltageSource(branch, 0);
+        if (state === 'input-pullup') ctx.addConductance(node, options.railNode, 1 / pullup);
+      }
+    },
+  };
+}
+
 /** True when the circuit has reactive parts, so PWM must run full transient. */
 export function hasReactiveParts(circuit: Circuit, registry: PartRegistry): boolean {
   const reactive = new Set(['capacitor', 'inductor']);

@@ -15,7 +15,7 @@ Handoffs of S04 (worker protocol) and S05 (fixtures); `docs/RISKS.md` rows "Co-s
 - [x] **S06-T06** PWM: detect timer-driven PWM; quasi-static average (duty × V) when the circuit has no reactive parts, full transient otherwise; LED brightness from average current. → pot-dimmed LED example.
 - [x] **S06-T07** Co-sim scheduler: the MCU clock is master; solver advances to event timestamps; backlog limit and a visible "running at 0.4× real time" indicator; speed control (0.1×–max). → synthetic overload test.
 - [x] **S06-T08** Fill the S05 sidecar expected traces; deterministic trace tests for every fixture (blink, millis, button, serial, pwm, adc, timer-isr). → all pass.
-- [ ] **S06-T09** Examples: blink (D13 LED + resistor), button-LED, pot-dimmed LED, serial-hello. → E2E with prebuilt hex (no toolchain needed in CI).
+- [x] **S06-T09** Examples: blink (D13 LED + resistor), button-LED, pot-dimmed LED, serial-hello. → E2E with prebuilt hex (no toolchain needed in CI).
 
 ## Pitfalls
 - Electron throttles timers in background windows → `backgroundThrottling: false`; pacing must tolerate hiccups (catch up, don't spiral).
