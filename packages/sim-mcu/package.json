@@ -13,5 +13,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:fast": "vitest run --tagsFilter '!slow && !golden && !e2e && !toolchain'"
+  },
+  "dependencies": {
+    "avr8js": "0.21.1"
   }
 }
