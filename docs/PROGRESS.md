@@ -18,11 +18,11 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S08 IN PROGRESS, branch `stage/s08-parts-wave1`. Done: T01 (part kit), T02 PARTIAL (Schottky + level-1
-N/P MOSFET; `stampTransconductance`; **BJT deferred**), T04 (LDR/NTC/pot), T06 (`sim-digital` levels +
-`DigitalEngine` event engine), T09 PARTIAL (7-segment; **LED bar/RGB deferred**).
-Next: BJT (Ebers-Moll + limiting), T03 op-amp/comparator, T05 relay, T07 74xx/74HC161/595/4017 (build on
-`sim-digital`), T08 555, LED bar + RGB, T10 demos+tests + MODELS/THIRD_PARTY. Then `/stage-finish S08`.
+S08 IN PROGRESS, branch `stage/s08-parts-wave1`. Done: T01 (part kit), T02 PARTIAL (Schottky + N/P
+MOSFET), T04 (sensors), T06 (`sim-digital` levels + engine), T07 PARTIAL (`DFlipFlop`, `Counter`,
+`ShiftRegister`; **decoder/4017 deferred**), T09 PARTIAL (7-segment).
+Next: BJT (Ebers-Moll + limiting), T03 op-amp/comparator, T05 relay, decoder/4017, T08 555, LED bar +
+RGB, T10 demos+tests + MODELS/THIRD_PARTY. Then `/stage-finish S08`.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`
 (addGate/set/get/settle → {levels,iterations,settled}); seven-segment → 8 LEDs (`<id>:<seg>`).
