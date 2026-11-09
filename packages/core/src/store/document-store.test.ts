@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 
-import { createEmptyCircuit, createPartInstance } from '../model/circuit';
+import { createEmptyCircuit, createPartInstance, sketchOf } from '../model/circuit';
 import { DocumentStore } from './document-store';
 
 function storeWithResistor(): DocumentStore {
@@ -140,6 +140,14 @@ it('moves a wire endpoint and updates its colour', () => {
 
   store.undo();
   expect(store.getCircuit().wires[0]?.color).toBe('#22c55e');
+});
+
+it('edits sketch files', () => {
+  const store = new DocumentStore(createEmptyCircuit());
+  expect(store.setSketchFile('helper.h', '#pragma once\n')).toBe(true);
+  expect(sketchOf(store.getCircuit()).files['helper.h']).toContain('pragma');
+  store.undo();
+  expect(sketchOf(store.getCircuit()).files['helper.h']).toBeUndefined();
 });
 
 it('replaces the circuit and clears history', () => {

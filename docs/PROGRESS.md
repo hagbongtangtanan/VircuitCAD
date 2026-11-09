@@ -11,30 +11,24 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S04 | Vertical slice: battery + resistor + LED lights up | done |
 | S05 | Offline Arduino toolchain and compile service | done |
 | S06 | AVR emulation and mixed-signal bridge | done |
-| S07 | Code editor, upload flow, serial monitor | pending |
+| S07 | Code editor, upload flow, serial monitor | done |
 | S08 | Parts wave 1: semiconductors, digital ICs, 555 | pending |
 | S09 | Parts wave 2 and instruments | pending |
 | S10 | Blockly, example library, schematic view | pending |
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S06 complete (T01–T09); running `vc-stage-finish.sh S06` — **HUMAN REVIEW GATE** (exit 10: install
-`vircuitcad-win`, run blink / button-LED / pot-dimmed LED / serial-hello, confirm smooth 60 fps and
-correct behaviour, merge the PR, rerun the driver).
-MCU worker API: `McuHost.start(hex)/pause/resume/reset/setPin(port,bit,high)/dispose`
-(`onPinChange/onSerial/onState`); zod protocol (`start/pause/resume/reset/setPin`; `pinChange/serial/
-state`); `McuCpu` (`runCycles/runMicros/reset/onPortChange/setPin/onSerial/pinState`); `Pacer`
-(`tick(nowMs) → {micros,realTimeFactor,overloaded}`, `setSpeed/reset`); `recordTrace`.
-Bridge rules: OUTPUT = Thevenin 5 V/0 V via ~25 Ω; INPUT_PULLUP = 30 kΩ to the 5 V rail; INPUT = Hi-Z;
-digital thresholds 1.5 V/3.0 V with hysteresis; `analogRead` 10-bit (ref 5 V); PWM quasi-static =
-duty × 5 V unless `hasReactiveParts`; `createDynamicPin` follows the live MCU pin state; UNO 5 V/3 V3 are
-modelled as sources.
-Scheduler: MCU clock is master; `Pacer` gives drift-corrected frames with a 100 ms backlog cap and an
-overload flag. Throughput: ~44 MHz-equivalent (16 MHz AVR ≈ 2.8× real time) in Node.
-Deferred: app-level E2E examples + wiring `McuHost`/`McuCircuit` into the renderer Run button (the
-co-sim is proven headlessly: `McuCircuit` runs the prebuilt blink hex and the D13 LED lights/clears).
-Gotchas: avr8js `reset()` doesn't zero `cycles`; `createDynamicPin` must always stamp its branch;
-trace test is `slow`-tagged; `vc-check` uses `pnpm -s`.
+S07 complete (T01–T08); running `vc-stage-finish.sh S07` → tag `stage-s07-done`. Next: S08 parts wave 1.
+Code panel API: `CodeEditor({value,onChange,theme,readOnly})` lazy-loads `monaco-editor` (bundled, no
+CDN); own Arduino keywords via `arduinoCompletions()`; a default-closed "Code" toggle in the header shows
+Build/Stop/run-state + `ProblemsPanel` + `SerialMonitor`, and Build runs `RunController` → adapter
+`compile` → `McuCircuit` stepping (LEDs tinted via `Scene.setSimulation`, serial → `SerialBuffer`).
+Lifecycle (`docs/BEHAVIOUR.md`): `RunController` Build→compile→`onStart(hex)`→running; request-id drops
+stale results; edit-while-running ⇒ `markEdited` prompt; recompile resets the MCU, keeps the circuit.
+Serial: `SerialBuffer` 10 000 lines; `withLineEnding` none/LF/CRLF.
+Gotchas: Vite 8/rolldown could not resolve Monaco's `?worker` import — Monaco runs on the main thread
+(worker wiring dropped); the lazy Monaco import can trigger a dev re-optimize, so the Code panel is
+default-closed to keep the E2E layout stable; heavy tests need explicit timeouts; `vc-check` uses `pnpm -s`.
 Blocked: none.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`

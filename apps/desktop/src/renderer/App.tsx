@@ -5,19 +5,25 @@ import {
   deserializeCircuit,
   extractNetlist,
   serializeCircuit,
+  sketchOf,
   type ParamValue,
   type PartInstance,
 } from '@vircuitcad/core';
-import { Editor, SimulationHost } from '@vircuitcad/editor';
+import { Editor, McuCircuit, RunController, SimulationHost, type RunState } from '@vircuitcad/editor';
 import {
+  CodeEditor,
   Inspector,
   InstrumentPanel,
   PartsBin,
+  ProblemsPanel,
   RunControls,
+  SerialBuffer,
+  SerialMonitor,
   StatusBar,
   Toast,
   Toolbar,
   type MeterReading,
+  type Problem,
   type SimRunState,
   type ToolbarTool,
 } from '@vircuitcad/ui';
@@ -50,6 +56,16 @@ export function App() {
   const [toast, setToast] = useState<string | undefined>(undefined);
   const [netColoring, setNetColoringState] = useState(false);
   const [meters, setMeters] = useState<MeterReading[]>([]);
+  const [sketch, setSketch] = useState(() => sketchOf(store.getCircuit()).files['sketch.ino'] ?? '');
+  const [problems, setProblems] = useState<Problem[]>([]);
+  const [runState, setRunState] = useState<RunState>('idle');
+  const [codeOpen, setCodeOpen] = useState(false);
+  const [, setSerialVersion] = useState(0);
+  const sketchRef = useRef(sketch);
+  sketchRef.current = sketch;
+  const serialRef = useRef(new SerialBuffer());
+  const mcuRef = useRef<McuCircuit | undefined>(undefined);
+  const mcuTimer = useRef<number | undefined>(undefined);
 
   const toggleNetColoring = (): void => {
     setNetColoringState((previous) => {
@@ -95,6 +111,63 @@ export function App() {
   const togglePause = (): void => {
     if (simState === 'paused') simHostRef.current?.resume();
     else simHostRef.current?.pause();
+  };
+
+  const stopMcu = (): void => {
+    if (mcuTimer.current !== undefined) window.clearInterval(mcuTimer.current);
+    mcuTimer.current = undefined;
+    mcuRef.current = undefined;
+  };
+
+  const startMcu = (hex: string): void => {
+    stopMcu();
+    const mcu = new McuCircuit(store.getCircuit(), registry, hex);
+    mcuRef.current = mcu;
+    mcu.onSerial((byte) => {
+      serialRef.current.append(String.fromCharCode(byte), mcu.cycles / 16);
+      setSerialVersion((version) => version + 1);
+    });
+    mcuTimer.current = window.setInterval(() => {
+      mcu.runMicros(16_000);
+      const leds = store
+        .getCircuit()
+        .parts.filter((part) => registry.get(part.partId)?.simModel === 'led')
+        .map((part) => ({ partId: part.id, current: mcu.ledCurrent(part.id), burnedOut: false }));
+      editorRef.current?.getScene()?.setSimulation({ leds });
+    }, 1000 / 60);
+  };
+
+  const build = (): void => {
+    stopMcu();
+    const controller = new RunController({
+      compile: async () => {
+        const result = await client.compile.compile({
+          source: sketchRef.current,
+          fqbn: 'arduino:avr:uno',
+        });
+        setProblems(
+          result.diagnostics.map((diagnostic) => ({
+            file: 'sketch.ino',
+            line: diagnostic.line ?? 1,
+            column: diagnostic.column ?? 1,
+            severity: diagnostic.severity,
+            message: diagnostic.message,
+          })),
+        );
+        return {
+          ok: result.ok,
+          ...(result.hex ? { hex: result.hex } : {}),
+          diagnostics: result.diagnostics,
+        };
+      },
+      onStart: startMcu,
+      onStop: stopMcu,
+    });
+    controller.onChange = (state) => {
+      setRunState(state);
+      if (state === 'error') setToast('Build failed — see Problems');
+    };
+    void controller.build();
   };
 
   const scheduleAutosave = (): void => {
@@ -191,6 +264,7 @@ export function App() {
     return () => {
       disposed = true;
       window.clearTimeout(autosaveTimer.current);
+      stopMcu();
       for (const dispose of disposers) dispose();
       editor.unmount();
       editorRef.current = null;
@@ -216,6 +290,9 @@ export function App() {
       >
         <strong>VircuitCAD</strong>
         <span data-testid="version">v{version}</span>
+        <button type="button" onClick={() => setCodeOpen((open) => !open)}>
+          Code
+        </button>
       </header>
       <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
         <aside style={{ width: 200, background: '#111827', overflow: 'auto', padding: 8 }}>
@@ -261,7 +338,7 @@ export function App() {
           />
           <Toast message={toast} onDismiss={() => setToast(undefined)} />
         </section>
-        <aside style={{ width: 220, background: '#111827', overflow: 'auto', padding: 8 }}>
+        <aside style={{ width: codeOpen ? 460 : 220, background: '#111827', overflow: 'auto', padding: 8 }}>
           <Inspector
             registry={registry}
             part={selected}
@@ -270,6 +347,38 @@ export function App() {
             }}
           />
           <InstrumentPanel readings={meters} />
+          {codeOpen ? (
+            <>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '4px 0' }}>
+                <button type="button" onClick={build}>
+                  Build
+                </button>
+                <button type="button" onClick={stopMcu}>
+                  Stop
+                </button>
+                <span data-testid="run-state">{runState}</span>
+              </div>
+              <div style={{ height: 220, minHeight: 120 }}>
+                <CodeEditor
+                  value={sketch}
+                  onChange={(text) => {
+                    setSketch(text);
+                    store.setSketchFile('sketch.ino', text);
+                  }}
+                />
+              </div>
+              <ProblemsPanel problems={problems} />
+              <div style={{ height: 120, overflow: 'auto', borderTop: '1px solid #1e293b' }}>
+                <SerialMonitor
+                  lines={serialRef.current.toArray()}
+                  onClear={() => {
+                    serialRef.current.clear();
+                    setSerialVersion((version) => version + 1);
+                  }}
+                />
+              </div>
+            </>
+          ) : null}
         </aside>
       </div>
     </main>

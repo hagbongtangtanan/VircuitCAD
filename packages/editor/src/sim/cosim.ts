@@ -68,4 +68,8 @@ export class McuCircuit {
     const device = this.simulation.deviceByName(partId) as { current?: number } | undefined;
     return device?.current ?? 0;
   }
+
+  onSerial(listener: (byte: number) => void): void {
+    this.mcu.onSerial(listener);
+  }
 }

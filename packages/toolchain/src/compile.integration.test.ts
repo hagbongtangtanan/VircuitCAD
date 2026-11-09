@@ -16,7 +16,7 @@ const layout = locateToolchain({
 
 it.skipIf(!layout)(
   'compiles blink with the local toolchain (offline)',
-  { tags: ['toolchain'] },
+  { tags: ['toolchain'], timeout: 60_000 },
   async () => {
     if (!layout) return;
     const source = readFileSync(path.join(repoRoot, 'fixtures/sketches/blink.ino'), 'utf8');

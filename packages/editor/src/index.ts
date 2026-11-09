@@ -2,6 +2,18 @@ export { Editor, type EditorOptions } from './editor';
 export { SimulationHost } from './sim/worker-host';
 export { McuHost } from './sim/mcu-host';
 export { McuCircuit } from './sim/cosim';
+export {
+  markersByFile,
+  toMarkers,
+  type CompileDiagnostic,
+  type Marker,
+} from './sim/diagnostics';
+export {
+  RunController,
+  type CompileOutcome,
+  type RunControllerDeps,
+  type RunState,
+} from './sim/run-controller';
 export { Scene, type PreviewState, type SceneOptions } from './render/scene';
 export {
   ToolController,

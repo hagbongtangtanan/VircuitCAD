@@ -128,6 +128,13 @@ export class DocumentStore {
     });
   }
 
+  setSketchFile(name: string, text: string): boolean {
+    return this.mutate('setSketchFile', (draft) => {
+      const sketch = (draft.sketch ??= { files: {} });
+      sketch.files[name] = text;
+    });
+  }
+
   setParam(partId: string, key: string, value: ParamValue): boolean {
     return this.mutate('setParam', (draft) => {
       const part = draft.parts.find((candidate) => candidate.id === partId);
