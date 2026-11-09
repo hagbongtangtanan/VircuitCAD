@@ -59,7 +59,7 @@ jobs:
       - name: Fetch toolchain
         run: node tools/fetch-toolchain.mjs
       - name: Compile offline (network blocked)
-        run: sudo env "PATH=$PATH" unshare -rn pnpm --filter @vircuitcad/toolchain test
+        run: sudo env "PATH=$PNPM_HOME:$PATH" unshare -n pnpm --filter @vircuitcad/toolchain test
 
   package-windows:
     name: package-windows

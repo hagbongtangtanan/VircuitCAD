@@ -44,7 +44,7 @@ it('builds an isolated env inside the toolchain dir', () => {
     libraries: '/tc/libraries',
     cores: '/tc/cores',
   });
-  expect(env.ARDUINO_DIRECTORIES_DATA).toBe('/tc/data');
-  expect(env.ARDUINO_DIRECTORIES_USER).toBe('/tc/user');
+  expect(env.ARDUINO_DIRECTORIES_DATA).toBe(path.join('/tc', 'data'));
+  expect(env.ARDUINO_DIRECTORIES_USER).toBe(path.join('/tc', 'user'));
   expect(env.ARDUINO_UPDATER_ENABLE_NOTIFICATION).toBe('false');
 });
