@@ -18,19 +18,20 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (HEX), T02 (`McuCpu` avr8js; blink 500 ms
-±0.1 %), T03 (MCU protocol + `mcu.worker`/`McuHost`), T04 (`arduino-uno` manifest + art), T05 (bridge
-primitives), T06 (PWM quasi-static), T07 (`Pacer`: drift-corrected frames, backlog cap, speed,
-realTimeFactor/overloaded; worker uses it).
-Next: T08 fill the S05 sidecar `.json` expected traces + deterministic trace tests for every fixture
-(blink/millis/button/serial/pwm/adc/timer-isr), T09 examples (blink, button-LED, pot-dimmed LED,
-serial-hello) + E2E with prebuilt hex (no toolchain in CI). Also still to wire: MCU pin-change events →
-`createMcuOutput`/`createPwmOutput` devices → re-solve on pin edges only (the app-level co-sim glue).
+S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01–T07 (hex, `McuCpu` avr8js, protocol +
+`mcu.worker`/`McuHost`, `arduino-uno` part, bridge primitives, PWM quasi-static, `Pacer`), T08
+(`recordTrace` + `tools/make-traces.ts` filled the S05 sidecar `.json` traces; slow-tagged replay test
+for every fixture).
+Next: T09 examples (blink/button-LED/pot-dimmed LED/serial-hello) + E2E with prebuilt hex (no toolchain
+in CI). Remaining glue: wire MCU `pinChange` → `createMcuOutput`/`createPwmOutput` devices → re-solve on
+pin edges only, and hook the UNO + `McuHost` into the desktop app (Run) so D13 drives an on-board LED.
 Then `/stage-finish S06` — **HUMAN REVIEW GATE**.
-MCU API: `McuCpu`, `Pacer`, protocol schemas; `McuHost.start(hex)/pause/resume/reset/setPin` with
-`onPinChange/onSerial/onState` (state now carries `realTimeFactor`/`overloaded`).
-Gotchas: avr8js `reset()` doesn't zero `cycles`; pin-edge→solver coupling not yet wired; `vc-check` uses
-`pnpm -s`.
+MCU API: `McuCpu`; `Pacer` (`tick(nowMs) → {micros,realTimeFactor,overloaded}`, `setSpeed/reset`);
+`recordTrace(hex,micros,ports)`; protocol schemas; `McuHost.start(hex)/pause/resume/reset/setPin(port,bit,
+high)` with `onPinChange/onSerial/onState`. Bridge: `createMcuOutput`, `createPwmOutput`, `createPullup`,
+`digitalRead`, `analogRead`, `pwmAverageVoltage`, `hasReactiveParts`.
+Gotchas: avr8js `reset()` doesn't zero `cycles`; trace test is `slow`-tagged (excluded from `test:fast`);
+pin-edge→solver coupling + app wiring not done; `vc-check` uses `pnpm -s`.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
 (`start(hex)/pause/resume/reset/setPin(port,bit,high)/dispose`, `onPinChange/onSerial/onState`).
