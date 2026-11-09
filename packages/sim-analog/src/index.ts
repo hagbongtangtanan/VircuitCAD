@@ -1,4 +1,5 @@
 export { LuDecomposition, SingularMatrixError } from './linalg';
+export { ldrResistance, ntcResistance, potentiometerResistances } from './sensors';
 export { MnaSystem } from './mna';
 export { GROUND_NODE, buildNodeMap } from './node-map';
 export { DEFAULT_GMIN, createMnaContext, setupDevices, stampDevices } from './context';

@@ -8,6 +8,7 @@ import { createVoltageSource } from './devices/voltage-source';
 import { createSwitch } from './devices/switch';
 import { MnaSystem } from './mna';
 import { buildNodeMap } from './node-map';
+import { ldrResistance, ntcResistance, potentiometerResistances } from './sensors';
 import { solveOperatingPoint, type OperatingPointResult } from './solver';
 
 export type Simulation = {
@@ -143,6 +144,38 @@ export function buildSimulation(circuit: Circuit, registry: PartRegistry): Simul
       case 'diode':
         devices.push(createDiode(part.id, nodeOf(part.id, 'anode'), nodeOf(part.id, 'cathode')));
         break;
+      case 'ldr':
+        devices.push(
+          createResistor(
+            part.id,
+            nodeOf(part.id, 'a'),
+            nodeOf(part.id, 'b'),
+            ldrResistance(numericParam(params, manifest, 'lux', 500)),
+          ),
+        );
+        break;
+      case 'ntc':
+        devices.push(
+          createResistor(
+            part.id,
+            nodeOf(part.id, 'a'),
+            nodeOf(part.id, 'b'),
+            ntcResistance(numericParam(params, manifest, 'temperature', 25)),
+          ),
+        );
+        break;
+      case 'potentiometer': {
+        const legs = potentiometerResistances(
+          numericParam(params, manifest, 'resistance', 10_000),
+          numericParam(params, manifest, 'position', 0.5),
+        );
+        const a = nodeOf(part.id, 'a');
+        const wiper = nodeOf(part.id, 'wiper');
+        const b = nodeOf(part.id, 'b');
+        devices.push(createResistor(`${part.id}:low`, a, wiper, Math.max(legs.low, 0.01)));
+        devices.push(createResistor(`${part.id}:high`, wiper, b, Math.max(legs.high, 0.01)));
+        break;
+      }
       case 'arduino-uno': {
         const gnd = nodeOf(part.id, 'GND');
         devices.push(createVoltageSource(`${part.id}:5V`, nodeOf(part.id, '5V'), gnd, 5));

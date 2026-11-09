@@ -161,6 +161,48 @@ export const placeholderManifests: PartManifest[] = [
     simModel: 'arduino-uno',
     svg: 'parts/arduino-uno.svg',
   }),
+  parsePartManifest({
+    id: 'ldr',
+    name: 'LDR',
+    category: 'passive',
+    pins: [
+      { id: 'a', name: 'A', position: { x: 0, y: 0 }, role: 'passive' },
+      { id: 'b', name: 'B', position: { x: 2, y: 0 }, role: 'passive' },
+    ],
+    params: [{ id: 'lux', label: 'Light', unit: 'lx', min: 0.01, max: 100000, default: 500 }],
+    simModel: 'ldr',
+    svg: 'parts/ldr.svg',
+  }),
+  parsePartManifest({
+    id: 'ntc',
+    name: 'Thermistor',
+    category: 'passive',
+    pins: [
+      { id: 'a', name: 'A', position: { x: 0, y: 0 }, role: 'passive' },
+      { id: 'b', name: 'B', position: { x: 2, y: 0 }, role: 'passive' },
+    ],
+    params: [
+      { id: 'temperature', label: 'Temperature', unit: 'C', min: -40, max: 150, default: 25 },
+    ],
+    simModel: 'ntc',
+    svg: 'parts/ntc.svg',
+  }),
+  parsePartManifest({
+    id: 'potentiometer',
+    name: 'Potentiometer',
+    category: 'passive',
+    pins: [
+      { id: 'a', name: 'A', position: { x: 0, y: 0 }, role: 'passive' },
+      { id: 'wiper', name: 'W', position: { x: 1, y: 1 }, role: 'passive' },
+      { id: 'b', name: 'B', position: { x: 2, y: 0 }, role: 'passive' },
+    ],
+    params: [
+      { id: 'resistance', label: 'Resistance', unit: 'ohm', min: 1, max: 1e6, default: 10000 },
+      { id: 'position', label: 'Position', min: 0, max: 1, default: 0.5 },
+    ],
+    simModel: 'potentiometer',
+    svg: 'parts/potentiometer.svg',
+  }),
 ];
 
 export function createDefaultPartRegistry(): PartRegistry {
