@@ -1,3 +1,8 @@
+import {
+  createDefaultPartRegistry,
+  createEmptyCircuit,
+  createPartInstance,
+} from '@vircuitcad/core';
 import { expect, it } from 'vitest';
 
 import { setupDevices, stampDevices } from './context';
@@ -5,8 +10,11 @@ import type { Device } from './device';
 import {
   analogRead,
   createMcuOutput,
+  createPwmOutput,
   createPullup,
   digitalRead,
+  hasReactiveParts,
+  pwmAverageVoltage,
 } from './mcu-bridge';
 import { createResistor } from './devices/resistor';
 import { createSwitch } from './devices/switch';
@@ -56,6 +64,31 @@ it('pulls a floating input high, and low when the button shorts it to ground', (
     createSwitch('btn', 2, 0, { closed: true, onResistance: 0.01 }),
   ]);
   expect(pressed.system.nodeVoltage(pressed.solution, 2)).toBeLessThan(0.01);
+});
+
+it('averages a PWM duty into a voltage', () => {
+  expect(pwmAverageVoltage(0)).toBe(0);
+  expect(pwmAverageVoltage(0.5)).toBe(2.5);
+  expect(pwmAverageVoltage(1)).toBe(5);
+  expect(pwmAverageVoltage(2)).toBe(5);
+});
+
+it('drives a PWM pin as an averaged Thevenin source', () => {
+  const pwm = createPwmOutput('d9', 1, 0.5);
+  const { system, solution } = solve(1, [pwm, createResistor('load', 1, 0, 975)]);
+  // 2.5 V through 25 Ω into 975 Ω -> 2.5 * 975/1000
+  expect(system.nodeVoltage(solution, 1)).toBeCloseTo(2.4375, 3);
+});
+
+it('detects reactive parts for the transient PWM path', () => {
+  const registry = createDefaultPartRegistry();
+  const resistive = createEmptyCircuit();
+  resistive.parts.push(createPartInstance('resistor', { id: 'r1' }));
+  expect(hasReactiveParts(resistive, registry)).toBe(false);
+
+  const reactive = createEmptyCircuit();
+  reactive.parts.push(createPartInstance('capacitor', { id: 'c1' }));
+  expect(hasReactiveParts(reactive, registry)).toBe(true);
 });
 
 it('reads a divider into an analog input', () => {

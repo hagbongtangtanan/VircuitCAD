@@ -1,3 +1,5 @@
+import type { Circuit, PartRegistry } from '@vircuitcad/core';
+
 import type { Device } from './device';
 
 export const LOGIC_VOLTAGE = 5;
@@ -80,4 +82,53 @@ export function digitalRead(
 export function analogRead(voltage: number, reference = ADC_REFERENCE): number {
   const clamped = Math.max(0, Math.min(reference, voltage));
   return Math.round((clamped / reference) * 1023);
+}
+
+/** Quasi-static PWM output: the average of level × duty. */
+export function pwmAverageVoltage(duty: number, level = LOGIC_VOLTAGE): number {
+  return Math.max(0, Math.min(1, duty)) * level;
+}
+
+export type PwmOutputDevice = Device & { setDuty(duty: number): void };
+
+/** PWM pin modelled as an averaged Thevenin source (quasi-static path). */
+export function createPwmOutput(
+  name: string,
+  node: number,
+  duty: number,
+  options: { onResistance?: number; level?: number } = {},
+): PwmOutputDevice {
+  const resistance = options.onResistance ?? PIN_RESISTANCE;
+  const level = options.level ?? LOGIC_VOLTAGE;
+  let internal = -1;
+  let branch = -1;
+  let current = duty;
+
+  return {
+    name,
+    kind: 'mcu-pwm',
+    nodes: [node],
+    setup: (system) => {
+      internal = system.addNode();
+      branch = system.reserveVoltageSource();
+    },
+    stamp: (ctx) => {
+      ctx.addConductance(node, internal, 1 / resistance);
+      ctx.stampVoltageSource(internal, 0, branch);
+      ctx.addBranchResistance(branch, 1e-3);
+      ctx.setVoltageSource(branch, pwmAverageVoltage(current, level));
+    },
+    setDuty(value: number) {
+      current = value;
+    },
+  };
+}
+
+/** True when the circuit has reactive parts, so PWM must run full transient. */
+export function hasReactiveParts(circuit: Circuit, registry: PartRegistry): boolean {
+  const reactive = new Set(['capacitor', 'inductor']);
+  return circuit.parts.some((part) => {
+    const manifest = registry.get(part.partId);
+    return manifest ? reactive.has(manifest.simModel) : false;
+  });
 }

@@ -63,9 +63,13 @@ export {
   analogRead,
   createMcuOutput,
   createPullup,
+  createPwmOutput,
   digitalRead,
+  hasReactiveParts,
+  pwmAverageVoltage,
   type DigitalPinState,
   type McuOutputDevice,
+  type PwmOutputDevice,
 } from './mcu-bridge';
 
 export const packageName = '@vircuitcad/sim-analog';
