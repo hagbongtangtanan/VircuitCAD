@@ -18,23 +18,19 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S06 complete (T01–T09); running `vc-stage-finish.sh S06` — **HUMAN REVIEW GATE** (exit 10: install
-`vircuitcad-win`, run blink / button-LED / pot-dimmed LED / serial-hello, confirm smooth 60 fps and
-correct behaviour, merge the PR, rerun the driver).
-MCU worker API: `McuHost.start(hex)/pause/resume/reset/setPin(port,bit,high)/dispose`
-(`onPinChange/onSerial/onState`); zod protocol (`start/pause/resume/reset/setPin`; `pinChange/serial/
-state`); `McuCpu` (`runCycles/runMicros/reset/onPortChange/setPin/onSerial/pinState`); `Pacer`
-(`tick(nowMs) → {micros,realTimeFactor,overloaded}`, `setSpeed/reset`); `recordTrace`.
-Bridge rules: OUTPUT = Thevenin 5 V/0 V via ~25 Ω; INPUT_PULLUP = 30 kΩ to the 5 V rail; INPUT = Hi-Z;
-digital thresholds 1.5 V/3.0 V with hysteresis; `analogRead` 10-bit (ref 5 V); PWM quasi-static =
-duty × 5 V unless `hasReactiveParts`; `createDynamicPin` follows the live MCU pin state; UNO 5 V/3 V3 are
-modelled as sources.
-Scheduler: MCU clock is master; `Pacer` gives drift-corrected frames with a 100 ms backlog cap and an
-overload flag. Throughput: ~44 MHz-equivalent (16 MHz AVR ≈ 2.8× real time) in Node.
-Deferred: app-level E2E examples + wiring `McuHost`/`McuCircuit` into the renderer Run button (the
-co-sim is proven headlessly: `McuCircuit` runs the prebuilt blink hex and the D13 LED lights/clears).
-Gotchas: avr8js `reset()` doesn't zero `cycles`; `createDynamicPin` must always stamp its branch;
-trace test is `slow`-tagged; `vc-check` uses `pnpm -s`.
+S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T05 (`SerialBuffer` ring buffer 10 000 lines +
+`withLineEnding` + `SerialMonitor` component in `@vircuitcad/ui`), T06 (`findUnknownIncludes` +
+`libraryMessage` in `@vircuitcad/toolchain`).
+Next: T01 Monaco bundled locally (Vite `?worker`, lazy, no CDN; C++ + own Arduino keywords; offline
+Playwright test), T02 sketch in `.vcad` (tabs .ino/.h, autosave), T03 code panel + Build/Run/Stop state
+machine (compile→hex→McuCircuit), T04 diagnostics → Monaco markers + Problems list, T07 lifecycle
+(edit-while-running prompt; recompile resets MCU), T08 E2E (blink compile→LED; serial; syntax-error
+marker) in the `toolchain` CI job. Then `/stage-finish S07`.
+Serial/buffer API: `SerialBuffer(limit=10000)` `append/clear/toArray/size/capacity`;
+`withLineEnding(text, 'none'|'lf'|'crlf')`; `SerialMonitor({lines,onSend,onClear})`.
+Library policy: `findUnknownIncludes(source, bundled)`, `libraryMessage(unknown, bundled)`.
+Gotchas: heavy tests need explicit timeouts (toolchain compile test now 60 s; trace test `slow`-tagged);
+jsdom lacks `scrollIntoView` (guarded); `vc-check` uses `pnpm -s`.
 Blocked: none.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
