@@ -18,15 +18,14 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (Intel HEX parser), T02 (`McuCpu` avr8js
-integration; blink D13 500 ms ±0.1 %), T03 (zod MCU protocol + editor `mcu.worker`/`McuHost`; pinChange
-with cycle stamps, serial, state).
-Next: T04 Arduino Uno part (manifest + SVG + pin map D0–D13/A0–A5/5V/3V3/GND/VIN/RESET + D13 LED +
-supply model), T05 mixed-signal bridge (OUTPUT ≈ 25 Ω Thevenin, INPUT Hi-Z, INPUT_PULLUP 20–50 kΩ,
-digital thresholds + hysteresis, analogRead → 10-bit, re-solve on pin edges only), T06 PWM quasi-static
-vs transient, T07 co-sim scheduler (MCU clock master, wall-clock pacing/drift/hiccup tolerance, backlog
-limit, speed control — current worker is a fixed ~1/60 s frame, no drift correction yet), T08 fixture
-traces, T09 examples + E2E (prebuilt hex). Then `/stage-finish S06` — **HUMAN REVIEW GATE**.
+S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (Intel HEX parser), T02 (`McuCpu` avr8js;
+blink D13 500 ms ±0.1 %), T03 (zod MCU protocol + editor `mcu.worker`/`McuHost`), T04 (`arduino-uno`
+manifest with 25-pin map D0–D13/A0–A5/5V/3V3/GND/VIN/RESET + own board art).
+Next: T05 mixed-signal bridge (OUTPUT ≈ 25 Ω Thevenin, INPUT Hi-Z, INPUT_PULLUP 20–50 kΩ, digital
+thresholds + hysteresis, analogRead → 10-bit, re-solve on pin edges only; UNO 5V/3V3 → sources; D13 LED
+coupling), T06 PWM quasi-static vs transient, T07 co-sim scheduler (wall-clock pacing/drift/hiccup
+tolerance, backlog limit, speed control), T08 fixture traces, T09 examples + E2E (prebuilt hex). Then
+`/stage-finish S06` — **HUMAN REVIEW GATE**.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
 (`start(hex)/pause/resume/reset/setPin(port,bit,high)/dispose`, `onPinChange/onSerial/onState`).
