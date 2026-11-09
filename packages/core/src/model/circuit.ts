@@ -62,6 +62,19 @@ export const WireSchema = z.object({
 });
 export type Wire = z.infer<typeof WireSchema>;
 
+export const SketchSchema = z.object({
+  files: z.record(z.string(), z.string()),
+});
+export type Sketch = z.infer<typeof SketchSchema>;
+
+export const DEFAULT_SKETCH_FILE = 'sketch.ino';
+
+export function defaultSketch(): Sketch {
+  return {
+    files: { [DEFAULT_SKETCH_FILE]: 'void setup() {\n}\n\nvoid loop() {\n}\n' },
+  };
+}
+
 export const CircuitSchema = z.object({
   schemaVersion: z.literal(SCHEMA_VERSION),
   id: z.string().min(1),
@@ -69,8 +82,14 @@ export const CircuitSchema = z.object({
   board: BoardSchema,
   parts: z.array(PartInstanceSchema),
   wires: z.array(WireSchema),
+  sketch: SketchSchema.optional(),
 });
 export type Circuit = z.infer<typeof CircuitSchema>;
+
+/** The sketch, or a default empty sketch when the document predates sketches. */
+export function sketchOf(circuit: Circuit): Sketch {
+  return circuit.sketch ?? defaultSketch();
+}
 
 export const DEFAULT_WIRE_COLOR = '#22c55e';
 
@@ -99,6 +118,7 @@ export function createEmptyCircuit(options: { name?: string; board?: BoardKind }
     board: createBoard(options.board ?? 'full'),
     parts: [],
     wires: [],
+    sketch: defaultSketch(),
   };
 }
 

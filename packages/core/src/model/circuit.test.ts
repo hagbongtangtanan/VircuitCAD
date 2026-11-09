@@ -7,6 +7,7 @@ import {
   createEmptyCircuit,
   createPartInstance,
   createWire,
+  sketchOf,
 } from './circuit';
 
 it('generates distinct, non-empty ids', () => {
@@ -35,6 +36,22 @@ it('round-trips a circuit through JSON', () => {
   const restored = CircuitSchema.parse(JSON.parse(JSON.stringify(circuit)));
   expect(restored).toEqual(circuit);
   expect(restored.schemaVersion).toBe(SCHEMA_VERSION);
+});
+
+it('includes a default sketch and preserves it through JSON', () => {
+  const circuit = createEmptyCircuit();
+  expect(circuit.sketch?.files['sketch.ino']).toContain('void setup');
+  const restored = CircuitSchema.parse(JSON.parse(JSON.stringify(circuit)));
+  expect(restored.sketch).toEqual(circuit.sketch);
+});
+
+it('defaults the sketch when a legacy document omits it', () => {
+  const circuit = createEmptyCircuit();
+  const legacy: Record<string, unknown> = { ...circuit };
+  delete legacy.sketch;
+  const parsed = CircuitSchema.parse(legacy);
+  expect(parsed.sketch).toBeUndefined();
+  expect(sketchOf(parsed).files['sketch.ino']).toContain('void setup');
 });
 
 it('rejects an unknown schema version', () => {
