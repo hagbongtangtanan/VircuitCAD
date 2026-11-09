@@ -18,19 +18,18 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T05 (`SerialBuffer` ring buffer 10 000 lines +
-`withLineEnding` + `SerialMonitor` component in `@vircuitcad/ui`), T06 (`findUnknownIncludes` +
-`libraryMessage` in `@vircuitcad/toolchain`).
+S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T02 (sketch persisted in `.vcad`: optional
+`Circuit.sketch` files map + `defaultSketch()`/`sketchOf()`), T05 (`SerialBuffer`/`SerialMonitor` in
+`@vircuitcad/ui`), T06 (`findUnknownIncludes`/`libraryMessage` in `@vircuitcad/toolchain`).
 Next: T01 Monaco bundled locally (Vite `?worker`, lazy, no CDN; C++ + own Arduino keywords; offline
-Playwright test), T02 sketch in `.vcad` (tabs .ino/.h, autosave), T03 code panel + Build/Run/Stop state
-machine (compile→hex→McuCircuit), T04 diagnostics → Monaco markers + Problems list, T07 lifecycle
-(edit-while-running prompt; recompile resets MCU), T08 E2E (blink compile→LED; serial; syntax-error
-marker) in the `toolchain` CI job. Then `/stage-finish S07`.
-Serial/buffer API: `SerialBuffer(limit=10000)` `append/clear/toArray/size/capacity`;
-`withLineEnding(text, 'none'|'lf'|'crlf')`; `SerialMonitor({lines,onSend,onClear})`.
-Library policy: `findUnknownIncludes(source, bundled)`, `libraryMessage(unknown, bundled)`.
-Gotchas: heavy tests need explicit timeouts (toolchain compile test now 60 s; trace test `slow`-tagged);
-jsdom lacks `scrollIntoView` (guarded); `vc-check` uses `pnpm -s`.
+Playwright test), T03 code panel + Build/Run/Stop state machine (compile → hex → `McuCircuit`), T04
+diagnostics → Monaco markers + Problems list, T07 lifecycle (edit-while-running prompt; recompile resets
+MCU), T08 E2E (blink compile→LED; serial; syntax-error marker) in the `toolchain` CI job. Then
+`/stage-finish S07`.
+API: `Circuit.sketch?: { files: Record<string,string> }`, `defaultSketch()`, `sketchOf(circuit)`,
+`DEFAULT_SKETCH_FILE`; `SerialMonitor({lines,onSend,onClear})`; `findUnknownIncludes`, `libraryMessage`.
+Gotchas: heavy tests need explicit timeouts (toolchain compile test 60 s; trace test `slow`); jsdom lacks
+`scrollIntoView` (guarded); `vc-check` uses `pnpm -s`.
 Blocked: none.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
