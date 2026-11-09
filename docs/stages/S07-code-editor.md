@@ -11,7 +11,7 @@ Handoffs of S05 and S06; `docs/TOOLCHAIN.md`.
 - [ ] **S07-T02** Sketch persisted inside `.vcad` (text); tabs for `.ino` + `.h`; autosave. → save/load round-trip.
 - [ ] **S07-T03** Code panel (dockable/resizable), toolbar: Build, Run (compile → load hex → start), Stop; progress + cancel via adapter. → state machine unit tests.
 - [ ] **S07-T04** Diagnostics: compile errors → Monaco markers + Problems list; click-to-jump; stale-marker clearing. → tests with captured gcc output.
-- [ ] **S07-T05** Serial monitor: ring buffer (10 000 lines), auto-scroll toggle, send box with line-ending option, baud-mismatch hint, timestamps, clear. → performance test at 1 000 lines/s.
+- [x] **S07-T05** Serial monitor: ring buffer (10 000 lines), auto-scroll toggle, send box with line-ending option, baud-mismatch hint, timestamps, clear. → performance test at 1 000 lines/s.
 - [ ] **S07-T06** Library policy: only the bundled set; unknown `#include` produces a clear "not bundled" message listing the available libraries. → unit tests.
 - [ ] **S07-T07** Lifecycle semantics: edit while running → prompt to restart; recompiling resets MCU but keeps the circuit; documented in `docs/BEHAVIOUR.md`. → E2E.
 - [ ] **S07-T08** E2E: write blink → compile → LED toggles; serial hello appears; a syntax error shows a marker. → in CI (`toolchain` job).

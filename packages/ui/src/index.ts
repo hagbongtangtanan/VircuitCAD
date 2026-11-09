@@ -4,6 +4,8 @@ export { Toolbar, type ToolbarProps, type ToolbarTool } from './components/Toolb
 export { StatusBar, type StatusBarProps } from './components/StatusBar';
 export { RunControls, type RunControlsProps, type SimRunState } from './components/RunControls';
 export { Toast, type ToastProps } from './components/Toast';
+export { SerialBuffer, withLineEnding, type LineEnding, type SerialLine } from './serial/buffer';
+export { SerialMonitor, type SerialMonitorProps } from './serial/SerialMonitor';
 export {
   InstrumentPanel,
   type InstrumentPanelProps,
