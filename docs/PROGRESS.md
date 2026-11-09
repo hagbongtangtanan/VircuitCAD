@@ -18,20 +18,19 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (HEX parser), T02 (`McuCpu` avr8js; blink
-D13 500 ms ±0.1 %), T03 (MCU protocol + `mcu.worker`/`McuHost`), T04 (`arduino-uno` manifest + art),
-T05 (bridge primitives: Thevenin output, pull-up, digital hysteresis, 10-bit ADC, UNO rails), T06
-(`createPwmOutput` averaged Thevenin + `pwmAverageVoltage` + `hasReactiveParts`).
-Next: T07 co-sim scheduler (MCU clock master; wall-clock pacing/drift/hiccup tolerance; backlog limit;
-speed control; wire MCU pin-change events → `createMcuOutput`/`createPwmOutput` devices → re-solve on
-pin edges only), T08 fill the S05 sidecar traces + deterministic trace tests for every fixture, T09
-examples (blink, button-LED, pot-dimmed LED, serial-hello) + E2E with prebuilt hex. Then
-`/stage-finish S06` — **HUMAN REVIEW GATE**.
-Bridge API: `createMcuOutput(name,node,high,{onResistance,highLevel})` (setHigh), `createPwmOutput(name,
-node,duty,{onResistance,level})` (setDuty), `createPullup(name,node,railNode,≈30k)`, `digitalRead(v,prev,
-{low,high})`, `analogRead(v,ref)`, `pwmAverageVoltage(duty,level)`, `hasReactiveParts(circuit,registry)`.
-Gotchas: avr8js `reset()` doesn't zero `cycles`; MCU↔solver coupling (pin edges → devices → re-solve) is
-NOT wired yet (T07); `vc-check` uses `pnpm -s`.
+S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (HEX), T02 (`McuCpu` avr8js; blink 500 ms
+±0.1 %), T03 (MCU protocol + `mcu.worker`/`McuHost`), T04 (`arduino-uno` manifest + art), T05 (bridge
+primitives), T06 (PWM quasi-static), T07 (`Pacer`: drift-corrected frames, backlog cap, speed,
+realTimeFactor/overloaded; worker uses it).
+Next: T08 fill the S05 sidecar `.json` expected traces + deterministic trace tests for every fixture
+(blink/millis/button/serial/pwm/adc/timer-isr), T09 examples (blink, button-LED, pot-dimmed LED,
+serial-hello) + E2E with prebuilt hex (no toolchain in CI). Also still to wire: MCU pin-change events →
+`createMcuOutput`/`createPwmOutput` devices → re-solve on pin edges only (the app-level co-sim glue).
+Then `/stage-finish S06` — **HUMAN REVIEW GATE**.
+MCU API: `McuCpu`, `Pacer`, protocol schemas; `McuHost.start(hex)/pause/resume/reset/setPin` with
+`onPinChange/onSerial/onState` (state now carries `realTimeFactor`/`overloaded`).
+Gotchas: avr8js `reset()` doesn't zero `cycles`; pin-edge→solver coupling not yet wired; `vc-check` uses
+`pnpm -s`.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
 (`start(hex)/pause/resume/reset/setPin(port,bit,high)/dispose`, `onPinChange/onSerial/onState`).
