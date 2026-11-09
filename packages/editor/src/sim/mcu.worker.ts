@@ -1,4 +1,4 @@
-import { McuCommandSchema, McuCpu, type PortName } from '@vircuitcad/sim-mcu';
+import { McuCommandSchema, McuCpu, Pacer, type PortName } from '@vircuitcad/sim-mcu';
 
 type WorkerScope = {
   postMessage(message: unknown): void;
@@ -6,8 +6,12 @@ type WorkerScope = {
 };
 
 const scope = self as unknown as WorkerScope;
-const CYCLES_PER_FRAME = Math.round(16_000_000 / 60);
 const PORTS: PortName[] = ['B', 'C', 'D'];
+const pacer = new Pacer({ maxFrameMicros: 100_000 });
+
+function now(): number {
+  return typeof performance !== 'undefined' ? performance.now() : Date.now();
+}
 
 let mcu: McuCpu | undefined;
 let running = false;
@@ -24,8 +28,15 @@ function attach(instance: McuCpu): void {
 
 function frame(): void {
   if (!mcu || !running) return;
-  mcu.runCycles(CYCLES_PER_FRAME);
-  scope.postMessage({ type: 'state', running, cycles: mcu.cycles });
+  const tick = pacer.tick(now());
+  if (tick.micros > 0) mcu.runMicros(tick.micros);
+  scope.postMessage({
+    type: 'state',
+    running,
+    cycles: mcu.cycles,
+    realTimeFactor: tick.realTimeFactor,
+    overloaded: tick.overloaded,
+  });
 }
 
 scope.onmessage = (event: MessageEvent): void => {
@@ -37,6 +48,7 @@ scope.onmessage = (event: MessageEvent): void => {
       mcu = new McuCpu(command.hex);
       attach(mcu);
       running = true;
+      pacer.reset(now());
       if (!timer) timer = setInterval(frame, 1000 / 60);
       frame();
       break;

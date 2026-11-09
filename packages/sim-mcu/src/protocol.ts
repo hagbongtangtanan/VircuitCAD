@@ -36,6 +36,8 @@ export const McuStateEventSchema = z.object({
   type: z.literal('state'),
   running: z.boolean(),
   cycles: z.number().int().nonnegative(),
+  realTimeFactor: z.number().optional(),
+  overloaded: z.boolean().optional(),
 });
 export type McuStateEvent = z.infer<typeof McuStateEventSchema>;
 
