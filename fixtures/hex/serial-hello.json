@@ -1,0 +1,5 @@
+{
+  "board": "arduino:avr:uno",
+  "sketch": "serial-hello.ino",
+  "note": "expected traces filled in S06"
+}

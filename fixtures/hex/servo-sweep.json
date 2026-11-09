@@ -1,0 +1,5 @@
+{
+  "board": "arduino:avr:uno",
+  "sketch": "servo-sweep.ino",
+  "note": "expected traces filled in S06"
+}
