@@ -18,17 +18,18 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S07 complete (T01–T08); running `vc-stage-finish.sh S07` → tag `stage-s07-done`. Next: S08 parts wave 1.
-Code panel API: `CodeEditor({value,onChange,theme,readOnly})` lazy-loads `monaco-editor` (bundled, no
-CDN); own Arduino keywords via `arduinoCompletions()`; a default-closed "Code" toggle in the header shows
-Build/Stop/run-state + `ProblemsPanel` + `SerialMonitor`, and Build runs `RunController` → adapter
-`compile` → `McuCircuit` stepping (LEDs tinted via `Scene.setSimulation`, serial → `SerialBuffer`).
-Lifecycle (`docs/BEHAVIOUR.md`): `RunController` Build→compile→`onStart(hex)`→running; request-id drops
-stale results; edit-while-running ⇒ `markEdited` prompt; recompile resets the MCU, keeps the circuit.
-Serial: `SerialBuffer` 10 000 lines; `withLineEnding` none/LF/CRLF.
-Gotchas: Vite 8/rolldown could not resolve Monaco's `?worker` import — Monaco runs on the main thread
-(worker wiring dropped); the lazy Monaco import can trigger a dev re-optimize, so the Code panel is
-default-closed to keep the E2E layout stable; heavy tests need explicit timeouts; `vc-check` uses `pnpm -s`.
+S08 IN PROGRESS, branch `stage/s08-parts-wave1`. Done: T04 (LDR/NTC/potentiometer manifests + sim
+models; `ldrResistance`/`ntcResistance`/`potentiometerResistances` in `sim-analog/src/sensors.ts`; the
+bridge splits the pot into two legs).
+Next: T01 part-authoring kit (`docs/PARTS.md`, `pnpm new-part`, manifest validator + lint that every part
+has a demo+test), T02 BJT/MOSFET/Schottky/Zener, T03 op-amp/comparator, T05 relay, T06 `sim-digital`
+event-driven engine (`0/1/Z/X`, delays, Thevenin boundary), T07 74xx/74HC161/595/4017, T08 555, T09
+7-segment/LED bar/RGB, T10 demo+test for every part + MODELS/THIRD_PARTY updates. Then `/stage-finish S08`.
+Sensors API: `ldrResistance(lux,{r10,gamma})`, `ntcResistance(celsius,{r25,beta})`,
+`potentiometerResistances(total, position) → {low,high}`.
+Gotchas: 3-terminal nonlinear devices (BJT/MOSFET) need VCCS stamping on `MnaSystem` (not yet exposed via
+`MnaContext`) — plan to add a `stampTransconductance` before T02; heavy tests need timeouts; `vc-check`
+uses `pnpm -s`.
 Blocked: none.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
