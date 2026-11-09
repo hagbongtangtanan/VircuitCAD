@@ -18,14 +18,19 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (Intel HEX parser), T02 (`McuCpu` avr8js;
-blink D13 500 ms ±0.1 %), T03 (zod MCU protocol + editor `mcu.worker`/`McuHost`), T04 (`arduino-uno`
-manifest with 25-pin map D0–D13/A0–A5/5V/3V3/GND/VIN/RESET + own board art).
-Next: T05 mixed-signal bridge (OUTPUT ≈ 25 Ω Thevenin, INPUT Hi-Z, INPUT_PULLUP 20–50 kΩ, digital
-thresholds + hysteresis, analogRead → 10-bit, re-solve on pin edges only; UNO 5V/3V3 → sources; D13 LED
-coupling), T06 PWM quasi-static vs transient, T07 co-sim scheduler (wall-clock pacing/drift/hiccup
-tolerance, backlog limit, speed control), T08 fixture traces, T09 examples + E2E (prebuilt hex). Then
+S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (HEX parser), T02 (`McuCpu` avr8js; blink
+D13 500 ms ±0.1 %), T03 (MCU protocol + `mcu.worker`/`McuHost`), T04 (`arduino-uno` manifest + art),
+T05 (`sim-analog` mixed-signal primitives: `createMcuOutput` Thevenin ~25 Ω, `createPullup` ~30 kΩ,
+`digitalRead` hysteresis, `analogRead` 10-bit, UNO 5V/3V3 rails in `buildSimulation`).
+Next: T06 PWM quasi-static vs transient, T07 co-sim scheduler (MCU clock master, wall-clock
+pacing/drift/hiccup tolerance, backlog limit, speed control; wire MCU pin changes → mcu-bridge devices
+so the solver re-solves on pin edges only), T08 fixture traces, T09 examples + E2E (prebuilt hex). Then
 `/stage-finish S06` — **HUMAN REVIEW GATE**.
+Bridge API: `createMcuOutput(name,node,high,{onResistance≈25,highLevel=5})` (mutable `setHigh`),
+`createPullup(name,node,railNode,≈30k)`, `digitalRead(v,prev,{low=1.5,high=3.0})`, `analogRead(v,ref=5)`;
+constants `LOGIC_VOLTAGE/PIN_RESISTANCE/PULLUP_RESISTANCE/ADC_REFERENCE/INPUT_*_THRESHOLD`.
+Gotchas: avr8js `reset()` doesn't zero `cycles`; MCU↔solver coupling (pin edges → bridge devices →
+re-solve) is not wired yet (T07); `vc-check` uses `pnpm -s`.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
 (`start(hex)/pause/resume/reset/setPin(port,bit,high)/dispose`, `onPinChange/onSerial/onState`).
