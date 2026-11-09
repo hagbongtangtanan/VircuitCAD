@@ -89,4 +89,12 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    // Tests run in Node and may read fixtures.
+    files: ['packages/sim-*/**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': 'off',
+      'no-restricted-globals': 'off',
+    },
+  },
 );

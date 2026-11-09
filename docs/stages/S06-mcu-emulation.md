@@ -7,7 +7,7 @@ Run compiled sketches on an emulated ATmega328P inside the circuit: GPIO, PWM, A
 Handoffs of S04 (worker protocol) and S05 (fixtures); `docs/RISKS.md` rows "Co-sim performance", "PWM and analog stiffness", "SharedArrayBuffer".
 
 ## Tasks
-- [ ] **S06-T01** `sim-mcu`: Intel HEX parser → program memory; checks against the S05 fixtures. → malformed-hex tests.
+- [x] **S06-T01** `sim-mcu`: Intel HEX parser → program memory; checks against the S05 fixtures. → malformed-hex tests.
 - [ ] **S06-T02** avr8js integration (pinned; verify supported peripherals in its types first): CPU, timers 0/1/2, ports B/C/D, USART, ADC, SPI, TWI. Cycle-driven run loop with wall-clock pacing (16 MHz), drift correction, pause/resume/reset, and a **deterministic cycle-driven mode** for tests. → blink fixture toggles at 1 Hz ±0.1 % in deterministic mode.
 - [ ] **S06-T03** MCU worker host: zod protocol, pin-change events stamped with cycle counts, serial in/out, ≤ 60 Hz snapshots. → protocol tests.
 - [ ] **S06-T04** Arduino Uno part: manifest, own SVG, pin map (D0–D13, A0–A5, 5V, 3V3, GND, VIN, RESET), on-board LED on D13, power-supply model. → placeable in editor.
