@@ -13,4 +13,13 @@ export {
   type MeterReading,
 } from './components/InstrumentPanel';
 
+export { CodeEditor, type CodeEditorProps } from './code/CodeEditor';
+export {
+  ARDUINO_CONSTANTS,
+  ARDUINO_FUNCTIONS,
+  ARDUINO_KEYWORDS,
+  arduinoCompletions,
+  type ArduinoCompletion,
+} from './code/arduino-keywords';
+
 export const packageName = '@vircuitcad/ui';
