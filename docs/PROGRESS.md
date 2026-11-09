@@ -18,17 +18,16 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T02 (sketch persisted in `.vcad`: optional
-`Circuit.sketch` files map + `defaultSketch()`/`sketchOf()`), T05 (`SerialBuffer`/`SerialMonitor` in
-`@vircuitcad/ui`), T06 (`findUnknownIncludes`/`libraryMessage` in `@vircuitcad/toolchain`).
+S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T02 (sketch in `.vcad`), T03 (`RunController`
+Build/Run/Stop state machine with request-id stale-drop + dirty flag), T05 (`SerialBuffer`/
+`SerialMonitor`), T06 (`findUnknownIncludes`/`libraryMessage`).
 Next: T01 Monaco bundled locally (Vite `?worker`, lazy, no CDN; C++ + own Arduino keywords; offline
-Playwright test), T03 code panel + Build/Run/Stop state machine (compile → hex → `McuCircuit`), T04
-diagnostics → Monaco markers + Problems list, T07 lifecycle (edit-while-running prompt; recompile resets
-MCU), T08 E2E (blink compile→LED; serial; syntax-error marker) in the `toolchain` CI job. Then
-`/stage-finish S07`.
-API: `Circuit.sketch?: { files: Record<string,string> }`, `defaultSketch()`, `sketchOf(circuit)`,
-`DEFAULT_SKETCH_FILE`; `SerialMonitor({lines,onSend,onClear})`; `findUnknownIncludes`, `libraryMessage`.
-Gotchas: heavy tests need explicit timeouts (toolchain compile test 60 s; trace test `slow`); jsdom lacks
+Playwright test), T04 diagnostics → Monaco markers + Problems list, T07 lifecycle (edit-while-running
+prompt; recompile resets MCU but keeps circuit; `docs/BEHAVIOUR.md`), T08 E2E (blink compile→LED; serial;
+syntax-error marker) in the `toolchain` CI job. Then `/stage-finish S07`.
+API: `RunController(deps).build()/stop()/cancel()/markEdited()/getState()/onChange`; `Circuit.sketch`,
+`defaultSketch()`, `sketchOf()`; `SerialMonitor`; `findUnknownIncludes`, `libraryMessage`.
+Gotchas: heavy tests need explicit timeouts (toolchain compile 60 s; trace `slow`); jsdom lacks
 `scrollIntoView` (guarded); `vc-check` uses `pnpm -s`.
 Blocked: none.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
