@@ -134,6 +134,33 @@ export const placeholderManifests: PartManifest[] = [
     simModel: 'multimeter',
     svg: 'parts/multimeter.svg',
   }),
+  parsePartManifest({
+    id: 'arduino-uno',
+    name: 'Arduino Uno',
+    category: 'mcu',
+    pins: [
+      ...Array.from({ length: 14 }, (_, index) => ({
+        id: `D${index}`,
+        name: `D${index}`,
+        position: { x: index, y: 0 },
+        role: 'bidirectional' as const,
+      })),
+      ...Array.from({ length: 6 }, (_, index) => ({
+        id: `A${index}`,
+        name: `A${index}`,
+        position: { x: index, y: 2 },
+        role: 'bidirectional' as const,
+      })),
+      { id: '5V', name: '5V', position: { x: 0, y: 4 }, role: 'power' },
+      { id: '3V3', name: '3V3', position: { x: 2, y: 4 }, role: 'power' },
+      { id: 'GND', name: 'GND', position: { x: 4, y: 4 }, role: 'ground' },
+      { id: 'VIN', name: 'VIN', position: { x: 6, y: 4 }, role: 'power' },
+      { id: 'RESET', name: 'RESET', position: { x: 8, y: 4 }, role: 'input' },
+    ],
+    params: [],
+    simModel: 'arduino-uno',
+    svg: 'parts/arduino-uno.svg',
+  }),
 ];
 
 export function createDefaultPartRegistry(): PartRegistry {
