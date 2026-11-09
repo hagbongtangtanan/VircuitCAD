@@ -33,6 +33,7 @@ it('registers the three placeholder parts', () => {
     'power-supply',
     'pushbutton',
     'resistor',
+    'seven-segment',
     'slide-switch',
   ]);
   expect(registry.require('led').pins).toHaveLength(2);

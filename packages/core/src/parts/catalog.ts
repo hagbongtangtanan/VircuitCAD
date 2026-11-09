@@ -203,6 +203,23 @@ export const placeholderManifests: PartManifest[] = [
     simModel: 'potentiometer',
     svg: 'parts/potentiometer.svg',
   }),
+  parsePartManifest({
+    id: 'seven-segment',
+    name: '7-Segment',
+    category: 'opto',
+    pins: [
+      ...['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp'].map((id, index) => ({
+        id,
+        name: id.toUpperCase(),
+        position: { x: index, y: 0 },
+        role: 'passive' as const,
+      })),
+      { id: 'com', name: 'COM', position: { x: 0, y: 2 }, role: 'passive' },
+    ],
+    params: [{ id: 'common', label: 'Common', default: 'cathode' }],
+    simModel: 'seven-segment',
+    svg: 'parts/seven-segment.svg',
+  }),
 ];
 
 export function createDefaultPartRegistry(): PartRegistry {

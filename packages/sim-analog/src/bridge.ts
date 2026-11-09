@@ -176,6 +176,19 @@ export function buildSimulation(circuit: Circuit, registry: PartRegistry): Simul
         devices.push(createResistor(`${part.id}:high`, wiper, b, Math.max(legs.high, 0.01)));
         break;
       }
+      case 'seven-segment': {
+        const common = String(params.common ?? 'cathode');
+        const comNode = nodeOf(part.id, 'com');
+        for (const segment of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp']) {
+          const segNode = nodeOf(part.id, segment);
+          if (common === 'cathode') {
+            devices.push(createLed(`${part.id}:${segment}`, 'red', segNode, comNode));
+          } else {
+            devices.push(createLed(`${part.id}:${segment}`, 'red', comNode, segNode));
+          }
+        }
+        break;
+      }
       case 'arduino-uno': {
         const gnd = nodeOf(part.id, 'GND');
         devices.push(createVoltageSource(`${part.id}:5V`, nodeOf(part.id, '5V'), gnd, 5));
