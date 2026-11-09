@@ -3,6 +3,12 @@ export { SimulationHost } from './sim/worker-host';
 export { McuHost } from './sim/mcu-host';
 export { McuCircuit } from './sim/cosim';
 export {
+  markersByFile,
+  toMarkers,
+  type CompileDiagnostic,
+  type Marker,
+} from './sim/diagnostics';
+export {
   RunController,
   type CompileOutcome,
   type RunControllerDeps,
