@@ -20,17 +20,18 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 ## Handoff
 S06 IN PROGRESS, branch `stage/s06-mcu-emulation`. Done: T01 (HEX parser), T02 (`McuCpu` avr8js; blink
 D13 500 ms ±0.1 %), T03 (MCU protocol + `mcu.worker`/`McuHost`), T04 (`arduino-uno` manifest + art),
-T05 (`sim-analog` mixed-signal primitives: `createMcuOutput` Thevenin ~25 Ω, `createPullup` ~30 kΩ,
-`digitalRead` hysteresis, `analogRead` 10-bit, UNO 5V/3V3 rails in `buildSimulation`).
-Next: T06 PWM quasi-static vs transient, T07 co-sim scheduler (MCU clock master, wall-clock
-pacing/drift/hiccup tolerance, backlog limit, speed control; wire MCU pin changes → mcu-bridge devices
-so the solver re-solves on pin edges only), T08 fixture traces, T09 examples + E2E (prebuilt hex). Then
+T05 (bridge primitives: Thevenin output, pull-up, digital hysteresis, 10-bit ADC, UNO rails), T06
+(`createPwmOutput` averaged Thevenin + `pwmAverageVoltage` + `hasReactiveParts`).
+Next: T07 co-sim scheduler (MCU clock master; wall-clock pacing/drift/hiccup tolerance; backlog limit;
+speed control; wire MCU pin-change events → `createMcuOutput`/`createPwmOutput` devices → re-solve on
+pin edges only), T08 fill the S05 sidecar traces + deterministic trace tests for every fixture, T09
+examples (blink, button-LED, pot-dimmed LED, serial-hello) + E2E with prebuilt hex. Then
 `/stage-finish S06` — **HUMAN REVIEW GATE**.
-Bridge API: `createMcuOutput(name,node,high,{onResistance≈25,highLevel=5})` (mutable `setHigh`),
-`createPullup(name,node,railNode,≈30k)`, `digitalRead(v,prev,{low=1.5,high=3.0})`, `analogRead(v,ref=5)`;
-constants `LOGIC_VOLTAGE/PIN_RESISTANCE/PULLUP_RESISTANCE/ADC_REFERENCE/INPUT_*_THRESHOLD`.
-Gotchas: avr8js `reset()` doesn't zero `cycles`; MCU↔solver coupling (pin edges → bridge devices →
-re-solve) is not wired yet (T07); `vc-check` uses `pnpm -s`.
+Bridge API: `createMcuOutput(name,node,high,{onResistance,highLevel})` (setHigh), `createPwmOutput(name,
+node,duty,{onResistance,level})` (setDuty), `createPullup(name,node,railNode,≈30k)`, `digitalRead(v,prev,
+{low,high})`, `analogRead(v,ref)`, `pwmAverageVoltage(duty,level)`, `hasReactiveParts(circuit,registry)`.
+Gotchas: avr8js `reset()` doesn't zero `cycles`; MCU↔solver coupling (pin edges → devices → re-solve) is
+NOT wired yet (T07); `vc-check` uses `pnpm -s`.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
 (`start(hex)/pause/resume/reset/setPin(port,bit,high)/dispose`, `onPinChange/onSerial/onState`).
