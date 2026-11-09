@@ -1,5 +1,12 @@
 {
   "board": "arduino:avr:uno",
   "sketch": "millis-blink.ino",
-  "note": "expected traces filled in S06"
+  "note": "expected traces filled in S06",
+  "trace": [
+    {
+      "cycles": 212,
+      "port": "B",
+      "value": 0
+    }
+  ]
 }

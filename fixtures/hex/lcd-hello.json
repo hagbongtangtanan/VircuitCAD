@@ -1,5 +1,892 @@
 {
   "board": "arduino:avr:uno",
   "sketch": "lcd-hello.ino",
-  "note": "expected traces filled in S06"
+  "note": "expected traces filled in S06",
+  "trace": [
+    {
+      "cycles": 582,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 641,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 711,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 781,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 851,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 921,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 14736,
+      "port": "D",
+      "value": 32
+    },
+    {
+      "cycles": 14814,
+      "port": "D",
+      "value": 48
+    },
+    {
+      "cycles": 15170,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 15240,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 89358,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 89428,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 163543,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 163613,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 167694,
+      "port": "D",
+      "value": 16
+    },
+    {
+      "cycles": 168128,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 168198,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 170452,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 170522,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 172312,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 172668,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 172738,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 174991,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 175061,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 176951,
+      "port": "D",
+      "value": 8
+    },
+    {
+      "cycles": 177039,
+      "port": "D",
+      "value": 12
+    },
+    {
+      "cycles": 177211,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 177281,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 179273,
+      "port": "D",
+      "value": 4
+    },
+    {
+      "cycles": 179359,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 179531,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 179601,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 181317,
+      "port": "D",
+      "value": 32
+    },
+    {
+      "cycles": 181749,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 181819,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 215624,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 216056,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 216126,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 217918,
+      "port": "D",
+      "value": 16
+    },
+    {
+      "cycles": 218018,
+      "port": "D",
+      "value": 24
+    },
+    {
+      "cycles": 218276,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 218346,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 234259,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 234435,
+      "port": "D",
+      "value": 48
+    },
+    {
+      "cycles": 234693,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 234763,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 309361,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 309431,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 384026,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 384096,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 388177,
+      "port": "D",
+      "value": 16
+    },
+    {
+      "cycles": 388611,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 388681,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 390935,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 391005,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 392795,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 392981,
+      "port": "D",
+      "value": 4
+    },
+    {
+      "cycles": 393153,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 393223,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 395304,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 395476,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 395546,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 397436,
+      "port": "D",
+      "value": 8
+    },
+    {
+      "cycles": 397524,
+      "port": "D",
+      "value": 12
+    },
+    {
+      "cycles": 397696,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 397766,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 399758,
+      "port": "D",
+      "value": 4
+    },
+    {
+      "cycles": 399844,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 400016,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 400086,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 401898,
+      "port": "D",
+      "value": 32
+    },
+    {
+      "cycles": 402330,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 402400,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 436397,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 436829,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 436899,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 438691,
+      "port": "D",
+      "value": 16
+    },
+    {
+      "cycles": 438791,
+      "port": "D",
+      "value": 24
+    },
+    {
+      "cycles": 439049,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 439119,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 440848,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 440992,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 441068,
+      "port": "D",
+      "value": 40
+    },
+    {
+      "cycles": 441426,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 441496,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 443210,
+      "port": "D",
+      "value": 8
+    },
+    {
+      "cycles": 443288,
+      "port": "D",
+      "value": 24
+    },
+    {
+      "cycles": 443646,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 443716,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 445996,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 446066,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 447782,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 447858,
+      "port": "D",
+      "value": 40
+    },
+    {
+      "cycles": 447956,
+      "port": "D",
+      "value": 32
+    },
+    {
+      "cycles": 448044,
+      "port": "D",
+      "value": 36
+    },
+    {
+      "cycles": 448216,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 448286,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 450306,
+      "port": "D",
+      "value": 52
+    },
+    {
+      "cycles": 450406,
+      "port": "D",
+      "value": 60
+    },
+    {
+      "cycles": 450492,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 450664,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 450734,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 452448,
+      "port": "D",
+      "value": 24
+    },
+    {
+      "cycles": 452624,
+      "port": "D",
+      "value": 16
+    },
+    {
+      "cycles": 452882,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 452952,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 454974,
+      "port": "D",
+      "value": 24
+    },
+    {
+      "cycles": 455232,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 455302,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 457018,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 457194,
+      "port": "D",
+      "value": 48
+    },
+    {
+      "cycles": 457452,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 457522,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 459546,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 459804,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 459874,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 461666,
+      "port": "D",
+      "value": 40
+    },
+    {
+      "cycles": 462024,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 462094,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 463938,
+      "port": "D",
+      "value": 8
+    },
+    {
+      "cycles": 464016,
+      "port": "D",
+      "value": 24
+    },
+    {
+      "cycles": 464374,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 464444,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 466256,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 466332,
+      "port": "D",
+      "value": 40
+    },
+    {
+      "cycles": 466430,
+      "port": "D",
+      "value": 32
+    },
+    {
+      "cycles": 466518,
+      "port": "D",
+      "value": 36
+    },
+    {
+      "cycles": 466690,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 466760,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 468684,
+      "port": "D",
+      "value": 52
+    },
+    {
+      "cycles": 468784,
+      "port": "D",
+      "value": 60
+    },
+    {
+      "cycles": 468870,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 469042,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 469112,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 470826,
+      "port": "D",
+      "value": 24
+    },
+    {
+      "cycles": 470902,
+      "port": "D",
+      "value": 8
+    },
+    {
+      "cycles": 471260,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 471330,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 473608,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 473678,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 475394,
+      "port": "D",
+      "value": 40
+    },
+    {
+      "cycles": 475472,
+      "port": "D",
+      "value": 56
+    },
+    {
+      "cycles": 475570,
+      "port": "D",
+      "value": 48
+    },
+    {
+      "cycles": 475828,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 475898,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 477742,
+      "port": "D",
+      "value": 16
+    },
+    {
+      "cycles": 477818,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 477918,
+      "port": "D",
+      "value": 8
+    },
+    {
+      "cycles": 478176,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 478246,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 479962,
+      "port": "D",
+      "value": 40
+    },
+    {
+      "cycles": 480136,
+      "port": "D",
+      "value": 32
+    },
+    {
+      "cycles": 480394,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 480464,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 482404,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 482580,
+      "port": "D",
+      "value": 8
+    },
+    {
+      "cycles": 482838,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 482908,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 485056,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 485126,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 486866,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 487272,
+      "port": "D",
+      "value": 12
+    },
+    {
+      "cycles": 487444,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 487514,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 489402,
+      "port": "D",
+      "value": 4
+    },
+    {
+      "cycles": 489488,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 489660,
+      "port": "B",
+      "value": 8
+    },
+    {
+      "cycles": 489730,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 492653,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 492797,
+      "port": "D",
+      "value": 32
+    },
+    {
+      "cycles": 492875,
+      "port": "D",
+      "value": 48
+    },
+    {
+      "cycles": 493231,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 493301,
+      "port": "B",
+      "value": 16
+    },
+    {
+      "cycles": 495015,
+      "port": "D",
+      "value": 16
+    },
+    {
+      "cycles": 495091,
+      "port": "D",
+      "value": 0
+    },
+    {
+      "cycles": 495447,
+      "port": "B",
+      "value": 24
+    },
+    {
+      "cycles": 495517,
+      "port": "B",
+      "value": 16
+    }
+  ]
 }

@@ -1,5 +1,12 @@
 {
   "board": "arduino:avr:uno",
   "sketch": "timer-isr.ino",
-  "note": "expected traces filled in S06"
+  "note": "expected traces filled in S06",
+  "trace": [
+    {
+      "cycles": 180,
+      "port": "B",
+      "value": 0
+    }
+  ]
 }

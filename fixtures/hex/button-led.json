@@ -1,5 +1,22 @@
 {
   "board": "arduino:avr:uno",
   "sketch": "button-led.ino",
-  "note": "expected traces filled in S06"
+  "note": "expected traces filled in S06",
+  "trace": [
+    {
+      "cycles": 193,
+      "port": "D",
+      "value": 4
+    },
+    {
+      "cycles": 236,
+      "port": "B",
+      "value": 0
+    },
+    {
+      "cycles": 327,
+      "port": "B",
+      "value": 32
+    }
+  ]
 }
