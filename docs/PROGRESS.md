@@ -18,18 +18,23 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T02 (sketch in `.vcad`), T03 (`RunController`),
-T04 (diagnostics markers + `ProblemsPanel`), T05 (`SerialBuffer`/`SerialMonitor`), T06 (library policy),
-T07 (`docs/BEHAVIOUR.md` lifecycle rules; edit-while-running prompt via `RunController.markEdited`).
-Next: T01 Monaco bundled locally (add `monaco-editor`; Vite `?worker` for editor.+language workers via
-`self.MonacoEnvironment.getWorker`; lazy-load; C++ tokenizer + own Arduino keyword/completion data;
-dark/light; Playwright offline test with no external requests). T08 E2E: wire the renderer — sketch
-editor → Build (adapter compile) → `McuCircuit` with hex → D13 LED toggles; serial hello appears;
-syntax error shows a marker — run in the `toolchain` CI job. Then `/stage-finish S07`.
-API: `RunController`; `toMarkers`/`markersByFile` (editor) + `ProblemsPanel` (ui); `Circuit.sketch`/
-`defaultSketch`/`sketchOf`; `SerialMonitor`; `findUnknownIncludes`/`libraryMessage`.
-Gotchas: heavy tests need explicit timeouts; jsdom lacks `scrollIntoView`; commit scopes can't contain
-commas; `vc-check` uses `pnpm -s`.
+S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T01 (Monaco bundled locally via lazy dynamic
+import; `CodeEditor` + own Arduino keyword/completion data; Vite `?worker` wiring in the app at
+`apps/desktop/src/renderer/monaco-env.ts`), T02 (sketch in `.vcad`), T03 (`RunController`), T04
+(diagnostics markers + `ProblemsPanel`), T05 (`SerialMonitor`), T06 (library policy), T07
+(`docs/BEHAVIOUR.md`).
+Next: T08 — wire the renderer: mount `CodeEditor` (call `ensureMonacoEnvironment()` first) + sketch
+tabs + `ProblemsPanel` + `SerialMonitor`; Build = `RunController` → adapter `compile` (dev-web returns a
+toolchain-missing diagnostic unless `resources/toolchain` exists) → on success build `McuCircuit(circuit,
+registry, hex)` and step it on an interval (pacing via `Pacer`) → feed LED state + serial to the canvas
+UI; syntax error → markers. E2E (blink compile→LED toggles; serial hello; error marker) in the
+`toolchain` CI job. Also add the offline-Playwright assertion (editor loads, no external requests).
+Then `/stage-finish S07`.
+API: `CodeEditor({value,onChange,theme,readOnly})`; `ensureMonacoEnvironment()` (app); `RunController`;
+`toMarkers`/`markersByFile`; `ProblemsPanel`; `SerialMonitor`; `McuCircuit`; `findUnknownIncludes`.
+Gotchas: the `?worker` import must stay in the app (Vitest can't resolve it in the ui lib); heavy tests
+need explicit timeouts; jsdom lacks `scrollIntoView`; commit scopes can't contain commas; `vc-check`
+uses `pnpm -s`.
 Blocked: none.
 MCU API: `parseIntelHex`; `McuCpu` (`.cpu/.usart/.cycles/.micros`, `runCycles/runMicros`, `reset`,
 `onPortChange(port, (value,old)=>…)` port byte, D13 = PB5, `setPin`, `onSerial`); `McuHost`
