@@ -10,7 +10,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S03 | Analog solver engine | done |
 | S04 | Vertical slice: battery + resistor + LED lights up | done |
 | S05 | Offline Arduino toolchain and compile service | done |
-| S06 | AVR emulation and mixed-signal bridge | pending |
+| S06 | AVR emulation and mixed-signal bridge | done |
 | S07 | Code editor, upload flow, serial monitor | pending |
 | S08 | Parts wave 1: semiconductors, digital ICs, 555 | pending |
 | S09 | Parts wave 2 and instruments | pending |
