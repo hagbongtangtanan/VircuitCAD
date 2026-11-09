@@ -18,13 +18,14 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T02 (sketch in `.vcad`), T03 (`RunController`
-state machine), T04 (diagnostics → Monaco markers + `ProblemsPanel`), T05 (`SerialBuffer`/
-`SerialMonitor`), T06 (library policy).
-Next: T01 Monaco bundled locally (Vite `?worker`, lazy, no CDN; C++ + own Arduino keywords; offline
-Playwright test), T07 lifecycle (edit-while-running prompt; recompile resets MCU but keeps circuit;
-`docs/BEHAVIOUR.md`), T08 E2E (blink compile→LED; serial; syntax-error marker) in the `toolchain` CI
-job. Then `/stage-finish S07`.
+S07 IN PROGRESS, branch `stage/s07-code-editor`. Done: T02 (sketch in `.vcad`), T03 (`RunController`),
+T04 (diagnostics markers + `ProblemsPanel`), T05 (`SerialBuffer`/`SerialMonitor`), T06 (library policy),
+T07 (`docs/BEHAVIOUR.md` lifecycle rules; edit-while-running prompt via `RunController.markEdited`).
+Next: T01 Monaco bundled locally (add `monaco-editor`; Vite `?worker` for editor.+language workers via
+`self.MonacoEnvironment.getWorker`; lazy-load; C++ tokenizer + own Arduino keyword/completion data;
+dark/light; Playwright offline test with no external requests). T08 E2E: wire the renderer — sketch
+editor → Build (adapter compile) → `McuCircuit` with hex → D13 LED toggles; serial hello appears;
+syntax error shows a marker — run in the `toolchain` CI job. Then `/stage-finish S07`.
 API: `RunController`; `toMarkers`/`markersByFile` (editor) + `ProblemsPanel` (ui); `Circuit.sketch`/
 `defaultSketch`/`sketchOf`; `SerialMonitor`; `findUnknownIncludes`/`libraryMessage`.
 Gotchas: heavy tests need explicit timeouts; jsdom lacks `scrollIntoView`; commit scopes can't contain
