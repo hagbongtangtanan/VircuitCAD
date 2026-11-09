@@ -132,6 +132,9 @@ importers:
       '@vircuitcad/sim-analog':
         specifier: workspace:*
         version: link:../sim-analog
+      '@vircuitcad/sim-mcu':
+        specifier: workspace:*
+        version: link:../sim-mcu
       pixi.js:
         specifier: 8.22.0
         version: 8.22.0
@@ -157,6 +160,9 @@ importers:
       avr8js:
         specifier: 0.21.1
         version: 0.21.1
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
 
   packages/toolchain:
     dependencies:
