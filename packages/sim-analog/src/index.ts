@@ -1,6 +1,11 @@
 export { LuDecomposition, SingularMatrixError } from './linalg';
 export { ldrResistance, ntcResistance, potentiometerResistances } from './sensors';
 export { astable555, monostable555, type AstableTiming } from './timer555';
+export {
+  sampleWaveform,
+  type FunctionGenOptions,
+  type Waveform,
+} from './function-gen';
 export { MnaSystem } from './mna';
 export { GROUND_NODE, buildNodeMap } from './node-map';
 export { DEFAULT_GMIN, createMnaContext, setupDevices, stampDevices } from './context';
