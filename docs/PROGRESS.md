@@ -20,10 +20,11 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 ## Handoff
 S08 IN PROGRESS, branch `stage/s08-parts-wave1`. Done: T01 (part kit), T02 (Schottky + N/P MOSFET + BJT),
 T03 (op-amp/comparator), T04 (sensors), T05 PARTIAL (relay; flyback transient deferred), T06
-(`sim-digital` engine), T07 PARTIAL (`DFlipFlop`/`Counter`/`ShiftRegister`; decoder/4017 deferred), T08
-(555 timing), T09 PARTIAL (7-segment; LED bar/RGB deferred).
-Next: decoder/4017, LED bar + RGB LED, relay flyback transient, T10 demos+tests for every part +
-MODELS/THIRD_PARTY updates. Then `/stage-finish S08`.
+(`sim-digital` engine), T07 (`DFlipFlop`/`Counter`/`ShiftRegister`/`decode`/`JohnsonCounter`), T08 (555
+timing), T09 (7-segment + LED bar + RGB). T10 PARTIAL (docs/MODELS.md updated; demo circuits for the new
+parts + THIRD_PARTY still pending).
+Next: T10 demos for the new parts + THIRD_PARTY check; relay flyback-diode transient (T05). Then
+`/stage-finish S08`.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`
 (addGate/set/get/settle → {levels,iterations,settled}); seven-segment → 8 LEDs (`<id>:<seg>`).
