@@ -21,6 +21,7 @@ export {
   type MosfetOptions,
 } from './devices/semiconductors';
 export { createRelay, type RelayDevice, type RelayOptions } from './devices/relay';
+export { createOpAmp, type OpAmpOptions } from './devices/opamp';
 export {
   createDiode,
   createLed,

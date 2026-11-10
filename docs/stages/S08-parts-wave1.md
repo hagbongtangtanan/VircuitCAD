@@ -9,7 +9,7 @@ A scalable part-authoring kit plus the core analog semiconductors, sensors-as-re
 ## Tasks
 - [x] **S08-T01** Part-authoring kit: `docs/PARTS.md`, `pnpm new-part <id>` scaffold, manifest validator, lint rule: every part needs a demo circuit + a test. → CI fails on a part without both.
 - [x] **S08-T02** BJT (NPN/PNP, Ebers-Moll + Early), MOSFET (level-1 N/P), Schottky and Zener variants. → golden tests vs ngspice.
-- [ ] **S08-T03** Op-amp (finite gain, rail limits, optional slew) and comparator. → follower/inverting/comparator tests.
+- [x] **S08-T03** Op-amp (finite gain, rail limits, optional slew) and comparator. → follower/inverting/comparator tests.
 - [x] **S08-T04** Potentiometer/trimmer, LDR, NTC thermistor with on-canvas sliders. → params animate live without netlist rebuild.
 - [x] **S08-T05** Relay (coil L+R, contact hysteresis) with flyback-diode demo. → transient test of back-EMF clamp.
 - [x] **S08-T06** `sim-digital`: event-driven engine, levels `0/1/Z/X`, optional propagation delay, thresholds + Thevenin outputs at the analog boundary (74HC levels). → mixed circuit converges without ping-pong.
