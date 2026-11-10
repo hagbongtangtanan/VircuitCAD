@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "xinmEjPHjhLnWzB3B7DVd",
+  "id": "VoHIC0cDrsg3NcK2Bh_5K",
   "name": "LED + resistor",
   "board": {
-    "id": "gwuit6dAzec8NmgKqZ8Jl",
+    "id": "d_K2dEJ2AtSSwxcEHLsyT",
     "kind": "full"
   },
   "parts": [
@@ -46,7 +46,7 @@
   ],
   "wires": [
     {
-      "id": "Y-nd8uy0o5uqGUlYPurHm",
+      "id": "H8aUcJuujcgHgVoPtwNxm",
       "from": {
         "kind": "pin",
         "partId": "bt1",
@@ -61,7 +61,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "n7kApiXe7_1Zt64mHiKdK",
+      "id": "OpdHsWXgnggvuYoXM35Vn",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -76,7 +76,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "robQCoTGLQoDDua1LgbJR",
+      "id": "nWctNeUDoaRIYU5U3_wGW",
       "from": {
         "kind": "pin",
         "partId": "d1",
@@ -90,5 +90,10 @@
       "waypoints": [],
       "color": "#22c55e"
     }
-  ]
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  }
 }

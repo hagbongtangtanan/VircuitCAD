@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "QLeOgh7khaxEEnyah3NK1",
+  "name": "RGB LED",
+  "board": {
+    "id": "r2hhe2K-BcptuYZUWA9Wk",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 5
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 220
+      }
+    },
+    {
+      "id": "rgb1",
+      "partId": "rgb-led",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {}
+    }
+  ],
+  "wires": [
+    {
+      "id": "WmKCSTk3cbLobkNGzs5kh",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "ysqfvUFRwhGGFWvH0yr8s",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "rgb1",
+        "pinId": "r"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "pETLbFv2N-vimwKG2WzkI",
+      "from": {
+        "kind": "pin",
+        "partId": "rgb1",
+        "pinId": "com"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  }
+}

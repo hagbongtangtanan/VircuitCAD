@@ -26,6 +26,17 @@ simplified and documented here so results are predictable.
 | Zener | forward diode + reverse knee at `Vz` | `IsBreakdown = 1e-3` |
 | Capacitor | `i = C·dV/dt` | BE `G = C/dt`, trap `G = 2C/dt` |
 | Inductor | `V = L·di/dt` | MNA branch, `R = L/dt` (BE) or `2L/dt` (trap) |
+| Schottky | diode with a larger `Is` | low forward drop (~0.24 V) |
+| MOSFET | level-1 square law (linear/saturation) | N/P; `threshold`, `k`, `lambda`; VCCS stamp |
+| BJT | Ebers–Moll (NPN/PNP) | `Is`, `βF`, `βR`; `pnjlim` limiting |
+| Op-amp / comparator | `Vo = A·(v+ − v−)`, output `Ro` | soft rail saturation via clamped output current |
+| Relay | coil `R` + hysteretic contact | pull-in / drop-out by coil current |
+| LDR / NTC / pot | `R10·(10/lux)^γ` / β-model / two legs | sensors; pot splits into `low`/`high` |
+| 7-segment / LED bar / RGB | 8 / 5 / 3 LEDs to a common | common cathode or anode |
+| 555 (behavioural) | `f = 1.44/((R1+2R2)C)`, `t = 1.1·R·C` | astable/monostable timing formulas |
+
+Digital logic lives in `@vircuitcad/sim-digital`: levels `0/1/Z/X`, a fixpoint `DigitalEngine`,
+`DFlipFlop`, `Counter`, `ShiftRegister`, `decode` and a `JohnsonCounter` (4017).
 
 Exponential arguments are clamped to ±80·Vt; junction limiting also clamps the reverse-breakdown
 step to `−Vz − 30·Vt`.

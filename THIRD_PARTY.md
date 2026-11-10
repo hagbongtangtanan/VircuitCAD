@@ -26,5 +26,6 @@ BSD, ISC and other permissive licenses).
 
 ## Assets
 
-All part art, icons and branding are original VircuitCAD placeholders. No Autodesk
-or Tinkercad assets are used.
+All part art, icons and branding are original VircuitCAD placeholders — including the wave-1 parts
+(diodes/LEDs, MOSFET/BJT, op-amp, relay, LDR/NTC/pot, 7-segment/LED bar/RGB). No Autodesk or Tinkercad
+assets are used.

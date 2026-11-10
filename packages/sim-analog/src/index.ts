@@ -1,4 +1,6 @@
 export { LuDecomposition, SingularMatrixError } from './linalg';
+export { ldrResistance, ntcResistance, potentiometerResistances } from './sensors';
+export { astable555, monostable555, type AstableTiming } from './timer555';
 export { MnaSystem } from './mna';
 export { GROUND_NODE, buildNodeMap } from './node-map';
 export { DEFAULT_GMIN, createMnaContext, setupDevices, stampDevices } from './context';
@@ -13,8 +15,17 @@ export {
   type SolverOptions,
 } from './solver';
 export {
+  createBjt,
+  createMosfet,
+  type BjtOptions,
+  type MosfetOptions,
+} from './devices/semiconductors';
+export { createRelay, type RelayDevice, type RelayOptions } from './devices/relay';
+export { createOpAmp, type OpAmpOptions } from './devices/opamp';
+export {
   createDiode,
   createLed,
+  createSchottky,
   createZener,
   pnjlim,
   type DiodeDevice,

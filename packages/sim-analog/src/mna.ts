@@ -36,6 +36,20 @@ export class MnaSystem {
     this.z.fill(0, 0, this.size);
   }
 
+  /** Voltage-controlled current source: I = gm·(v(c+) − v(c−)) flowing drain → source. */
+  stampTransconductance(
+    drain: number,
+    source: number,
+    controlPositive: number,
+    controlNegative: number,
+    gm: number,
+  ): void {
+    this.stampA(drain, controlPositive, gm);
+    this.stampA(drain, controlNegative, -gm);
+    this.stampA(source, controlPositive, -gm);
+    this.stampA(source, controlNegative, gm);
+  }
+
   addConductance(a: number, b: number, conductance: number): void {
     this.stampA(a, a, conductance);
     this.stampA(b, b, conductance);

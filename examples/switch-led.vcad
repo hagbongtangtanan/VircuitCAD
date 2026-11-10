@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "dUasvgbApAKjJX2YxC6iY",
+  "id": "1eBIOFrFDlBV5n9in4Wwi",
   "name": "Switch + LED",
   "board": {
-    "id": "0Dz_JLQQP0scdv-rbMVoL",
+    "id": "-SvcN1BR6rWzJqxaeSQTC",
     "kind": "full"
   },
   "parts": [
@@ -58,7 +58,7 @@
   ],
   "wires": [
     {
-      "id": "1Us5jdGyCrHG6fMzotLXm",
+      "id": "2VCoNgNGcSR5smLjns0XR",
       "from": {
         "kind": "pin",
         "partId": "pack1",
@@ -73,7 +73,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "j5P2rH1ygwwr0npLxmIl7",
+      "id": "knK1eSns9KYT979U_ec_Y",
       "from": {
         "kind": "pin",
         "partId": "sw1",
@@ -88,7 +88,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "tKpwxBtyelZatQ4m1u1k8",
+      "id": "TaHSglLLPfP6lZeKrP2Yd",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -103,7 +103,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "S1k3qymBHGLlPr2Wucuhq",
+      "id": "TulvCF-L4kPYuq7-GVq03",
       "from": {
         "kind": "pin",
         "partId": "d1",
@@ -117,5 +117,10 @@
       "waypoints": [],
       "color": "#22c55e"
     }
-  ]
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  }
 }

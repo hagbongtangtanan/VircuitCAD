@@ -138,6 +138,16 @@ export function createDiode(
   return buildDiode(name, anode, cathode, options);
 }
 
+/** Schottky diode: low forward drop (~0.24 V) via a larger saturation current. */
+export function createSchottky(
+  name: string,
+  anode: number,
+  cathode: number,
+  options: DiodeOptions = {},
+): DiodeDevice {
+  return buildDiode(name, anode, cathode, { is: 1e-6, ...options });
+}
+
 export function createZener(
   name: string,
   anode: number,

@@ -121,11 +121,43 @@ function switchLed(): Circuit {
   return circuit;
 }
 
+function rgbLed(): Circuit {
+  const circuit = createEmptyCircuit({ name: 'RGB LED' });
+  circuit.parts.push(
+    createPartInstance('battery', { id: 'bt1', position: { x: 0, y: 20 }, params: { voltage: 5 } }),
+    createPartInstance('resistor', { id: 'r1', position: { x: 0, y: 22 }, params: { resistance: 220 } }),
+    createPartInstance('rgb-led', { id: 'rgb1', position: { x: 0, y: 24 }, params: {} }),
+  );
+  circuit.wires.push(
+    wire('bt1', 'positive', 'r1', 'a'),
+    wire('r1', 'b', 'rgb1', 'r'),
+    wire('rgb1', 'com', 'bt1', 'negative'),
+  );
+  return circuit;
+}
+
+function sevenSegment(): Circuit {
+  const circuit = createEmptyCircuit({ name: '7-segment' });
+  circuit.parts.push(
+    createPartInstance('battery', { id: 'bt1', position: { x: 0, y: 20 }, params: { voltage: 5 } }),
+    createPartInstance('resistor', { id: 'r1', position: { x: 0, y: 22 }, params: { resistance: 220 } }),
+    createPartInstance('seven-segment', { id: 'seg1', position: { x: 0, y: 24 }, params: {} }),
+  );
+  circuit.wires.push(
+    wire('bt1', 'positive', 'r1', 'a'),
+    wire('r1', 'b', 'seg1', 'a'),
+    wire('seg1', 'com', 'bt1', 'negative'),
+  );
+  return circuit;
+}
+
 const examples: Record<string, Circuit> = {
   'led-resistor.vcad': ledResistor(),
   'voltage-divider.vcad': voltageDivider(),
   'rc-charge.vcad': rcCharge(),
   'switch-led.vcad': switchLed(),
+  'rgb-led.vcad': rgbLed(),
+  'seven-segment.vcad': sevenSegment(),
 };
 
 const dir = fileURLToPath(new URL('../../examples/', import.meta.url));

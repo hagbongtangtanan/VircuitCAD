@@ -9,6 +9,8 @@ export function createMnaContext(system: MnaSystem, previous?: Float64Array): Mn
     voltage: (node) => (previous ? system.nodeVoltage(previous, node) : 0),
     addConductance: (a, b, conductance) => system.addConductance(a, b, conductance),
     addCurrent: (from, to, current) => system.addCurrent(from, to, current),
+    stampTransconductance: (drain, source, controlPositive, controlNegative, gm) =>
+      system.stampTransconductance(drain, source, controlPositive, controlNegative, gm),
     stampVoltageSource: (positive, negative, branch) =>
       system.stampVoltageSource(positive, negative, branch),
     addBranchResistance: (branch, resistance) => system.addBranchResistance(branch, resistance),
