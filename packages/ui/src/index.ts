@@ -15,6 +15,14 @@ export {
 
 export { CodeEditor, type CodeEditorProps } from './code/CodeEditor';
 export {
+  ScopeBuffer,
+  decimate,
+  findTrigger,
+  type ScopeBucket,
+  type ScopeSample,
+  type TriggerEdge,
+} from './scope/buffer';
+export {
   ARDUINO_CONSTANTS,
   ARDUINO_FUNCTIONS,
   ARDUINO_KEYWORDS,

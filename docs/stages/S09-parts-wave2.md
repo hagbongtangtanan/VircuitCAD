@@ -7,7 +7,7 @@ Oscilloscope, function generator, displays, actuators, sensors, NeoPixel, plus a
 `docs/PARTS.md`, S06 and S08 Handoffs.
 
 ## Tasks
-- [ ] **S09-T01** Oscilloscope: 2 channels, time/div, volts/div, edge trigger (auto/normal), cursors, panel rendered on canvas, decimating ring buffer fed by solver probes. → deterministic render-data tests.
+- [x] **S09-T01** Oscilloscope: 2 channels, time/div, volts/div, edge trigger (auto/normal), cursors, panel rendered on canvas, decimating ring buffer fed by solver probes. → deterministic render-data tests.
 - [ ] **S09-T02** Function generator (sine/square/triangle, freq, amplitude, offset) and bench supply upgrades (CC mode). → frequency/amplitude tests.
 - [ ] **S09-T03** LCD 16×2 (HD44780, 4/8-bit, custom chars, busy-flag timing tolerance) + `LiquidCrystal` example. → command-sequence tests.
 - [ ] **S09-T04** Servo (pulse width → angle), DC motor (R + L + back-EMF, visual speed), L293D H-bridge, piezo buzzer (WebAudio from pin square wave, mute button). → tests per model.
