@@ -18,15 +18,15 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S09 branch `stage/s09-parts-wave2`: ALL TASKS DONE (T01–T08). Next: `scripts/vc-stage-finish.sh S09`.
-Wave-2 models are pure TS units; part manifests in `packages/core/src/parts/catalog.ts` still stop at
-`led-bar` (UI wiring of the new parts is not part of S09 tasks). Supply bench CC mode not implemented
-(T02 only shipped `sampleWaveform`).
-Perf: `perf.test.ts` (slow) 101 parts/300 wires → ~1.35 ms/operating-point solve, budget < 50 ms.
-Fixtures: `neopixel.ino` + hex/trace added; toolchain CI integration test compiles blink/lcd-hello/
-servo-sweep/neopixel. Regenerate fixtures with `node tools/make-fixtures.mjs` then
-`pnpm exec tsx tools/make-traces.ts`; strip CR from `.hex` before committing.
-Gotchas: `performance` unavailable in pure-TS pkgs (use Date.now); heavy tests need timeouts; `vc-check` uses `pnpm -s`.
+S10 branch `stage/s10-blocks-examples-schematic`. Done: T03 (schema v2: optional `mode`/`blocks`
+on Circuit, `modeOf()`, v1→v2 migration in `circuitMigrations`, v2 fixture `fixtures/vcad/v2/
+blocks-blink.vcad`).
+Next: T01 Blockly bundled offline + toolbox, T02 Arduino C++ generator, T04 ≥25 examples + browser
+dialog, T05 schematic view, T06 blocks↔text parity, T07 docs.
+Decisions: core treats `blocks` as opaque `Record<string,unknown>` (editor owns Blockly shape);
+`createEmptyCircuit({mode})` defaults to `text`.
+Gotchas: `SCHEMA_VERSION` now 2 — tests using `schemaVersion:2` as an "unknown" sentinel must use 3;
+regenerate vcad fixtures via `pnpm exec tsx tools/examples/generate.ts`.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`
