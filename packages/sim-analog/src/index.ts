@@ -6,6 +6,7 @@ export {
   type FunctionGenOptions,
   type Waveform,
 } from './function-gen';
+export { servoAngle, servoPulse, type ServoOptions } from './servo';
 export { MnaSystem } from './mna';
 export { GROUND_NODE, buildNodeMap } from './node-map';
 export { DEFAULT_GMIN, createMnaContext, setupDevices, stampDevices } from './context';
