@@ -22,6 +22,8 @@ for (const file of [
   'voltage-divider.vcad',
   'rc-charge.vcad',
   'switch-led.vcad',
+  'rgb-led.vcad',
+  'seven-segment.vcad',
 ]) {
   test(`loads and runs example ${file}`, async ({ page }) => {
     await runExample(page, file);

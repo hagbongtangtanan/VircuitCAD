@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "pGTJU9sPHFZvuvuPYrHSk",
+  "id": "53rhibA2EjUTSG4db2eAm",
   "name": "Voltage divider",
   "board": {
-    "id": "ljHRXnAAYTSNkEARf3v-7",
+    "id": "uaMKmJN873Ox1eYc6_N1v",
     "kind": "full"
   },
   "parts": [
@@ -58,7 +58,7 @@
   ],
   "wires": [
     {
-      "id": "A-L8gm0DAlUPqNHqWUmq8",
+      "id": "O7pacIHvR0nj1giaRwhS1",
       "from": {
         "kind": "pin",
         "partId": "bt1",
@@ -73,7 +73,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "I-m5GfA6-ULnPveHL2Z-Y",
+      "id": "GLn3KUpcxuGys_qO_Avsd",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -88,7 +88,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "-gRf8zHqMHLzCTDz_Wxr_",
+      "id": "Jnf1cg_vggSTysCY2thN0",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -103,7 +103,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "7tx5y4Jn44BU1cpNtULLy",
+      "id": "at3LcxcSlVSM-bkH4ieGz",
       "from": {
         "kind": "pin",
         "partId": "r2",
@@ -118,7 +118,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "3uLHywtlaP4esNgRtyRGS",
+      "id": "91EP_B6lXlrpARjf1FWMB",
       "from": {
         "kind": "pin",
         "partId": "m1",
@@ -132,5 +132,10 @@
       "waypoints": [],
       "color": "#22c55e"
     }
-  ]
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  }
 }

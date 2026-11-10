@@ -16,7 +16,7 @@ A scalable part-authoring kit plus the core analog semiconductors, sensors-as-re
 - [x] **S08-T07** 74xx gates, 7474 flip-flop, 74HC161 counter, 74HC595 shift register, decoder, 4017. → truth-table/state-sequence tests.
 - [x] **S08-T08** 555 timer (behavioural, comparator hysteresis) with astable/monostable demos. → frequency/duty within 5 % of formula.
 - [x] **S08-T09** 7-segment (common anode/cathode), LED bar, RGB LED. → per-segment current tests.
-- [ ] **S08-T10** Demo circuit + test for every part above; update `docs/MODELS.md` and `THIRD_PARTY.md`.
+- [x] **S08-T10** Demo circuit + test for every part above; update `docs/MODELS.md` and `THIRD_PARTY.md`.
 
 ## Pitfalls
 - Analog↔digital feedback loops can oscillate in the solver → iterate with a cap, then settle on the last stable state with a warning.

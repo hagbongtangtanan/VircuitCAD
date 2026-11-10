@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "G9OJeMtysJhbM4xpAJPCa",
+  "id": "5VZ0ivH1M1g2_aGYw04z7",
   "name": "RC charge",
   "board": {
-    "id": "OOoGZfhkgONyyK9xodpFP",
+    "id": "S4D3wq8gMZjbGZDFvvf2f",
     "kind": "full"
   },
   "parts": [
@@ -46,7 +46,7 @@
   ],
   "wires": [
     {
-      "id": "obczJ98GS6mSDOrDVPBwm",
+      "id": "eqYSh60F53WAkvCq4eJ40",
       "from": {
         "kind": "pin",
         "partId": "ps1",
@@ -61,7 +61,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "xF0K6RNGUFAmMwoHshinn",
+      "id": "G2JplLVD8QTHn_p_-oOU5",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -76,7 +76,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "yZWbhPm5sn5wWmaPBMnXE",
+      "id": "Nv6r68WIAXAr7ZP1Lqb5W",
       "from": {
         "kind": "pin",
         "partId": "c1",
@@ -90,5 +90,10 @@
       "waypoints": [],
       "color": "#22c55e"
     }
-  ]
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  }
 }
