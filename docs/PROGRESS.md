@@ -13,24 +13,20 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S06 | AVR emulation and mixed-signal bridge | done |
 | S07 | Code editor, upload flow, serial monitor | done |
 | S08 | Parts wave 1: semiconductors, digital ICs, 555 | done |
-| S09 | Parts wave 2 and instruments | pending |
+| S09 | Parts wave 2 and instruments | done |
 | S10 | Blockly, example library, schematic view | pending |
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S08 complete (T01–T10); running `vc-stage-finish.sh S08` → tag `stage-s08-done`. Next: S09.
-Digital API (`@vircuitcad/sim-digital`): `Level '0'|'1'|'Z'|'X'`, `and/or/not/nand/xor/drive/isDriven`,
-`DigitalEngine` (`addGate/set/get/settle → {levels,iterations,settled}`), `DFlipFlop`, `Counter`,
-`ShiftRegister`, `decode`, `JohnsonCounter`.
-Analog devices added: `createSchottky`, `createMosfet`, `createBjt`, `createOpAmp`, `createRelay`,
-`ldrResistance`/`ntcResistance`/`potentiometerResistances`, `astable555`/`monostable555`;
-`MnaSystem`/`MnaContext` gained `stampTransconductance`.
-Part `simModel` ids: resistor, led, diode, battery, battery-pack, switch, pushbutton, slide-switch,
-inductor, capacitor, power-supply, multimeter, arduino-uno, ldr, ntc, potentiometer, seven-segment,
-rgb-led, led-bar.
-Known partials: relay flyback-diode transient not tested; op-amp uses soft output-current saturation;
-some devices lack a `.vcad` demo (displays added; mosfet/bjt/opamp/relay/sensor demos pending).
-Gotchas: BJT needs `pnjlim` limiting to converge; heavy tests need explicit timeouts; `vc-check` uses `pnpm -s`.
+S09 branch `stage/s09-parts-wave2`: ALL TASKS DONE (T01–T08). Next: `scripts/vc-stage-finish.sh S09`.
+Wave-2 models are pure TS units; part manifests in `packages/core/src/parts/catalog.ts` still stop at
+`led-bar` (UI wiring of the new parts is not part of S09 tasks). Supply bench CC mode not implemented
+(T02 only shipped `sampleWaveform`).
+Perf: `perf.test.ts` (slow) 101 parts/300 wires → ~1.35 ms/operating-point solve, budget < 50 ms.
+Fixtures: `neopixel.ino` + hex/trace added; toolchain CI integration test compiles blink/lcd-hello/
+servo-sweep/neopixel. Regenerate fixtures with `node tools/make-fixtures.mjs` then
+`pnpm exec tsx tools/make-traces.ts`; strip CR from `.hex` before committing.
+Gotchas: `performance` unavailable in pure-TS pkgs (use Date.now); heavy tests need timeouts; `vc-check` uses `pnpm -s`.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`

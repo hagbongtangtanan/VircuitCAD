@@ -1,6 +1,20 @@
 export { LuDecomposition, SingularMatrixError } from './linalg';
 export { ldrResistance, ntcResistance, potentiometerResistances } from './sensors';
 export { astable555, monostable555, type AstableTiming } from './timer555';
+export {
+  sampleWaveform,
+  type FunctionGenOptions,
+  type Waveform,
+} from './function-gen';
+export { servoAngle, servoPulse, type ServoOptions } from './servo';
+export { joystickAxis, type JoystickCalibration } from './joystick';
+export { hBridgeOutput, stepMotor, type MotorParams, type MotorState } from './motor';
+export {
+  hcSr04Distance,
+  hcSr04EchoMicros,
+  tmp36Temperature,
+  tmp36Voltage,
+} from './sensors2';
 export { MnaSystem } from './mna';
 export { GROUND_NODE, buildNodeMap } from './node-map';
 export { DEFAULT_GMIN, createMnaContext, setupDevices, stampDevices } from './context';

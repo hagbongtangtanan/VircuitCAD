@@ -14,19 +14,25 @@ const layout = locateToolchain({
   platform: process.platform,
 });
 
+// blink + one sketch per bundled library (LiquidCrystal, Servo, Adafruit NeoPixel).
+const sketches = ['blink', 'lcd-hello', 'servo-sweep', 'neopixel'];
+
 it.skipIf(!layout)(
-  'compiles blink with the local toolchain (offline)',
-  { tags: ['toolchain'], timeout: 60_000 },
+  'compiles the bundled sketches with the local toolchain (offline)',
+  { tags: ['toolchain'], timeout: 240_000 },
   async () => {
     if (!layout) return;
-    const source = readFileSync(path.join(repoRoot, 'fixtures/sketches/blink.ino'), 'utf8');
-    const tempRoot = mkdtempSync(path.join(tmpdir(), 'vc-toolchain-it-'));
-    const result = await new CompileService({ layout, tempRoot }).compile({
-      source,
-      fqbn: 'arduino:avr:uno',
+    const service = new CompileService({
+      layout,
+      tempRoot: mkdtempSync(path.join(tmpdir(), 'vc-toolchain-it-')),
     });
-    expect(result.ok).toBe(true);
-    expect(result.hex ?? '').toContain(':');
-    expect(result.diagnostics.filter((d) => d.severity === 'error')).toHaveLength(0);
+    for (const name of sketches) {
+      const source = readFileSync(path.join(repoRoot, `fixtures/sketches/${name}.ino`), 'utf8');
+      const result = await service.compile({ source, fqbn: 'arduino:avr:uno' });
+      const errors = result.diagnostics.filter((d) => d.severity === 'error');
+      expect(result.ok, `${name}: ${JSON.stringify(errors)}`).toBe(true);
+      expect(result.hex ?? '', `${name} produced no hex`).toContain(':');
+      expect(errors, `${name} reported errors`).toHaveLength(0);
+    }
   },
 );
