@@ -18,13 +18,20 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S08 IN PROGRESS, branch `stage/s08-parts-wave1`. Done: T01 (part kit), T02 (Schottky + N/P MOSFET + BJT),
-T03 (op-amp/comparator), T04 (sensors), T05 PARTIAL (relay; flyback transient deferred), T06
-(`sim-digital` engine), T07 (`DFlipFlop`/`Counter`/`ShiftRegister`/`decode`/`JohnsonCounter`), T08 (555
-timing), T09 (7-segment + LED bar + RGB). T10 PARTIAL (docs/MODELS.md updated; demo circuits for the new
-parts + THIRD_PARTY still pending).
-Next: T10 demos for the new parts + THIRD_PARTY check; relay flyback-diode transient (T05). Then
-`/stage-finish S08`.
+S08 complete (T01–T10); running `vc-stage-finish.sh S08` → tag `stage-s08-done`. Next: S09.
+Digital API (`@vircuitcad/sim-digital`): `Level '0'|'1'|'Z'|'X'`, `and/or/not/nand/xor/drive/isDriven`,
+`DigitalEngine` (`addGate/set/get/settle → {levels,iterations,settled}`), `DFlipFlop`, `Counter`,
+`ShiftRegister`, `decode`, `JohnsonCounter`.
+Analog devices added: `createSchottky`, `createMosfet`, `createBjt`, `createOpAmp`, `createRelay`,
+`ldrResistance`/`ntcResistance`/`potentiometerResistances`, `astable555`/`monostable555`;
+`MnaSystem`/`MnaContext` gained `stampTransconductance`.
+Part `simModel` ids: resistor, led, diode, battery, battery-pack, switch, pushbutton, slide-switch,
+inductor, capacitor, power-supply, multimeter, arduino-uno, ldr, ntc, potentiometer, seven-segment,
+rgb-led, led-bar.
+Known partials: relay flyback-diode transient not tested; op-amp uses soft output-current saturation;
+some devices lack a `.vcad` demo (displays added; mosfet/bjt/opamp/relay/sensor demos pending).
+Gotchas: BJT needs `pnjlim` limiting to converge; heavy tests need explicit timeouts; `vc-check` uses `pnpm -s`.
+Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`
 (addGate/set/get/settle → {levels,iterations,settled}); seven-segment → 8 LEDs (`<id>:<seg>`).
