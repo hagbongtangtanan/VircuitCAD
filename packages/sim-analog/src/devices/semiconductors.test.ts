@@ -4,7 +4,7 @@ import { setupDevices } from '../context';
 import type { Device } from '../device';
 import { createSchottky } from './nonlinear';
 import { createResistor } from './resistor';
-import { createMosfet } from './semiconductors';
+import { createBjt, createMosfet } from './semiconductors';
 import { createVoltageSource } from './voltage-source';
 import { MnaSystem } from '../mna';
 import { solveOperatingPoint } from '../solver';
@@ -37,6 +37,19 @@ it('switches an N-MOSFET on and off', () => {
   const off = dc(3, make(0));
   expect(off.result.converged).toBe(true);
   expect(off.voltage(1)).toBeGreaterThan(4);
+});
+
+it('saturates an NPN transistor as a low-side switch', () => {
+  const { result, voltage } = dc(3, [
+    createVoltageSource('vcc', 1, 0, 5, 0),
+    createResistor('rb', 1, 2, 10_000),
+    createResistor('rc', 1, 3, 1000),
+    createBjt('q1', 3, 2, 0, { type: 'npn' }),
+  ]);
+  expect(result.converged).toBe(true);
+  expect(voltage(3)).toBeLessThan(0.6);
+  expect(voltage(2)).toBeGreaterThan(0.5);
+  expect(voltage(2)).toBeLessThan(0.9);
 });
 
 it('drops ~0.24 V across a Schottky diode', () => {

@@ -14,7 +14,12 @@ export {
   type OperatingPointResult,
   type SolverOptions,
 } from './solver';
-export { createMosfet, type MosfetOptions } from './devices/semiconductors';
+export {
+  createBjt,
+  createMosfet,
+  type BjtOptions,
+  type MosfetOptions,
+} from './devices/semiconductors';
 export { createRelay, type RelayDevice, type RelayOptions } from './devices/relay';
 export {
   createDiode,
