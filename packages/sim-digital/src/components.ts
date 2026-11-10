@@ -28,6 +28,40 @@ export class DFlipFlop {
   }
 }
 
+/** Binary decoder: returns the active output index, or -1 when disabled. */
+export function decode(select: number, bits: number, enable = true): number {
+  if (!enable) return -1;
+  const mask = (1 << bits) - 1;
+  return select & mask;
+}
+
+/** 4017-style decade (Johnson) counter with 10 mutually-exclusive outputs. */
+export class JohnsonCounter {
+  private state = 0;
+  private lastClock = false;
+
+  step(clock: boolean, options: { reset?: boolean; clockInhibit?: boolean } = {}): void {
+    const rising = clock && !this.lastClock;
+    this.lastClock = clock;
+    if (!rising) return;
+    if (options.reset) this.state = 0;
+    else if (!options.clockInhibit) this.state = (this.state + 1) % 10;
+  }
+
+  get active(): number {
+    return this.state;
+  }
+
+  output(index: number): boolean {
+    return index === this.state;
+  }
+
+  reset(): void {
+    this.state = 0;
+    this.lastClock = false;
+  }
+}
+
 export type CounterStep = {
   clock: boolean;
   enable?: boolean;

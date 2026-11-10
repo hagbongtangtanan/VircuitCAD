@@ -12,7 +12,9 @@ export { DigitalEngine, gates, type Gate, type SettleResult } from './engine';
 export {
   Counter,
   DFlipFlop,
+  JohnsonCounter,
   ShiftRegister,
+  decode,
   type CounterStep,
   type ShiftStep,
 } from './components';
