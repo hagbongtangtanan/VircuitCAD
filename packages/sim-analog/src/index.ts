@@ -8,6 +8,7 @@ export {
 } from './function-gen';
 export { servoAngle, servoPulse, type ServoOptions } from './servo';
 export { joystickAxis, type JoystickCalibration } from './joystick';
+export { hBridgeOutput, stepMotor, type MotorParams, type MotorState } from './motor';
 export {
   hcSr04Distance,
   hcSr04EchoMicros,
