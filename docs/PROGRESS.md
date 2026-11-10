@@ -18,19 +18,14 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S08 complete (T01–T10); running `vc-stage-finish.sh S08` → tag `stage-s08-done`. Next: S09.
-Digital API (`@vircuitcad/sim-digital`): `Level '0'|'1'|'Z'|'X'`, `and/or/not/nand/xor/drive/isDriven`,
-`DigitalEngine` (`addGate/set/get/settle → {levels,iterations,settled}`), `DFlipFlop`, `Counter`,
-`ShiftRegister`, `decode`, `JohnsonCounter`.
-Analog devices added: `createSchottky`, `createMosfet`, `createBjt`, `createOpAmp`, `createRelay`,
-`ldrResistance`/`ntcResistance`/`potentiometerResistances`, `astable555`/`monostable555`;
-`MnaSystem`/`MnaContext` gained `stampTransconductance`.
-Part `simModel` ids: resistor, led, diode, battery, battery-pack, switch, pushbutton, slide-switch,
-inductor, capacitor, power-supply, multimeter, arduino-uno, ldr, ntc, potentiometer, seven-segment,
-rgb-led, led-bar.
-Known partials: relay flyback-diode transient not tested; op-amp uses soft output-current saturation;
-some devices lack a `.vcad` demo (displays added; mosfet/bjt/opamp/relay/sensor demos pending).
-Gotchas: BJT needs `pnjlim` limiting to converge; heavy tests need explicit timeouts; `vc-check` uses `pnpm -s`.
+S09 IN PROGRESS, branch `stage/s09-parts-wave2`. Done: T01 (`ScopeBuffer`, `decimate` min/max
+peak-detection, `findTrigger` rising/falling — deterministic render-data tests in `@vircuitcad/ui`).
+Next: T02 function generator (sine/square/triangle) + supply CC mode, T03 LCD 16×2 (HD44780), T04
+servo/motor/L293D/buzzer, T05 sensors (HC-SR04/PIR/TMP36/keypad/joystick), T06 NeoPixel bitstream decode,
+T07 library bundle + fixtures, T08 perf pass (100 parts/300 wires budgets). Then `/stage-finish S09`.
+Scope API: `ScopeBuffer(limit)`, `decimate(samples, pixels) → {t,min,max}[]`, `findTrigger(samples, level,
+'rising'|'falling') → index`. On-canvas panel/cursors deferred.
+Gotchas: heavy tests need timeouts; `vc-check` uses `pnpm -s`.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`
