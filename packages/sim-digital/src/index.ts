@@ -9,6 +9,7 @@ export {
   type Level,
 } from './levels';
 export { DigitalEngine, gates, type Gate, type SettleResult } from './engine';
+export { decodeWs2812, type Edge, type Pixel } from './neopixel';
 export {
   Counter,
   DFlipFlop,
