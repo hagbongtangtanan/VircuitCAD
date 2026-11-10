@@ -11,6 +11,7 @@ export {
 export { DigitalEngine, gates, type Gate, type SettleResult } from './engine';
 export { decodeWs2812, type Edge, type Pixel } from './neopixel';
 export { Hd44780 } from './hd44780';
+export { Keypad4x4, KEYPAD_4X4, pirLevel, type PirState } from './keypad';
 export {
   Counter,
   DFlipFlop,

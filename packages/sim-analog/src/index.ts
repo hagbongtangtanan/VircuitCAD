@@ -7,6 +7,7 @@ export {
   type Waveform,
 } from './function-gen';
 export { servoAngle, servoPulse, type ServoOptions } from './servo';
+export { joystickAxis, type JoystickCalibration } from './joystick';
 export {
   hcSr04Distance,
   hcSr04EchoMicros,
