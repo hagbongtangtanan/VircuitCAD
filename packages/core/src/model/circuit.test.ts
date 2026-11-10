@@ -55,7 +55,7 @@ it('defaults the sketch when a legacy document omits it', () => {
 });
 
 it('rejects an unknown schema version', () => {
-  const circuit = { ...createEmptyCircuit(), schemaVersion: 2 };
+  const circuit = { ...createEmptyCircuit(), schemaVersion: 3 };
   expect(CircuitSchema.safeParse(circuit).success).toBe(false);
 });
 

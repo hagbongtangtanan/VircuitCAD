@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { createId } from './ids';
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const Vec2Schema = z.object({ x: z.number().int(), y: z.number().int() });
 export type Vec2 = z.infer<typeof Vec2Schema>;
@@ -67,6 +67,14 @@ export const SketchSchema = z.object({
 });
 export type Sketch = z.infer<typeof SketchSchema>;
 
+/** How the project's program is authored: visual blocks or handwritten text. */
+export const ProjectModeSchema = z.enum(['blocks', 'text']);
+export type ProjectMode = z.infer<typeof ProjectModeSchema>;
+
+/** Serialized Blockly workspace (opaque to core; the editor owns its shape). */
+export const BlocksSchema = z.record(z.string(), z.unknown());
+export type Blocks = z.infer<typeof BlocksSchema>;
+
 export const DEFAULT_SKETCH_FILE = 'sketch.ino';
 
 export function defaultSketch(): Sketch {
@@ -83,12 +91,19 @@ export const CircuitSchema = z.object({
   parts: z.array(PartInstanceSchema),
   wires: z.array(WireSchema),
   sketch: SketchSchema.optional(),
+  mode: ProjectModeSchema.optional(),
+  blocks: BlocksSchema.optional(),
 });
 export type Circuit = z.infer<typeof CircuitSchema>;
 
 /** The sketch, or a default empty sketch when the document predates sketches. */
 export function sketchOf(circuit: Circuit): Sketch {
   return circuit.sketch ?? defaultSketch();
+}
+
+/** The project program mode, defaulting to text for documents that predate blocks. */
+export function modeOf(circuit: Circuit): ProjectMode {
+  return circuit.mode ?? 'text';
 }
 
 export const DEFAULT_WIRE_COLOR = '#22c55e';
@@ -110,7 +125,9 @@ export function createBoard(kind: BoardKind = 'full', id: string = createId()): 
   return { id, kind };
 }
 
-export function createEmptyCircuit(options: { name?: string; board?: BoardKind } = {}): Circuit {
+export function createEmptyCircuit(
+  options: { name?: string; board?: BoardKind; mode?: ProjectMode } = {},
+): Circuit {
   return {
     schemaVersion: SCHEMA_VERSION,
     id: createId(),
@@ -119,6 +136,7 @@ export function createEmptyCircuit(options: { name?: string; board?: BoardKind }
     parts: [],
     wires: [],
     sketch: defaultSketch(),
+    mode: options.mode ?? 'text',
   };
 }
 

@@ -6,7 +6,18 @@ export type Migration = {
   migrate: (input: unknown) => unknown;
 };
 
-export const circuitMigrations: Migration[] = [];
+export const circuitMigrations: Migration[] = [
+  {
+    // v2 adds the project program mode (blocks | text) and the Blockly workspace.
+    // Documents written before blocks default to text mode with no workspace.
+    from: 1,
+    to: 2,
+    migrate: (input) => {
+      const doc = input as Record<string, unknown>;
+      return { ...doc, schemaVersion: 2, mode: doc.mode ?? 'text' };
+    },
+  },
+];
 
 export function getSchemaVersion(raw: unknown): number {
   if (typeof raw === 'object' && raw !== null && 'schemaVersion' in raw) {

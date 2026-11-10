@@ -12,7 +12,7 @@ const registry = createDefaultPartRegistry();
 
 function seriesCircuit(): Circuit {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: 'c1',
     name: 'battery-resistor-led',
     board: { id: 'b1', kind: 'full' },
@@ -68,7 +68,7 @@ it('is deterministic regardless of wire order', () => {
 
 it('reports floating pins for unconnected parts', () => {
   const circuit: Circuit = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: 'c2',
     name: 'dangling',
     board: { id: 'b2', kind: 'half' },
@@ -84,7 +84,7 @@ it('reports floating pins for unconnected parts', () => {
 
 it('unions two pins that land in the same hole without crashing', () => {
   const circuit: Circuit = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: 'c3',
     name: 'same-hole',
     board: { id: 'b3', kind: 'full' },
@@ -105,7 +105,7 @@ it('unions two pins that land in the same hole without crashing', () => {
 
 it('throws a clear error for an unknown part', () => {
   const circuit: Circuit = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: 'c4',
     name: 'unknown',
     board: { id: 'b4', kind: 'half' },

@@ -41,7 +41,7 @@ function buildCircuit(
   wires: { from: string; to: string }[],
 ): Circuit {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: 'c',
     name: 'property',
     board: { id: 'b', kind: board },
