@@ -12,7 +12,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S05 | Offline Arduino toolchain and compile service | done |
 | S06 | AVR emulation and mixed-signal bridge | done |
 | S07 | Code editor, upload flow, serial monitor | done |
-| S08 | Parts wave 1: semiconductors, digital ICs, 555 | pending |
+| S08 | Parts wave 1: semiconductors, digital ICs, 555 | done |
 | S09 | Parts wave 2 and instruments | pending |
 | S10 | Blockly, example library, schematic view | pending |
 | S11 | Polish, packaging, release | pending |
