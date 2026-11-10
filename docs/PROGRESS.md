@@ -18,12 +18,12 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S09 IN PROGRESS, branch `stage/s09-parts-wave2`. Done: T01 (scope `ScopeBuffer`/`decimate`/
-`findTrigger`), T02 (`sampleWaveform` sine/square/triangle with frequency/amplitude/offset).
-Next: supply CC mode, T03 LCD 16×2 (HD44780), T04 servo/motor/L293D/buzzer, T05 sensors (HC-SR04/PIR/
-TMP36/keypad/joystick), T06 NeoPixel bitstream decode, T07 library bundle + fixtures, T08 perf pass
-(100 parts/300 wires budgets). Then `/stage-finish S09`.
-APIs: `ScopeBuffer`, `decimate`, `findTrigger`; `sampleWaveform(options, t)`.
+S09 IN PROGRESS, branch `stage/s09-parts-wave2`. Done: T01 (scope buffer/decimation/trigger), T02
+(`sampleWaveform` waveforms), T04 PARTIAL (`servoAngle`/`servoPulse`; motor/L293D/buzzer deferred).
+Next: supply CC mode, T03 LCD 16×2 (HD44780), motor + L293D + buzzer (T04), T05 sensors (HC-SR04/PIR/
+TMP36/keypad/joystick), T06 NeoPixel bitstream decode, T07 library bundle + fixtures, T08 perf pass.
+Then `/stage-finish S09`.
+APIs: `ScopeBuffer`/`decimate`/`findTrigger`; `sampleWaveform`; `servoAngle`/`servoPulse`.
 Gotchas: heavy tests need timeouts; `vc-check` uses `pnpm -s`.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
