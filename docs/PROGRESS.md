@@ -18,15 +18,15 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S10 branch `stage/s10-blocks-examples-schematic`. Done: T03 (schema v2: optional `mode`/`blocks`
-on Circuit, `modeOf()`, v1→v2 migration in `circuitMigrations`, v2 fixture `fixtures/vcad/v2/
-blocks-blink.vcad`).
-Next: T01 Blockly bundled offline + toolbox, T02 Arduino C++ generator, T04 ≥25 examples + browser
-dialog, T05 schematic view, T06 blocks↔text parity, T07 docs.
-Decisions: core treats `blocks` as opaque `Record<string,unknown>` (editor owns Blockly shape);
-`createEmptyCircuit({mode})` defaults to `text`.
-Gotchas: `SCHEMA_VERSION` now 2 — tests using `schemaVersion:2` as an "unknown" sentinel must use 3;
-regenerate vcad fixtures via `pnpm exec tsx tools/examples/generate.ts`.
+S10 branch `stage/s10-blocks-examples-schematic`. Done: T03 (schema v2: `mode`/`blocks`, `modeOf()`,
+v1→v2 migration, fixture `fixtures/vcad/v2/blocks-blink.vcad`), T02 (new `@vircuitcad/blocks`: IR +
+`generateArduino`, auto-includes Servo/LiquidCrystal/Serial; unit-tested, no deps).
+Next: T01 Blockly bundled offline (pinned, offline locales) + toolbox, wire UI to `@vircuitcad/blocks`
+IR; T04 ≥25 examples + browser dialog; T05 schematic view; T06 blocks↔text parity; T07 docs.
+Decisions: T02 shipped Blockly-agnostic; T01 must map workspaces → `@vircuitcad/blocks` IR (keeps core
+pure). `blocks` in .vcad is opaque `Record<string,unknown>`.
+Gotchas: `SCHEMA_VERSION` now 2 (tests using `schemaVersion:2` as "unknown" must use 3); new pkgs go in
+`packages/*` (pnpm-workspace auto-includes); `pnpm add blockly` needs network (registry reachable).
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`
