@@ -220,6 +220,37 @@ export const placeholderManifests: PartManifest[] = [
     simModel: 'seven-segment',
     svg: 'parts/seven-segment.svg',
   }),
+  parsePartManifest({
+    id: 'rgb-led',
+    name: 'RGB LED',
+    category: 'opto',
+    pins: [
+      { id: 'r', name: 'R', position: { x: 0, y: 0 }, role: 'passive' },
+      { id: 'g', name: 'G', position: { x: 2, y: 0 }, role: 'passive' },
+      { id: 'b', name: 'B', position: { x: 4, y: 0 }, role: 'passive' },
+      { id: 'com', name: 'COM', position: { x: 1, y: 2 }, role: 'passive' },
+    ],
+    params: [{ id: 'common', label: 'Common', default: 'cathode' }],
+    simModel: 'rgb-led',
+    svg: 'parts/rgb-led.svg',
+  }),
+  parsePartManifest({
+    id: 'led-bar',
+    name: 'LED Bar',
+    category: 'opto',
+    pins: [
+      ...['s1', 's2', 's3', 's4', 's5'].map((id, index) => ({
+        id,
+        name: id.toUpperCase(),
+        position: { x: index, y: 0 },
+        role: 'passive' as const,
+      })),
+      { id: 'com', name: 'COM', position: { x: 0, y: 2 }, role: 'passive' },
+    ],
+    params: [{ id: 'common', label: 'Common', default: 'cathode' }],
+    simModel: 'led-bar',
+    svg: 'parts/led-bar.svg',
+  }),
 ];
 
 export function createDefaultPartRegistry(): PartRegistry {

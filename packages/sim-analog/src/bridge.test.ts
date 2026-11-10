@@ -191,6 +191,40 @@ it('drives individual 7-segment segments', () => {
   expect(Math.abs(segmentB?.current ?? 0)).toBeLessThan(1e-4);
 });
 
+it('drives individual RGB channels', () => {
+  const circuit = createEmptyCircuit({ board: 'full' });
+  circuit.parts.push(
+    createPartInstance('battery', { id: 'bt1', position: { x: 0, y: 20 }, params: { voltage: 5 } }),
+  );
+  circuit.parts.push(
+    createPartInstance('resistor', { id: 'r1', position: { x: 0, y: 22 }, params: { resistance: 220 } }),
+  );
+  circuit.parts.push(
+    createPartInstance('rgb-led', { id: 'rgb', position: { x: 0, y: 24 }, params: { common: 'cathode' } }),
+  );
+  circuit.wires.push(
+    createWire(
+      { kind: 'pin', partId: 'bt1', pinId: 'positive' },
+      { kind: 'pin', partId: 'r1', pinId: 'a' },
+    ),
+    createWire(
+      { kind: 'pin', partId: 'r1', pinId: 'b' },
+      { kind: 'pin', partId: 'rgb', pinId: 'r' },
+    ),
+    createWire(
+      { kind: 'pin', partId: 'rgb', pinId: 'com' },
+      { kind: 'pin', partId: 'bt1', pinId: 'negative' },
+    ),
+  );
+
+  const simulation = buildSimulation(circuit, createDefaultPartRegistry());
+  solveSimulation(simulation);
+  const red = simulation.deviceByName('rgb:r') as { current?: number } | undefined;
+  const green = simulation.deviceByName('rgb:g') as { current?: number } | undefined;
+  expect(red?.current ?? 0).toBeGreaterThan(0.005);
+  expect(Math.abs(green?.current ?? 0)).toBeLessThan(1e-4);
+});
+
 it('burns the LED when the resistor is too small', () => {
   const circuit = seriesCircuit();
   const resistor = circuit.parts.find((part) => part.id === 'r1');
