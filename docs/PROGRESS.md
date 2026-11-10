@@ -18,13 +18,12 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S09 IN PROGRESS, branch `stage/s09-parts-wave2`. Done: T01 (`ScopeBuffer`, `decimate` min/max
-peak-detection, `findTrigger` rising/falling — deterministic render-data tests in `@vircuitcad/ui`).
-Next: T02 function generator (sine/square/triangle) + supply CC mode, T03 LCD 16×2 (HD44780), T04
-servo/motor/L293D/buzzer, T05 sensors (HC-SR04/PIR/TMP36/keypad/joystick), T06 NeoPixel bitstream decode,
-T07 library bundle + fixtures, T08 perf pass (100 parts/300 wires budgets). Then `/stage-finish S09`.
-Scope API: `ScopeBuffer(limit)`, `decimate(samples, pixels) → {t,min,max}[]`, `findTrigger(samples, level,
-'rising'|'falling') → index`. On-canvas panel/cursors deferred.
+S09 IN PROGRESS, branch `stage/s09-parts-wave2`. Done: T01 (scope `ScopeBuffer`/`decimate`/
+`findTrigger`), T02 (`sampleWaveform` sine/square/triangle with frequency/amplitude/offset).
+Next: supply CC mode, T03 LCD 16×2 (HD44780), T04 servo/motor/L293D/buzzer, T05 sensors (HC-SR04/PIR/
+TMP36/keypad/joystick), T06 NeoPixel bitstream decode, T07 library bundle + fixtures, T08 perf pass
+(100 parts/300 wires budgets). Then `/stage-finish S09`.
+APIs: `ScopeBuffer`, `decimate`, `findTrigger`; `sampleWaveform(options, t)`.
 Gotchas: heavy tests need timeouts; `vc-check` uses `pnpm -s`.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
