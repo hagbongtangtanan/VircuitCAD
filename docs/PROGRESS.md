@@ -18,14 +18,14 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S09 IN PROGRESS, branch `stage/s09-parts-wave2`. Done: T01–T06 (scope, waveforms, LCD, servo/motor/
-H-bridge/buzzer, sensors, NeoPixel), T08 perf (`perf.test.ts`, slow-tagged; 101 parts / 300 wires →
-~1.35 ms per operating-point solve, budget < 50 ms). Supply CC mode still open.
-Next: T07 library bundle (Servo, LiquidCrystal, NeoPixel) + fixtures/examples covered by the `toolchain`
-CI job; supply bench CC mode. Then `/stage-finish S09`.
-APIs: `ScopeBuffer`/`decimate`/`findTrigger`; `sampleWaveform`; `Hd44780`/`Keypad4x4`/`pirLevel`/
-`buzzerLevel`; `servoAngle`/`servoPulse`/`joystickAxis`/`hBridgeOutput`/`stepMotor`; `tmp36*`/`hcSr04*`;
-`decodeWs2812`; `perf.test.ts` slow-tagged.
+S09 branch `stage/s09-parts-wave2`: ALL TASKS DONE (T01–T08). Next: `scripts/vc-stage-finish.sh S09`.
+Wave-2 models are pure TS units; part manifests in `packages/core/src/parts/catalog.ts` still stop at
+`led-bar` (UI wiring of the new parts is not part of S09 tasks). Supply bench CC mode not implemented
+(T02 only shipped `sampleWaveform`).
+Perf: `perf.test.ts` (slow) 101 parts/300 wires → ~1.35 ms/operating-point solve, budget < 50 ms.
+Fixtures: `neopixel.ino` + hex/trace added; toolchain CI integration test compiles blink/lcd-hello/
+servo-sweep/neopixel. Regenerate fixtures with `node tools/make-fixtures.mjs` then
+`pnpm exec tsx tools/make-traces.ts`; strip CR from `.hex` before committing.
 Gotchas: `performance` unavailable in pure-TS pkgs (use Date.now); heavy tests need timeouts; `vc-check` uses `pnpm -s`.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
