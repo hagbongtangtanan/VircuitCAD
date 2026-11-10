@@ -18,14 +18,15 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S09 IN PROGRESS, branch `stage/s09-parts-wave2`. Done: T01 (scope), T02 (`sampleWaveform`), T03
-(`Hd44780`), T04 (`hBridgeOutput`/`stepMotor`/`buzzerLevel`), T05 (TMP36, HC-SR04, PIR, keypad,
-joystick), T06 (`decodeWs2812`).
-Next: supply CC mode, T07 library bundle + fixtures, T08 perf pass. Then `/stage-finish S09`.
+S09 IN PROGRESS, branch `stage/s09-parts-wave2`. Done: T01–T06 (scope, waveforms, LCD, servo/motor/
+H-bridge/buzzer, sensors, NeoPixel), T08 perf (`perf.test.ts`, slow-tagged; 101 parts / 300 wires →
+~1.35 ms per operating-point solve, budget < 50 ms). Supply CC mode still open.
+Next: T07 library bundle (Servo, LiquidCrystal, NeoPixel) + fixtures/examples covered by the `toolchain`
+CI job; supply bench CC mode. Then `/stage-finish S09`.
 APIs: `ScopeBuffer`/`decimate`/`findTrigger`; `sampleWaveform`; `Hd44780`/`Keypad4x4`/`pirLevel`/
 `buzzerLevel`; `servoAngle`/`servoPulse`/`joystickAxis`/`hBridgeOutput`/`stepMotor`; `tmp36*`/`hcSr04*`;
-`decodeWs2812`.
-Gotchas: heavy tests need timeouts; `vc-check` uses `pnpm -s`.
+`decodeWs2812`; `perf.test.ts` slow-tagged.
+Gotchas: `performance` unavailable in pure-TS pkgs (use Date.now); heavy tests need timeouts; `vc-check` uses `pnpm -s`.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`
