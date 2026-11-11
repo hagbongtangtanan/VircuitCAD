@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 2,
+  "id": "XE-7fikxWlR7202XK-2aL",
+  "name": "Potentiometer divider",
+  "board": {
+    "id": "v-2fa2Xw8aE2H6_RMCIwt",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 5
+      }
+    },
+    {
+      "id": "pot1",
+      "partId": "potentiometer",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 10000,
+        "position": 0.5
+      }
+    },
+    {
+      "id": "m1",
+      "partId": "multimeter",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "mode": "V"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "uZtwOlrHQPbq8QBNw63B3",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "6BYZm2ubQguBkBQTQX5yf",
+      "from": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "fkXbW-Uk9nGYBfG2cxvJE",
+      "from": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe+"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "wiper"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "n4J69aXQA1MwZzDBdA6rR",
+      "from": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe-"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "b"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

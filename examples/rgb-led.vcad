@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 1,
-  "id": "QLeOgh7khaxEEnyah3NK1",
+  "schemaVersion": 2,
+  "id": "oynNYT8buOTJ8DRtfACGT",
   "name": "RGB LED",
   "board": {
-    "id": "r2hhe2K-BcptuYZUWA9Wk",
+    "id": "68ZtBxcPRAnIfL1Q3Tcq4",
     "kind": "full"
   },
   "parts": [
@@ -44,7 +44,7 @@
   ],
   "wires": [
     {
-      "id": "WmKCSTk3cbLobkNGzs5kh",
+      "id": "KzxBpmyH5T2uyWxFnJ1LL",
       "from": {
         "kind": "pin",
         "partId": "bt1",
@@ -59,7 +59,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "ysqfvUFRwhGGFWvH0yr8s",
+      "id": "v9CkjljvwfrSKMv5pVmIO",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -74,7 +74,37 @@
       "color": "#22c55e"
     },
     {
-      "id": "pETLbFv2N-vimwKG2WzkI",
+      "id": "zJStzMFtRwkqTaEzzeEdX",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "rgb1",
+        "pinId": "g"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "sioZPToj3T9-nbGHTw0Y_",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "rgb1",
+        "pinId": "b"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "Z6-cUxj6d29Qh_vu-UCO8",
       "from": {
         "kind": "pin",
         "partId": "rgb1",
@@ -93,5 +123,6 @@
     "files": {
       "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
     }
-  }
+  },
+  "mode": "text"
 }

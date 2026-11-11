@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 1,
-  "id": "9v1maF2cXyjLJlQPM1Ts-",
-  "name": "7-segment",
+  "schemaVersion": 2,
+  "id": "2NMcqmS05gR_tCbJUB1q5",
+  "name": "7-segment display",
   "board": {
-    "id": "zk2ijMdxf8u8GFe8sVF1J",
+    "id": "QlkXhUzBmlRPkOhh0Tpfz",
     "kind": "full"
   },
   "parts": [
@@ -44,7 +44,7 @@
   ],
   "wires": [
     {
-      "id": "29LpANFmcvabqliypFICa",
+      "id": "r4r2Al-fH8fztmUiAdMrR",
       "from": {
         "kind": "pin",
         "partId": "bt1",
@@ -59,7 +59,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "6lhCqhfHe-pIOxHPGJ8kx",
+      "id": "kZLmvIPiMJ8bY1qjJPL2D",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -74,7 +74,97 @@
       "color": "#22c55e"
     },
     {
-      "id": "L3pzNoqZI85uEMwWCxdSf",
+      "id": "Mpaq5mjNbUuU23lJkEZlI",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "seg1",
+        "pinId": "b"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "h2fs0rp0l5i0Bxq7U-jvj",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "seg1",
+        "pinId": "c"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "v26D8THXPnT8_HdMZmhFH",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "seg1",
+        "pinId": "d"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "ZJ1IKT83hcMstu97MTWCf",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "seg1",
+        "pinId": "e"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "ekhtrHu_0qKD3RfKoLBFa",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "seg1",
+        "pinId": "f"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "RhShrZwBsA8X0h9htp_pF",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "seg1",
+        "pinId": "g"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "g2OvXCZwGf6LSdzsbtKF_",
       "from": {
         "kind": "pin",
         "partId": "seg1",
@@ -93,5 +183,6 @@
     "files": {
       "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
     }
-  }
+  },
+  "mode": "text"
 }

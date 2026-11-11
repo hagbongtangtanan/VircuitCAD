@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 2,
+  "id": "SO__7upoIkPVRi3M3t0Bl",
+  "name": "Ammeter",
+  "board": {
+    "id": "rpCPWQpztO6gpSeIohzRv",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 5
+      }
+    },
+    {
+      "id": "m1",
+      "partId": "multimeter",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "mode": "A"
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 220
+      }
+    },
+    {
+      "id": "d1",
+      "partId": "led",
+      "position": {
+        "x": 0,
+        "y": 26
+      },
+      "rotation": 0,
+      "params": {
+        "color": "red"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "xLWgwVvO9nYKvsFi0y-LR",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe+"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "Dp5Wg_OKwzCMsKGPGVstJ",
+      "from": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe-"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "Cuzke8Q4xrT7Mp5Nb87r9",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "anode"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "1Awt1uGpbmseSB22P4RAX",
+      "from": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "cathode"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

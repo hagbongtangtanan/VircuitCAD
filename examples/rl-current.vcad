@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 2,
+  "id": "7P6X7i-h98SQUnw826gxd",
+  "name": "RL current",
+  "board": {
+    "id": "HSIBRkMfGWBBIrGuKOUkr",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "ps1",
+      "partId": "power-supply",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 5
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 100
+      }
+    },
+    {
+      "id": "l1",
+      "partId": "inductor",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "inductance": 0.001
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "11OuLIf7f4FjhI27qp7v2",
+      "from": {
+        "kind": "pin",
+        "partId": "ps1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "ebZjV3nuvA56UYmMUy7Vf",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "l1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "Fe4KHAXuvHK3OjBmDPbHC",
+      "from": {
+        "kind": "pin",
+        "partId": "l1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "ps1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

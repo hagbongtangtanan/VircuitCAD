@@ -1,0 +1,220 @@
+{
+  "examples": [
+    {
+      "id": "led-resistor",
+      "file": "led-resistor.vcad",
+      "title": "LED + resistor",
+      "category": "Basics",
+      "difficulty": "beginner",
+      "description": "A battery lights an LED through a current-limiting resistor."
+    },
+    {
+      "id": "voltage-divider",
+      "file": "voltage-divider.vcad",
+      "title": "Voltage divider",
+      "category": "Basics",
+      "difficulty": "beginner",
+      "description": "Two equal resistors halve the supply; measure the midpoint."
+    },
+    {
+      "id": "switch-led",
+      "file": "switch-led.vcad",
+      "title": "Switch + LED",
+      "category": "Basics",
+      "difficulty": "beginner",
+      "description": "A slide switch controls an LED."
+    },
+    {
+      "id": "series-resistors",
+      "file": "series-resistors.vcad",
+      "title": "Series resistors",
+      "category": "Basics",
+      "difficulty": "beginner",
+      "description": "Measure the drop across one of two series resistors."
+    },
+    {
+      "id": "parallel-leds",
+      "file": "parallel-leds.vcad",
+      "title": "Parallel LEDs",
+      "category": "Basics",
+      "difficulty": "beginner",
+      "description": "Two LEDs in parallel branches, each with its own resistor."
+    },
+    {
+      "id": "led-bar",
+      "file": "led-bar.vcad",
+      "title": "LED bar",
+      "category": "Basics",
+      "difficulty": "beginner",
+      "description": "A five-segment bar graph driven from one rail."
+    },
+    {
+      "id": "rc-charge",
+      "file": "rc-charge.vcad",
+      "title": "RC charge",
+      "category": "Analog",
+      "difficulty": "beginner",
+      "description": "A capacitor charges through a resistor with time constant RC."
+    },
+    {
+      "id": "rl-current",
+      "file": "rl-current.vcad",
+      "title": "RL current",
+      "category": "Analog",
+      "difficulty": "intermediate",
+      "description": "Current through an inductor settles as the field builds."
+    },
+    {
+      "id": "ldr-divider",
+      "file": "ldr-divider.vcad",
+      "title": "LDR light divider",
+      "category": "Analog",
+      "difficulty": "intermediate",
+      "description": "An LDR and a fixed resistor form a light-dependent divider."
+    },
+    {
+      "id": "potentiometer-divider",
+      "file": "potentiometer-divider.vcad",
+      "title": "Potentiometer divider",
+      "category": "Analog",
+      "difficulty": "beginner",
+      "description": "A potentiometer wiper sets an adjustable voltage."
+    },
+    {
+      "id": "ntc-divider",
+      "file": "ntc-divider.vcad",
+      "title": "NTC thermistor divider",
+      "category": "Analog",
+      "difficulty": "intermediate",
+      "description": "A thermistor and fixed resistor give a temperature-dependent voltage."
+    },
+    {
+      "id": "rc-discharge",
+      "file": "rc-discharge.vcad",
+      "title": "RC with switch",
+      "category": "Analog",
+      "difficulty": "intermediate",
+      "description": "A switched RC network charges the capacitor."
+    },
+    {
+      "id": "seven-segment",
+      "file": "seven-segment.vcad",
+      "title": "7-segment display",
+      "category": "Digital",
+      "difficulty": "intermediate",
+      "description": "Light every segment of a 7-segment display."
+    },
+    {
+      "id": "rgb-led",
+      "file": "rgb-led.vcad",
+      "title": "RGB LED",
+      "category": "Digital",
+      "difficulty": "intermediate",
+      "description": "Drive all three colours of an RGB LED together."
+    },
+    {
+      "id": "pushbutton-led",
+      "file": "pushbutton-led.vcad",
+      "title": "Pushbutton + LED",
+      "category": "Digital",
+      "difficulty": "beginner",
+      "description": "A pushbutton in series with a resistor and LED."
+    },
+    {
+      "id": "two-resistors-parallel",
+      "file": "two-resistors-parallel.vcad",
+      "title": "Parallel resistors",
+      "category": "Basics",
+      "difficulty": "beginner",
+      "description": "Two equal resistors in parallel halve the resistance."
+    },
+    {
+      "id": "led-series-chain",
+      "file": "led-series-chain.vcad",
+      "title": "LEDs in series",
+      "category": "Digital",
+      "difficulty": "intermediate",
+      "description": "Two LEDs share one current-limiting resistor in series."
+    },
+    {
+      "id": "ldr-light-meter",
+      "file": "ldr-light-meter.vcad",
+      "title": "Light meter",
+      "category": "Sensors",
+      "difficulty": "beginner",
+      "description": "Measure the voltage across an LDR."
+    },
+    {
+      "id": "ntc-thermometer",
+      "file": "ntc-thermometer.vcad",
+      "title": "Thermometer",
+      "category": "Sensors",
+      "difficulty": "beginner",
+      "description": "Measure the voltage across an NTC thermistor."
+    },
+    {
+      "id": "trimmer-led",
+      "file": "trimmer-led.vcad",
+      "title": "Trimmer dimmer",
+      "category": "Sensors",
+      "difficulty": "intermediate",
+      "description": "A potentiometer wiper feeds an LED through a resistor."
+    },
+    {
+      "id": "ldr-ntc-bridge",
+      "file": "ldr-ntc-bridge.vcad",
+      "title": "LDR / NTC bridge",
+      "category": "Sensors",
+      "difficulty": "advanced",
+      "description": "A light sensor and thermistor in series with a meter."
+    },
+    {
+      "id": "light-led",
+      "file": "light-led.vcad",
+      "title": "Light-controlled LED",
+      "category": "Sensors",
+      "difficulty": "intermediate",
+      "description": "An LDR in series dims an LED as light changes."
+    },
+    {
+      "id": "ammeter-led",
+      "file": "ammeter-led.vcad",
+      "title": "Ammeter",
+      "category": "Instruments",
+      "difficulty": "intermediate",
+      "description": "Measure LED current with the multimeter in A mode."
+    },
+    {
+      "id": "voltmeter-battery",
+      "file": "voltmeter-battery.vcad",
+      "title": "Voltmeter",
+      "category": "Instruments",
+      "difficulty": "beginner",
+      "description": "Read a battery voltage with the multimeter."
+    },
+    {
+      "id": "ohmmeter-resistor",
+      "file": "ohmmeter-resistor.vcad",
+      "title": "Ohmmeter",
+      "category": "Instruments",
+      "difficulty": "beginner",
+      "description": "Measure a resistor with the multimeter (power off)."
+    },
+    {
+      "id": "arduino-led",
+      "file": "arduino-led.vcad",
+      "title": "Arduino LED",
+      "category": "Arduino",
+      "difficulty": "beginner",
+      "description": "An LED on D13 with a current-limiting resistor."
+    },
+    {
+      "id": "arduino-potentiometer",
+      "file": "arduino-potentiometer.vcad",
+      "title": "Arduino potentiometer",
+      "category": "Arduino",
+      "difficulty": "intermediate",
+      "description": "A potentiometer on A0 read with the multimeter."
+    }
+  ]
+}

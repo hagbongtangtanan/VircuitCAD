@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "id": "ss3PIlsAa02dY3skzI41d",
+  "name": "Arduino potentiometer",
+  "board": {
+    "id": "K6reuxe27lpKymLEw6g0O",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "uno1",
+      "partId": "arduino-uno",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "pot1",
+      "partId": "potentiometer",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 10000,
+        "position": 0.5
+      }
+    },
+    {
+      "id": "m1",
+      "partId": "multimeter",
+      "position": {
+        "x": 0,
+        "y": 26
+      },
+      "rotation": 0,
+      "params": {
+        "mode": "V"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "YWjvST_IxcJBuPvRC2WUF",
+      "from": {
+        "kind": "pin",
+        "partId": "uno1",
+        "pinId": "5V"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "ibPQjNLH5VU8evcLkOAcm",
+      "from": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "uno1",
+        "pinId": "GND"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "awhrnDe9j2Gb7QcWffib_",
+      "from": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "wiper"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe+"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "uSyVYoDzakU2Zr0NhCuF9",
+      "from": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe-"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "uno1",
+        "pinId": "GND"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}
