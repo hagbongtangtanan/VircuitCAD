@@ -15,25 +15,24 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S08 | Parts wave 1: semiconductors, digital ICs, 555 | done |
 | S09 | Parts wave 2 and instruments | done |
 | S10 | Blockly, example library, schematic view | done |
-| S11 | Polish, packaging, release | pending |
+| S11 | Polish, packaging, release | done |
 
 ## Handoff
-S10 branch `stage/s10-blocks-examples-schematic`. Done: T01 (blockly 13.4.0 pinned + en locale,
-toolbox, custom block defs, structural workspace→IR mapper; Blockly only via `@vircuitcad/blocks/blockly`
-subpath), T02 (`generateArduino` generator, unit-tested), T03 (schema v2 `mode`/`blocks` + v1→v2
-migration + v2 fixture).
-Done also: T06 parity (5 IR programs → generateArduino == handwritten `fixtures/blocks/*.ino`, plus a
-toolchain-tagged compile; REFERENCE_PROGRAMS exported); T04 (27 examples in `examples/` + `manifest.json`
-{id,title,category,difficulty,description}; CI smoke test `sim-analog/src/examples.test.ts` deserializes +
-extracts netlist + asserts convergence; note `diode` and series switches are not catalog/solver-safe).
-Done also: T05 (core `layoutSchematic`/`schematicToSvg`, optional `schematicSymbol` on manifests set
-across the catalog, net-label routing; netlist-equivalence test). Next: T07 docs; remaining UI wiring in
-apps/desktop (Blockly panel, code view, examples browser dialog, schematic panel cross-highlight) TODO.
-Decisions: `@vircuitcad/blocks` holds pure IR/generator/toolbox/mapper; Blockly isolated in `blockly.ts`
-subpath. core `blocks` field is opaque.
-Gotchas: `SCHEMA_VERSION` now 2 (tests using 2 as "unknown" must use 3); blockly needs `import
-'blockly/blocks'` for builtin defs and `blockly/msg/en` (default export is undefined — filter strings from
-namespace); jsdom env via `// @vitest-environment jsdom`; license check passes.
+S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
++ golden tests), T09 (`docs/QA.md`), T06 (`docs/SECURITY.md`, THIRD_PARTY.md, dompurify override, audit
+clean), T05 (`tools/bench.ts` + baseline + `pnpm bench` + CI `bench` job; long soak deferred), T02 (core
+`Settings` model + adapter persistence + en i18n scaffold), T01 (core checksummed autosave journal +
+recent files; file association/single-instance/window-state deferred), T07 (electron-builder: per-user
+NSIS no-elevation, delete-appdata-on-uninstall, zip target, optional signing), T08 (release.yml on `v*`
+tags: version stamp, NSIS/portable/zip, SHA256SUMS, draft Release; docs/USER_GUIDE.md, KNOWN_ISSUES.md;
+dry-run needs a tag push). Only T04 (a11y/UX) left before finish. (PNG canvas export + S10/S11 UI wiring
+still outstanding.)
+Decisions: exports are pure core functions; SPICE emits scientific for |x|<1e-3 or ≥1e6, comments for
+unsupported parts. UI wiring for S10 features (Blockly panel, code view, examples browser, schematic
+panel) is still outstanding.
+Gotchas: `SCHEMA_VERSION`=2; blockly only via `@vircuitcad/blocks/blockly`; packages needing Node built-ins
+in tests set `"types":["node"]` in tsconfig (done for core/sim-analog/blocks/toolchain); CI finish race →
+poll `gh run list` then re-run `vc-stage-finish.sh`.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`

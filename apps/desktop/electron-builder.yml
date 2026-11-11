@@ -22,10 +22,15 @@ win:
     - target: portable
       arch:
         - x64
+    - target: zip
+      arch:
+        - x64
 nsis:
   oneClick: false
   perMachine: false
+  allowElevation: false
   allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: true
   artifactName: VircuitCAD-Setup-${version}.${ext}
 portable:
   artifactName: VircuitCAD-${version}-portable.${ext}

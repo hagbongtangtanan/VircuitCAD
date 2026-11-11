@@ -42,6 +42,25 @@ jobs:
         run: pnpm audit --prod
         continue-on-error: true
 
+  bench:
+    name: bench
+    runs-on: ubuntu-latest
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Benchmark (fails on >20% regression)
+        run: pnpm bench
+
   toolchain:
     name: toolchain
     runs-on: ubuntu-latest
