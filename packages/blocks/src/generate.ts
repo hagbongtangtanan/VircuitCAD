@@ -7,8 +7,16 @@ export function generateExpression(expression: Expr): string {
   switch (expression.kind) {
     case 'number':
       return String(expression.value);
+    case 'boolean':
+      return expression.value ? 'true' : 'false';
+    case 'text':
+      return JSON.stringify(expression.value);
     case 'var':
       return expression.name;
+    case 'pinRead':
+      return `digitalRead(${expression.pin})`;
+    case 'unary':
+      return `(${expression.op}${generateExpression(expression.value)})`;
     case 'binary':
       return `(${generateExpression(expression.left)} ${expression.op} ${generateExpression(expression.right)})`;
   }
@@ -50,6 +58,10 @@ function scan(program: Program): Features {
           break;
         case 'repeat':
           walk(statement.body);
+          break;
+        case 'if':
+          walk(statement.then);
+          if (statement.otherwise) walk(statement.otherwise);
           break;
         default:
           break;
@@ -100,6 +112,15 @@ function emitStatement(statement: Statement, depth: number): string[] {
       const header = `${pad}for (int i = 0; i < ${generateExpression(statement.times)}; i++) {`;
       const body = statement.body.flatMap((child) => emitStatement(child, depth + 1));
       return [header, ...body, `${pad}}`];
+    }
+    case 'if': {
+      const header = `${pad}if (${generateExpression(statement.condition)}) {`;
+      const thenBody = statement.then.flatMap((child) => emitStatement(child, depth + 1));
+      if (!statement.otherwise || statement.otherwise.length === 0) {
+        return [header, ...thenBody, `${pad}}`];
+      }
+      const elseBody = statement.otherwise.flatMap((child) => emitStatement(child, depth + 1));
+      return [header, ...thenBody, `${pad}} else {`, ...elseBody, `${pad}}`];
     }
   }
 }
