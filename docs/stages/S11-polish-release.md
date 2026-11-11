@@ -8,7 +8,7 @@ A beta-quality, signed (or clearly unsigned) offline Windows release with crash 
 
 ## Tasks
 - [ ] **S11-T01** Crash recovery: journaled autosave + restore prompt; `.vcad` file association; recent files; single-instance lock; window-state persistence. → kill-the-process E2E restores the work.
-- [ ] **S11-T02** Settings (theme, grid, sim speed, autosave interval, units), shortcut map + help overlay, i18n scaffold with all strings extracted (English only). → settings persist.
+- [x] **S11-T02** Settings (theme, grid, sim speed, autosave interval, units), shortcut map + help overlay, i18n scaffold with all strings extracted (English only). → settings persist.
 - [x] **S11-T03** Exports: PNG/SVG of the canvas, `.ino`, SPICE netlist, BOM CSV. → golden-file tests.
 - [ ] **S11-T04** Accessibility/UX: keyboard-only toolbar, colour-blind-safe wire palette option, HiDPI check, empty-states and onboarding hints. → checklist in `docs/QA.md`.
 - [x] **S11-T05** Soak and perf: automated 1-hour run (heap growth ≤ agreed %), benchmark budgets with a >20 % regression failure in CI. → reports uploaded as artifacts.

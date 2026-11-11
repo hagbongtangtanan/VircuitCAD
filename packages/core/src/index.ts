@@ -16,6 +16,9 @@ export * from './schematic/schematic';
 export * from './export/spice';
 export * from './export/bom';
 export * from './export/ino';
+export * from './settings/settings';
+export * from './settings/persist';
+export * from './i18n/i18n';
 export * from './store/document-store';
 
 export const packageName = '@vircuitcad/core';
