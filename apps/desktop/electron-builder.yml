@@ -34,5 +34,3 @@ nsis:
   artifactName: VircuitCAD-Setup-${version}.${ext}
 portable:
   artifactName: VircuitCAD-${version}-portable.${ext}
-zip:
-  artifactName: VircuitCAD-${version}.zip
