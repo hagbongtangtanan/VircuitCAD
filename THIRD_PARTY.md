@@ -12,6 +12,19 @@ BSD, ISC and other permissive licenses).
 | React / React DOM | MIT | renderer UI |
 | PixiJS | MIT | 2D canvas renderer |
 | zod | MIT | schema validation |
+| Monaco Editor | MIT | code editor (bundled, main-thread) |
+| Blockly | Apache-2.0 | visual coding (pinned, offline locale) |
+| avr8js | MIT | AVR core emulation |
+
+## Bundled external tools (separate processes, never linked)
+
+| Component | License | Notes |
+|---|---|---|
+| arduino-cli | GPL-3.0 | launched as a child process, never linked |
+| avr-gcc / avrdude | GPL-3.0 / GPL-2.0 | shipped inside `resources/toolchain`, run as processes |
+
+GPL tools are invoked as separate executables with process separation; VircuitCAD does not link
+against them. Confirm the legal position with counsel before a public release (not legal advice).
 
 ## Build / tooling (not shipped)
 
