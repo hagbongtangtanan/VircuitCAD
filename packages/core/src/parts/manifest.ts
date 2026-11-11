@@ -49,6 +49,7 @@ export const PartManifestSchema = z
     params: z.array(ParamSpecSchema),
     simModel: z.string().min(1),
     svg: z.string().min(1),
+    schematicSymbol: z.string().min(1).optional(),
   })
   .superRefine((manifest, ctx) => {
     const pinIds = new Set<string>();

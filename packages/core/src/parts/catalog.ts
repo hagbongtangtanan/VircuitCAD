@@ -14,6 +14,7 @@ export const placeholderManifests: PartManifest[] = [
       { id: 'resistance', label: 'Resistance', unit: 'ohm', min: 0.001, max: 1e9, default: 220 },
     ],
     simModel: 'resistor',
+    schematicSymbol: 'resistor',
     svg: 'parts/resistor.svg',
   }),
   parsePartManifest({
@@ -29,6 +30,7 @@ export const placeholderManifests: PartManifest[] = [
       { id: 'forwardVoltage', label: 'Forward voltage', unit: 'V', min: 0.5, max: 5, default: 2 },
     ],
     simModel: 'led',
+    schematicSymbol: 'led',
     svg: 'parts/led.svg',
   }),
   parsePartManifest({
@@ -41,6 +43,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'voltage', label: 'Voltage', unit: 'V', min: 0.1, max: 24, default: 9 }],
     simModel: 'battery',
+    schematicSymbol: 'battery',
     svg: 'parts/battery.svg',
   }),
   parsePartManifest({
@@ -53,6 +56,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'voltage', label: 'Voltage', unit: 'V', min: 0.1, max: 24, default: 4.5 }],
     simModel: 'battery-pack',
+    schematicSymbol: 'battery',
     svg: 'parts/battery-pack.svg',
   }),
   parsePartManifest({
@@ -65,6 +69,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'pressed', label: 'Pressed', default: false }],
     simModel: 'pushbutton',
+    schematicSymbol: 'switch',
     svg: 'parts/pushbutton.svg',
   }),
   parsePartManifest({
@@ -77,6 +82,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'closed', label: 'Closed', default: true }],
     simModel: 'slide-switch',
+    schematicSymbol: 'switch',
     svg: 'parts/slide-switch.svg',
   }),
   parsePartManifest({
@@ -91,6 +97,7 @@ export const placeholderManifests: PartManifest[] = [
       { id: 'capacitance', label: 'Capacitance', unit: 'F', min: 1e-12, max: 1, default: 1e-6 },
     ],
     simModel: 'capacitor',
+    schematicSymbol: 'capacitor',
     svg: 'parts/capacitor.svg',
   }),
   parsePartManifest({
@@ -105,6 +112,7 @@ export const placeholderManifests: PartManifest[] = [
       { id: 'inductance', label: 'Inductance', unit: 'H', min: 1e-9, max: 100, default: 1e-3 },
     ],
     simModel: 'inductor',
+    schematicSymbol: 'inductor',
     svg: 'parts/inductor.svg',
   }),
   parsePartManifest({
@@ -120,6 +128,7 @@ export const placeholderManifests: PartManifest[] = [
       { id: 'currentLimit', label: 'Current limit', unit: 'A', min: 0.001, max: 5, default: 1 },
     ],
     simModel: 'power-supply',
+    schematicSymbol: 'source',
     svg: 'parts/power-supply.svg',
   }),
   parsePartManifest({
@@ -132,6 +141,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'mode', label: 'Mode', default: 'V' }],
     simModel: 'multimeter',
+    schematicSymbol: 'meter',
     svg: 'parts/multimeter.svg',
   }),
   parsePartManifest({
@@ -159,6 +169,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [],
     simModel: 'arduino-uno',
+    schematicSymbol: 'ic',
     svg: 'parts/arduino-uno.svg',
   }),
   parsePartManifest({
@@ -171,6 +182,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'lux', label: 'Light', unit: 'lx', min: 0.01, max: 100000, default: 500 }],
     simModel: 'ldr',
+    schematicSymbol: 'resistor',
     svg: 'parts/ldr.svg',
   }),
   parsePartManifest({
@@ -185,6 +197,7 @@ export const placeholderManifests: PartManifest[] = [
       { id: 'temperature', label: 'Temperature', unit: 'C', min: -40, max: 150, default: 25 },
     ],
     simModel: 'ntc',
+    schematicSymbol: 'resistor',
     svg: 'parts/ntc.svg',
   }),
   parsePartManifest({
@@ -201,6 +214,7 @@ export const placeholderManifests: PartManifest[] = [
       { id: 'position', label: 'Position', min: 0, max: 1, default: 0.5 },
     ],
     simModel: 'potentiometer',
+    schematicSymbol: 'potentiometer',
     svg: 'parts/potentiometer.svg',
   }),
   parsePartManifest({
@@ -218,6 +232,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'common', label: 'Common', default: 'cathode' }],
     simModel: 'seven-segment',
+    schematicSymbol: 'display',
     svg: 'parts/seven-segment.svg',
   }),
   parsePartManifest({
@@ -232,6 +247,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'common', label: 'Common', default: 'cathode' }],
     simModel: 'rgb-led',
+    schematicSymbol: 'led',
     svg: 'parts/rgb-led.svg',
   }),
   parsePartManifest({
@@ -249,6 +265,7 @@ export const placeholderManifests: PartManifest[] = [
     ],
     params: [{ id: 'common', label: 'Common', default: 'cathode' }],
     simModel: 'led-bar',
+    schematicSymbol: 'led',
     svg: 'parts/led-bar.svg',
   }),
 ];
