@@ -15,7 +15,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S08 | Parts wave 1: semiconductors, digital ICs, 555 | done |
 | S09 | Parts wave 2 and instruments | done |
 | S10 | Blockly, example library, schematic view | done |
-| S11 | Polish, packaging, release | pending |
+| S11 | Polish, packaging, release | done |
 
 ## Handoff
 S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
