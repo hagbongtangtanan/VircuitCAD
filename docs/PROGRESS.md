@@ -18,15 +18,17 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S10 branch `stage/s10-blocks-examples-schematic`. Done: T03 (schema v2: `mode`/`blocks`, `modeOf()`,
-v1→v2 migration, fixture `fixtures/vcad/v2/blocks-blink.vcad`), T02 (new `@vircuitcad/blocks`: IR +
-`generateArduino`, auto-includes Servo/LiquidCrystal/Serial; unit-tested, no deps).
-Next: T01 Blockly bundled offline (pinned, offline locales) + toolbox, wire UI to `@vircuitcad/blocks`
-IR; T04 ≥25 examples + browser dialog; T05 schematic view; T06 blocks↔text parity; T07 docs.
-Decisions: T02 shipped Blockly-agnostic; T01 must map workspaces → `@vircuitcad/blocks` IR (keeps core
-pure). `blocks` in .vcad is opaque `Record<string,unknown>`.
-Gotchas: `SCHEMA_VERSION` now 2 (tests using `schemaVersion:2` as "unknown" must use 3); new pkgs go in
-`packages/*` (pnpm-workspace auto-includes); `pnpm add blockly` needs network (registry reachable).
+S10 branch `stage/s10-blocks-examples-schematic`. Done: T01 (blockly 13.4.0 pinned + en locale,
+toolbox, custom block defs, structural workspace→IR mapper; Blockly only via `@vircuitcad/blocks/blockly`
+subpath), T02 (`generateArduino` generator, unit-tested), T03 (schema v2 `mode`/`blocks` + v1→v2
+migration + v2 fixture).
+Next: T04 ≥25 example circuits + metadata + browser dialog + CI smoke tests; T05 schematic view; T06
+blocks↔text parity (5 programs); T07 docs. UI wiring of Blockly/code view into apps/desktop still TODO.
+Decisions: `@vircuitcad/blocks` holds pure IR/generator/toolbox/mapper; Blockly isolated in `blockly.ts`
+subpath. core `blocks` field is opaque.
+Gotchas: `SCHEMA_VERSION` now 2 (tests using 2 as "unknown" must use 3); blockly needs `import
+'blockly/blocks'` for builtin defs and `blockly/msg/en` (default export is undefined — filter strings from
+namespace); jsdom env via `// @vitest-environment jsdom`; license check passes.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`
