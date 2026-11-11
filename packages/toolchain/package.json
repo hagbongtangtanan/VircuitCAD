@@ -9,6 +9,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@vircuitcad/blocks": "workspace:*",
     "@vircuitcad/core": "workspace:*"
   },
   "scripts": {

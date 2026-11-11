@@ -172,6 +172,9 @@ importers:
 
   packages/toolchain:
     dependencies:
+      '@vircuitcad/blocks':
+        specifier: workspace:*
+        version: link:../blocks
       '@vircuitcad/core':
         specifier: workspace:*
         version: link:../core

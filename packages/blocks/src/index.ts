@@ -13,5 +13,6 @@ export { TOOLBOX, TOOLBOX_CATEGORIES } from './toolbox';
 export type { Toolbox, ToolboxBlock, ToolboxCategory } from './toolbox';
 export { workspaceToProgram } from './mapper';
 export type { BlockLike, WorkspaceLike } from './mapper';
+export { REFERENCE_PROGRAMS } from './programs';
 
 export const packageName = '@vircuitcad/blocks';
