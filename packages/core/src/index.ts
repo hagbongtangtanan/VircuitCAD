@@ -19,6 +19,8 @@ export * from './export/ino';
 export * from './settings/settings';
 export * from './settings/persist';
 export * from './i18n/i18n';
+export * from './recovery/journal';
+export * from './recovery/recent';
 export * from './store/document-store';
 
 export const packageName = '@vircuitcad/core';
