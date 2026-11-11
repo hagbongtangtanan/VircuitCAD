@@ -19,9 +19,9 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 
 ## Handoff
 S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
-`toSpiceNetlist`/`toBomCsv`/`toIno` + golden tests), T09 (`docs/QA.md` clean-VM checklist + v0.1.0-beta
-proposal). Next: T01 crash recovery/autosave/recent files, T02 settings+shortcuts+i18n, T04 a11y/UX, T05
-soak+perf budgets, T06 offline/security audit (`docs/SECURITY.md`), T07 installer polish, T08 release
++ golden tests), T09 (`docs/QA.md`), T06 (`docs/SECURITY.md`, THIRD_PARTY.md updated, pnpm override
+dompurify→3.4.17 so `pnpm audit --prod` is clean). Next: T01 crash recovery/autosave/recent files, T02
+settings+shortcuts+i18n, T04 a11y/UX, T05 soak+perf budgets in CI, T07 installer polish, T08 release
 workflow `v*`. (PNG canvas export in T03 still needs UI/wiring.)
 Decisions: exports are pure core functions; SPICE emits scientific for |x|<1e-3 or ≥1e6, comments for
 unsupported parts. UI wiring for S10 features (Blockly panel, code view, examples browser, schematic
