@@ -22,8 +22,11 @@ S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Do
 + golden tests), T09 (`docs/QA.md`), T06 (`docs/SECURITY.md`, THIRD_PARTY.md, dompurify override, audit
 clean), T05 (`tools/bench.ts` + baseline + `pnpm bench` + CI `bench` job; long soak deferred), T02 (core
 `Settings` model + adapter persistence + en i18n scaffold), T01 (core checksummed autosave journal +
-recent files; file association/single-instance/window-state deferred). Next: T04 a11y/UX, T07 installer
-polish, T08 release workflow `v*`. (PNG canvas export + all S10/S11 UI wiring still outstanding.)
+recent files; file association/single-instance/window-state deferred), T07 (electron-builder: per-user
+NSIS no-elevation, delete-appdata-on-uninstall, zip target, optional signing), T08 (release.yml on `v*`
+tags: version stamp, NSIS/portable/zip, SHA256SUMS, draft Release; docs/USER_GUIDE.md, KNOWN_ISSUES.md;
+dry-run needs a tag push). Only T04 (a11y/UX) left before finish. (PNG canvas export + S10/S11 UI wiring
+still outstanding.)
 Decisions: exports are pure core functions; SPICE emits scientific for |x|<1e-3 or ≥1e6, comments for
 unsupported parts. UI wiring for S10 features (Blockly panel, code view, examples browser, schematic
 panel) is still outstanding.
