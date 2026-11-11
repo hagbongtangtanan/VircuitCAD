@@ -11,7 +11,7 @@ A beta-quality, signed (or clearly unsigned) offline Windows release with crash 
 - [ ] **S11-T02** Settings (theme, grid, sim speed, autosave interval, units), shortcut map + help overlay, i18n scaffold with all strings extracted (English only). → settings persist.
 - [x] **S11-T03** Exports: PNG/SVG of the canvas, `.ino`, SPICE netlist, BOM CSV. → golden-file tests.
 - [ ] **S11-T04** Accessibility/UX: keyboard-only toolbar, colour-blind-safe wire palette option, HiDPI check, empty-states and onboarding hints. → checklist in `docs/QA.md`.
-- [ ] **S11-T05** Soak and perf: automated 1-hour run (heap growth ≤ agreed %), benchmark budgets with a >20 % regression failure in CI. → reports uploaded as artifacts.
+- [x] **S11-T05** Soak and perf: automated 1-hour run (heap growth ≤ agreed %), benchmark budgets with a >20 % regression failure in CI. → reports uploaded as artifacts.
 - [x] **S11-T06** Offline/security audit: licence report vs `THIRD_PARTY.md`, CSP review, dependency audit, run the built app with the network blocked. → recorded in `docs/SECURITY.md`.
 - [ ] **S11-T07** Installer polish: NSIS per-user no-admin, clean uninstall, portable zip, version stamping, auto-update disabled; code-signing wired through optional secrets (unsigned fallback). → artifacts for both paths.
 - [ ] **S11-T08** Release workflow on tags `v*` → draft GitHub Release with installer, portable zip, SHA256 sums; docs: user guide, `docs/MODELS.md` final tolerances, `KNOWN_ISSUES.md`, `LICENSES`. → dry-run on a pre-release tag.
