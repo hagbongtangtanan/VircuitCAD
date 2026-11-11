@@ -4,7 +4,8 @@ Parts are **data + a small model**, never new core code. A part needs all four o
 
 1. **Manifest** — in `packages/core/src/parts/catalog.ts` (validated by `PartManifestSchema`):
    `id`, `name`, `category`, `pins` (id, name, grid `position`, electrical `role`), `params`
-   (id, label, unit, min/max, default), `simModel`, `svg`.
+   (id, label, unit, min/max, default), `simModel`, `svg`, and an optional `schematicSymbol`
+   (used by the read-only schematic view, see `docs/SCHEMATIC.md`).
 2. **Sim model** — a `case` in `buildSimulation` (`packages/sim-analog/src/bridge.ts`) mapping the
    `simModel` id to a device (e.g. `createResistor`, `createDiode`, `createMosfet`). Digital ICs will
    map to `sim-digital` in a later stage.

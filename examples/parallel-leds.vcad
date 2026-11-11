@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 2,
+  "id": "SFvd-eBiTFogCJPaZ-5ky",
+  "name": "Parallel LEDs",
+  "board": {
+    "id": "y6QVKR3v2QD-dHsfJPuOW",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 9
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 220
+      }
+    },
+    {
+      "id": "d1",
+      "partId": "led",
+      "position": {
+        "x": 2,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "color": "red"
+      }
+    },
+    {
+      "id": "r2",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 220
+      }
+    },
+    {
+      "id": "d2",
+      "partId": "led",
+      "position": {
+        "x": 2,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "color": "blue"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "dvKhJfaeixu_QbhXXh_IG",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "NcfVe8dYyFUQdQNQRBhsZ",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "anode"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "sb8cwVEqWU9gzXg9q33vZ",
+      "from": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "cathode"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "kjlqlCmhwQtm1UDCYvh07",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r2",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "2my3CGkrvaI8hS_Tvlfiu",
+      "from": {
+        "kind": "pin",
+        "partId": "r2",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "d2",
+        "pinId": "anode"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "lUlkf8lDrU7sgucrEU0vq",
+      "from": {
+        "kind": "pin",
+        "partId": "d2",
+        "pinId": "cathode"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

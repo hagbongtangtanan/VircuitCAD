@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 2,
+  "id": "YAGsvgBOekAL0Iu-KJZ29",
+  "name": "Trimmer dimmer",
+  "board": {
+    "id": "D5epytsHPEv2hyn6jATRD",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 5
+      }
+    },
+    {
+      "id": "pot1",
+      "partId": "potentiometer",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 10000,
+        "position": 0.75
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 220
+      }
+    },
+    {
+      "id": "d1",
+      "partId": "led",
+      "position": {
+        "x": 0,
+        "y": 26
+      },
+      "rotation": 0,
+      "params": {
+        "color": "red"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "8rfqNGOLWGZJz4ZHPte2Q",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "Eq_B9tEY8dnSyQX9r313Z",
+      "from": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "ckSJWZdppPL2kMpy6ZWf_",
+      "from": {
+        "kind": "pin",
+        "partId": "pot1",
+        "pinId": "wiper"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "1MNAfXWBS_7AQJ5Ihf29R",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "anode"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "JmAp7OiyzhWo7H_TBwmOq",
+      "from": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "cathode"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 1,
-  "id": "1eBIOFrFDlBV5n9in4Wwi",
+  "schemaVersion": 2,
+  "id": "HZSa6yLaNabRgYHhIvryB",
   "name": "Switch + LED",
   "board": {
-    "id": "-SvcN1BR6rWzJqxaeSQTC",
+    "id": "Cu5EVAXbPCu7tx7nn6B8w",
     "kind": "full"
   },
   "parts": [
@@ -58,7 +58,7 @@
   ],
   "wires": [
     {
-      "id": "2VCoNgNGcSR5smLjns0XR",
+      "id": "4fVgUU_pX8r0z_JdSGHrM",
       "from": {
         "kind": "pin",
         "partId": "pack1",
@@ -73,7 +73,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "knK1eSns9KYT979U_ec_Y",
+      "id": "ScL8-klMaFiirXj6svmDB",
       "from": {
         "kind": "pin",
         "partId": "sw1",
@@ -88,7 +88,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "TaHSglLLPfP6lZeKrP2Yd",
+      "id": "HGx3AZxlCad82ikb3MyvB",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -103,7 +103,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "TulvCF-L4kPYuq7-GVq03",
+      "id": "WKWEkG1Alt_L3YN0GqDbn",
       "from": {
         "kind": "pin",
         "partId": "d1",
@@ -122,5 +122,6 @@
     "files": {
       "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
     }
-  }
+  },
+  "mode": "text"
 }

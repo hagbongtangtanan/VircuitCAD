@@ -14,19 +14,26 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S07 | Code editor, upload flow, serial monitor | done |
 | S08 | Parts wave 1: semiconductors, digital ICs, 555 | done |
 | S09 | Parts wave 2 and instruments | done |
-| S10 | Blockly, example library, schematic view | pending |
+| S10 | Blockly, example library, schematic view | done |
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
-S09 branch `stage/s09-parts-wave2`: ALL TASKS DONE (T01–T08). Next: `scripts/vc-stage-finish.sh S09`.
-Wave-2 models are pure TS units; part manifests in `packages/core/src/parts/catalog.ts` still stop at
-`led-bar` (UI wiring of the new parts is not part of S09 tasks). Supply bench CC mode not implemented
-(T02 only shipped `sampleWaveform`).
-Perf: `perf.test.ts` (slow) 101 parts/300 wires → ~1.35 ms/operating-point solve, budget < 50 ms.
-Fixtures: `neopixel.ino` + hex/trace added; toolchain CI integration test compiles blink/lcd-hello/
-servo-sweep/neopixel. Regenerate fixtures with `node tools/make-fixtures.mjs` then
-`pnpm exec tsx tools/make-traces.ts`; strip CR from `.hex` before committing.
-Gotchas: `performance` unavailable in pure-TS pkgs (use Date.now); heavy tests need timeouts; `vc-check` uses `pnpm -s`.
+S10 branch `stage/s10-blocks-examples-schematic`. Done: T01 (blockly 13.4.0 pinned + en locale,
+toolbox, custom block defs, structural workspace→IR mapper; Blockly only via `@vircuitcad/blocks/blockly`
+subpath), T02 (`generateArduino` generator, unit-tested), T03 (schema v2 `mode`/`blocks` + v1→v2
+migration + v2 fixture).
+Done also: T06 parity (5 IR programs → generateArduino == handwritten `fixtures/blocks/*.ino`, plus a
+toolchain-tagged compile; REFERENCE_PROGRAMS exported); T04 (27 examples in `examples/` + `manifest.json`
+{id,title,category,difficulty,description}; CI smoke test `sim-analog/src/examples.test.ts` deserializes +
+extracts netlist + asserts convergence; note `diode` and series switches are not catalog/solver-safe).
+Done also: T05 (core `layoutSchematic`/`schematicToSvg`, optional `schematicSymbol` on manifests set
+across the catalog, net-label routing; netlist-equivalence test). Next: T07 docs; remaining UI wiring in
+apps/desktop (Blockly panel, code view, examples browser dialog, schematic panel cross-highlight) TODO.
+Decisions: `@vircuitcad/blocks` holds pure IR/generator/toolbox/mapper; Blockly isolated in `blockly.ts`
+subpath. core `blocks` field is opaque.
+Gotchas: `SCHEMA_VERSION` now 2 (tests using 2 as "unknown" must use 3); blockly needs `import
+'blockly/blocks'` for builtin defs and `blockly/msg/en` (default export is undefined — filter strings from
+namespace); jsdom env via `// @vitest-environment jsdom`; license check passes.
 Blocked: none.
 APIs: `createMosfet`, `createSchottky`, `stampTransconductance`; `ldrResistance`/`ntcResistance`/
 `potentiometerResistances`; `sim-digital` `Level`/`and`/`or`/`not`/`nand`/`xor`/`drive` + `DigitalEngine`

@@ -21,11 +21,13 @@ it('round-trips a circuit through serialize/deserialize', () => {
   expect(restored).toEqual(circuit);
 });
 
-it('loads the v1 fixture and extracts the expected netlist', () => {
+it('migrates the v1 fixture to v2 and extracts the expected netlist', () => {
   const path = fileURLToPath(new URL('../../../../fixtures/vcad/v1/led-series.vcad', import.meta.url));
   const circuit = deserializeCircuit(readFileSync(path, 'utf8'));
 
-  expect(circuit.schemaVersion).toBe(1);
+  expect(circuit.schemaVersion).toBe(2);
+  expect(circuit.mode).toBe('text');
+  expect(circuit.blocks).toBeUndefined();
   expect(circuit.parts).toHaveLength(3);
 
   const netlist = extractNetlist(circuit, createDefaultPartRegistry());
@@ -33,8 +35,27 @@ it('loads the v1 fixture and extracts the expected netlist', () => {
   expect(netlist.nets.some((net) => net.isGround)).toBe(true);
 });
 
+it('loads the v2 blocks fixture and preserves the workspace', () => {
+  const path = fileURLToPath(
+    new URL('../../../../fixtures/vcad/v2/blocks-blink.vcad', import.meta.url),
+  );
+  const circuit = deserializeCircuit(readFileSync(path, 'utf8'));
+
+  expect(circuit.schemaVersion).toBe(2);
+  expect(circuit.mode).toBe('blocks');
+  expect(circuit.blocks?.blocks).toHaveLength(2);
+});
+
+it('round-trips a blocks-mode project', () => {
+  const circuit = createEmptyCircuit({ name: 'Blocks', mode: 'blocks' });
+  circuit.blocks = { blocks: [{ type: 'arduino_loop', id: 'b1' }] };
+
+  const restored = deserializeCircuit(serializeCircuit(circuit));
+  expect(restored).toEqual(circuit);
+});
+
 it('rejects a document newer than the supported version', () => {
-  expect(() => deserializeCircuit(JSON.stringify({ schemaVersion: 2 }))).toThrow(
+  expect(() => deserializeCircuit(JSON.stringify({ schemaVersion: 3 }))).toThrow(
     /newer than supported/,
   );
 });

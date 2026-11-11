@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 2,
+  "id": "KtXWbW3NpycmyeVJ_LAa8",
+  "name": "Arduino LED",
+  "board": {
+    "id": "M6xHvYtC8pRX0nJl89oTo",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "uno1",
+      "partId": "arduino-uno",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {}
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 220
+      }
+    },
+    {
+      "id": "d1",
+      "partId": "led",
+      "position": {
+        "x": 0,
+        "y": 26
+      },
+      "rotation": 0,
+      "params": {
+        "color": "red"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "F6qjz0gWc00-rKFmYVf1-",
+      "from": {
+        "kind": "pin",
+        "partId": "uno1",
+        "pinId": "D13"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "lDyeaU8l9MFInB_G-6EPS",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "anode"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "gk8NLGlbJhT_1C31g6Ixv",
+      "from": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "cathode"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "uno1",
+        "pinId": "GND"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

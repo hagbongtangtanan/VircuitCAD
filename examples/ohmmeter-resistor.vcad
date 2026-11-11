@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 2,
+  "id": "hiWpnRGp-WYytq75C-SAp",
+  "name": "Ohmmeter",
+  "board": {
+    "id": "wMY6oVA7btgakGdMXcFcH",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "m1",
+      "partId": "multimeter",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "mode": "R"
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 470
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "94WgZE0-BqPEatKVgORmD",
+      "from": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe+"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "5oJlaC1Ey3-UuvcAo1kZ9",
+      "from": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe-"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

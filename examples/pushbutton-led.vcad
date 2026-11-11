@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 2,
+  "id": "BKPC1aBdOC2oeCYHFB782",
+  "name": "Pushbutton + LED",
+  "board": {
+    "id": "0-Uca2X3m1wjscwkV469a",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "pack1",
+      "partId": "battery-pack",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 4.5
+      }
+    },
+    {
+      "id": "sw1",
+      "partId": "pushbutton",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "pressed": true
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 220
+      }
+    },
+    {
+      "id": "d1",
+      "partId": "led",
+      "position": {
+        "x": 0,
+        "y": 26
+      },
+      "rotation": 0,
+      "params": {
+        "color": "red"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "lS0nWxOkFF7Vdt1ttiEuE",
+      "from": {
+        "kind": "pin",
+        "partId": "pack1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "sw1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "04tU4qIeSsGvi9BFLURsY",
+      "from": {
+        "kind": "pin",
+        "partId": "sw1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "i4zc44MVayV8pMX5YMp9J",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "anode"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "QtGsPhQBN-eXS0sKeEoDa",
+      "from": {
+        "kind": "pin",
+        "partId": "d1",
+        "pinId": "cathode"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "pack1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "id": "wloE-OYsZeVhkYZYw9fJv",
+  "name": "NTC thermistor divider",
+  "board": {
+    "id": "dHRSXElG8q5c2mq1qWr6g",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 5
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 10000
+      }
+    },
+    {
+      "id": "ntc1",
+      "partId": "ntc",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {
+        "temperature": 25
+      }
+    },
+    {
+      "id": "m1",
+      "partId": "multimeter",
+      "position": {
+        "x": 0,
+        "y": 26
+      },
+      "rotation": 0,
+      "params": {
+        "mode": "V"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "LnI-irzPbFAHnI4lo_ndn",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "U-yyPgnu18WLZ9LpjLh1J",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "ntc1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "TxzVjer-wDQcakrI352cp",
+      "from": {
+        "kind": "pin",
+        "partId": "ntc1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "-lCMBkNPozK9WTL4_RQIz",
+      "from": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe+"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "ntc1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "AGj0LfkbMIc7KpJoMz2lC",
+      "from": {
+        "kind": "pin",
+        "partId": "m1",
+        "pinId": "probe-"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "ntc1",
+        "pinId": "b"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 2,
+  "id": "-aJMKZDrcCeh8vHTg3i7P",
+  "name": "Parallel resistors",
+  "board": {
+    "id": "1pjvmo43el65l3RFtYjld",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 9
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 1000
+      }
+    },
+    {
+      "id": "r2",
+      "partId": "resistor",
+      "position": {
+        "x": 2,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 1000
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "J8l-iCQTSCGDrp4bTh875",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "vCU440u1aaEZT2YGKsiWz",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "eHYVrJ9WTydfJqoKvX9fY",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r2",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "Yer1M00aQNrwqjZdHl6ZS",
+      "from": {
+        "kind": "pin",
+        "partId": "r2",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

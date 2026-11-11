@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 2,
+  "id": "GoJ7ty0lf9iy5CVAoLAI9",
+  "name": "LED bar",
+  "board": {
+    "id": "0DYLlmD4emxiXaVRVMnN_",
+    "kind": "full"
+  },
+  "parts": [
+    {
+      "id": "bt1",
+      "partId": "battery",
+      "position": {
+        "x": 0,
+        "y": 20
+      },
+      "rotation": 0,
+      "params": {
+        "voltage": 5
+      }
+    },
+    {
+      "id": "r1",
+      "partId": "resistor",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 0,
+      "params": {
+        "resistance": 220
+      }
+    },
+    {
+      "id": "bar1",
+      "partId": "led-bar",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "rotation": 0,
+      "params": {}
+    }
+  ],
+  "wires": [
+    {
+      "id": "Z83kr4GBtGZvUghjGSdDq",
+      "from": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "positive"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "a"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "VPZHf52yL6HFrex96iew6",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bar1",
+        "pinId": "s1"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "Bex5-ZzqiCA2bONjeuxzr",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bar1",
+        "pinId": "s2"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "l8-c83aYtwRNns-0Gu_JB",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bar1",
+        "pinId": "s3"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "XGjErFR5YGKgjnkRIDHYE",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bar1",
+        "pinId": "s4"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "C34FFXkzoNzTvCcoULczi",
+      "from": {
+        "kind": "pin",
+        "partId": "r1",
+        "pinId": "b"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bar1",
+        "pinId": "s5"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    },
+    {
+      "id": "nnAe0MIVjHSyVnzwWv87x",
+      "from": {
+        "kind": "pin",
+        "partId": "bar1",
+        "pinId": "com"
+      },
+      "to": {
+        "kind": "pin",
+        "partId": "bt1",
+        "pinId": "negative"
+      },
+      "waypoints": [],
+      "color": "#22c55e"
+    }
+  ],
+  "sketch": {
+    "files": {
+      "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
+    }
+  },
+  "mode": "text"
+}

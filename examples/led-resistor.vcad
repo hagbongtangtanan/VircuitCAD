@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 1,
-  "id": "VoHIC0cDrsg3NcK2Bh_5K",
+  "schemaVersion": 2,
+  "id": "-iDoluYk0gEFYXhMdxW6p",
   "name": "LED + resistor",
   "board": {
-    "id": "d_K2dEJ2AtSSwxcEHLsyT",
+    "id": "x5jk_yaEo4VvkxlBfySVL",
     "kind": "full"
   },
   "parts": [
@@ -40,13 +40,14 @@
       },
       "rotation": 0,
       "params": {
-        "color": "red"
+        "color": "red",
+        "forwardVoltage": 2
       }
     }
   ],
   "wires": [
     {
-      "id": "H8aUcJuujcgHgVoPtwNxm",
+      "id": "mFU32VabTRWJS2vBEWcjQ",
       "from": {
         "kind": "pin",
         "partId": "bt1",
@@ -61,7 +62,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "OpdHsWXgnggvuYoXM35Vn",
+      "id": "rNIGBVD8lBb6KFWtzvs6A",
       "from": {
         "kind": "pin",
         "partId": "r1",
@@ -76,7 +77,7 @@
       "color": "#22c55e"
     },
     {
-      "id": "nWctNeUDoaRIYU5U3_wGW",
+      "id": "ICOTrkZm_Na7QSQAiczL9",
       "from": {
         "kind": "pin",
         "partId": "d1",
@@ -95,5 +96,6 @@
     "files": {
       "sketch.ino": "void setup() {\n}\n\nvoid loop() {\n}\n"
     }
-  }
+  },
+  "mode": "text"
 }
