@@ -50,6 +50,16 @@ S11 is a human review gate: complete the table, sign off, then tag.
 | Result | pass / fail |
 | Notes / known issues | |
 
+## Accessibility / UX
+
+- [ ] Toolbar and main actions are reachable and operable **keyboard-only** (tab order, Enter/Space,
+      visible focus rings; no focus traps).
+- [ ] Colour-blind-safe wire palette can be enabled and keeps wires distinguishable.
+- [ ] HiDPI: UI and canvas are crisp at 100%, 150% and 200% scaling; no blurry bitmaps.
+- [ ] Empty states are helpful: empty canvas, no examples match a search, nothing in the serial
+      monitor, no probe selected all show a guiding message.
+- [ ] Onboarding hints appear on first run and can be dismissed.
+
 ## Tag proposal
 
 Propose **`v0.1.0-beta`** once every box above is checked. Record the signed-off commit in the PR
