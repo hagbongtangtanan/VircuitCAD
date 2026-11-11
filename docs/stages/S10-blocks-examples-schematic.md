@@ -13,7 +13,7 @@ S07 Handoff (code panel), `docs/PARTS.md` (schematic symbols), `docs/adr/` list.
 - [x] **S10-T04** Example library: ≥ 25 circuits with metadata (category, difficulty, description), loaded from bundled `.vcad`; browser dialog with search. → every example is smoke-tested in CI (loads, runs 2 s, no `SimError` unless intended).
 - [x] **S10-T05** Schematic view: auto-layout from the netlist using manifest `schematicSymbol`s; selection cross-highlights with the breadboard; labelled nets; export to SVG. → netlist-equivalence test (schematic nets == breadboard nets).
 - [x] **S10-T06** Blocks↔text parity: 5 programs produce identical pin traces from blocks and from handwritten code. → deterministic trace comparison.
-- [ ] **S10-T07** Docs: blocks reference, schematic limitations (read-only, auto-layout).
+- [x] **S10-T07** Docs: blocks reference, schematic limitations (read-only, auto-layout).
 
 ## Pitfalls
 - Blockly API shifts between versions → pin and read types from `node_modules`.
