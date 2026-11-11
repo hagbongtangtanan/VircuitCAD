@@ -14,7 +14,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S07 | Code editor, upload flow, serial monitor | done |
 | S08 | Parts wave 1: semiconductors, digital ICs, 555 | done |
 | S09 | Parts wave 2 and instruments | done |
-| S10 | Blockly, example library, schematic view | pending |
+| S10 | Blockly, example library, schematic view | done |
 | S11 | Polish, packaging, release | pending |
 
 ## Handoff
