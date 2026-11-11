@@ -22,8 +22,10 @@ S10 branch `stage/s10-blocks-examples-schematic`. Done: T01 (blockly 13.4.0 pinn
 toolbox, custom block defs, structural workspace→IR mapper; Blockly only via `@vircuitcad/blocks/blockly`
 subpath), T02 (`generateArduino` generator, unit-tested), T03 (schema v2 `mode`/`blocks` + v1→v2
 migration + v2 fixture).
-Next: T04 ≥25 example circuits + metadata + browser dialog + CI smoke tests; T05 schematic view; T06
-blocks↔text parity (5 programs); T07 docs. UI wiring of Blockly/code view into apps/desktop still TODO.
+Done also: T06 parity (5 IR programs → generateArduino == handwritten `fixtures/blocks/*.ino`,
+byte-identical; toolchain-tagged test compiles each generated sketch offline). REFERENCE_PROGRAMS exported.
+Next: T04 ≥25 example circuits + metadata + browser dialog + CI smoke tests; T05 schematic view; T07 docs.
+UI wiring of Blockly/code view into apps/desktop still TODO.
 Decisions: `@vircuitcad/blocks` holds pure IR/generator/toolbox/mapper; Blockly isolated in `blockly.ts`
 subpath. core `blocks` field is opaque.
 Gotchas: `SCHEMA_VERSION` now 2 (tests using 2 as "unknown" must use 3); blockly needs `import
