@@ -26,8 +26,9 @@ Done also: T06 parity (5 IR programs → generateArduino == handwritten `fixture
 toolchain-tagged compile; REFERENCE_PROGRAMS exported); T04 (27 examples in `examples/` + `manifest.json`
 {id,title,category,difficulty,description}; CI smoke test `sim-analog/src/examples.test.ts` deserializes +
 extracts netlist + asserts convergence; note `diode` and series switches are not catalog/solver-safe).
-Next: T05 schematic view; T07 docs; T04 browser dialog w/ search + T01/T02 Blockly panel & code view UI
-wiring into apps/desktop still TODO.
+Done also: T05 (core `layoutSchematic`/`schematicToSvg`, optional `schematicSymbol` on manifests set
+across the catalog, net-label routing; netlist-equivalence test). Next: T07 docs; remaining UI wiring in
+apps/desktop (Blockly panel, code view, examples browser dialog, schematic panel cross-highlight) TODO.
 Decisions: `@vircuitcad/blocks` holds pure IR/generator/toolbox/mapper; Blockly isolated in `blockly.ts`
 subpath. core `blocks` field is opaque.
 Gotchas: `SCHEMA_VERSION` now 2 (tests using 2 as "unknown" must use 3); blockly needs `import
