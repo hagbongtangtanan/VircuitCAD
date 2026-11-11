@@ -14,7 +14,7 @@ A beta-quality, signed (or clearly unsigned) offline Windows release with crash 
 - [x] **S11-T05** Soak and perf: automated 1-hour run (heap growth ≤ agreed %), benchmark budgets with a >20 % regression failure in CI. → reports uploaded as artifacts.
 - [x] **S11-T06** Offline/security audit: licence report vs `THIRD_PARTY.md`, CSP review, dependency audit, run the built app with the network blocked. → recorded in `docs/SECURITY.md`.
 - [x] **S11-T07** Installer polish: NSIS per-user no-admin, clean uninstall, portable zip, version stamping, auto-update disabled; code-signing wired through optional secrets (unsigned fallback). → artifacts for both paths.
-- [ ] **S11-T08** Release workflow on tags `v*` → draft GitHub Release with installer, portable zip, SHA256 sums; docs: user guide, `docs/MODELS.md` final tolerances, `KNOWN_ISSUES.md`, `LICENSES`. → dry-run on a pre-release tag.
+- [x] **S11-T08** Release workflow on tags `v*` → draft GitHub Release with installer, portable zip, SHA256 sums; docs: user guide, `docs/MODELS.md` final tolerances, `KNOWN_ISSUES.md`, `LICENSES`. → dry-run on a pre-release tag.
 - [x] **S11-T09** Clean-VM QA checklist in `docs/QA.md` (blink, button-LED, pot LED, serial, scope, example sweep, uninstall) and tag proposal `v0.1.0-beta` in the PR description.
 
 ## Pitfalls
