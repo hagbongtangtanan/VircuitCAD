@@ -1,7 +1,7 @@
 export type StatusBarProps = {
   partCount: number;
   wireCount: number;
-  zoom: number;
+  zoom?: number;
   hint?: string;
   simState?: string;
   simTime?: number;
@@ -21,7 +21,7 @@ export function StatusBar({
     <div className="status-bar" role="status">
       <span data-testid="status-parts">{partCount} parts</span>
       <span data-testid="status-wires">{wireCount} wires</span>
-      <span data-testid="status-zoom">{Math.round(zoom * 100)}%</span>
+      {zoom !== undefined ? <span data-testid="status-zoom">{Math.round(zoom * 100)}%</span> : null}
       {simState && simState !== 'idle' ? (
         <span data-testid="status-sim">
           {simState}

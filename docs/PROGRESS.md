@@ -19,24 +19,20 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S13 | UI foundation and part art (run before S04) | pending |
 
 ## Handoff
-S13 branch `stage/s13-ui-foundation` (UI foundation; runs before S04). Spec docs/DESIGN.md; implement
-literally, verify with measurable assertions (no screenshots). Done: T01 tokens+base.css (CSS var source
-of truth; contrast test 4.5:1 both themes), T03 27 icons + grouped Toolbar, T04 manifest `status`
-ready/planned + `isPlaceable` (PartsBin accordion, 'Show planned'), T09 pure `buildMenuTemplate` + menu
-IPC, T10 `defaultCapabilities`/`unavailableReason` (disabled controls say why), T02 `AppShell` grid shell
-(toolbar/body/status, `app-col` sides, separators 200–420 px + keyboard, collapse, layout persisted in
-`localStorage` key `vircuitcad.shell`; header removed, Code+Run in toolbar; `e2e/shell.spec.ts`), T05 art
-DSL in `packages/parts/art` (`dsl.ts` + `builders.ts` + `toSvg`, `resolvePartArt` fallback card, pin pads
-from manifest, `ART_PADDING=5`; editor `art-graphics.ts` renders to Pixi, `partTextureKey(part,variant,
-resolution)`, sprite rotated by transform). SVG overrides via `overrides.ts` `SVG_OVERRIDES`), T06 breadboard
-art in `packages/parts/art/board.ts` (`buildBreadboardArt`: body/trench/rail stripes/±/column+row labels,
-labels shown at zoom ≥1 via `Scene.setZoom`, strip highlight via `Scene.setHoverHole` on pointermove) and
-Uno header labels from manifest pins (D0–13, A0–5, 5V/3V3/GND/VIN/RESET, USB/jack/chip). Perf note:
-~13–24 fps with 100 parts under SwiftShader (software GL); textures are cached per part.
-Next: T07 canvas polish, T08 status/inspector, T11 screenshot harness, T12 docs.
-Notes: theme tokens live in CSS; heavy tests have 30s timeouts; parallel e2e on this box is CPU-bound
-(run `--workers=1` for reliability).
-Blocked: none.
+S13 `stage/s13-ui-foundation` (before S04). Spec docs/DESIGN.md; verify with measurable assertions (no
+screenshots). Done: T01 tokens/base.css (CSS-var source of truth; 4.5:1 contrast test), T03 27 icons +
+grouped Toolbar, T04 manifest `status` ready/planned + `isPlaceable`, T09 `buildMenuTemplate` + menu IPC,
+T10 `defaultCapabilities`/`unavailableReason`. T02 `AppShell` grid shell (toolbar/body/status, `app-col`
+sides, separators 200–420 px + keyboard, collapse, persisted `vircuitcad.shell`; Code+Run in toolbar).
+T05 art DSL `packages/parts/art` (`dsl`/`builders`/`toSvg`, `resolvePartArt` fallback card, pin pads from
+manifest, `ART_PADDING=5`; editor `art-graphics.ts`→Pixi, `partTextureKey(part,variant,resolution)`,
+sprite rotated by transform; `SVG_OVERRIDES`). T06 breadboard `packages/parts/art/board.ts` (body/trench/
+rails/±/labels at zoom≥1, strip hover) + Uno header labels from pins. T07 `CanvasControls` (zoom/fit/grid,
+imperative %, 0 React commits on pan/zoom via `window.__renderCount`), pin tooltip on hover, wire colour
+palette, snap ring, selection handles, cursor per tool, empty-state hint.
+Next: T08 status/inspector, T11 screenshot harness, T12 docs.
+Notes: tokens in CSS; heavy tests 30s; parallel e2e CPU-bound (`--workers=1`). Perf ~13–31 fps/100 parts
+under SwiftShader. Blocked: none.
 --- (previous stages) ---
 S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
 + golden tests), T09 (`docs/QA.md`), T06 (`docs/SECURITY.md`, THIRD_PARTY.md, dompurify override, audit

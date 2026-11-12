@@ -1,4 +1,4 @@
-export { Editor, type EditorOptions } from './editor';
+export { Editor, type EditorOptions, type PinHoverInfo } from './editor';
 export { SimulationHost } from './sim/worker-host';
 export { McuHost } from './sim/mcu-host';
 export { McuCircuit } from './sim/cosim';

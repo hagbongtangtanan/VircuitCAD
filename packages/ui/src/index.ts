@@ -6,6 +6,16 @@ export {
   PANEL_STEP,
   type AppShellProps,
 } from './components/AppShell';
+export {
+  CanvasControls,
+  type CanvasControlsProps,
+  type CanvasViewport,
+} from './components/CanvasControls';
+export {
+  WireColorPicker,
+  WIRE_COLORS,
+  type WireColorPickerProps,
+} from './components/WireColorPicker';
 export { PartsBin, type PartsBinProps } from './components/PartsBin';
 export { Inspector, type InspectorProps } from './components/Inspector';
 export { Toolbar, type ToolbarProps, type ToolbarTool } from './components/Toolbar';

@@ -52,6 +52,8 @@ export class Scene {
   private readonly hoverGraphics = new Graphics();
   private readonly selectionGraphics = new Graphics();
   private readonly highlightGraphics = new Graphics();
+  private readonly hoverPinGraphics = new Graphics();
+  private readonly snapGraphics = new Graphics();
   private readonly wirePreview = new Graphics();
   private labelsVisible = false;
   private ledById = new Map<string, { current: number; burnedOut: boolean }>();
@@ -82,7 +84,13 @@ export class Scene {
     this.boardLayer.addChild(this.boardLabelLayer);
     this.boardLabelLayer.visible = false;
     this.hoverLayer.addChild(this.hoverGraphics);
-    this.overlayLayer.addChild(this.selectionGraphics, this.highlightGraphics, this.wirePreview);
+    this.overlayLayer.addChild(
+      this.snapGraphics,
+      this.selectionGraphics,
+      this.highlightGraphics,
+      this.hoverPinGraphics,
+      this.wirePreview,
+    );
     this.geometry = generateBoardGeometry(store.getCircuit().board.kind);
     this.drawBoard(options);
     this.renderCircuit();
@@ -112,7 +120,16 @@ export class Scene {
   setPreview(preview: PreviewState | null): void {
     this.preview?.destroy();
     this.preview = undefined;
+    this.snapGraphics.clear();
     if (!preview) return;
+
+    this.snapGraphics
+      .circle(
+        preview.position.x * this.cellSize,
+        preview.position.y * this.cellSize,
+        this.cellSize * 0.4,
+      )
+      .stroke({ width: 2, color: preview.valid ? 0x22c55e : 0xef4444, alpha: 0.9 });
 
     const layout = layoutPart(preview.manifest, preview.position, preview.rotation);
     const width = Math.max(1, layout.bounds.width) * this.cellSize;
@@ -159,16 +176,45 @@ export class Scene {
 
     const layout = layoutPart(manifest, part.position, part.rotation);
     const pad = this.cellSize * 0.3;
+    const x = layout.bounds.minX * this.cellSize - pad;
+    const y = layout.bounds.minY * this.cellSize - pad;
     const width = Math.max(layout.bounds.width * this.cellSize, 1) + pad * 2;
     const height = Math.max(layout.bounds.height * this.cellSize, 1) + pad * 2;
-    this.selectionGraphics
-      .rect(
-        layout.bounds.minX * this.cellSize - pad,
-        layout.bounds.minY * this.cellSize - pad,
-        width,
-        height,
-      )
-      .stroke({ width: 2, color: 0x38bdf8, alpha: 0.9 });
+    this.selectionGraphics.rect(x, y, width, height).stroke({ width: 2, color: 0x38bdf8, alpha: 0.9 });
+
+    const handle = 6;
+    const corners: [number, number][] = [
+      [x, y],
+      [x + width, y],
+      [x, y + height],
+      [x + width, y + height],
+    ];
+    for (const [hx, hy] of corners) {
+      this.selectionGraphics
+        .rect(hx - handle / 2, hy - handle / 2, handle, handle)
+        .fill({ color: 0x38bdf8 });
+    }
+  }
+
+  private refreshHoverPin(partId: string | undefined, pinId: string | undefined): void {
+    this.hoverPinGraphics.clear();
+    if (!partId || !pinId) return;
+    const part = this.store.getCircuit().parts.find((candidate) => candidate.id === partId);
+    const manifest = part ? this.registry.get(part.partId) : undefined;
+    if (!part || !manifest) return;
+    const layout = layoutPart(manifest, part.position, part.rotation);
+    const pin = layout.pins.find((candidate) => candidate.id === pinId);
+    if (!pin) return;
+    const x = pin.position.x * this.cellSize;
+    const y = pin.position.y * this.cellSize;
+    this.hoverPinGraphics
+      .circle(x, y, this.cellSize * 0.35)
+      .stroke({ width: 2, color: 0x3da5ff, alpha: 1 });
+    this.hoverPinGraphics.circle(x, y, 3).fill({ color: 0x3da5ff, alpha: 0.9 });
+  }
+
+  setHoverPin(partId: string | undefined, pinId?: string): void {
+    this.refreshHoverPin(partId, pinId);
   }
 
   private drawBoard(options: SceneOptions): void {
@@ -272,7 +318,7 @@ export class Scene {
         Number.parseInt((circuit.wires[index]?.color ?? '#22c55e').slice(1), 16);
       wires.moveTo(first.x, first.y);
       for (const point of rest) wires.lineTo(point.x, point.y);
-      wires.stroke({ width: 2, color, alpha: 0.9 });
+      wires.stroke({ width: 2, color, alpha: 0.9, cap: 'round', join: 'round' });
     });
     this.wiresLayer.addChild(wires);
 

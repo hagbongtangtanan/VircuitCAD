@@ -1,4 +1,5 @@
 import {
+  DEFAULT_WIRE_COLOR,
   DocumentStore,
   createDefaultPartRegistry,
   createEmptyCircuit,
@@ -11,9 +12,17 @@ import {
   type ParamValue,
   type PartInstance,
 } from '@vircuitcad/core';
-import { Editor, McuCircuit, RunController, SimulationHost, type RunState } from '@vircuitcad/editor';
+import {
+  Editor,
+  McuCircuit,
+  RunController,
+  SimulationHost,
+  type PinHoverInfo,
+  type RunState,
+} from '@vircuitcad/editor';
 import {
   AppShell,
+  CanvasControls,
   CodeEditor,
   ICONS,
   Inspector,
@@ -26,6 +35,7 @@ import {
   StatusBar,
   Toast,
   Toolbar,
+  WireColorPicker,
   type MeterReading,
   type Problem,
   type SimRunState,
@@ -38,7 +48,11 @@ import { createClient } from './client';
 const JOURNAL_FILE = 'autosave.vcad';
 const CIRCUIT_FILE = 'circuit.vcad';
 
+let appRenderCount = 0;
+
 export function App() {
+  appRenderCount += 1;
+  window.__renderCount = appRenderCount;
   const hostRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<Editor | null>(null);
   const simHostRef = useRef<SimulationHost | undefined>(undefined);
@@ -53,7 +67,8 @@ export function App() {
   const [selected, setSelected] = useState<PartInstance | undefined>(undefined);
   const [counts, setCounts] = useState({ parts: 0, wires: 0 });
   const [history, setHistory] = useState({ undo: false, redo: false });
-  const [zoom, setZoom] = useState(1);
+  const [hoverPin, setHoverPin] = useState<PinHoverInfo | null>(null);
+  const [wireColor, setWireColor] = useState(DEFAULT_WIRE_COLOR);
   const [dirty, setDirty] = useState(false);
   const [hint, setHint] = useState('Ready');
   const [simState, setSimState] = useState<SimRunState>('idle');
@@ -90,7 +105,7 @@ export function App() {
     setCounts({ parts: circuit.parts.length, wires: circuit.wires.length });
     const size = store.historySize();
     setHistory({ undo: size.undo > 0, redo: size.redo > 0 });
-    setZoom(editor?.getViewport().scale ?? 1);
+    setWireColor(controller?.getWireColor() ?? DEFAULT_WIRE_COLOR);
   };
 
   const circuitPath = async (): Promise<string> =>
@@ -253,7 +268,7 @@ export function App() {
         scheduleAutosave();
       }),
     );
-    disposers.push(editor.onViewportChange(refresh));
+    disposers.push(editor.onHoverPin(setHoverPin));
 
     void client.app.info().then((info) => setVersion(info.version)).catch(() => setVersion('unavailable'));
 
@@ -396,7 +411,6 @@ export function App() {
         <StatusBar
           partCount={counts.parts}
           wireCount={counts.wires}
-          zoom={zoom}
           hint={dirty ? 'Unsaved changes' : hint}
           simState={simState}
           simTime={simTime}
@@ -405,6 +419,31 @@ export function App() {
       }
     >
       <div ref={hostRef} data-testid="canvas-host" className="canvas-host" />
+      {counts.parts === 0 && counts.wires === 0 ? (
+        <p className="canvas-empty-hint" data-testid="canvas-empty-hint">
+          Drag a part from the Parts panel onto the breadboard to start.
+        </p>
+      ) : null}
+      {tool === 'wire' ? (
+        <WireColorPicker
+          color={wireColor}
+          onChange={(color) => {
+            controller()?.setWireColor(color);
+            setWireColor(color);
+          }}
+        />
+      ) : null}
+      <CanvasControls viewport={editorRef.current ?? undefined} />
+      {hoverPin ? (
+        <div
+          className="pin-tooltip"
+          data-testid="pin-tooltip"
+          style={{ left: hoverPin.screen.x, top: hoverPin.screen.y }}
+        >
+          {hoverPin.pinName}
+          {hoverPin.netName ? ` · ${hoverPin.netName}` : ''}
+        </div>
+      ) : null}
       <Toast message={toast} onDismiss={() => setToast(undefined)} />
     </AppShell>
   );

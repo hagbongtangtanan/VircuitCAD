@@ -250,6 +250,124 @@ input[type="checkbox"] {
   background: var(--canvas-bg);
 }
 
+/* Canvas overlays: zoom controls, wire palette, hints, pin tooltip */
+
+.canvas-controls,
+.wire-colors {
+  position: absolute;
+  bottom: var(--space-2);
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+  padding: var(--space-1);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2);
+}
+
+.canvas-controls {
+  right: var(--space-2);
+}
+
+.wire-colors {
+  left: var(--space-2);
+}
+
+.canvas-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+}
+
+.canvas-control--label {
+  width: auto;
+  padding: 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--size-caption);
+}
+
+.canvas-control[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-app);
+}
+
+.canvas-empty-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--size-label);
+  text-align: center;
+  pointer-events: none;
+}
+
+.pin-tooltip {
+  position: fixed;
+  z-index: 20;
+  transform: translate(12px, 12px);
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-1);
+  color: var(--text);
+  font-size: var(--size-caption);
+  pointer-events: none;
+}
+
+.wire-swatch {
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-1);
+  cursor: pointer;
+}
+
+.wire-swatch[aria-pressed="true"] {
+  box-shadow: var(--focus-ring);
+}
+
+.wire-swatch--red {
+  background: var(--wire-red);
+}
+
+.wire-swatch--black {
+  background: var(--wire-black);
+}
+
+.wire-swatch--blue {
+  background: var(--wire-blue);
+}
+
+.wire-swatch--green {
+  background: var(--wire-green);
+}
+
+.wire-swatch--yellow {
+  background: var(--wire-yellow);
+}
+
+.wire-swatch--orange {
+  background: var(--wire-orange);
+}
+
+.wire-swatch--white {
+  background: var(--wire-white);
+}
+
+.wire-swatch--purple {
+  background: var(--wire-purple);
+}
+
 .row {
   display: flex;
   gap: var(--space-2);
