@@ -1,7 +1,7 @@
 # ROADMAP — VircuitCAD
 
 Execution model: see `docs/RUNBOOK.md`. Each stage = branch `stage/sNN-slug` → PR → CI → squash-merge → tag `stage-sNN-done`.
-Review gates (default `VC_PAUSE_AFTER="S04 S06 S11"`) stop automation so a human can test the Windows build.
+Review gates (default `VC_PAUSE_AFTER="S04 S06 S11 S12 S13"`) stop automation so a human can test the Windows build.
 
 | Stage | Outcome | Needs | Gate |
 |---|---|---|---|
@@ -17,6 +17,7 @@ Review gates (default `VC_PAUSE_AFTER="S04 S06 S11"`) stop automation so a human
 | S09 | Scope, function generator, LCD1602, servo, motor, buzzer, sensors, NeoPixel, perf pass | S07 S08 | |
 | S10 | Blockly, ≥ 25 examples, schematic view | S07 | |
 | S11 | Autosave/recovery, settings, exports, soak tests, installer polish, docs, signing, beta | all | ✋ human |
+| S13 | UI foundation and part art (run before S04) — styling, layout, icons, parts panel, agent-drawn breadboard/Uno art | all | ✋ human |
 
 S05 only depends on S00, so the order may be swapped with S02–S04 if desired; keep the numbering.
 
