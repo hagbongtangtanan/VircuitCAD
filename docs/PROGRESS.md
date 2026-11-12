@@ -19,26 +19,20 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S13 | UI foundation and part art (run before S04) | pending |
 
 ## Handoff
-S13 `stage/s13-ui-foundation` (before S04). Spec docs/DESIGN.md; verify with measurable assertions (no
-screenshots). Done: T01 tokens/base.css (CSS-var source of truth; 4.5:1 contrast test), T03 27 icons +
-grouped Toolbar, T04 manifest `status` ready/planned + `isPlaceable`, T09 `buildMenuTemplate` + menu IPC,
-T10 `defaultCapabilities`/`unavailableReason`. T02 `AppShell` grid shell (toolbar/body/status, `app-col`
-sides, separators 200–420 px + keyboard, collapse, persisted `vircuitcad.shell`; Code+Run in toolbar).
-T05 art DSL `packages/parts/art` (`dsl`/`builders`/`toSvg`, `resolvePartArt` fallback card, pin pads from
-manifest, `ART_PADDING=5`; editor `art-graphics.ts`→Pixi, `partTextureKey(part,variant,resolution)`,
-sprite rotated by transform; `SVG_OVERRIDES`). T06 breadboard `packages/parts/art/board.ts` (body/trench/
-rails/±/labels at zoom≥1, strip hover) + Uno header labels from pins. T07 `CanvasControls` (zoom/fit/grid,
-imperative %, 0 React commits on pan/zoom via `window.__renderCount`), pin tooltip on hover, wire colour
-palette, snap ring, selection handles, cursor per tool, empty-state hint. T08 `StatusBar` segments +
-separators + saved dot + imperative zoom (`StatusBarViewport`); `Inspector` category-icon header, enum
-`options` on `ParamSpec` (core manifests: color/common/mode) rendered as selects, param unit hints via
-`formatQuantity`, document summary when nothing selected. T11 `pnpm e2e:screens` (`e2e/screens.spec.ts`)
-writes 5 states × 3 sizes + `/gallery.html` (all parts 1×/2× + breadboard) to `artifacts/screens/`, and
-checks clipped text / controls <28px / overlaps; CI uploads the artifact; `docs/UI-REVIEW.md` checklist.
-Next: T12 docs (DESIGN.md already largely written; AGENTS.md update), then `vc-stage-finish.sh S13` →
-human review gate (S13 exit code 10).
-Notes: tokens in CSS; heavy tests 30s; parallel e2e CPU-bound (`--workers=1`). Perf ~13–31 fps/100 parts
-under SwiftShader. Blocked: none.
+S13 `stage/s13-ui-foundation` (before S04); spec docs/DESIGN.md; verify with measurable assertions.
+ALL TASKS DONE (T01–T12). Key files: T01 tokens/base.css (CSS-var source of truth, 4.5:1 contrast
+test); T02 `AppShell` grid shell (resizable/collapsible `app-col` panels, persisted `vircuitcad.shell`);
+T03 icons+Toolbar; T04 manifest `status`+`isPlaceable`; T05 art DSL `packages/parts/art`
+(`dsl`/`builders`/`toSvg`/`resolvePartArt` fallback, `ART_PADDING=5`; editor `art-graphics.ts`→Pixi,
+`partTextureKey(part,variant,resolution)`); T06 breadboard `art/board.ts` + Uno labels; T07
+`CanvasControls` (zoom/fit/grid, imperative %, 0 React commits via `window.__renderCount`), pin tooltip,
+wire palette, snap ring, selection handles, cursor, empty hint; T08 `StatusBar` segments + `Inspector`
+enum selects (`ParamSpec.options`) + `formatQuantity`; T09 menu; T10 capabilities; T11 `pnpm e2e:screens`
+→ `artifacts/screens/` (+ gallery, layout checks) uploaded by CI; T12 docs.
+Next: `vc-stage-finish.sh S13` → human review gate (exit 10: check the `vircuitcad-screens` artifact at
+1366×768 and 1920×1080).
+Notes: tokens in CSS; parallel e2e CPU-bound (`--workers=1`); perf ~13–31 fps/100 parts under SwiftShader.
+Blocked: none.
 --- (previous stages) ---
 S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
 + golden tests), T09 (`docs/QA.md`), T06 (`docs/SECURITY.md`, THIRD_PARTY.md, dompurify override, audit
