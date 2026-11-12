@@ -24,9 +24,12 @@ implement literally, verify with measurable assertions (you cannot see screensho
 (`packages/ui/src/theme/tokens.css` dark+`[data-theme=light]`, `base.css` reset/controls/app-shell,
 exported as `@vircuitcad/ui/tokens.css|base.css`, imported in renderer `main.tsx`; index.html +
 App.tsx inline styles removed; node-env `contrast.test.ts` asserts 4.5:1 for text/background pairs in
-both themes). Next: T02 shell grid, T03 icons+toolbar, T04 parts panel + ready/planned, T05 art DSL +
-Pixi/SVG + fallback card, T06 breadboard/Uno art, T07 canvas polish, T08 status/inspector, T09 menu,
-T10 capability flags, T11 screenshot harness, T12 docs.
+both themes). Done also: T09 (pure `buildMenuTemplate` File/Edit/View/Help + dev items, applied in the
+main process, commands sent over `vircuitcad:menu`; preload `onMenu`; App wires undo/redo/delete/
+duplicate; window min 1024x640; title/bounds persistence deferred). Next: T02 shell grid, T03
+icons+toolbar, T04 parts panel + ready/planned, T05 art DSL + Pixi/SVG + fallback card, T06
+breadboard/Uno art, T07 canvas polish, T08 status/inspector, T10 capability flags, T11 screenshot
+harness, T12 docs.
 Notes: theme tokens live in CSS (source of truth, parsed by the contrast test); heavy tests
 (netlist property, sim-mcu blink) now have 30s timeouts.
 --- (previous stages) ---
