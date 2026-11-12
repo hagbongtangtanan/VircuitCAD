@@ -276,6 +276,29 @@ export function App() {
 
   const controller = () => editorRef.current?.getToolController();
 
+  useEffect(() => {
+    const bridge = window.vircuitcad;
+    if (!bridge?.onMenu) return;
+    bridge.onMenu((command) => {
+      switch (command) {
+        case 'edit.undo':
+          store.undo();
+          break;
+        case 'edit.redo':
+          store.redo();
+          break;
+        case 'edit.delete':
+          editorRef.current?.getToolController()?.keyDown('Delete');
+          break;
+        case 'edit.duplicate':
+          editorRef.current?.getToolController()?.keyDown('d');
+          break;
+        default:
+          break;
+      }
+    });
+  }, [store]);
+
   return (
     <main className="app-shell">
       <header className="app-header">
