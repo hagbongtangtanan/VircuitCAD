@@ -28,8 +28,12 @@ IPC, T10 `defaultCapabilities`/`unavailableReason` (disabled controls say why), 
 `localStorage` key `vircuitcad.shell`; header removed, Code+Run in toolbar; `e2e/shell.spec.ts`), T05 art
 DSL in `packages/parts/art` (`dsl.ts` + `builders.ts` + `toSvg`, `resolvePartArt` fallback card, pin pads
 from manifest, `ART_PADDING=5`; editor `art-graphics.ts` renders to Pixi, `partTextureKey(part,variant,
-resolution)`, sprite rotated by transform). SVG overrides via `overrides.ts` `SVG_OVERRIDES`.
-Next: T06 breadboard/Uno art, T07 canvas polish, T08 status/inspector, T11 screenshot harness, T12 docs.
+resolution)`, sprite rotated by transform). SVG overrides via `overrides.ts` `SVG_OVERRIDES`), T06 breadboard
+art in `packages/parts/art/board.ts` (`buildBreadboardArt`: body/trench/rail stripes/±/column+row labels,
+labels shown at zoom ≥1 via `Scene.setZoom`, strip highlight via `Scene.setHoverHole` on pointermove) and
+Uno header labels from manifest pins (D0–13, A0–5, 5V/3V3/GND/VIN/RESET, USB/jack/chip). Perf note:
+~13–24 fps with 100 parts under SwiftShader (software GL); textures are cached per part.
+Next: T07 canvas polish, T08 status/inspector, T11 screenshot harness, T12 docs.
 Notes: theme tokens live in CSS; heavy tests have 30s timeouts; parallel e2e on this box is CPU-bound
 (run `--workers=1` for reliability).
 Blocked: none.

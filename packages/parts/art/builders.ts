@@ -1,7 +1,7 @@
 import type { PartManifest } from '@vircuitcad/core';
 
 import { circle, line, polyline, rect, text, type ArtColor, type ArtPrimitive, type Footprint } from './dsl';
-import { LED_COLORS, PALETTE, RESISTOR_BANDS } from './palette';
+import { ART_UNIT, LED_COLORS, PALETTE, RESISTOR_BANDS } from './palette';
 
 export type ArtBody = { body: ArtColor; primitives: ArtPrimitive[] };
 export type ArtBuilder = (manifest: PartManifest, footprint: Footprint) => ArtBody;
@@ -227,17 +227,24 @@ const buildSevenSegment: ArtBuilder = (_manifest, footprint) => {
   };
 };
 
-const buildArduinoUno: ArtBuilder = (_manifest, footprint) => {
+const buildArduinoUno: ArtBuilder = (manifest, footprint) => {
   const { width: w, height: h } = footprint;
-  return {
-    body: PALETTE.board,
-    primitives: [
-      panel(w, h, PALETTE.board, 5),
-      rect(w * 0.35, h * 0.3, w * 0.3, h * 0.4, PALETTE.boardDark, { radius: 2, stroke: OUTLINE, strokeWidth: 1 }),
-      rect(0, h * 0.4, w * 0.12, h * 0.2, PALETTE.metal),
-      circle(w * 0.8, h * 0.7, Math.min(w, h) * 0.06, '#f59e0b'),
-    ],
-  };
+  const primitives: ArtPrimitive[] = [
+    panel(w, h, PALETTE.board, 5),
+    rect(0, h * 0.36, w * 0.12, h * 0.28, PALETTE.metal, { radius: 2, stroke: OUTLINE, strokeWidth: 1 }),
+    rect(w * 0.86, h * 0.36, w * 0.14, h * 0.28, '#1f2937', { radius: 2, stroke: OUTLINE, strokeWidth: 1 }),
+    rect(w * 0.4, h * 0.26, w * 0.22, h * 0.5, PALETTE.boardDark, { radius: 2, stroke: OUTLINE, strokeWidth: 1 }),
+    circle(w * 0.52, h * 0.72, Math.min(w, h) * 0.05, '#f59e0b', { stroke: OUTLINE, strokeWidth: 1 }),
+  ];
+
+  for (const pin of manifest.pins) {
+    const x = (pin.position.x - footprint.minX) * ART_UNIT;
+    const y = (pin.position.y - footprint.minY) * ART_UNIT;
+    const labelY = pin.position.y === 0 ? y + ART_UNIT * 0.62 : y - ART_UNIT * 0.3;
+    primitives.push(text(x, labelY, pin.name, PALETTE.text, 8, 'middle'));
+  }
+
+  return { body: PALETTE.board, primitives };
 };
 
 /** Builders keyed by sim model. A manifest with no builder gets a fallback card. */

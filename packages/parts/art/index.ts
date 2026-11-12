@@ -16,6 +16,7 @@ import { CATEGORY_COLORS, PALETTE } from './palette';
 
 export * from './dsl';
 export * from './palette';
+export * from './board';
 export { ART_BUILDERS } from './builders';
 export { SVG_OVERRIDES } from './overrides';
 

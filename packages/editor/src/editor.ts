@@ -171,7 +171,18 @@ export class Editor {
     this.world.scale.set(this.viewport.scale);
     this.world.position.set(this.viewport.x, this.viewport.y);
     this.drawGrid();
+    this.scene?.setZoom(this.viewport.scale);
     for (const listener of this.viewportListeners) listener();
+  }
+
+  private updateHover(clientX: number, clientY: number, element: HTMLElement): void {
+    const scene = this.scene;
+    if (!scene) return;
+    const grid = this.toGrid(clientX, clientY, element);
+    const gx = Math.round(grid.x);
+    const gy = Math.round(grid.y);
+    const near = Math.abs(grid.x - gx) < 0.45 && Math.abs(grid.y - gy) < 0.45;
+    scene.setHoverHole(near ? scene.getGeometry().holeByPosition(gx, gy)?.id : undefined);
   }
 
   private drawGrid(): void {
@@ -231,9 +242,13 @@ export class Editor {
         lastY = event.clientY;
         return;
       }
+      this.updateHover(event.clientX, event.clientY, element);
       if (this.controller && (toolDragging || this.controller.getTool() === 'place')) {
         this.controller.pointerMove(this.toGrid(event.clientX, event.clientY, element));
       }
+    };
+    const onPointerLeave = (): void => {
+      this.scene?.setHoverHole(undefined);
     };
     const onPointerUp = (event: PointerEvent): void => {
       if (panning) {
@@ -277,6 +292,7 @@ export class Editor {
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointermove', onPointerMove);
     canvas.addEventListener('pointerup', onPointerUp);
+    canvas.addEventListener('pointerleave', onPointerLeave);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
@@ -285,6 +301,7 @@ export class Editor {
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerup', onPointerUp);
+      canvas.removeEventListener('pointerleave', onPointerLeave);
       canvas.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);

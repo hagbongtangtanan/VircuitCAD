@@ -43,7 +43,13 @@ function drawShape(graphics: Graphics, primitive: ArtPrimitive): void {
   }
 }
 
-function makeText(primitive: Extract<ArtPrimitive, { kind: 'text' }>): Text {
+export function drawPrimitives(graphics: Graphics, primitives: readonly ArtPrimitive[]): void {
+  for (const primitive of primitives) {
+    if (primitive.kind !== 'text') drawShape(graphics, primitive);
+  }
+}
+
+export function createStaticText(primitive: Extract<ArtPrimitive, { kind: 'text' }>): Text {
   const node = new Text({
     text: primitive.text,
     style: new TextStyle({
@@ -87,6 +93,6 @@ export function buildPartArtContainer(art: PartArt): Container {
       anchor: 'middle',
     });
   }
-  for (const primitive of texts) container.addChild(makeText(primitive));
+  for (const primitive of texts) container.addChild(createStaticText(primitive));
   return container;
 }
