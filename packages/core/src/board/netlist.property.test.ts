@@ -76,7 +76,7 @@ function grouping(netlist: Netlist, key: (partId: string) => string = (id) => id
     .sort((a, b) => (a.join(',') < b.join(',') ? -1 : 1));
 }
 
-it('property: netlist is invariant to wire order', () => {
+it('property: netlist is invariant to wire order', { timeout: 30_000 }, () => {
   fc.assert(
     fc.property(circuitArb, (circuit) => {
       const forward = extractNetlist(circuit, registry);

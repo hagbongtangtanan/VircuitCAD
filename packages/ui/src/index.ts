@@ -30,4 +30,6 @@ export {
   type ArduinoCompletion,
 } from './code/arduino-keywords';
 
+export { THEMES, DEFAULT_THEME, type ThemeName } from './theme';
+
 export const packageName = '@vircuitcad/ui';

@@ -277,25 +277,18 @@ export function App() {
   const controller = () => editorRef.current?.getToolController();
 
   return (
-    <main style={{ display: 'flex', flexDirection: 'column', height: '100%', color: '#e2e8f0' }}>
-      <header
-        style={{
-          display: 'flex',
-          gap: 8,
-          alignItems: 'center',
-          padding: '8px 12px',
-          background: '#111827',
-          font: '14px system-ui, sans-serif',
-        }}
-      >
+    <main className="app-shell">
+      <header className="app-header">
         <strong>VircuitCAD</strong>
-        <span data-testid="version">v{version}</span>
+        <span className="version" data-testid="version">
+          v{version}
+        </span>
         <button type="button" onClick={() => setCodeOpen((open) => !open)}>
           Code
         </button>
       </header>
-      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        <aside style={{ width: 200, background: '#111827', overflow: 'auto', padding: 8 }}>
+      <div className="app-body">
+        <aside className="panel panel--left">
           <PartsBin
             registry={registry}
             onPick={(partId) => {
@@ -304,7 +297,7 @@ export function App() {
             }}
           />
         </aside>
-        <section style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+        <section className="main-column">
           <Toolbar
             tool={tool}
             onTool={(next) => {
@@ -327,7 +320,7 @@ export function App() {
             onTogglePause={togglePause}
             onStop={stopSim}
           />
-          <div ref={hostRef} data-testid="canvas-host" style={{ flex: 1, minHeight: 0 }} />
+          <div ref={hostRef} data-testid="canvas-host" className="canvas-host" />
           <StatusBar
             partCount={counts.parts}
             wireCount={counts.wires}
@@ -338,7 +331,7 @@ export function App() {
           />
           <Toast message={toast} onDismiss={() => setToast(undefined)} />
         </section>
-        <aside style={{ width: codeOpen ? 460 : 220, background: '#111827', overflow: 'auto', padding: 8 }}>
+        <aside className={codeOpen ? 'panel panel--right is-wide' : 'panel panel--right'}>
           <Inspector
             registry={registry}
             part={selected}
@@ -349,7 +342,7 @@ export function App() {
           <InstrumentPanel readings={meters} />
           {codeOpen ? (
             <>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '4px 0' }}>
+              <div className="row">
                 <button type="button" onClick={build}>
                   Build
                 </button>
@@ -358,7 +351,7 @@ export function App() {
                 </button>
                 <span data-testid="run-state">{runState}</span>
               </div>
-              <div style={{ height: 220, minHeight: 120 }}>
+              <div className="code-editor-host">
                 <CodeEditor
                   value={sketch}
                   onChange={(text) => {
@@ -368,7 +361,7 @@ export function App() {
                 />
               </div>
               <ProblemsPanel problems={problems} />
-              <div style={{ height: 120, overflow: 'auto', borderTop: '1px solid #1e293b' }}>
+              <div className="serial-host">
                 <SerialMonitor
                   lines={serialRef.current.toArray()}
                   onClear={() => {
