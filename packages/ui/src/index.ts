@@ -1,3 +1,11 @@
+export {
+  AppShell,
+  clampPanel,
+  PANEL_MAX,
+  PANEL_MIN,
+  PANEL_STEP,
+  type AppShellProps,
+} from './components/AppShell';
 export { PartsBin, type PartsBinProps } from './components/PartsBin';
 export { Inspector, type InspectorProps } from './components/Inspector';
 export { Toolbar, type ToolbarProps, type ToolbarTool } from './components/Toolbar';

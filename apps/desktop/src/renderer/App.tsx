@@ -13,7 +13,9 @@ import {
 } from '@vircuitcad/core';
 import { Editor, McuCircuit, RunController, SimulationHost, type RunState } from '@vircuitcad/editor';
 import {
+  AppShell,
   CodeEditor,
+  ICONS,
   Inspector,
   InstrumentPanel,
   PartsBin,
@@ -302,65 +304,52 @@ export function App() {
     });
   }, [store]);
 
+  const toolbar = (
+    <>
+      <Toolbar
+        tool={tool}
+        onTool={(next) => {
+          controller()?.setTool(next);
+          setTool(next);
+        }}
+        canUndo={history.undo}
+        canRedo={history.redo}
+        onUndo={() => store.undo()}
+        onRedo={() => store.redo()}
+        onRotate={() => controller()?.keyDown('r')}
+        onDelete={() => controller()?.keyDown('Delete')}
+        onDuplicate={() => controller()?.keyDown('d')}
+        netColoring={netColoring}
+        onToggleNetColoring={toggleNetColoring}
+      />
+      <div className="toolbar-spacer" />
+      <button
+        type="button"
+        disabled={!capabilities.codeEditor}
+        title={capabilities.codeEditor ? 'Toggle the code panel' : unavailableReason('codeEditor')}
+        onClick={() => setCodeOpen((open) => !open)}
+      >
+        <ICONS.code />
+        Code
+      </button>
+      <RunControls state={simState} onRun={runSim} onTogglePause={togglePause} onStop={stopSim} />
+    </>
+  );
+
   return (
-    <main className="app-shell">
-      <header className="app-header">
-        <strong>VircuitCAD</strong>
-        <button
-          type="button"
-          disabled={!capabilities.codeEditor}
-          title={capabilities.codeEditor ? 'Toggle the code panel' : unavailableReason('codeEditor')}
-          onClick={() => setCodeOpen((open) => !open)}
-        >
-          Code
-        </button>
-      </header>
-      <div className="app-body">
-        <aside className="panel panel--left">
-          <PartsBin
-            registry={registry}
-            onPick={(partId) => {
-              controller()?.setTool('place', partId);
-              setTool('place');
-            }}
-          />
-        </aside>
-        <section className="main-column">
-          <Toolbar
-            tool={tool}
-            onTool={(next) => {
-              controller()?.setTool(next);
-              setTool(next);
-            }}
-            canUndo={history.undo}
-            canRedo={history.redo}
-            onUndo={() => store.undo()}
-            onRedo={() => store.redo()}
-            onRotate={() => controller()?.keyDown('r')}
-            onDelete={() => controller()?.keyDown('Delete')}
-            onDuplicate={() => controller()?.keyDown('d')}
-            netColoring={netColoring}
-            onToggleNetColoring={toggleNetColoring}
-          />
-          <RunControls
-            state={simState}
-            onRun={runSim}
-            onTogglePause={togglePause}
-            onStop={stopSim}
-          />
-          <div ref={hostRef} data-testid="canvas-host" className="canvas-host" />
-          <StatusBar
-            partCount={counts.parts}
-            wireCount={counts.wires}
-            zoom={zoom}
-            hint={dirty ? 'Unsaved changes' : hint}
-            simState={simState}
-            simTime={simTime}
-            version={version}
-          />
-          <Toast message={toast} onDismiss={() => setToast(undefined)} />
-        </section>
-        <aside className={codeOpen ? 'panel panel--right is-wide' : 'panel panel--right'}>
+    <AppShell
+      toolbar={toolbar}
+      left={
+        <PartsBin
+          registry={registry}
+          onPick={(partId) => {
+            controller()?.setTool('place', partId);
+            setTool('place');
+          }}
+        />
+      }
+      right={
+        <>
           <Inspector
             registry={registry}
             part={selected}
@@ -401,8 +390,22 @@ export function App() {
               </div>
             </>
           ) : null}
-        </aside>
-      </div>
-    </main>
+        </>
+      }
+      status={
+        <StatusBar
+          partCount={counts.parts}
+          wireCount={counts.wires}
+          zoom={zoom}
+          hint={dirty ? 'Unsaved changes' : hint}
+          simState={simState}
+          simTime={simTime}
+          version={version}
+        />
+      }
+    >
+      <div ref={hostRef} data-testid="canvas-host" className="canvas-host" />
+      <Toast message={toast} onDismiss={() => setToast(undefined)} />
+    </AppShell>
   );
 }

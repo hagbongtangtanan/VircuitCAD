@@ -109,60 +109,139 @@ input[type="checkbox"] {
   background: var(--border);
 }
 
-/* App shell */
+/* App shell — CSS grid: toolbar / body / status (see docs/DESIGN.md 3.1). */
 
 .app-shell {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   height: 100%;
+  overflow: hidden;
   background: var(--bg-app);
   color: var(--text);
 }
 
-.app-header {
+.app-toolbar {
   display: flex;
-  gap: var(--space-2);
   align-items: center;
-  padding: var(--space-2) var(--space-3);
+  gap: var(--space-2);
   min-height: 40px;
+  padding: 0 var(--space-2);
   background: var(--surface-1);
   border-bottom: 1px solid var(--border);
-  font-size: var(--size-label);
+}
+
+.app-toolbar > .toolbar {
+  flex: 0 0 auto;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
 }
 
 .app-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.app-col {
   display: flex;
-  flex: 1;
   min-height: 0;
 }
 
-.panel {
+.app-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  min-height: 0;
   background: var(--surface-1);
+  overflow: hidden;
+}
+
+.app-panel--left {
+  border-right: 1px solid var(--border);
+}
+
+.app-panel--right {
+  border-left: 1px solid var(--border);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 32px;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--size-label);
+}
+
+.panel-content {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
   padding: var(--space-2);
 }
 
-.panel--left {
-  width: 260px;
+.panel-rail {
+  display: flex;
   flex: 0 0 auto;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: var(--space-2);
+  background: var(--surface-1);
+}
+
+.panel-rail--left {
   border-right: 1px solid var(--border);
 }
 
-.panel--right {
-  width: 300px;
-  flex: 0 0 auto;
+.panel-rail--right {
   border-left: 1px solid var(--border);
 }
 
-.panel--right.is-wide {
-  width: 460px;
+.panel-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0;
+  color: var(--text-muted);
 }
 
-.main-column {
+.panel-separator {
+  flex: 0 0 auto;
+  width: 5px;
+  min-height: 0;
+  cursor: col-resize;
+  background: var(--surface-1);
+  border: none;
+  outline-offset: -2px;
+}
+
+.panel-separator:hover,
+.panel-separator:focus-visible,
+.app-shell[data-dragging] .panel-separator {
+  background: var(--accent);
+}
+
+.app-main {
   display: flex;
   flex-direction: column;
+  position: relative;
   flex: 1;
   min-width: 0;
+  min-height: 0;
+  background: var(--canvas-bg);
 }
 
 .canvas-host {
