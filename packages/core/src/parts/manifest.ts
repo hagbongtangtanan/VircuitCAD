@@ -50,6 +50,7 @@ export const PartManifestSchema = z
     simModel: z.string().min(1),
     svg: z.string().min(1),
     schematicSymbol: z.string().min(1).optional(),
+    status: z.enum(['ready', 'planned']).default('ready'),
   })
   .superRefine((manifest, ctx) => {
     const pinIds = new Set<string>();
@@ -97,3 +98,8 @@ export const PartManifestSchema = z
     }
   });
 export type PartManifest = z.infer<typeof PartManifestSchema>;
+
+/** A part is placeable only once its model and art are ready. */
+export function isPlaceable(manifest: PartManifest): boolean {
+  return manifest.status === 'ready';
+}
