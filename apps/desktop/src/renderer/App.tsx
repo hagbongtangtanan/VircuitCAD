@@ -368,6 +368,11 @@ export function App() {
           <Inspector
             registry={registry}
             part={selected}
+            summary={{
+              parts: counts.parts,
+              wires: counts.wires,
+              board: store.getCircuit().board.kind,
+            }}
             onChange={(key: string, value: ParamValue) => {
               if (selected) store.setParam(selected.id, key, value);
             }}
@@ -411,7 +416,9 @@ export function App() {
         <StatusBar
           partCount={counts.parts}
           wireCount={counts.wires}
-          hint={dirty ? 'Unsaved changes' : hint}
+          viewport={editorRef.current ?? undefined}
+          hint={hint}
+          saved={!dirty}
           simState={simState}
           simTime={simTime}
           version={version}

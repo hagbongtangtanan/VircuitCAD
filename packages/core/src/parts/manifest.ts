@@ -27,6 +27,8 @@ export const ParamSpecSchema = z.object({
   min: z.number().optional(),
   max: z.number().optional(),
   default: ParamValueSchema,
+  /** When present the value is an enum and should be edited with a select. */
+  options: z.array(z.string().min(1)).min(1).optional(),
 });
 export type ParamSpec = z.infer<typeof ParamSpecSchema>;
 

@@ -142,6 +142,34 @@ export const NetsIcon = icon(
   </>,
 );
 
+export const CategoryPassiveIcon = icon(<path d="M2 10h3l1.5-3 2 6 2-6 1.5 3h4" />);
+export const CategoryOptoIcon = icon(
+  <>
+    <circle cx="10" cy="11" r="4" />
+    <path d="M6 4l2 3M14 4l-2 3M3.5 10l2.5 1M16.5 10l-2.5 1" />
+  </>,
+);
+export const CategoryPowerIcon = icon(
+  <>
+    <rect x="5" y="7" width="10" height="6" rx="1" />
+    <path d="M3 9h2v2H3M17 9h2v2h-2" />
+  </>,
+);
+export const CategoryDigitalIcon = icon(
+  <>
+    <path d="M4 5v10M4 10h3" />
+    <path d="M7 7h4a3 3 0 0 1 0 6H7z" />
+    <path d="M14 10h3" />
+  </>,
+);
+export const CategoryMcuIcon = icon(
+  <>
+    <rect x="6" y="6" width="8" height="8" rx="1.5" />
+    <path d="M9 3v3M11 3v3M9 14v3M11 14v3M3 9h3M3 11h3M14 9h3M14 11h3" />
+  </>,
+);
+export const CategoryInstrumentIcon = icon(<path d="M4 11l3-5 3 7 3-8 3 6" />);
+
 export const ICONS = {
   select: SelectIcon,
   wire: WireIcon,
@@ -170,6 +198,21 @@ export const ICONS = {
   panelRight: PanelRightIcon,
   theme: ThemeIcon,
   nets: NetsIcon,
+  categoryPassive: CategoryPassiveIcon,
+  categoryOpto: CategoryOptoIcon,
+  categoryPower: CategoryPowerIcon,
+  categoryDigital: CategoryDigitalIcon,
+  categoryMcu: CategoryMcuIcon,
+  categoryInstrument: CategoryInstrumentIcon,
 } as const;
 
 export type IconName = keyof typeof ICONS;
+
+export const CATEGORY_ICONS: Record<string, IconName> = {
+  passive: 'categoryPassive',
+  opto: 'categoryOpto',
+  power: 'categoryPower',
+  digital: 'categoryDigital',
+  mcu: 'categoryMcu',
+  instrument: 'categoryInstrument',
+};

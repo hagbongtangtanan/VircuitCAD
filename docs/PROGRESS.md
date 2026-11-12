@@ -29,8 +29,11 @@ manifest, `ART_PADDING=5`; editor `art-graphics.ts`→Pixi, `partTextureKey(part
 sprite rotated by transform; `SVG_OVERRIDES`). T06 breadboard `packages/parts/art/board.ts` (body/trench/
 rails/±/labels at zoom≥1, strip hover) + Uno header labels from pins. T07 `CanvasControls` (zoom/fit/grid,
 imperative %, 0 React commits on pan/zoom via `window.__renderCount`), pin tooltip on hover, wire colour
-palette, snap ring, selection handles, cursor per tool, empty-state hint.
-Next: T08 status/inspector, T11 screenshot harness, T12 docs.
+palette, snap ring, selection handles, cursor per tool, empty-state hint. T08 `StatusBar` segments +
+separators + saved dot + imperative zoom (`StatusBarViewport`); `Inspector` category-icon header, enum
+`options` on `ParamSpec` (core manifests: color/common/mode) rendered as selects, param unit hints via
+`formatQuantity`, document summary when nothing selected.
+Next: T11 screenshot harness, T12 docs.
 Notes: tokens in CSS; heavy tests 30s; parallel e2e CPU-bound (`--workers=1`). Perf ~13–31 fps/100 parts
 under SwiftShader. Blocked: none.
 --- (previous stages) ---
