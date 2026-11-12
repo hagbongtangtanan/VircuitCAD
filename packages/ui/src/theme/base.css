@@ -211,9 +211,9 @@ input[type="checkbox"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  min-height: 26px;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
   padding: 0;
   color: var(--text-muted);
 }
@@ -323,9 +323,9 @@ input[type="checkbox"] {
 }
 
 .wire-swatch {
-  width: 20px;
-  height: 20px;
-  min-height: 20px;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
   padding: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius-1);

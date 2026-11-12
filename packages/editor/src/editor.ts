@@ -347,7 +347,8 @@ export class Editor {
         return;
       }
       this.updateHover(event.clientX, event.clientY, element);
-      if (this.controller && (toolDragging || this.controller.getTool() === 'place')) {
+      const tool = this.controller?.getTool();
+      if (this.controller && (toolDragging || tool === 'place' || tool === 'wire')) {
         this.controller.pointerMove(this.toGrid(event.clientX, event.clientY, element));
       }
     };

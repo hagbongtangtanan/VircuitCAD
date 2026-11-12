@@ -32,8 +32,11 @@ imperative %, 0 React commits on pan/zoom via `window.__renderCount`), pin toolt
 palette, snap ring, selection handles, cursor per tool, empty-state hint. T08 `StatusBar` segments +
 separators + saved dot + imperative zoom (`StatusBarViewport`); `Inspector` category-icon header, enum
 `options` on `ParamSpec` (core manifests: color/common/mode) rendered as selects, param unit hints via
-`formatQuantity`, document summary when nothing selected.
-Next: T11 screenshot harness, T12 docs.
+`formatQuantity`, document summary when nothing selected. T11 `pnpm e2e:screens` (`e2e/screens.spec.ts`)
+writes 5 states × 3 sizes + `/gallery.html` (all parts 1×/2× + breadboard) to `artifacts/screens/`, and
+checks clipped text / controls <28px / overlaps; CI uploads the artifact; `docs/UI-REVIEW.md` checklist.
+Next: T12 docs (DESIGN.md already largely written; AGENTS.md update), then `vc-stage-finish.sh S13` →
+human review gate (S13 exit code 10).
 Notes: tokens in CSS; heavy tests 30s; parallel e2e CPU-bound (`--workers=1`). Perf ~13–31 fps/100 parts
 under SwiftShader. Blocked: none.
 --- (previous stages) ---

@@ -71,6 +71,9 @@ importers:
       '@vircuitcad/editor':
         specifier: workspace:*
         version: link:../../packages/editor
+      '@vircuitcad/parts':
+        specifier: workspace:*
+        version: link:../../packages/parts
       '@vircuitcad/toolchain':
         specifier: workspace:*
         version: link:../../packages/toolchain

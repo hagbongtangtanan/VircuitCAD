@@ -1,9 +1,11 @@
-import type { PartManifest } from '@vircuitcad/core';
+import type { BoardKind, PartManifest } from '@vircuitcad/core';
 
 import { ART_BUILDERS, type ArtBody } from './builders';
+import { buildBreadboardArt } from './board';
 import {
   ART_PADDING,
   partFootprint,
+  primitiveBounds,
   rect,
   text,
   translatePrimitive,
@@ -153,4 +155,37 @@ export function toSvg(art: PartArt): string {
 
 export function hasArt(manifest: PartManifest): boolean {
   return ART_BUILDERS[manifest.simModel] !== undefined;
+}
+
+/** Serialise the breadboard artwork (body + labels) to a standalone SVG. */
+export function breadboardSvg(kind: BoardKind): string {
+  const board = buildBreadboardArt(kind);
+  const shapes = [...board.primitives, ...board.labels];
+  let minX = Number.POSITIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+  let maxX = Number.NEGATIVE_INFINITY;
+  let maxY = Number.NEGATIVE_INFINITY;
+  for (const shape of shapes) {
+    if (shape.kind === 'text') continue;
+    const bounds = primitiveBounds(shape);
+    minX = Math.min(minX, bounds.minX);
+    minY = Math.min(minY, bounds.minY);
+    maxX = Math.max(maxX, bounds.maxX);
+    maxY = Math.max(maxY, bounds.maxY);
+  }
+  const pad = 14;
+  minX -= pad;
+  minY -= pad;
+  maxX += pad;
+  maxY += pad;
+  const art: PartArt = {
+    partId: `breadboard-${kind}`,
+    width: maxX - minX,
+    height: maxY - minY,
+    body: board.body,
+    primitives: shapes.map((shape) => translatePrimitive(shape, -minX, -minY)),
+    pins: [],
+    fallback: false,
+  };
+  return toSvg(art);
 }
