@@ -19,6 +19,17 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S13 | UI foundation and part art (run before S04) | pending |
 
 ## Handoff
+S13 branch `stage/s13-ui-foundation` (UI foundation; runs before S04). Spec is docs/DESIGN.md —
+implement literally, verify with measurable assertions (you cannot see screenshots). Done: T01
+(`packages/ui/src/theme/tokens.css` dark+`[data-theme=light]`, `base.css` reset/controls/app-shell,
+exported as `@vircuitcad/ui/tokens.css|base.css`, imported in renderer `main.tsx`; index.html +
+App.tsx inline styles removed; node-env `contrast.test.ts` asserts 4.5:1 for text/background pairs in
+both themes). Next: T02 shell grid, T03 icons+toolbar, T04 parts panel + ready/planned, T05 art DSL +
+Pixi/SVG + fallback card, T06 breadboard/Uno art, T07 canvas polish, T08 status/inspector, T09 menu,
+T10 capability flags, T11 screenshot harness, T12 docs.
+Notes: theme tokens live in CSS (source of truth, parsed by the contrast test); heavy tests
+(netlist property, sim-mcu blink) now have 30s timeouts.
+--- (previous stages) ---
 S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
 + golden tests), T09 (`docs/QA.md`), T06 (`docs/SECURITY.md`, THIRD_PARTY.md, dompurify override, audit
 clean), T05 (`tools/bench.ts` + baseline + `pnpm bench` + CI `bench` job; long soak deferred), T02 (core
