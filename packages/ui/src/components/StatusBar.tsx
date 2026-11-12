@@ -5,9 +5,18 @@ export type StatusBarProps = {
   hint?: string;
   simState?: string;
   simTime?: number;
+  version?: string;
 };
 
-export function StatusBar({ partCount, wireCount, zoom, hint, simState, simTime }: StatusBarProps) {
+export function StatusBar({
+  partCount,
+  wireCount,
+  zoom,
+  hint,
+  simState,
+  simTime,
+  version,
+}: StatusBarProps) {
   return (
     <div className="status-bar" role="status">
       <span data-testid="status-parts">{partCount} parts</span>
@@ -20,6 +29,11 @@ export function StatusBar({ partCount, wireCount, zoom, hint, simState, simTime 
         </span>
       ) : null}
       {hint ? <span data-testid="status-hint">{hint}</span> : null}
+      {version ? (
+        <span className="version" data-testid="version">
+          v{version}
+        </span>
+      ) : null}
     </div>
   );
 }

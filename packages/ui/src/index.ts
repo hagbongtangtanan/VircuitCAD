@@ -31,5 +31,6 @@ export {
 } from './code/arduino-keywords';
 
 export { THEMES, DEFAULT_THEME, type ThemeName } from './theme';
+export { ICONS, type IconName, type IconProps } from './icons';
 
 export const packageName = '@vircuitcad/ui';

@@ -303,9 +303,6 @@ export function App() {
     <main className="app-shell">
       <header className="app-header">
         <strong>VircuitCAD</strong>
-        <span className="version" data-testid="version">
-          v{version}
-        </span>
         <button type="button" onClick={() => setCodeOpen((open) => !open)}>
           Code
         </button>
@@ -351,6 +348,7 @@ export function App() {
             hint={dirty ? 'Unsaved changes' : hint}
             simState={simState}
             simTime={simTime}
+            version={version}
           />
           <Toast message={toast} onDismiss={() => setToast(undefined)} />
         </section>
