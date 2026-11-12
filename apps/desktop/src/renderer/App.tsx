@@ -2,10 +2,12 @@ import {
   DocumentStore,
   createDefaultPartRegistry,
   createEmptyCircuit,
+  defaultCapabilities,
   deserializeCircuit,
   extractNetlist,
   serializeCircuit,
   sketchOf,
+  unavailableReason,
   type ParamValue,
   type PartInstance,
 } from '@vircuitcad/core';
@@ -42,6 +44,7 @@ export function App() {
   const [store] = useState(() => new DocumentStore(createEmptyCircuit({ board: 'full' })));
   const registry = useMemo(() => createDefaultPartRegistry(), []);
   const client = useMemo(() => createClient(), []);
+  const capabilities = useMemo(() => defaultCapabilities(), []);
 
   const [version, setVersion] = useState('…');
   const [tool, setTool] = useState<ToolbarTool>('select');
@@ -303,7 +306,12 @@ export function App() {
     <main className="app-shell">
       <header className="app-header">
         <strong>VircuitCAD</strong>
-        <button type="button" onClick={() => setCodeOpen((open) => !open)}>
+        <button
+          type="button"
+          disabled={!capabilities.codeEditor}
+          title={capabilities.codeEditor ? 'Toggle the code panel' : unavailableReason('codeEditor')}
+          onClick={() => setCodeOpen((open) => !open)}
+        >
           Code
         </button>
       </header>
