@@ -28,9 +28,10 @@ both themes). Done also: T09 (pure `buildMenuTemplate` File/Edit/View/Help + dev
 main process, commands sent over `vircuitcad:menu`; preload `onMenu`; App wires undo/redo/delete/
 duplicate; window min 1024x640). Done also: T03 (27 original icons in `packages/ui/src/icons`,
 Toolbar rebuilt with grouped icon buttons + accessible names/tooltips/active+disabled states; header
-version moved to the status bar; `undo:yes` debug text removed). Next: T02 shell grid, T04 parts panel +
-ready/planned, T05 art DSL + Pixi/SVG + fallback card, T06 breadboard/Uno art, T07 canvas polish, T08
-status/inspector, T10 capability flags, T11 screenshot harness, T12 docs.
+version moved to the status bar; `undo:yes` debug text removed). Done also: T10 (`defaultCapabilities`/
+`unavailableReason`; RunControls + header Code disable with a reason tooltip; all-on defaults). Next:
+T02 shell grid, T04 parts panel + ready/planned, T05 art DSL + Pixi/SVG + fallback card, T06
+breadboard/Uno art, T07 canvas polish, T08 status/inspector, T11 screenshot harness, T12 docs.
 Notes: theme tokens live in CSS (source of truth, parsed by the contrast test); heavy tests
 (netlist property, sim-mcu blink) now have 30s timeouts.
 --- (previous stages) ---
