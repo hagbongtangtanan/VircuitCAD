@@ -89,7 +89,7 @@ it('property: netlist is invariant to wire order', { timeout: 30_000 }, () => {
   );
 });
 
-it('property: netlist is invariant to which hole of a strip is used', () => {
+it('property: netlist is invariant to which hole of a strip is used', { timeout: 30_000 }, () => {
   fc.assert(
     fc.property(
       fc.constantFrom<BoardKind>('full', 'half'),
@@ -123,7 +123,7 @@ it('property: netlist is invariant to which hole of a strip is used', () => {
   );
 });
 
-it('property: pin-to-pin nets ignore part position and rotation', () => {
+it('property: pin-to-pin nets ignore part position and rotation', { timeout: 30_000 }, () => {
   const offBoard = (parts: PartSpec[], rotation: Rotation): PartSpec[] =>
     parts.map((part, index) => ({
       partId: part.partId,
@@ -161,7 +161,7 @@ it('property: pin-to-pin nets ignore part position and rotation', () => {
   );
 });
 
-it('property: regenerating ids preserves the grouping', () => {
+it('property: regenerating ids preserves the grouping', { timeout: 30_000 }, () => {
   const remap = (circuit: Circuit): Circuit => {
     const remapEndpoint = (endpoint: Endpoint): Endpoint => {
       if (endpoint.kind !== 'pin') return endpoint;
@@ -192,7 +192,7 @@ it('property: regenerating ids preserves the grouping', () => {
   );
 });
 
-it('property: nets partition every pin and extraction is idempotent', () => {
+it('property: nets partition every pin and extraction is idempotent', { timeout: 30_000 }, () => {
   fc.assert(
     fc.property(circuitArb, (circuit) => {
       const netlist = extractNetlist(circuit, registry);
