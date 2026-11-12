@@ -16,7 +16,7 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S09 | Parts wave 2 and instruments | done |
 | S10 | Blockly, example library, schematic view | done |
 | S11 | Polish, packaging, release | done |
-| S13 | UI foundation and part art (run before S04) | pending |
+| S13 | UI foundation and part art (run before S04) | done |
 
 ## Handoff
 S13 `stage/s13-ui-foundation` (before S04); spec docs/DESIGN.md; verify with measurable assertions.
