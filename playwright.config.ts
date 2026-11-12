@@ -4,6 +4,9 @@ const baseURL = 'http://127.0.0.1:5173';
 
 export default defineConfig({
   testDir: 'e2e',
+  // The visual QA harness is heavy and runs via `pnpm e2e:screens` (playwright.screens.config.ts),
+  // not in the main suite.
+  testIgnore: ['**/screens.spec.ts'],
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
