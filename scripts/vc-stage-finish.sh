@@ -43,7 +43,7 @@ else
   exit 1
 fi
 
-if echo " ${VC_PAUSE_AFTER:-S04 S06 S11} " | grep -q " $sid "; then
+if echo " ${VC_PAUSE_AFTER:-S04 S06 S11 S12 S13} " | grep -q " $sid "; then
   touch ".vc/paused-$sid"
   info "⏸ $sid is a HUMAN REVIEW GATE. Review and merge: $url"
   info "   then rerun scripts/vc-run-stages.sh (or /stage) to continue."
