@@ -29,9 +29,11 @@ main process, commands sent over `vircuitcad:menu`; preload `onMenu`; App wires 
 duplicate; window min 1024x640). Done also: T03 (27 original icons in `packages/ui/src/icons`,
 Toolbar rebuilt with grouped icon buttons + accessible names/tooltips/active+disabled states; header
 version moved to the status bar; `undo:yes` debug text removed). Done also: T10 (`defaultCapabilities`/
-`unavailableReason`; RunControls + header Code disable with a reason tooltip; all-on defaults). Next:
-T02 shell grid, T04 parts panel + ready/planned, T05 art DSL + Pixi/SVG + fallback card, T06
-breadboard/Uno art, T07 canvas polish, T08 status/inspector, T11 screenshot harness, T12 docs.
+`unavailableReason`; RunControls + header Code disable with a reason tooltip; all-on defaults). Done
+also: T04 (manifest `status` ready/planned + `isPlaceable`; PartsBin accordion w/ counts, 'Show
+planned' toggle, planned hidden+disabled w/ reason). Next: T02 shell grid, T05 art DSL + Pixi/SVG +
+fallback card, T06 breadboard/Uno art, T07 canvas polish, T08 status/inspector, T11 screenshot harness,
+T12 docs.
 Notes: theme tokens live in CSS (source of truth, parsed by the contrast test); heavy tests
 (netlist property, sim-mcu blink) now have 30s timeouts.
 --- (previous stages) ---
