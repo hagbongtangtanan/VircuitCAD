@@ -29,10 +29,12 @@ T03 icons+Toolbar; T04 manifest `status`+`isPlaceable`; T05 art DSL `packages/pa
 wire palette, snap ring, selection handles, cursor, empty hint; T08 `StatusBar` segments + `Inspector`
 enum selects (`ParamSpec.options`) + `formatQuantity`; T09 menu; T10 capabilities; T11 `pnpm e2e:screens`
 → `artifacts/screens/` (+ gallery, layout checks) uploaded by CI; T12 docs.
-Next: `vc-stage-finish.sh S13` → human review gate (exit 10: check the `vircuitcad-screens` artifact at
-1366×768 and 1920×1080).
-Notes: tokens in CSS; parallel e2e CPU-bound (`--workers=1`); perf ~13–31 fps/100 parts under SwiftShader.
-Blocked: none.
+Status: `vc-stage-finish.sh S13` ran full checks green and opened PR #15 (CI green) — now at the HUMAN
+REVIEW GATE (exit 10). Human: open the `vircuitcad-screens` CI artifact, confirm readable at 1366×768 and
+1920×1080, then merge/squash PR #15 (tag `stage-s13-done`) and resume with `/stage` (next stage untouched).
+Notes: tokens in CSS; parallel e2e CPU-bound (`--workers=1`); perf ~13–31 fps/100 parts under SwiftShader;
+full `test` is memory-heavy on this box (3.7 GB) — netlist property tests now use a 30s timeout.
+Blocked: none (awaiting human review).
 --- (previous stages) ---
 S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
 + golden tests), T09 (`docs/QA.md`), T06 (`docs/SECURITY.md`, THIRD_PARTY.md, dompurify override, audit
