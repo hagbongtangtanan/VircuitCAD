@@ -1,0 +1,66 @@
+/* VircuitCAD design tokens — see docs/DESIGN.md. CSS variables only. */
+
+:root {
+  --bg-app: #0e1420;
+  --surface-1: #141c2b;
+  --surface-2: #1b2538;
+  --surface-3: #25314a;
+  --border: #2d3b58;
+  --text: #e6ecf5;
+  --text-muted: #9aa8c0;
+  --accent: #3da5ff;
+  --success: #3ecf8e;
+  --warning: #f5b84b;
+  --danger: #ff6b6b;
+  --canvas-bg: #0a101a;
+  --grid-dot: #1f2c44;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+
+  --radius-1: 4px;
+  --radius-2: 6px;
+  --radius-3: 10px;
+
+  --size-caption: 12px;
+  --size-body: 13px;
+  --size-label: 14px;
+  --size-heading: 16px;
+
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", Consolas, monospace;
+
+  --focus-ring: 0 0 0 2px var(--accent);
+
+  --wire-red: #ef4444;
+  --wire-black: #111827;
+  --wire-blue: #3b82f6;
+  --wire-green: #22c55e;
+  --wire-yellow: #eab308;
+  --wire-orange: #f97316;
+  --wire-white: #f8fafc;
+  --wire-purple: #a855f7;
+
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg-app: #f4f6fb;
+  --surface-1: #ffffff;
+  --surface-2: #eef1f8;
+  --surface-3: #e2e7f2;
+  --border: #c9d2e3;
+  --text: #121a2a;
+  --text-muted: #4a566e;
+  --accent: #0b6bcb;
+  --success: #1f8a5b;
+  --warning: #96690f;
+  --danger: #c0362c;
+  --canvas-bg: #e9edf5;
+  --grid-dot: #cdd6e6;
+
+  color-scheme: light;
+}

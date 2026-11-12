@@ -22,6 +22,7 @@ export * from './settings/palette';
 export * from './i18n/i18n';
 export * from './recovery/journal';
 export * from './recovery/recent';
+export * from './capabilities';
 export * from './store/document-store';
 
 export const packageName = '@vircuitcad/core';

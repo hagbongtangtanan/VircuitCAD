@@ -71,6 +71,9 @@ importers:
       '@vircuitcad/editor':
         specifier: workspace:*
         version: link:../../packages/editor
+      '@vircuitcad/parts':
+        specifier: workspace:*
+        version: link:../../packages/parts
       '@vircuitcad/toolchain':
         specifier: workspace:*
         version: link:../../packages/toolchain
@@ -141,6 +144,9 @@ importers:
       '@vircuitcad/core':
         specifier: workspace:*
         version: link:../core
+      '@vircuitcad/parts':
+        specifier: workspace:*
+        version: link:../parts
       '@vircuitcad/sim-analog':
         specifier: workspace:*
         version: link:../sim-analog
@@ -154,7 +160,11 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
 
-  packages/parts: {}
+  packages/parts:
+    dependencies:
+      '@vircuitcad/core':
+        specifier: workspace:*
+        version: link:../core
 
   packages/sim-analog:
     dependencies:

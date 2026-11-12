@@ -16,6 +16,7 @@
     "dev:web": "pnpm --filter @vircuitcad/dev-server dev",
     "dev:desktop": "pnpm --filter @vircuitcad/desktop dev",
     "test:e2e": "playwright test",
+    "e2e:screens": "playwright test --config playwright.screens.config.ts",
     "check:licenses": "node tools/license-check/check.mjs",
     "bench": "tsx tools/bench.ts"
   },

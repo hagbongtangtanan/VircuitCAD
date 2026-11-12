@@ -3,17 +3,28 @@ import { Container, Graphics, Sprite, type Renderer, type Texture } from 'pixi.j
 import {
   extractNetlist,
   generateBoardGeometry,
+  rotateGridVector,
   type BoardGeometry,
   type DocumentStore,
+  type Hole,
   type PartManifest,
   type PartRegistry,
   type Rotation,
   type Vec2,
 } from '@vircuitcad/core';
+import {
+  ART_PADDING,
+  BOARD_HOLE,
+  buildBreadboardArt,
+  boardHoleCircles,
+  partFootprint,
+} from '@vircuitcad/parts/art';
 
 import { buildHitTestScene } from '../hit/scene-index';
+import { createStaticText, drawPrimitives } from './art-graphics';
 import { layoutPart } from './part-layout';
 import { createPartTexture, createPlaceholderPartTexture } from './part-textures';
+import { partTextureKey } from './texture-key';
 import { ledGlow, ledTint, voltageToColor } from './visuals';
 import { TextureCache } from './texture-cache';
 
@@ -33,12 +44,18 @@ export type PreviewState = {
 export class Scene {
   readonly root = new Container();
   private readonly boardLayer = new Container();
+  private readonly boardLabelLayer = new Container();
+  private readonly hoverLayer = new Container();
   private readonly wiresLayer = new Container();
   private readonly partsLayer = new Container();
   private readonly overlayLayer = new Container();
+  private readonly hoverGraphics = new Graphics();
   private readonly selectionGraphics = new Graphics();
   private readonly highlightGraphics = new Graphics();
+  private readonly hoverPinGraphics = new Graphics();
+  private readonly snapGraphics = new Graphics();
   private readonly wirePreview = new Graphics();
+  private labelsVisible = false;
   private ledById = new Map<string, { current: number; burnedOut: boolean }>();
   private nodeVoltages: Record<string, number> = {};
   private netColoring = false;
@@ -57,8 +74,23 @@ export class Scene {
     options: SceneOptions = {},
   ) {
     this.cellSize = options.cellSize ?? 20;
-    this.root.addChild(this.boardLayer, this.wiresLayer, this.partsLayer, this.overlayLayer);
-    this.overlayLayer.addChild(this.selectionGraphics, this.highlightGraphics, this.wirePreview);
+    this.root.addChild(
+      this.boardLayer,
+      this.hoverLayer,
+      this.wiresLayer,
+      this.partsLayer,
+      this.overlayLayer,
+    );
+    this.boardLayer.addChild(this.boardLabelLayer);
+    this.boardLabelLayer.visible = false;
+    this.hoverLayer.addChild(this.hoverGraphics);
+    this.overlayLayer.addChild(
+      this.snapGraphics,
+      this.selectionGraphics,
+      this.highlightGraphics,
+      this.hoverPinGraphics,
+      this.wirePreview,
+    );
     this.geometry = generateBoardGeometry(store.getCircuit().board.kind);
     this.drawBoard(options);
     this.renderCircuit();
@@ -88,20 +120,32 @@ export class Scene {
   setPreview(preview: PreviewState | null): void {
     this.preview?.destroy();
     this.preview = undefined;
+    this.snapGraphics.clear();
     if (!preview) return;
+
+    this.snapGraphics
+      .circle(
+        preview.position.x * this.cellSize,
+        preview.position.y * this.cellSize,
+        this.cellSize * 0.4,
+      )
+      .stroke({ width: 2, color: preview.valid ? 0x22c55e : 0xef4444, alpha: 0.9 });
 
     const layout = layoutPart(preview.manifest, preview.position, preview.rotation);
     const width = Math.max(1, layout.bounds.width) * this.cellSize;
     const height = Math.max(1, layout.bounds.height) * this.cellSize;
     const color = preview.valid ? 0x22c55e : 0xef4444;
-    const texture = this.cache.get(`preview:${preview.manifest.id}:${preview.rotation}:${preview.valid}`, () =>
-      createPlaceholderPartTexture(
-        this.renderer,
-        color,
-        Math.round(width),
-        Math.round(height),
-        this.renderer.resolution,
-      ),
+    const variant = preview.valid ? 'preview-valid' : 'preview-invalid';
+    const texture = this.cache.get(
+      `${partTextureKey(preview.manifest.id, variant, this.renderer.resolution)}:${preview.rotation}`,
+      () =>
+        createPlaceholderPartTexture(
+          this.renderer,
+          color,
+          Math.round(width),
+          Math.round(height),
+          this.renderer.resolution,
+        ),
     );
 
     const sprite = new Sprite(texture);
@@ -132,27 +176,99 @@ export class Scene {
 
     const layout = layoutPart(manifest, part.position, part.rotation);
     const pad = this.cellSize * 0.3;
+    const x = layout.bounds.minX * this.cellSize - pad;
+    const y = layout.bounds.minY * this.cellSize - pad;
     const width = Math.max(layout.bounds.width * this.cellSize, 1) + pad * 2;
     const height = Math.max(layout.bounds.height * this.cellSize, 1) + pad * 2;
-    this.selectionGraphics
-      .rect(
-        layout.bounds.minX * this.cellSize - pad,
-        layout.bounds.minY * this.cellSize - pad,
-        width,
-        height,
-      )
-      .stroke({ width: 2, color: 0x38bdf8, alpha: 0.9 });
+    this.selectionGraphics.rect(x, y, width, height).stroke({ width: 2, color: 0x38bdf8, alpha: 0.9 });
+
+    const handle = 6;
+    const corners: [number, number][] = [
+      [x, y],
+      [x + width, y],
+      [x, y + height],
+      [x + width, y + height],
+    ];
+    for (const [hx, hy] of corners) {
+      this.selectionGraphics
+        .rect(hx - handle / 2, hy - handle / 2, handle, handle)
+        .fill({ color: 0x38bdf8 });
+    }
+  }
+
+  private refreshHoverPin(partId: string | undefined, pinId: string | undefined): void {
+    this.hoverPinGraphics.clear();
+    if (!partId || !pinId) return;
+    const part = this.store.getCircuit().parts.find((candidate) => candidate.id === partId);
+    const manifest = part ? this.registry.get(part.partId) : undefined;
+    if (!part || !manifest) return;
+    const layout = layoutPart(manifest, part.position, part.rotation);
+    const pin = layout.pins.find((candidate) => candidate.id === pinId);
+    if (!pin) return;
+    const x = pin.position.x * this.cellSize;
+    const y = pin.position.y * this.cellSize;
+    this.hoverPinGraphics
+      .circle(x, y, this.cellSize * 0.35)
+      .stroke({ width: 2, color: 0x3da5ff, alpha: 1 });
+    this.hoverPinGraphics.circle(x, y, 3).fill({ color: 0x3da5ff, alpha: 0.9 });
+  }
+
+  setHoverPin(partId: string | undefined, pinId?: string): void {
+    this.refreshHoverPin(partId, pinId);
   }
 
   private drawBoard(options: SceneOptions): void {
     const radius = options.holeRadius ?? 3;
-    const color = options.holeColor ?? 0x334155;
+    const holeColor =
+      options.holeColor !== undefined
+        ? `#${options.holeColor.toString(16).padStart(6, '0')}`
+        : BOARD_HOLE;
+    const art = buildBreadboardArt(this.geometry.kind);
     const graphics = new Graphics();
-    for (const hole of this.geometry.holes) {
-      graphics.circle(hole.position.x * this.cellSize, hole.position.y * this.cellSize, radius);
-    }
-    graphics.fill({ color });
+    drawPrimitives(graphics, art.primitives);
+    drawPrimitives(graphics, boardHoleCircles(art, radius, holeColor));
     this.boardLayer.addChild(graphics);
+    for (const label of art.labels) {
+      if (label.kind === 'text') this.boardLabelLayer.addChild(createStaticText(label));
+    }
+  }
+
+  /** Column numbers and row letters appear at zoom 100% and above. */
+  setZoom(scale: number): void {
+    const visible = scale >= 1;
+    if (visible === this.labelsVisible) return;
+    this.labelsVisible = visible;
+    this.boardLabelLayer.visible = visible;
+  }
+
+  /** Highlight the 5-hole strip (or rail) under the cursor. */
+  setHoverHole(holeId: string | undefined): void {
+    this.hoverGraphics.clear();
+    if (!holeId) return;
+    const stripId = this.geometry.stripOf(holeId);
+    const strip = stripId
+      ? this.geometry.strips.find((candidate) => candidate.id === stripId)
+      : undefined;
+    if (!strip) return;
+    const holes = strip.holes
+      .map((id) => this.geometry.hole(id))
+      .filter((hole): hole is Hole => hole !== undefined);
+    if (holes.length === 0) return;
+    const xs = holes.map((hole) => hole.position.x);
+    const ys = holes.map((hole) => hole.position.y);
+    const pad = this.cellSize * 0.45;
+    const minX = Math.min(...xs) * this.cellSize;
+    const minY = Math.min(...ys) * this.cellSize;
+    this.hoverGraphics
+      .roundRect(
+        minX - pad,
+        minY - pad,
+        (Math.max(...xs) - Math.min(...xs)) * this.cellSize + pad * 2,
+        (Math.max(...ys) - Math.min(...ys)) * this.cellSize + pad * 2,
+        4,
+      )
+      .fill({ color: 0x3da5ff, alpha: 0.16 })
+      .stroke({ width: 1, color: 0x3da5ff, alpha: 0.6 });
   }
 
   setWirePreview(points: Vec2[] | null): void {
@@ -202,7 +318,7 @@ export class Scene {
         Number.parseInt((circuit.wires[index]?.color ?? '#22c55e').slice(1), 16);
       wires.moveTo(first.x, first.y);
       for (const point of rest) wires.lineTo(point.x, point.y);
-      wires.stroke({ width: 2, color, alpha: 0.9 });
+      wires.stroke({ width: 2, color, alpha: 0.9, cap: 'round', join: 'round' });
     });
     this.wiresLayer.addChild(wires);
 
@@ -250,22 +366,20 @@ export class Scene {
   }
 
   private createSprite(partId: string, manifest: PartManifest, position: Vec2, rotation: Rotation): Sprite {
-    const layout = layoutPart(manifest, position, rotation);
-    const width = Math.max(1, layout.bounds.width) * this.cellSize;
-    const height = Math.max(1, layout.bounds.height) * this.cellSize;
-
-    const texture = this.cache.get(`part:${manifest.id}:${rotation}`, () =>
-      createPartTexture(
-        this.renderer,
-        manifest,
-        Math.round(width),
-        Math.round(height),
-        this.renderer.resolution,
-      ),
+    const texture = this.cache.get(
+      partTextureKey(manifest.id, 'default', this.renderer.resolution),
+      () => createPartTexture(this.renderer, manifest, this.renderer.resolution),
     );
 
+    const footprint = partFootprint(manifest);
+    const rotatedMin = rotateGridVector({ x: footprint.minX, y: footprint.minY }, rotation);
+    const rotatedPad = rotateGridVector({ x: ART_PADDING, y: ART_PADDING }, rotation);
     const sprite = new Sprite(texture);
-    sprite.position.set(layout.bounds.minX * this.cellSize, layout.bounds.minY * this.cellSize);
+    sprite.position.set(
+      (position.x + rotatedMin.x) * this.cellSize - rotatedPad.x,
+      (position.y + rotatedMin.y) * this.cellSize - rotatedPad.y,
+    );
+    sprite.rotation = (rotation * Math.PI) / 180;
 
     const led = this.ledById.get(partId);
     if (led) {

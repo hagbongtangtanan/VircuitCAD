@@ -1,10 +1,44 @@
 import path from 'node:path';
 
-import { BrowserWindow, app, ipcMain, session } from 'electron';
+import {
+  BrowserWindow,
+  Menu,
+  app,
+  ipcMain,
+  session,
+  type MenuItemConstructorOptions,
+} from 'electron';
 
 import { handleRpc } from '@vircuitcad/core';
 
 import { createElectronPlatformAdapter } from './adapter';
+import { buildMenuTemplate, type MenuItemSpec } from './menu';
+
+export const MENU_CHANNEL = 'vircuitcad:menu';
+
+function toMenuItem(spec: MenuItemSpec): MenuItemConstructorOptions {
+  if (spec.type === 'separator') return { type: 'separator' };
+  const item: MenuItemConstructorOptions = {};
+  if (spec.label !== undefined) item.label = spec.label;
+  if (spec.accelerator !== undefined) item.accelerator = spec.accelerator;
+  if (spec.role !== undefined) {
+    item.role = spec.role as NonNullable<MenuItemConstructorOptions['role']>;
+  }
+  if (spec.submenu) {
+    item.submenu = spec.submenu.map(toMenuItem);
+  } else if (spec.command) {
+    const command = spec.command;
+    item.click = () => {
+      BrowserWindow.getFocusedWindow()?.webContents.send(MENU_CHANNEL, command);
+    };
+  }
+  return item;
+}
+
+function applyMenu(): void {
+  const template = buildMenuTemplate({ version: app.getVersion(), isDev: !app.isPackaged });
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template.map(toMenuItem)));
+}
 
 const CSP = [
   "default-src 'self'",
@@ -35,8 +69,10 @@ function registerIpc(): void {
 
 function createWindow(): void {
   const window = new BrowserWindow({
-    width: 1024,
-    height: 720,
+    width: 1280,
+    height: 800,
+    minWidth: 1024,
+    minHeight: 640,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.cjs'),
       contextIsolation: true,
@@ -55,6 +91,7 @@ function createWindow(): void {
 void app.whenReady().then(() => {
   applyContentSecurityPolicy();
   registerIpc();
+  applyMenu();
   createWindow();
 
   app.on('activate', () => {

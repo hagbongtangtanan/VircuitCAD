@@ -5,8 +5,10 @@ declare global {
   interface Window {
     vircuitcad: {
       invoke(method: string, params?: unknown): Promise<RpcResponse>;
+      onMenu(callback: (command: string) => void): void;
     };
     __editor: Editor | undefined;
+    __renderCount: number;
     __app:
       | {
           store: DocumentStore;

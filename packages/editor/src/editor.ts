@@ -2,12 +2,20 @@ import 'pixi.js/unsafe-eval';
 
 import { Application, Container, Graphics } from 'pixi.js';
 
-import type { DocumentStore, PartRegistry, Vec2 } from '@vircuitcad/core';
+import { extractNetlist, type DocumentStore, type PartRegistry, type Vec2 } from '@vircuitcad/core';
 
 import { HitTester, buildHitTestScene } from './hit/scene-index';
 import { Scene } from './render/scene';
-import { ToolController } from './tools/tool-controller';
-import { type Viewport, panBy, screenToWorld, zoomAt } from './viewport';
+import { ToolController, type ToolName } from './tools/tool-controller';
+import { clampScale, type Viewport, panBy, screenToWorld, zoomAt } from './viewport';
+
+export type PinHoverInfo = {
+  partId: string;
+  pinId: string;
+  pinName: string;
+  netName: string | undefined;
+  screen: { x: number; y: number };
+};
 
 export type EditorOptions = {
   background?: number;
@@ -27,7 +35,11 @@ export class Editor {
   private controller: ToolController | undefined = undefined;
   private viewport: Viewport = { scale: 1, x: 0, y: 0 };
   private cleanup: Array<() => void> = [];
+  private canvas: HTMLCanvasElement | undefined = undefined;
+  private gridVisible = true;
+  private hoverPinKey: string | undefined = undefined;
   private readonly viewportListeners = new Set<() => void>();
+  private readonly hoverListeners = new Set<(info: PinHoverInfo | null) => void>();
   private readonly background: number;
   private readonly gridSize: number;
   private readonly minGridScreenPx: number;
@@ -57,6 +69,7 @@ export class Editor {
     });
     element.appendChild(app.canvas);
     this.app = app;
+    this.canvas = app.canvas;
 
     const world = new Container();
     app.stage.addChild(world);
@@ -83,6 +96,8 @@ export class Editor {
           this.hitTester = this.buildIndex();
         }),
       );
+      this.cleanup.push(this.controller.onStateChange(() => this.applyCursor()));
+      this.applyCursor();
     }
 
     this.applyViewport();
@@ -145,6 +160,60 @@ export class Editor {
     this.applyViewport();
   }
 
+  /** Zoom about the centre of the viewport (on-canvas +/- controls). */
+  zoomByCentre(factor: number): void {
+    if (!this.app) return;
+    this.zoomBy(factor, this.app.screen.width / 2, this.app.screen.height / 2);
+  }
+
+  /** Reset to 100% about the centre. */
+  resetZoom(): void {
+    if (!this.app) return;
+    this.zoomBy(1 / this.viewport.scale, this.app.screen.width / 2, this.app.screen.height / 2);
+  }
+
+  /** Fit the whole board in the viewport. */
+  fitToContent(): void {
+    if (!this.app || !this.scene) return;
+    const geometry = this.scene.getGeometry();
+    const xs = geometry.holes.map((hole) => hole.position.x);
+    const ys = geometry.holes.map((hole) => hole.position.y);
+    const margin = 2;
+    const minX = (Math.min(...xs) - margin) * this.cellSize;
+    const minY = (Math.min(...ys) - margin) * this.cellSize;
+    const worldWidth = (Math.max(...xs) - Math.min(...xs) + margin * 2) * this.cellSize;
+    const worldHeight = (Math.max(...ys) - Math.min(...ys) + margin * 2) * this.cellSize;
+    const viewWidth = this.app.screen.width;
+    const viewHeight = this.app.screen.height;
+    const scale = clampScale(Math.min(viewWidth / worldWidth, viewHeight / worldHeight));
+    this.viewport = {
+      scale,
+      x: (viewWidth - worldWidth * scale) / 2 - minX * scale,
+      y: (viewHeight - worldHeight * scale) / 2 - minY * scale,
+    };
+    this.applyViewport();
+  }
+
+  setGridVisible(visible: boolean): void {
+    this.gridVisible = visible;
+    this.drawGrid();
+  }
+
+  isGridVisible(): boolean {
+    return this.gridVisible;
+  }
+
+  onHoverPin(listener: (info: PinHoverInfo | null) => void): () => void {
+    this.hoverListeners.add(listener);
+    return () => this.hoverListeners.delete(listener);
+  }
+
+  private applyCursor(): void {
+    if (!this.canvas) return;
+    const tool: ToolName = this.controller?.getTool() ?? 'select';
+    this.canvas.style.cursor = tool === 'wire' ? 'crosshair' : tool === 'place' ? 'copy' : 'default';
+  }
+
   private buildIndex(): HitTester {
     const store = this.store;
     const registry = this.registry;
@@ -171,7 +240,52 @@ export class Editor {
     this.world.scale.set(this.viewport.scale);
     this.world.position.set(this.viewport.x, this.viewport.y);
     this.drawGrid();
+    this.scene?.setZoom(this.viewport.scale);
     for (const listener of this.viewportListeners) listener();
+  }
+
+  private emitHoverPin(info: PinHoverInfo | null): void {
+    for (const listener of this.hoverListeners) listener(info);
+  }
+
+  private updateHover(clientX: number, clientY: number, element: HTMLElement): void {
+    const scene = this.scene;
+    if (!scene) return;
+    const grid = this.toGrid(clientX, clientY, element);
+    const gx = Math.round(grid.x);
+    const gy = Math.round(grid.y);
+    const near = Math.abs(grid.x - gx) < 0.45 && Math.abs(grid.y - gy) < 0.45;
+    scene.setHoverHole(near ? scene.getGeometry().holeByPosition(gx, gy)?.id : undefined);
+
+    const world = { x: grid.x * this.cellSize, y: grid.y * this.cellSize };
+    const pinHit = this.ensureIndex().nearest(world, this.cellSize * 0.5, ['pin']);
+    const key = pinHit?.kind === 'pin' ? `${pinHit.partId}:${pinHit.pinId}` : undefined;
+    if (key === this.hoverPinKey) return;
+    this.hoverPinKey = key;
+
+    if (pinHit?.kind === 'pin') {
+      scene.setHoverPin(pinHit.partId, pinHit.pinId);
+      this.emitHoverPin({
+        partId: pinHit.partId,
+        pinId: pinHit.pinId,
+        pinName: pinHit.pinName,
+        netName: this.netNameOfPin(pinHit.partId, pinHit.pinId),
+        screen: { x: clientX, y: clientY },
+      });
+    } else {
+      scene.setHoverPin(undefined);
+      this.emitHoverPin(null);
+    }
+  }
+
+  private netNameOfPin(partId: string, pinId: string): string | undefined {
+    const store = this.store;
+    const registry = this.registry;
+    if (!store || !registry) return undefined;
+    for (const net of extractNetlist(store.getCircuit(), registry).nets) {
+      if (net.pins.some((pin) => pin.partId === partId && pin.pinId === pinId)) return net.name;
+    }
+    return undefined;
   }
 
   private drawGrid(): void {
@@ -180,6 +294,7 @@ export class Editor {
     if (!grid || !app) return;
     grid.clear();
 
+    if (!this.gridVisible) return;
     const spacing = this.gridSize * this.viewport.scale;
     if (spacing < this.minGridScreenPx) return;
 
@@ -231,9 +346,14 @@ export class Editor {
         lastY = event.clientY;
         return;
       }
-      if (this.controller && (toolDragging || this.controller.getTool() === 'place')) {
+      this.updateHover(event.clientX, event.clientY, element);
+      const tool = this.controller?.getTool();
+      if (this.controller && (toolDragging || tool === 'place' || tool === 'wire')) {
         this.controller.pointerMove(this.toGrid(event.clientX, event.clientY, element));
       }
+    };
+    const onPointerLeave = (): void => {
+      this.scene?.setHoverHole(undefined);
     };
     const onPointerUp = (event: PointerEvent): void => {
       if (panning) {
@@ -277,6 +397,7 @@ export class Editor {
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointermove', onPointerMove);
     canvas.addEventListener('pointerup', onPointerUp);
+    canvas.addEventListener('pointerleave', onPointerLeave);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
@@ -285,6 +406,7 @@ export class Editor {
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerup', onPointerUp);
+      canvas.removeEventListener('pointerleave', onPointerLeave);
       canvas.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);

@@ -26,3 +26,20 @@ it('disables pause and stop while idle', () => {
   expect((screen.getByText('Pause') as HTMLButtonElement).disabled).toBe(true);
   expect((screen.getByText('Stop') as HTMLButtonElement).disabled).toBe(true);
 });
+
+it('disables everything with a reason when simulation is unavailable', () => {
+  render(
+    <RunControls
+      state="running"
+      onRun={() => {}}
+      onTogglePause={() => {}}
+      onStop={() => {}}
+      capabilities={{ simulation: false, codeEditor: true, compile: true }}
+    />,
+  );
+  for (const label of ['Restart', 'Pause', 'Stop']) {
+    const button = screen.getByText(label) as HTMLButtonElement;
+    expect(button.disabled, label).toBe(true);
+    expect(button.title, label).toMatch(/Simulation is not available/);
+  }
+});
