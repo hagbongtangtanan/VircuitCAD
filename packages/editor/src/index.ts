@@ -40,6 +40,9 @@ export {
 } from './hit/scene-index';
 export { layoutPart, type PartBounds, type PartLayout, type PartPinLayout } from './render/part-layout';
 export { TextureCache } from './render/texture-cache';
+export { partTextureKey, type ArtVariant } from './render/texture-key';
+export { buildPartArtContainer } from './render/art-graphics';
+export { createPartTexture, createPlaceholderPartTexture } from './render/part-textures';
 export { ledGlow, ledTint, voltageToColor } from './render/visuals';
 export {
   MAX_SCALE,

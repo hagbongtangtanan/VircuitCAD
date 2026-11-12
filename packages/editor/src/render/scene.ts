@@ -3,6 +3,7 @@ import { Container, Graphics, Sprite, type Renderer, type Texture } from 'pixi.j
 import {
   extractNetlist,
   generateBoardGeometry,
+  rotateGridVector,
   type BoardGeometry,
   type DocumentStore,
   type PartManifest,
@@ -10,10 +11,12 @@ import {
   type Rotation,
   type Vec2,
 } from '@vircuitcad/core';
+import { ART_PADDING, partFootprint } from '@vircuitcad/parts/art';
 
 import { buildHitTestScene } from '../hit/scene-index';
 import { layoutPart } from './part-layout';
 import { createPartTexture, createPlaceholderPartTexture } from './part-textures';
+import { partTextureKey } from './texture-key';
 import { ledGlow, ledTint, voltageToColor } from './visuals';
 import { TextureCache } from './texture-cache';
 
@@ -94,14 +97,17 @@ export class Scene {
     const width = Math.max(1, layout.bounds.width) * this.cellSize;
     const height = Math.max(1, layout.bounds.height) * this.cellSize;
     const color = preview.valid ? 0x22c55e : 0xef4444;
-    const texture = this.cache.get(`preview:${preview.manifest.id}:${preview.rotation}:${preview.valid}`, () =>
-      createPlaceholderPartTexture(
-        this.renderer,
-        color,
-        Math.round(width),
-        Math.round(height),
-        this.renderer.resolution,
-      ),
+    const variant = preview.valid ? 'preview-valid' : 'preview-invalid';
+    const texture = this.cache.get(
+      `${partTextureKey(preview.manifest.id, variant, this.renderer.resolution)}:${preview.rotation}`,
+      () =>
+        createPlaceholderPartTexture(
+          this.renderer,
+          color,
+          Math.round(width),
+          Math.round(height),
+          this.renderer.resolution,
+        ),
     );
 
     const sprite = new Sprite(texture);
@@ -250,22 +256,20 @@ export class Scene {
   }
 
   private createSprite(partId: string, manifest: PartManifest, position: Vec2, rotation: Rotation): Sprite {
-    const layout = layoutPart(manifest, position, rotation);
-    const width = Math.max(1, layout.bounds.width) * this.cellSize;
-    const height = Math.max(1, layout.bounds.height) * this.cellSize;
-
-    const texture = this.cache.get(`part:${manifest.id}:${rotation}`, () =>
-      createPartTexture(
-        this.renderer,
-        manifest,
-        Math.round(width),
-        Math.round(height),
-        this.renderer.resolution,
-      ),
+    const texture = this.cache.get(
+      partTextureKey(manifest.id, 'default', this.renderer.resolution),
+      () => createPartTexture(this.renderer, manifest, this.renderer.resolution),
     );
 
+    const footprint = partFootprint(manifest);
+    const rotatedMin = rotateGridVector({ x: footprint.minX, y: footprint.minY }, rotation);
+    const rotatedPad = rotateGridVector({ x: ART_PADDING, y: ART_PADDING }, rotation);
     const sprite = new Sprite(texture);
-    sprite.position.set(layout.bounds.minX * this.cellSize, layout.bounds.minY * this.cellSize);
+    sprite.position.set(
+      (position.x + rotatedMin.x) * this.cellSize - rotatedPad.x,
+      (position.y + rotatedMin.y) * this.cellSize - rotatedPad.y,
+    );
+    sprite.rotation = (rotation * Math.PI) / 180;
 
     const led = this.ledById.get(partId);
     if (led) {
