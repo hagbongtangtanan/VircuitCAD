@@ -1,6 +1,15 @@
 import { expect, it } from 'vitest';
 
-import { MAX_SCALE, MIN_SCALE, clampScale, panBy, screenToWorld, worldToScreen, zoomAt } from './viewport';
+import {
+  MAX_SCALE,
+  MIN_SCALE,
+  clampScale,
+  fitViewport,
+  panBy,
+  screenToWorld,
+  worldToScreen,
+  zoomAt,
+} from './viewport';
 
 it('round-trips world/screen coordinates', () => {
   const viewport = { scale: 2, x: 30, y: -10 };
@@ -26,4 +35,28 @@ it('clamps the scale to the supported range', () => {
 
 it('pans by a screen delta', () => {
   expect(panBy({ scale: 1, x: 5, y: 5 }, -2, 3)).toEqual({ scale: 1, x: 3, y: 8 });
+});
+
+it('fits centered content within the target ratio and zoom cap', () => {
+  const bounds = { x: -24, y: -24, width: 648, height: 368 };
+  const viewport = fitViewport(710, 648, bounds);
+
+  expect(viewport.scale).toBeCloseTo(0.7);
+  expect(viewport.scale).toBeLessThanOrEqual(1);
+  expect(
+    Math.max(bounds.width, bounds.height) * viewport.scale / Math.min(710, 648),
+  ).toBeCloseTo(0.7);
+
+  const center = worldToScreen(
+    viewport,
+    bounds.x + bounds.width / 2,
+    bounds.y + bounds.height / 2,
+  );
+  expect(center.x).toBeCloseTo(355);
+  expect(center.y).toBeCloseTo(324);
+});
+
+it('caps the initial fit zoom at 100 percent', () => {
+  const viewport = fitViewport(1920, 1080, { x: 0, y: 0, width: 648, height: 368 });
+  expect(viewport.scale).toBe(1);
 });

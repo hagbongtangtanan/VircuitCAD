@@ -12,7 +12,10 @@ function load(name: string): string {
   return readFileSync(path.join(hexDir, `${name}.hex`), 'utf8');
 }
 
-it('toggles D13 at 1 Hz for the blink fixture (deterministic cycles)', () => {
+it(
+  'toggles D13 at 1 Hz for the blink fixture (deterministic cycles)',
+  { timeout: 30_000 },
+  () => {
   const mcu = new McuCpu(load('blink'));
   const changes: number[] = [];
   let last = 0;

@@ -14,13 +14,13 @@ export type Rect = { minX: number; minY: number; maxX: number; maxY: number };
 export type HitKind = 'pin' | 'hole' | 'part' | 'wire';
 
 export type Hit =
-  | { kind: 'pin'; partId: string; pinId: string; position: Vec2 }
+  | { kind: 'pin'; partId: string; pinId: string; pinName: string; position: Vec2 }
   | { kind: 'hole'; holeId: string; position: Vec2 }
   | { kind: 'part'; partId: string; rect: Rect }
   | { kind: 'wire'; wireId: string; points: Vec2[] };
 
 export type HitTestScene = {
-  pins: { partId: string; pinId: string; position: Vec2 }[];
+  pins: { partId: string; pinId: string; pinName: string; position: Vec2 }[];
   holes: { holeId: string; position: Vec2 }[];
   parts: { partId: string; rect: Rect }[];
   wires: { wireId: string; points: Vec2[] }[];
@@ -57,7 +57,8 @@ export function buildHitTestScene(
     const layout = layoutPart(manifest, part.position, part.rotation);
     for (const pin of layout.pins) {
       const position = { x: pin.position.x * cellSize, y: pin.position.y * cellSize };
-      pins.push({ partId: part.id, pinId: pin.id, position });
+      const name = manifest.pins.find((candidate) => candidate.id === pin.id)?.name ?? pin.id;
+      pins.push({ partId: part.id, pinId: pin.id, pinName: name, position });
       worldByEndpoint.set(`pin:${part.id}:${pin.id}`, position);
     }
     parts.push({

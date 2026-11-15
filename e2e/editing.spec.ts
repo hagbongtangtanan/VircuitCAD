@@ -2,14 +2,19 @@ import { expect, test, type Page } from '@playwright/test';
 
 type AppWindow = Window & {
   __app?: { getCircuit(): unknown; store: { addPart(id: string, options: unknown): void } };
+  __editor?: { getViewport(): { scale: number; x: number; y: number } };
 };
 
 const CELL = 20;
 
 async function clickGrid(page: Page, gx: number, gy: number): Promise<void> {
   const box = await page.locator('[data-testid="canvas-host"] canvas').boundingBox();
-  if (!box) throw new Error('canvas not found');
-  await page.mouse.click(box.x + gx * CELL, box.y + gy * CELL);
+  const viewport = await page.evaluate(() => (window as AppWindow).__editor?.getViewport());
+  if (!box || !viewport) throw new Error('canvas not found');
+  await page.mouse.click(
+    box.x + gx * CELL * viewport.scale + viewport.x,
+    box.y + gy * CELL * viewport.scale + viewport.y,
+  );
 }
 
 async function circuit(page: Page): Promise<{ parts: { partId: string; rotation: number }[]; wires: unknown[] }> {

@@ -1,6 +1,8 @@
 import { build as esbuild } from 'esbuild';
 import { build as viteBuild } from 'vite';
 
+import packageJson from '../../../package.json' with { type: 'json' };
+
 const shared = {
   bundle: true,
   platform: 'node',
@@ -9,6 +11,9 @@ const shared = {
   external: ['electron'],
   sourcemap: true,
   logLevel: 'info',
+  define: {
+    __APP_VERSION__: JSON.stringify(packageJson.version),
+  },
 };
 
 await esbuild({ ...shared, entryPoints: ['src/main/index.ts'], outfile: 'dist/main/index.cjs' });

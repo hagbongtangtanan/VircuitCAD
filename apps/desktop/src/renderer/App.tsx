@@ -1,17 +1,32 @@
 import {
+  DEFAULT_WIRE_COLOR,
   DocumentStore,
   createDefaultPartRegistry,
   createEmptyCircuit,
+  defaultCapabilities,
   deserializeCircuit,
   extractNetlist,
   serializeCircuit,
   sketchOf,
+  unavailableReason,
   type ParamValue,
   type PartInstance,
 } from '@vircuitcad/core';
-import { Editor, McuCircuit, RunController, SimulationHost, type RunState } from '@vircuitcad/editor';
 import {
+  Editor,
+  McuCircuit,
+  RunController,
+  SimulationHost,
+  type PinHoverInfo,
+  type RunState,
+} from '@vircuitcad/editor';
+import {
+  AppShell,
+  BottomDock,
+  CanvasControls,
+  CodeActions,
   CodeEditor,
+  ICONS,
   Inspector,
   InstrumentPanel,
   PartsBin,
@@ -22,6 +37,8 @@ import {
   StatusBar,
   Toast,
   Toolbar,
+  WireColorPicker,
+  type BottomDockTab,
   type MeterReading,
   type Problem,
   type SimRunState,
@@ -34,21 +51,29 @@ import { createClient } from './client';
 const JOURNAL_FILE = 'autosave.vcad';
 const CIRCUIT_FILE = 'circuit.vcad';
 
+let appRenderCount = 0;
+
 export function App() {
+  if (__E2E__) {
+    appRenderCount += 1;
+    window.__renderCount = appRenderCount;
+  }
   const hostRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<Editor | null>(null);
   const simHostRef = useRef<SimulationHost | undefined>(undefined);
   const autosaveTimer = useRef<number | undefined>(undefined);
   const [store] = useState(() => new DocumentStore(createEmptyCircuit({ board: 'full' })));
+  const [editor, setEditor] = useState<Editor | undefined>(undefined);
   const registry = useMemo(() => createDefaultPartRegistry(), []);
   const client = useMemo(() => createClient(), []);
+  const capabilities = useMemo(() => defaultCapabilities(), []);
 
-  const [version, setVersion] = useState('…');
   const [tool, setTool] = useState<ToolbarTool>('select');
   const [selected, setSelected] = useState<PartInstance | undefined>(undefined);
   const [counts, setCounts] = useState({ parts: 0, wires: 0 });
   const [history, setHistory] = useState({ undo: false, redo: false });
-  const [zoom, setZoom] = useState(1);
+  const [hoverPin, setHoverPin] = useState<PinHoverInfo | null>(null);
+  const [wireColor, setWireColor] = useState(DEFAULT_WIRE_COLOR);
   const [dirty, setDirty] = useState(false);
   const [hint, setHint] = useState('Ready');
   const [simState, setSimState] = useState<SimRunState>('idle');
@@ -56,10 +81,13 @@ export function App() {
   const [toast, setToast] = useState<string | undefined>(undefined);
   const [netColoring, setNetColoringState] = useState(false);
   const [meters, setMeters] = useState<MeterReading[]>([]);
-  const [sketch, setSketch] = useState(() => sketchOf(store.getCircuit()).files['sketch.ino'] ?? '');
+  const [sketch, setSketch] = useState(
+    () => sketchOf(store.getCircuit()).files['sketch.ino'] ?? '',
+  );
   const [problems, setProblems] = useState<Problem[]>([]);
   const [runState, setRunState] = useState<RunState>('idle');
   const [codeOpen, setCodeOpen] = useState(false);
+  const [dockTab, setDockTab] = useState<BottomDockTab>('code');
   const [, setSerialVersion] = useState(0);
   const sketchRef = useRef(sketch);
   sketchRef.current = sketch;
@@ -85,7 +113,7 @@ export function App() {
     setCounts({ parts: circuit.parts.length, wires: circuit.wires.length });
     const size = store.historySize();
     setHistory({ undo: size.undo > 0, redo: size.redo > 0 });
-    setZoom(editor?.getViewport().scale ?? 1);
+    setWireColor(controller?.getWireColor() ?? DEFAULT_WIRE_COLOR);
   };
 
   const circuitPath = async (): Promise<string> =>
@@ -217,7 +245,8 @@ export function App() {
     let disposed = false;
     const editor = new Editor({ store, registry });
     editorRef.current = editor;
-    window.__editor = editor;
+    setEditor(editor);
+    if (__E2E__) window.__editor = editor;
     const disposers: Array<() => void> = [];
 
     const host = new SimulationHost();
@@ -248,18 +277,18 @@ export function App() {
         scheduleAutosave();
       }),
     );
-    disposers.push(editor.onViewportChange(refresh));
+    disposers.push(editor.onHoverPin(setHoverPin));
 
-    void client.app.info().then((info) => setVersion(info.version)).catch(() => setVersion('unavailable'));
-
-    window.__app = {
-      store,
-      getCircuit: () => store.getCircuit(),
-      save,
-      load,
-      refresh,
-      loadText: (text: string) => store.replace(deserializeCircuit(text)),
-    };
+    if (__E2E__) {
+      window.__app = {
+        store,
+        getCircuit: () => store.getCircuit(),
+        save,
+        load,
+        refresh,
+        loadText: (text: string) => store.replace(deserializeCircuit(text)),
+      };
+    }
 
     return () => {
       disposed = true;
@@ -267,98 +296,130 @@ export function App() {
       stopMcu();
       for (const dispose of disposers) dispose();
       editor.unmount();
+      setEditor(undefined);
       editorRef.current = null;
       simHostRef.current = undefined;
-      window.__editor = undefined;
-      window.__app = undefined;
+      if (__E2E__) {
+        window.__editor = undefined;
+        window.__app = undefined;
+      }
     };
   }, []);
 
   const controller = () => editorRef.current?.getToolController();
 
-  return (
-    <main style={{ display: 'flex', flexDirection: 'column', height: '100%', color: '#e2e8f0' }}>
-      <header
-        style={{
-          display: 'flex',
-          gap: 8,
-          alignItems: 'center',
-          padding: '8px 12px',
-          background: '#111827',
-          font: '14px system-ui, sans-serif',
+  useEffect(() => {
+    const bridge = window.vircuitcad;
+    if (!bridge?.onMenu) return;
+    bridge.onMenu((command) => {
+      switch (command) {
+        case 'edit.undo':
+          store.undo();
+          break;
+        case 'edit.redo':
+          store.redo();
+          break;
+        case 'edit.delete':
+          editorRef.current?.getToolController()?.keyDown('Delete');
+          break;
+        case 'edit.duplicate':
+          editorRef.current?.getToolController()?.keyDown('d');
+          break;
+        default:
+          break;
+      }
+    });
+  }, [store]);
+
+  const toolbar = (
+    <>
+      <Toolbar
+        tool={tool}
+        onTool={(next) => {
+          controller()?.setTool(next);
+          setTool(next);
+        }}
+        canUndo={history.undo}
+        canRedo={history.redo}
+        onUndo={() => store.undo()}
+        onRedo={() => store.redo()}
+        onRotate={() => controller()?.keyDown('r')}
+        onDelete={() => controller()?.keyDown('Delete')}
+        onDuplicate={() => controller()?.keyDown('d')}
+        netColoring={netColoring}
+        onToggleNetColoring={toggleNetColoring}
+      />
+      <div className="toolbar-spacer" />
+      <button
+        type="button"
+        className="code-toolbar-button"
+        disabled={!capabilities.codeEditor}
+        aria-expanded={codeOpen}
+        aria-controls="bottom-dock"
+        title={capabilities.codeEditor ? 'Toggle the code dock' : unavailableReason('codeEditor')}
+        onClick={() => {
+          if (codeOpen) {
+            setCodeOpen(false);
+            return;
+          }
+          setDockTab('code');
+          setCodeOpen(true);
         }}
       >
-        <strong>VircuitCAD</strong>
-        <span data-testid="version">v{version}</span>
-        <button type="button" onClick={() => setCodeOpen((open) => !open)}>
-          Code
-        </button>
-      </header>
-      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        <aside style={{ width: 200, background: '#111827', overflow: 'auto', padding: 8 }}>
-          <PartsBin
-            registry={registry}
-            onPick={(partId) => {
-              controller()?.setTool('place', partId);
-              setTool('place');
-            }}
-          />
-        </aside>
-        <section style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
-          <Toolbar
-            tool={tool}
-            onTool={(next) => {
-              controller()?.setTool(next);
-              setTool(next);
-            }}
-            canUndo={history.undo}
-            canRedo={history.redo}
-            onUndo={() => store.undo()}
-            onRedo={() => store.redo()}
-            onRotate={() => controller()?.keyDown('r')}
-            onDelete={() => controller()?.keyDown('Delete')}
-            onDuplicate={() => controller()?.keyDown('d')}
-            netColoring={netColoring}
-            onToggleNetColoring={toggleNetColoring}
-          />
-          <RunControls
-            state={simState}
-            onRun={runSim}
-            onTogglePause={togglePause}
-            onStop={stopSim}
-          />
-          <div ref={hostRef} data-testid="canvas-host" style={{ flex: 1, minHeight: 0 }} />
-          <StatusBar
-            partCount={counts.parts}
-            wireCount={counts.wires}
-            zoom={zoom}
-            hint={dirty ? 'Unsaved changes' : hint}
-            simState={simState}
-            simTime={simTime}
-          />
-          <Toast message={toast} onDismiss={() => setToast(undefined)} />
-        </section>
-        <aside style={{ width: codeOpen ? 460 : 220, background: '#111827', overflow: 'auto', padding: 8 }}>
+        <ICONS.code />
+        Code
+      </button>
+      <RunControls
+        state={simState}
+        onRun={runSim}
+        onTogglePause={togglePause}
+        onStop={stopSim}
+        capabilities={capabilities}
+      />
+    </>
+  );
+
+  return (
+    <AppShell
+      toolbar={toolbar}
+      left={
+        <PartsBin
+          registry={registry}
+          onPick={(partId) => {
+            controller()?.setTool('place', partId);
+            setTool('place');
+          }}
+        />
+      }
+      right={
+        <>
           <Inspector
             registry={registry}
             part={selected}
+            summary={{
+              parts: counts.parts,
+              wires: counts.wires,
+              board: store.getCircuit().board.kind,
+            }}
             onChange={(key: string, value: ParamValue) => {
               if (selected) store.setParam(selected.id, key, value);
             }}
           />
           <InstrumentPanel readings={meters} />
-          {codeOpen ? (
-            <>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '4px 0' }}>
-                <button type="button" onClick={build}>
-                  Build
-                </button>
-                <button type="button" onClick={stopMcu}>
-                  Stop
-                </button>
+        </>
+      }
+      dock={
+        <BottomDock
+          open={codeOpen}
+          activeTab={dockTab}
+          onTabChange={setDockTab}
+          onClose={() => setCodeOpen(false)}
+          code={
+            <div className="bottom-dock-code">
+              <CodeActions onBuild={build} onStop={stopMcu} capabilities={capabilities}>
                 <span data-testid="run-state">{runState}</span>
-              </div>
-              <div style={{ height: 220, minHeight: 120 }}>
+              </CodeActions>
+              <div className="code-editor-host">
                 <CodeEditor
                   value={sketch}
                   onChange={(text) => {
@@ -367,20 +428,63 @@ export function App() {
                   }}
                 />
               </div>
-              <ProblemsPanel problems={problems} />
-              <div style={{ height: 120, overflow: 'auto', borderTop: '1px solid #1e293b' }}>
-                <SerialMonitor
-                  lines={serialRef.current.toArray()}
-                  onClear={() => {
-                    serialRef.current.clear();
-                    setSerialVersion((version) => version + 1);
-                  }}
-                />
-              </div>
-            </>
-          ) : null}
-        </aside>
-      </div>
-    </main>
+            </div>
+          }
+          serial={
+            <div className="serial-host">
+              <SerialMonitor
+                lines={serialRef.current.toArray()}
+                capabilities={capabilities}
+                onClear={() => {
+                  serialRef.current.clear();
+                  setSerialVersion((version) => version + 1);
+                }}
+              />
+            </div>
+          }
+          problems={<ProblemsPanel problems={problems} />}
+        />
+      }
+      status={
+        <StatusBar
+          partCount={counts.parts}
+          wireCount={counts.wires}
+          viewport={editor}
+          hint={hint}
+          saved={!dirty}
+          simState={simState}
+          simTime={simTime}
+          version={__APP_VERSION__}
+        />
+      }
+    >
+      <div ref={hostRef} data-testid="canvas-host" className="canvas-host" />
+      {counts.parts === 0 ? (
+        <p className="canvas-empty-hint" data-testid="canvas-empty-hint">
+          Drag a part from the Parts panel onto the breadboard to start.
+        </p>
+      ) : null}
+      {tool === 'wire' ? (
+        <WireColorPicker
+          color={wireColor}
+          onChange={(color) => {
+            controller()?.setWireColor(color);
+            setWireColor(color);
+          }}
+        />
+      ) : null}
+      <CanvasControls viewport={editor} />
+      {hoverPin ? (
+        <div
+          className="pin-tooltip"
+          data-testid="pin-tooltip"
+          style={{ left: hoverPin.screen.x, top: hoverPin.screen.y }}
+        >
+          {hoverPin.pinName}
+          {hoverPin.netName ? ` · ${hoverPin.netName}` : ''}
+        </div>
+      ) : null}
+      <Toast message={toast} onDismiss={() => setToast(undefined)} />
+    </AppShell>
   );
 }

@@ -85,3 +85,36 @@ and never as free-hand SVG paths.
   and the gallery can inspect it.
 - **Gallery:** a generated page showing every part at 1x and 2x on the canvas colour, with name and
   pin labels, for human review.
+
+## 3.6 Components (states every control already needs: 3.2)
+
+- **Toolbar** (`packages/ui/src/components/Toolbar.tsx`): grouped icon buttons (tools / edit /
+  history / net colours), active tool uses `aria-pressed`, disabled buttons carry a reason tooltip.
+- **PartsBin** (`PartsBin.tsx`): search box, per-category accordion with counts, one button per part.
+  Planned parts are hidden until "Show planned" is on and are disabled with a reason.
+- **Inspector** (`Inspector.tsx`): category-icon header + part name, a `Properties` fieldset, one row
+  per param. Numeric params show a formatted unit hint (`formatQuantity`) and validation alerts; params
+  with `options` render as a select; with no selection a document summary is shown.
+- **StatusBar** (`StatusBar.tsx`): `parts | wires | zoom | simulation | time` segments with `.status-sep`
+  dividers, a saved/unsaved dot, and the version. Zoom updates imperatively from the viewport.
+- **CanvasControls** (`CanvasControls.tsx`): on-canvas zoom out / percent (reset) / zoom in / fit and a
+  grid toggle. **WireColorPicker** (`WireColorPicker.tsx`): the 8-colour palette, shown for the wire tool.
+- **RunControls** (`RunControls.tsx`): Run/Pause/Stop, disabled with a reason until the capability exists.
+
+Panels never re-render while panning or zooming: the zoom readouts subscribe to the viewport and write
+their text node directly (`e2e/canvas.spec.ts` asserts zero React commits).
+
+## 3.7 Adding a part's art
+
+1. Add the manifest to `packages/core/src/parts/catalog.ts` (pins on the 0.1-inch grid, `simModel`,
+   `status`). Pin pads and the footprint are generated from these pins, so anchors cannot drift.
+2. Draw the body in `packages/parts/art/builders.ts`: add an `ArtBuilder` keyed by `simModel` using the
+   DSL helpers (`rect`, `circle`, `line`, `polyline`, `text`), token colours only, geometry inside the
+   footprint, and a `body` colour with at least 3:1 contrast on `--canvas-bg`. No builder → the part
+   gets a labelled fallback card (name + category colour), never a grey rectangle.
+3. Optional hand-made override: place `<part-id>.svg` next to `packages/parts/art/overrides.ts` and
+   register its markup in `SVG_OVERRIDES`. It replaces the serialised DSL for export and the gallery.
+4. Regenerate the gallery (`pnpm e2e:screens`) and eyeball it via `docs/UI-REVIEW.md`.
+
+Pixi renders the DSL through `packages/editor/src/render/art-graphics.ts`; textures are cached by
+`partTextureKey(partId, variant, resolution)` and the sprite is rotated by transform, never re-rendered.

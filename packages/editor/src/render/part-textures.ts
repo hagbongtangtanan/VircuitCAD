@@ -1,6 +1,9 @@
 import { Graphics, type Renderer, type Texture } from 'pixi.js';
 
 import type { PartManifest } from '@vircuitcad/core';
+import { resolvePartArt } from '@vircuitcad/parts/art';
+
+import { buildPartArtContainer } from './art-graphics';
 
 export function createPlaceholderPartTexture(
   renderer: Renderer,
@@ -20,76 +23,15 @@ export function createPlaceholderPartTexture(
   return texture;
 }
 
-/** Own vector art per sim model (no Autodesk/Tinkercad assets). */
+/** Render agent-drawn part art (docs/DESIGN.md 3.5) to a texture. */
 export function createPartTexture(
   renderer: Renderer,
   manifest: PartManifest,
-  width: number,
-  height: number,
   resolution: number,
 ): Texture {
-  const w = Math.max(width, 10);
-  const h = Math.max(height, 10);
-  const outline = { width: 1, color: 0x0b1220, alpha: 0.7 };
-  const graphics = new Graphics();
-
-  switch (manifest.simModel) {
-    case 'resistor': {
-      graphics.roundRect(0, 0, w, h, 3).fill({ color: 0xd6b98a }).stroke(outline);
-      const bands = [0x1f2937, 0xef4444, 0xf59e0b];
-      const bandWidth = Math.max(2, w * 0.1);
-      bands.forEach((color, index) => {
-        graphics
-          .rect(w * 0.25 + index * bandWidth * 1.8, 0, bandWidth, h)
-          .fill({ color });
-      });
-      break;
-    }
-    case 'led': {
-      graphics
-        .circle(w / 2, h / 2, Math.min(w, h) / 2)
-        .fill({ color: 0xef4444 })
-        .stroke(outline);
-      break;
-    }
-    case 'battery':
-    case 'battery-pack': {
-      graphics.roundRect(0, 0, w, h, 2).fill({ color: 0x64748b }).stroke(outline);
-      graphics.rect(w * 0.82, h * 0.35, w * 0.18, h * 0.3).fill({ color: 0xf59e0b });
-      break;
-    }
-    case 'switch':
-    case 'pushbutton':
-    case 'slide-switch': {
-      graphics.roundRect(0, 0, w, h, 2).fill({ color: 0x94a3b8 }).stroke(outline);
-      graphics
-        .moveTo(w * 0.2, h * 0.7)
-        .lineTo(w * 0.8, h * 0.3)
-        .stroke({ width: 2, color: 0x1f2937 });
-      break;
-    }
-    case 'capacitor': {
-      graphics.roundRect(0, 0, w, h, 2).fill({ color: 0x38bdf8 }).stroke(outline);
-      graphics.rect(w * 0.4, 0, 2, h).fill({ color: 0x0b1220 });
-      graphics.rect(w * 0.6, 0, 2, h).fill({ color: 0x0b1220 });
-      break;
-    }
-    case 'inductor': {
-      graphics.roundRect(0, 0, w, h, 2).fill({ color: 0xa78bfa }).stroke(outline);
-      break;
-    }
-    case 'arduino-uno': {
-      graphics.roundRect(0, 0, w, h, 4).fill({ color: 0x0b6e4f }).stroke(outline);
-      graphics.rect(0, 0, w, h * 0.18).fill({ color: 0x1f2937 });
-      graphics.circle(w * 0.85, h * 0.55, Math.min(w, h) * 0.06).fill({ color: 0xf59e0b });
-      break;
-    }
-    default: {
-      graphics.roundRect(0, 0, w, h, 3).fill({ color: 0x64748b }).stroke(outline);
-    }
-  }
-
-  const texture = renderer.generateTexture({ target: graphics, resolution });
-  graphics.destroy();
+  const art = resolvePartArt(manifest);
+  const container = buildPartArtContainer(art);
+  const texture = renderer.generateTexture({ target: container, resolution });
+  container.destroy({ children: true });
   return texture;
 }

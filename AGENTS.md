@@ -39,6 +39,7 @@ VircuitCAD = offline Windows desktop app (Electron + React + TypeScript + PixiJS
 - Parts are data-driven (manifest + SVG + model id). Adding a part must not touch core code.
 - Heavy simulation runs in Web Workers; the UI receives ≤ 60 Hz snapshots. Validate every message with zod.
 - Offline: no CDN, no remote fonts, no telemetry. Electron: `contextIsolation` on, `nodeIntegration` off, `sandbox` on, strict CSP, zod on every IPC payload.
+- UI: all colours, spacing, radii and fonts come from the CSS token file (`packages/ui/src/theme/tokens.css`) — no inline styles for theming, no remote fonts/icons. Every new part ships with art or the fallback card (`packages/parts/art`); planned parts stay hidden and unplaceable. Prove layout with measurable assertions (computed styles, boxes, counts) and the screenshot harness — never judge looks from imagination.
 
 ## Environment
 - Dev loop is `pnpm dev:web` (Vite + `apps/dev-server` on `127.0.0.1`); do **not** launch the Electron GUI in WSL/WSLg.

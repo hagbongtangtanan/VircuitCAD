@@ -11,8 +11,8 @@ import { HitTester, buildHitTestScene, type HitTestScene } from './scene-index';
 
 const scene: HitTestScene = {
   pins: [
-    { partId: 'p1', pinId: 'a', position: { x: 10, y: 10 } },
-    { partId: 'p1', pinId: 'b', position: { x: 90, y: 10 } },
+    { partId: 'p1', pinId: 'a', pinName: 'A', position: { x: 10, y: 10 } },
+    { partId: 'p1', pinId: 'b', pinName: 'B', position: { x: 90, y: 10 } },
   ],
   holes: [{ holeId: 'h1', position: { x: 40, y: 40 } }],
   parts: [{ partId: 'p1', rect: { minX: 0, minY: 0, maxX: 100, maxY: 100 } }],

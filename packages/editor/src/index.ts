@@ -1,4 +1,4 @@
-export { Editor, type EditorOptions } from './editor';
+export { Editor, type EditorOptions, type PinHoverInfo } from './editor';
 export { SimulationHost } from './sim/worker-host';
 export { McuHost } from './sim/mcu-host';
 export { McuCircuit } from './sim/cosim';
@@ -40,15 +40,22 @@ export {
 } from './hit/scene-index';
 export { layoutPart, type PartBounds, type PartLayout, type PartPinLayout } from './render/part-layout';
 export { TextureCache } from './render/texture-cache';
+export { partTextureKey, type ArtVariant } from './render/texture-key';
+export { buildPartArtContainer, createStaticText, drawPrimitives } from './render/art-graphics';
+export { createPartTexture, createPlaceholderPartTexture } from './render/part-textures';
 export { ledGlow, ledTint, voltageToColor } from './render/visuals';
 export {
+  INITIAL_FIT_MAX_SCALE,
+  INITIAL_FIT_TARGET,
   MAX_SCALE,
   MIN_SCALE,
   clampScale,
+  fitViewport,
   panBy,
   screenToWorld,
   worldToScreen,
   zoomAt,
+  type Bounds,
   type Vec2,
   type Viewport,
 } from './viewport';

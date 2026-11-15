@@ -1,3 +1,5 @@
+import { ICONS, type IconName } from '../icons';
+
 export type ToolbarTool = 'select' | 'place' | 'wire';
 
 export type ToolbarProps = {
@@ -15,17 +17,32 @@ export type ToolbarProps = {
 };
 
 function ToolButton({
-  active,
+  icon,
+  label,
+  shortcut,
+  active = false,
+  disabled = false,
   onClick,
-  children,
 }: {
+  icon: IconName;
+  label: string;
+  shortcut: string;
   active?: boolean;
+  disabled?: boolean;
   onClick: () => void;
-  children: string;
 }) {
+  const Icon = ICONS[icon];
   return (
-    <button type="button" aria-pressed={active ?? false} onClick={onClick}>
-      {children}
+    <button
+      type="button"
+      className="tool-button"
+      aria-label={label}
+      aria-pressed={active}
+      title={`${label} (${shortcut})`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      <Icon />
     </button>
   );
 }
@@ -45,25 +62,54 @@ export function Toolbar({
 }: ToolbarProps) {
   return (
     <div className="toolbar" role="toolbar" aria-label="Tools">
-      <ToolButton active={tool === 'select'} onClick={() => onTool('select')}>
-        Select
-      </ToolButton>
-      <ToolButton active={tool === 'wire'} onClick={() => onTool('wire')}>
-        Wire
-      </ToolButton>
-      <ToolButton onClick={onRotate}>Rotate</ToolButton>
-      <ToolButton onClick={onDuplicate}>Duplicate</ToolButton>
-      <ToolButton onClick={onDelete}>Delete</ToolButton>
-      <ToolButton onClick={onUndo}>Undo</ToolButton>
-      <ToolButton onClick={onRedo}>Redo</ToolButton>
-      {onToggleNetColoring ? (
-        <ToolButton active={netColoring} onClick={onToggleNetColoring}>
-          Nets
-        </ToolButton>
-      ) : null}
-      <span className="toolbar-state">
-        {canUndo ? 'undo:yes' : 'undo:no'} {canRedo ? 'redo:yes' : 'redo:no'}
+      <span className="toolbar-group">
+        <ToolButton
+          icon="select"
+          label="Select"
+          shortcut="V"
+          active={tool === 'select'}
+          onClick={() => onTool('select')}
+        />
+        <ToolButton
+          icon="wire"
+          label="Wire"
+          shortcut="W"
+          active={tool === 'wire'}
+          onClick={() => onTool('wire')}
+        />
       </span>
+      <span className="toolbar-group">
+        <ToolButton icon="rotate" label="Rotate" shortcut="R" onClick={onRotate} />
+        <ToolButton icon="duplicate" label="Duplicate" shortcut="Ctrl+D" onClick={onDuplicate} />
+        <ToolButton icon="delete" label="Delete" shortcut="Del" onClick={onDelete} />
+      </span>
+      <span className="toolbar-group">
+        <ToolButton
+          icon="undo"
+          label="Undo"
+          shortcut="Ctrl+Z"
+          disabled={!canUndo}
+          onClick={onUndo}
+        />
+        <ToolButton
+          icon="redo"
+          label="Redo"
+          shortcut="Ctrl+Shift+Z"
+          disabled={!canRedo}
+          onClick={onRedo}
+        />
+      </span>
+      {onToggleNetColoring ? (
+        <span className="toolbar-group">
+          <ToolButton
+            icon="nets"
+            label="Net colours"
+            shortcut="N"
+            active={netColoring}
+            onClick={onToggleNetColoring}
+          />
+        </span>
+      ) : null}
     </div>
   );
 }

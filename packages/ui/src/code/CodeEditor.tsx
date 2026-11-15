@@ -73,10 +73,6 @@ export function CodeEditor({ value, onChange, theme = 'dark', readOnly = false }
   }, []);
 
   return (
-    <div
-      ref={host}
-      data-testid="code-editor"
-      style={{ width: '100%', height: '100%', minHeight: 200 }}
-    />
+    <div ref={host} className="code-editor" data-testid="code-editor" />
   );
 }

@@ -36,6 +36,16 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: E2E offline guard
         run: pnpm test:e2e
+      - name: Visual QA screenshots
+        run: pnpm e2e:screens
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vircuitcad-screens
+          path: artifacts/screens/**
+          if-no-files-found: warn
+          retention-days: 14
       - name: License check
         run: pnpm check:licenses
       - name: Audit (non-blocking)

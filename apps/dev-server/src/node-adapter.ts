@@ -10,6 +10,8 @@ import {
 } from '@vircuitcad/core';
 import { CompileService, locateToolchain, type ToolchainLayout } from '@vircuitcad/toolchain';
 
+import packageJson from '../../../package.json' with { type: 'json' };
+
 export type NodePlatformOptions = {
   appData: string;
   temp: string;
@@ -37,7 +39,7 @@ export function createNodePlatformAdapter(options: NodePlatformOptions): Platfor
   const granted = new Set<string>([appData, temp]);
   const appInfo: AppInfo = {
     name: options.name ?? 'VircuitCAD',
-    version: options.version ?? '0.0.0-dev',
+    version: options.version ?? packageJson.version,
     paths: { appData, temp },
   };
 

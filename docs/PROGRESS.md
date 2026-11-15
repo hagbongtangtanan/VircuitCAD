@@ -16,9 +16,19 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S09 | Parts wave 2 and instruments | done |
 | S10 | Blockly, example library, schematic view | done |
 | S11 | Polish, packaging, release | done |
-| S13 | UI foundation and part art (run before S04) | pending |
+| S13 | UI foundation and part art (run before S04) | done |
 
 ## Handoff
+S13 `stage/s13-ui-foundation`; spec `docs/DESIGN.md`; ALL TASKS DONE (T01–T20).
+T13 HTML empty hint; T14 ResizeObserver initial/refit with 55–85% board fill; T15 parts search/rows/art thumbnails;
+T16 collapsible Code/Serial/Problems bottom dock; T17 two-row 28px serial controls; T18 capability-gated controls;
+T19 injected v0.1.0 version; T20 production bundle excludes E2E globals.
+Every new measurable assertion was mutation-proven to fail, then restored; full checks, 29 E2E and visual-QA pass.
+Status: PR #15 updated; CI green; at HUMAN REVIEW GATE (exit 10). Do not merge without visual approval.
+Human: open `vircuitcad-screens`; review empty/placed/selected/wire/light at 1366x768 and 1920x1080 plus gallery.
+Notes: tokens only; E2E globals require `VITE_E2E=true`; `packages/sim-*` unchanged.
+Blocked: none (awaiting human review).
+--- (previous stages) ---
 S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
 + golden tests), T09 (`docs/QA.md`), T06 (`docs/SECURITY.md`, THIRD_PARTY.md, dompurify override, audit
 clean), T05 (`tools/bench.ts` + baseline + `pnpm bench` + CI `bench` job; long soak deferred), T02 (core
@@ -50,4 +60,4 @@ Gotchas: avr8js `reset()` doesn't zero `cycles`; sim-* eslint permits Node built
 Blocked: none.
 
 ## Human actions pending
-- (none)
+- Review PR #15 and the `vircuitcad-screens` CI artifact; merge only after visual approval.

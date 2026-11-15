@@ -15,6 +15,7 @@ const valid: PartManifest = {
   params: [{ id: 'value', label: 'Value', unit: 'V', min: 0, max: 10, default: 5 }],
   simModel: 'demo',
   svg: 'parts/demo.svg',
+  status: 'ready',
 };
 
 it('registers the three placeholder parts', () => {
