@@ -58,6 +58,7 @@ export function App() {
   const simHostRef = useRef<SimulationHost | undefined>(undefined);
   const autosaveTimer = useRef<number | undefined>(undefined);
   const [store] = useState(() => new DocumentStore(createEmptyCircuit({ board: 'full' })));
+  const [editor, setEditor] = useState<Editor | undefined>(undefined);
   const registry = useMemo(() => createDefaultPartRegistry(), []);
   const client = useMemo(() => createClient(), []);
   const capabilities = useMemo(() => defaultCapabilities(), []);
@@ -237,6 +238,7 @@ export function App() {
     let disposed = false;
     const editor = new Editor({ store, registry });
     editorRef.current = editor;
+    setEditor(editor);
     window.__editor = editor;
     const disposers: Array<() => void> = [];
 
@@ -287,6 +289,7 @@ export function App() {
       stopMcu();
       for (const dispose of disposers) dispose();
       editor.unmount();
+      setEditor(undefined);
       editorRef.current = null;
       simHostRef.current = undefined;
       window.__editor = undefined;
@@ -416,7 +419,7 @@ export function App() {
         <StatusBar
           partCount={counts.parts}
           wireCount={counts.wires}
-          viewport={editorRef.current ?? undefined}
+          viewport={editor}
           hint={hint}
           saved={!dirty}
           simState={simState}
@@ -426,7 +429,7 @@ export function App() {
       }
     >
       <div ref={hostRef} data-testid="canvas-host" className="canvas-host" />
-      {counts.parts === 0 && counts.wires === 0 ? (
+      {counts.parts === 0 ? (
         <p className="canvas-empty-hint" data-testid="canvas-empty-hint">
           Drag a part from the Parts panel onto the breadboard to start.
         </p>
@@ -440,7 +443,7 @@ export function App() {
           }}
         />
       ) : null}
-      <CanvasControls viewport={editorRef.current ?? undefined} />
+      <CanvasControls viewport={editor} />
       {hoverPin ? (
         <div
           className="pin-tooltip"

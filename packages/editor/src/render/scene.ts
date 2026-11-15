@@ -62,6 +62,7 @@ export class Scene {
   private readonly cache = new TextureCache<Texture>();
   private readonly geometry: BoardGeometry;
   private readonly cellSize: number;
+  private boardBounds = { x: 0, y: 0, width: 0, height: 0 };
   private readonly unsubscribe: () => void;
   private preview: Sprite | undefined = undefined;
   private selectedId: string | undefined = undefined;
@@ -106,6 +107,10 @@ export class Scene {
 
   getCellSize(): number {
     return this.cellSize;
+  }
+
+  getBoardBounds(): { x: number; y: number; width: number; height: number } {
+    return { ...this.boardBounds };
   }
 
   getPartCount(): number {
@@ -224,6 +229,14 @@ export class Scene {
         ? `#${options.holeColor.toString(16).padStart(6, '0')}`
         : BOARD_HOLE;
     const art = buildBreadboardArt(this.geometry.kind);
+    const body = art.primitives[0];
+    if (!body || body.kind !== 'rect') throw new Error('Breadboard art has no body');
+    this.boardBounds = {
+      x: body.x,
+      y: body.y,
+      width: body.width,
+      height: body.height,
+    };
     const graphics = new Graphics();
     drawPrimitives(graphics, art.primitives);
     drawPrimitives(graphics, boardHoleCircles(art, radius, holeColor));

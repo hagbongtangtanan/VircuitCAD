@@ -10,6 +10,7 @@ async function ready(page: Page): Promise<void> {
   await page.goto('/');
   await page.waitForFunction(() => Boolean((window as AppWindow).__app));
   await expect(page.getByTestId('canvas-host').locator('canvas')).toBeVisible();
+  await expect.poll(() => scaleOf(page)).not.toBe(1);
 }
 
 const scaleOf = (page: Page): Promise<number> =>

@@ -298,12 +298,18 @@ input[type="checkbox"] {
 
 .canvas-empty-hint {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  bottom: calc(var(--space-5) + var(--space-3) + var(--space-5));
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-4);
-  color: var(--text-muted);
+  max-width: calc(100% - var(--space-5) - var(--space-5));
+  padding: var(--space-2) var(--space-3);
+  transform: translateX(-50%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2);
+  background: var(--surface-2);
+  color: var(--text);
   font-size: var(--size-label);
   text-align: center;
   pointer-events: none;

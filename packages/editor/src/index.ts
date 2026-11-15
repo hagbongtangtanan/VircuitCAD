@@ -45,13 +45,17 @@ export { buildPartArtContainer, createStaticText, drawPrimitives } from './rende
 export { createPartTexture, createPlaceholderPartTexture } from './render/part-textures';
 export { ledGlow, ledTint, voltageToColor } from './render/visuals';
 export {
+  INITIAL_FIT_MAX_SCALE,
+  INITIAL_FIT_TARGET,
   MAX_SCALE,
   MIN_SCALE,
   clampScale,
+  fitViewport,
   panBy,
   screenToWorld,
   worldToScreen,
   zoomAt,
+  type Bounds,
   type Vec2,
   type Viewport,
 } from './viewport';

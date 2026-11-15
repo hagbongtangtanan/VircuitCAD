@@ -7,7 +7,14 @@ import { extractNetlist, type DocumentStore, type PartRegistry, type Vec2 } from
 import { HitTester, buildHitTestScene } from './hit/scene-index';
 import { Scene } from './render/scene';
 import { ToolController, type ToolName } from './tools/tool-controller';
-import { clampScale, type Viewport, panBy, screenToWorld, zoomAt } from './viewport';
+import {
+  fitViewport,
+  type Viewport,
+  panBy,
+  screenToWorld,
+  worldToScreen,
+  zoomAt,
+} from './viewport';
 
 export type PinHoverInfo = {
   partId: string;
@@ -38,6 +45,8 @@ export class Editor {
   private canvas: HTMLCanvasElement | undefined = undefined;
   private gridVisible = true;
   private hoverPinKey: string | undefined = undefined;
+  private userAdjustedViewport = false;
+  private autoFitFrame: number | undefined = undefined;
   private readonly viewportListeners = new Set<() => void>();
   private readonly hoverListeners = new Set<(info: PinHoverInfo | null) => void>();
   private readonly background: number;
@@ -100,12 +109,18 @@ export class Editor {
       this.applyCursor();
     }
 
-    this.applyViewport();
+    this.fitToContent();
     this.attachInteractions(app.canvas, element);
 
-    const observer = new ResizeObserver(() => this.applyViewport());
+    const observer = new ResizeObserver(() => {
+      this.applyViewport();
+      this.scheduleAutoFit();
+    });
     observer.observe(element);
-    this.cleanup.push(() => observer.disconnect());
+    this.cleanup.push(() => {
+      observer.disconnect();
+      if (this.autoFitFrame !== undefined) window.cancelAnimationFrame(this.autoFitFrame);
+    });
   }
 
   unmount(): void {
@@ -151,11 +166,13 @@ export class Editor {
   }
 
   zoomBy(factor: number, screenX: number, screenY: number): void {
+    this.userAdjustedViewport = true;
     this.viewport = zoomAt(this.viewport, factor, screenX, screenY);
     this.applyViewport();
   }
 
   panByScreen(dx: number, dy: number): void {
+    this.userAdjustedViewport = true;
     this.viewport = panBy(this.viewport, dx, dy);
     this.applyViewport();
   }
@@ -174,24 +191,32 @@ export class Editor {
 
   /** Fit the whole board in the viewport. */
   fitToContent(): void {
-    if (!this.app || !this.scene) return;
-    const geometry = this.scene.getGeometry();
-    const xs = geometry.holes.map((hole) => hole.position.x);
-    const ys = geometry.holes.map((hole) => hole.position.y);
-    const margin = 2;
-    const minX = (Math.min(...xs) - margin) * this.cellSize;
-    const minY = (Math.min(...ys) - margin) * this.cellSize;
-    const worldWidth = (Math.max(...xs) - Math.min(...xs) + margin * 2) * this.cellSize;
-    const worldHeight = (Math.max(...ys) - Math.min(...ys) + margin * 2) * this.cellSize;
-    const viewWidth = this.app.screen.width;
-    const viewHeight = this.app.screen.height;
-    const scale = clampScale(Math.min(viewWidth / worldWidth, viewHeight / worldHeight));
-    this.viewport = {
-      scale,
-      x: (viewWidth - worldWidth * scale) / 2 - minX * scale,
-      y: (viewHeight - worldHeight * scale) / 2 - minY * scale,
-    };
+    if (!this.app || !this.scene || !this.canvas) return;
+    const viewWidth = this.canvas.parentElement?.clientWidth ?? this.app.screen.width;
+    const viewHeight = this.canvas.parentElement?.clientHeight ?? this.app.screen.height;
+    this.viewport = fitViewport(
+      viewWidth,
+      viewHeight,
+      this.scene.getBoardBounds(),
+    );
     this.applyViewport();
+  }
+
+  getBoardScreenBounds(): { x: number; y: number; width: number; height: number } {
+    const bounds = this.scene?.getBoardBounds();
+    if (!bounds) return { x: 0, y: 0, width: 0, height: 0 };
+    const topLeft = worldToScreen(this.viewport, bounds.x, bounds.y);
+    const bottomRight = worldToScreen(
+      this.viewport,
+      bounds.x + bounds.width,
+      bounds.y + bounds.height,
+    );
+    return {
+      x: topLeft.x,
+      y: topLeft.y,
+      width: bottomRight.x - topLeft.x,
+      height: bottomRight.y - topLeft.y,
+    };
   }
 
   setGridVisible(visible: boolean): void {
@@ -242,6 +267,16 @@ export class Editor {
     this.drawGrid();
     this.scene?.setZoom(this.viewport.scale);
     for (const listener of this.viewportListeners) listener();
+  }
+
+  private scheduleAutoFit(): void {
+    if (this.autoFitFrame !== undefined) window.cancelAnimationFrame(this.autoFitFrame);
+    this.autoFitFrame = window.requestAnimationFrame(() => {
+      this.autoFitFrame = window.requestAnimationFrame(() => {
+        this.autoFitFrame = undefined;
+        if (!this.userAdjustedViewport) this.fitToContent();
+      });
+    });
   }
 
   private emitHoverPin(info: PinHoverInfo | null): void {
