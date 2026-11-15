@@ -20,7 +20,7 @@ const SIZES = [
   { width: 1366, height: 768 },
   { width: 1920, height: 1080 },
 ];
-const STATES = ['empty', 'placed', 'selected', 'wire', 'light'] as const;
+const STATES = ['empty', 'placed', 'selected', 'wire', 'light', 'dock', 'serial'] as const;
 
 mkdirSync(OUT, { recursive: true });
 
@@ -61,6 +61,11 @@ async function applyState(page: Page, state: (typeof STATES)[number]): Promise<v
     });
     const box = await page.getByTestId('canvas-host').locator('canvas').boundingBox();
     if (box) await page.mouse.move(box.x + 8 * 20, box.y + 3 * 20);
+  }
+  if (state === 'dock' || state === 'serial') {
+    await page.getByRole('button', { name: 'Code', exact: true }).click();
+    await expect(page.getByTestId('bottom-dock')).toBeVisible();
+    if (state === 'serial') await page.getByRole('tab', { name: 'Serial' }).click();
   }
 }
 
