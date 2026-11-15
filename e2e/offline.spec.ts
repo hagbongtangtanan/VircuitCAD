@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import packageJson from '../package.json' with { type: 'json' };
+
 test('dev-web stays offline, sets a CSP and renders the canvas', async ({ page }) => {
   const external: string[] = [];
   page.on('request', (request) => {
@@ -10,7 +12,7 @@ test('dev-web stays offline, sets a CSP and renders the canvas', async ({ page }
   await page.goto('/');
 
   await expect(page.locator('canvas')).toBeVisible();
-  await expect(page.getByTestId('version')).toContainText('0.0.0');
+  await expect(page.getByTestId('version')).toContainText(packageJson.version);
 
   const csp = await page
     .locator('meta[http-equiv="Content-Security-Policy"]')

@@ -28,6 +28,7 @@ import {
   CodeEditor,
   ICONS,
   Inspector,
+  InstrumentPanel,
   PartsBin,
   ProblemsPanel,
   RunControls,
@@ -38,6 +39,7 @@ import {
   Toolbar,
   WireColorPicker,
   type BottomDockTab,
+  type MeterReading,
   type Problem,
   type SimRunState,
   type ToolbarTool,
@@ -78,6 +80,7 @@ export function App() {
   const [simTime, setSimTime] = useState(0);
   const [toast, setToast] = useState<string | undefined>(undefined);
   const [netColoring, setNetColoringState] = useState(false);
+  const [meters, setMeters] = useState<MeterReading[]>([]);
   const [sketch, setSketch] = useState(
     () => sketchOf(store.getCircuit()).files['sketch.ino'] ?? '',
   );
@@ -252,6 +255,7 @@ export function App() {
     host.onSnapshot = (snapshot) => {
       editor.getScene()?.setSimulation(snapshot);
       setSimTime(snapshot.time);
+      setMeters(snapshot.meters ?? []);
     };
     host.onError = (event) => {
       setToast(event.message);
@@ -388,18 +392,21 @@ export function App() {
         />
       }
       right={
-        <Inspector
-          registry={registry}
-          part={selected}
-          summary={{
-            parts: counts.parts,
-            wires: counts.wires,
-            board: store.getCircuit().board.kind,
-          }}
-          onChange={(key: string, value: ParamValue) => {
-            if (selected) store.setParam(selected.id, key, value);
-          }}
-        />
+        <>
+          <Inspector
+            registry={registry}
+            part={selected}
+            summary={{
+              parts: counts.parts,
+              wires: counts.wires,
+              board: store.getCircuit().board.kind,
+            }}
+            onChange={(key: string, value: ParamValue) => {
+              if (selected) store.setParam(selected.id, key, value);
+            }}
+          />
+          <InstrumentPanel readings={meters} />
+        </>
       }
       dock={
         <BottomDock
