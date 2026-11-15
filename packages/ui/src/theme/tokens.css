@@ -31,6 +31,8 @@
   --size-heading: 16px;
   --size-part-row: 32px;
   --size-part-thumbnail: 24px;
+  --size-control: 28px;
+  --size-toolbar-button: 32px;
   --size-bottom-dock: 240px;
 
   --font-ui: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;

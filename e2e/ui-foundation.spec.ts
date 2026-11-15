@@ -18,6 +18,7 @@ type AppWindow = Window & {
     getViewport(): { scale: number; x: number; y: number };
     getBoardScreenBounds(): { x: number; y: number; width: number; height: number };
   };
+  __vcClickCount?: number;
 };
 
 const VIEWPORTS = [
@@ -49,9 +50,7 @@ function intersects(first: Box, second: Box): boolean {
 function luminance(rgb: readonly number[]): number {
   const channels = rgb.map((value) => {
     const normalized = value / 255;
-    return normalized <= 0.04045
-      ? normalized / 12.92
-      : ((normalized + 0.055) / 1.055) ** 2.4;
+    return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
   });
   return 0.2126 * (channels[0] ?? 0) + 0.7152 * (channels[1] ?? 0) + 0.0722 * (channels[2] ?? 0);
 }
@@ -71,9 +70,7 @@ function parsedRgb(value: string): number[] {
 async function boardPageBox(page: Page): Promise<Box> {
   const canvas = await page.getByTestId('canvas-host').boundingBox();
   if (!canvas) throw new Error('canvas host has no bounding box');
-  const board = await page.evaluate(() =>
-    (window as AppWindow).__editor?.getBoardScreenBounds(),
-  );
+  const board = await page.evaluate(() => (window as AppWindow).__editor?.getBoardScreenBounds());
   if (!board) throw new Error('editor has no board bounds');
   return withEdges({
     x: canvas.x + board.x,
@@ -104,7 +101,9 @@ test('the empty-state hint is accessible, clear of the breadboard, and hides aft
     const controlsBox = withEdges(controlsRect);
 
     expect(hintBox.x, `hint left at ${viewport.width}`).toBeGreaterThanOrEqual(canvas.x);
-    expect(hintBox.right, `hint right at ${viewport.width}`).toBeLessThanOrEqual(canvas.x + canvas.width);
+    expect(hintBox.right, `hint right at ${viewport.width}`).toBeLessThanOrEqual(
+      canvas.x + canvas.width,
+    );
     expect(hintBox.y, `hint lower third at ${viewport.width}`).toBeGreaterThanOrEqual(
       canvas.y + canvas.height * (2 / 3),
     );
@@ -118,9 +117,9 @@ test('the empty-state hint is accessible, clear of the breadboard, and hides aft
       return { color: style.color, backgroundColor: style.backgroundColor };
     });
     expect(colours.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
-    expect(contrast(parsedRgb(colours.color), parsedRgb(colours.backgroundColor))).toBeGreaterThanOrEqual(
-      4.5,
-    );
+    expect(
+      contrast(parsedRgb(colours.color), parsedRgb(colours.backgroundColor)),
+    ).toBeGreaterThanOrEqual(4.5);
   }
 
   await page.evaluate(() =>
@@ -146,9 +145,10 @@ test('the board is fitted and centered at the required viewport sizes', async ({
       boardCenter.y - canvasCenter.y,
     );
     const limitingCanvasDimension = Math.min(canvas.width, canvas.height);
-    const fillRatio =
-      Math.max(board.width, board.height) / limitingCanvasDimension;
-    const scale = await page.evaluate(() => (window as AppWindow).__editor?.getViewport().scale ?? 0);
+    const fillRatio = Math.max(board.width, board.height) / limitingCanvasDimension;
+    const scale = await page.evaluate(
+      () => (window as AppWindow).__editor?.getViewport().scale ?? 0,
+    );
 
     expect(centerDistance, `board center at ${viewport.width}`).toBeLessThanOrEqual(8);
     expect(fillRatio, `board fill at ${viewport.width}`).toBeGreaterThanOrEqual(0.55);
@@ -279,12 +279,13 @@ test('the inspector contains only selection details with an equal-width unwrappe
   expect(widths.length).toBeGreaterThan(1);
   expect(new Set(widths.map((width) => width.toFixed(2))).size).toBe(1);
 
-  const wrappedLabels = await labels.evaluateAll((elements) =>
-    elements.filter(
-      (element) =>
-        element.scrollHeight > element.clientHeight + 1 ||
-        getComputedStyle(element).whiteSpace !== 'nowrap',
-    ).length,
+  const wrappedLabels = await labels.evaluateAll(
+    (elements) =>
+      elements.filter(
+        (element) =>
+          element.scrollHeight > element.clientHeight + 1 ||
+          getComputedStyle(element).whiteSpace !== 'nowrap',
+      ).length,
   );
   expect(wrappedLabels).toBe(0);
   await expect(inspector.getByLabel('Breadboard: Full size')).toBeVisible();
@@ -302,4 +303,103 @@ test('the code button opens a collapsible tabbed bottom dock', async ({ page }) 
 
   await page.getByRole('button', { name: 'Collapse bottom dock' }).click();
   await expect(page.getByTestId('bottom-dock')).toHaveCount(0);
+});
+
+test('the serial monitor keeps two unwrapped rows with equal 28 px controls', async ({ page }) => {
+  for (const width of [600, 900, 1400]) {
+    await page.setViewportSize({ width, height: 800 });
+    await ready(page);
+    await page.getByRole('button', { name: 'Code' }).click();
+    await page.getByRole('tab', { name: 'Serial' }).click();
+
+    const dock = page.getByTestId('bottom-dock');
+    const dockBox = await dock.boundingBox();
+    expect(dockBox?.width, `dock width at ${width}`).toBeCloseTo(width, 0);
+
+    const controls = [
+      page.getByRole('checkbox', { name: 'Auto-scroll' }),
+      page.getByRole('combobox', { name: 'Line ending' }),
+      page.getByRole('button', { name: 'Clear' }),
+      page.getByRole('textbox', { name: 'Send' }),
+      page.getByRole('button', { name: 'Send' }),
+    ];
+    const boxes = await Promise.all(
+      controls.map(async (control) => {
+        const box = await control.boundingBox();
+        if (!box) throw new Error(`serial control has no bounding box at ${width}`);
+        return withEdges(box);
+      }),
+    );
+
+    for (const box of boxes) {
+      expect(box.height, `serial control height at ${width}`).toBeCloseTo(28, 0);
+    }
+    for (let first = 0; first < boxes.length; first += 1) {
+      for (let second = first + 1; second < boxes.length; second += 1) {
+        expect(
+          intersects(boxes[first] as Box, boxes[second] as Box),
+          `serial controls overlap at ${width}`,
+        ).toBe(false);
+      }
+    }
+
+    const firstRow = await page.getByTestId('serial-control-row').boundingBox();
+    const secondRow = await page.getByTestId('serial-send-row').boundingBox();
+    expect(firstRow?.height, `first serial row at ${width}`).toBeCloseTo(28, 0);
+    expect(secondRow?.height, `second serial row at ${width}`).toBeCloseTo(28, 0);
+    expect(secondRow?.y, `serial rows wrap at ${width}`).toBeGreaterThan(firstRow?.y ?? 0);
+  }
+});
+
+test('toolbar controls are uniformly 32 px and disabled controls dispatch no click', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await ready(page);
+
+  const toolbar = page.getByTestId('app-toolbar');
+  const metrics = await toolbar.locator('button').evaluateAll((elements) =>
+    elements.map((element) => {
+      const rect = element.getBoundingClientRect();
+      return { height: rect.height, center: rect.top + rect.height / 2 };
+    }),
+  );
+  expect(metrics.length).toBeGreaterThan(4);
+  for (const metric of metrics) expect(metric.height).toBeCloseTo(32, 0);
+  expect(new Set(metrics.map((metric) => metric.center.toFixed(2))).size).toBe(1);
+
+  for (const name of ['Code', 'Run', 'Pause', 'Stop']) {
+    const button = toolbar.getByRole('button', { name, exact: true });
+    const box = await button.boundingBox();
+    expect(box?.height, `${name} toolbar height`).toBeCloseTo(32, 0);
+  }
+
+  await page.evaluate(() => {
+    (window as AppWindow).__vcClickCount = 0;
+    document.addEventListener('click', () => {
+      (window as AppWindow).__vcClickCount = (window as AppWindow).__vcClickCount ?? 0;
+      (window as AppWindow).__vcClickCount += 1;
+    });
+  });
+
+  const pause = toolbar.getByRole('button', { name: 'Pause', exact: true });
+  const stop = toolbar.getByRole('button', { name: 'Stop', exact: true });
+  await expect(pause).toBeDisabled();
+  await expect(stop).toBeDisabled();
+  await expect(pause).toHaveAttribute('title', /simulation is running/i);
+  await expect(stop).toHaveAttribute('title', /simulation is running/i);
+  await pause.evaluate((element) => (element as HTMLButtonElement).click());
+  await stop.evaluate((element) => (element as HTMLButtonElement).click());
+
+  await page.getByRole('button', { name: 'Code' }).click();
+  await page.getByRole('tab', { name: 'Serial' }).click();
+  await page.evaluate(() => {
+    (window as AppWindow).__vcClickCount = 0;
+  });
+  const send = page.getByRole('button', { name: 'Send', exact: true });
+  await expect(send).toBeDisabled();
+  await expect(send).toHaveAttribute('title', /Sending serial data is not available/);
+  await send.evaluate((element) => (element as HTMLButtonElement).click());
+
+  expect(await page.evaluate(() => (window as AppWindow).__vcClickCount)).toBe(0);
 });

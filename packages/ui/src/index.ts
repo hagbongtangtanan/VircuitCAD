@@ -17,23 +17,17 @@ export {
   type WireColorPickerProps,
 } from './components/WireColorPicker';
 export { PartsBin, type PartsBinProps } from './components/PartsBin';
-export {
-  BottomDock,
-  type BottomDockProps,
-  type BottomDockTab,
-} from './components/BottomDock';
-export {
-  Inspector,
-  type InspectorProps,
-  type DocumentSummary,
-} from './components/Inspector';
+export { BottomDock, type BottomDockProps, type BottomDockTab } from './components/BottomDock';
+export { Inspector, type InspectorProps, type DocumentSummary } from './components/Inspector';
 export { Toolbar, type ToolbarProps, type ToolbarTool } from './components/Toolbar';
+export { StatusBar, type StatusBarProps, type StatusBarViewport } from './components/StatusBar';
 export {
-  StatusBar,
-  type StatusBarProps,
-  type StatusBarViewport,
-} from './components/StatusBar';
-export { RunControls, type RunControlsProps, type SimRunState } from './components/RunControls';
+  CodeActions,
+  RunControls,
+  type CodeActionsProps,
+  type RunControlsProps,
+  type SimRunState,
+} from './components/RunControls';
 export { Toast, type ToastProps } from './components/Toast';
 export { SerialBuffer, withLineEnding, type LineEnding, type SerialLine } from './serial/buffer';
 export { ProblemsPanel, type Problem, type ProblemsPanelProps } from './components/ProblemsPanel';

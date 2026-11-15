@@ -24,6 +24,7 @@ import {
   AppShell,
   BottomDock,
   CanvasControls,
+  CodeActions,
   CodeEditor,
   ICONS,
   Inspector,
@@ -76,7 +77,9 @@ export function App() {
   const [simTime, setSimTime] = useState(0);
   const [toast, setToast] = useState<string | undefined>(undefined);
   const [netColoring, setNetColoringState] = useState(false);
-  const [sketch, setSketch] = useState(() => sketchOf(store.getCircuit()).files['sketch.ino'] ?? '');
+  const [sketch, setSketch] = useState(
+    () => sketchOf(store.getCircuit()).files['sketch.ino'] ?? '',
+  );
   const [problems, setProblems] = useState<Problem[]>([]);
   const [runState, setRunState] = useState<RunState>('idle');
   const [codeOpen, setCodeOpen] = useState(false);
@@ -271,7 +274,10 @@ export function App() {
     );
     disposers.push(editor.onHoverPin(setHoverPin));
 
-    void client.app.info().then((info) => setVersion(info.version)).catch(() => setVersion('unavailable'));
+    void client.app
+      .info()
+      .then((info) => setVersion(info.version))
+      .catch(() => setVersion('unavailable'));
 
     window.__app = {
       store,
@@ -359,7 +365,13 @@ export function App() {
         <ICONS.code />
         Code
       </button>
-      <RunControls state={simState} onRun={runSim} onTogglePause={togglePause} onStop={stopSim} />
+      <RunControls
+        state={simState}
+        onRun={runSim}
+        onTogglePause={togglePause}
+        onStop={stopSim}
+        capabilities={capabilities}
+      />
     </>
   );
 
@@ -397,15 +409,9 @@ export function App() {
           onClose={() => setCodeOpen(false)}
           code={
             <div className="bottom-dock-code">
-              <div className="bottom-dock-actions">
-                <button type="button" onClick={build}>
-                  Build
-                </button>
-                <button type="button" onClick={stopMcu}>
-                  Stop
-                </button>
+              <CodeActions onBuild={build} onStop={stopMcu} capabilities={capabilities}>
                 <span data-testid="run-state">{runState}</span>
-              </div>
+              </CodeActions>
               <div className="code-editor-host">
                 <CodeEditor
                   value={sketch}
@@ -421,6 +427,7 @@ export function App() {
             <div className="serial-host">
               <SerialMonitor
                 lines={serialRef.current.toArray()}
+                capabilities={capabilities}
                 onClear={() => {
                   serialRef.current.clear();
                   setSerialVersion((version) => version + 1);
