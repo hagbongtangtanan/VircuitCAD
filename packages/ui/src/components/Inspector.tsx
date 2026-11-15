@@ -18,6 +18,12 @@ export type InspectorProps = {
   summary?: DocumentSummary | undefined;
 };
 
+function boardLabel(board: string): string {
+  if (board === 'full') return 'Full size';
+  if (board === 'half') return 'Half size';
+  return board;
+}
+
 function describe(param: ParamSpec, value: ParamValue): string | undefined {
   if (typeof param.default !== 'number') return undefined;
   const numeric = typeof value === 'number' ? value : Number(value);
@@ -132,21 +138,21 @@ export function Inspector({ registry, part, onChange, summary }: InspectorProps)
           <dl className="inspector-summary">
             <div>
               <dt>Parts</dt>
-              <dd>{summary.parts}</dd>
+              <dd className="inspector-summary-number">{summary.parts}</dd>
             </div>
             <div>
               <dt>Wires</dt>
-              <dd>{summary.wires}</dd>
+              <dd className="inspector-summary-number">{summary.wires}</dd>
             </div>
             {summary.board ? (
-              <div>
-                <dt>Board</dt>
-                <dd>{summary.board}</dd>
+              <div aria-label={`Breadboard: ${boardLabel(summary.board)}`}>
+                <dt>Breadboard:</dt>
+                <dd>{boardLabel(summary.board)}</dd>
               </div>
             ) : null}
             <div>
               <dt>Next step</dt>
-              <dd>Select a part to edit its properties.</dd>
+              <dd className="inspector-summary-help">Select a part to edit its properties.</dd>
             </div>
           </dl>
         ) : null}

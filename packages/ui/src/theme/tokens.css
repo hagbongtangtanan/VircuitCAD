@@ -29,6 +29,9 @@
   --size-body: 13px;
   --size-label: 14px;
   --size-heading: 16px;
+  --size-part-row: 32px;
+  --size-part-thumbnail: 24px;
+  --size-bottom-dock: 240px;
 
   --font-ui: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
   --font-mono: "Cascadia Mono", Consolas, monospace;

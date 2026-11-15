@@ -7,6 +7,7 @@ export type AppShellProps = {
   left: ReactNode;
   right: ReactNode;
   status: ReactNode;
+  dock?: ReactNode;
   children: ReactNode;
 };
 
@@ -52,7 +53,7 @@ function loadState(): ShellState {
   }
 }
 
-export function AppShell({ toolbar, left, right, status, children }: AppShellProps) {
+export function AppShell({ toolbar, left, right, status, dock, children }: AppShellProps) {
   const [state, setState] = useState<ShellState>(loadState);
   const [dragging, setDragging] = useState<'left' | 'right' | undefined>(undefined);
   const drag = useRef<{ side: 'left' | 'right'; startX: number; startWidth: number } | undefined>(
@@ -218,6 +219,7 @@ export function AppShell({ toolbar, left, right, status, children }: AppShellPro
           )}
         </div>
       </div>
+      {dock}
       <div className="app-status" data-testid="app-status">
         {status}
       </div>

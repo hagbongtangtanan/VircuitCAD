@@ -22,11 +22,11 @@ import {
 } from '@vircuitcad/editor';
 import {
   AppShell,
+  BottomDock,
   CanvasControls,
   CodeEditor,
   ICONS,
   Inspector,
-  InstrumentPanel,
   PartsBin,
   ProblemsPanel,
   RunControls,
@@ -36,7 +36,7 @@ import {
   Toast,
   Toolbar,
   WireColorPicker,
-  type MeterReading,
+  type BottomDockTab,
   type Problem,
   type SimRunState,
   type ToolbarTool,
@@ -76,11 +76,11 @@ export function App() {
   const [simTime, setSimTime] = useState(0);
   const [toast, setToast] = useState<string | undefined>(undefined);
   const [netColoring, setNetColoringState] = useState(false);
-  const [meters, setMeters] = useState<MeterReading[]>([]);
   const [sketch, setSketch] = useState(() => sketchOf(store.getCircuit()).files['sketch.ino'] ?? '');
   const [problems, setProblems] = useState<Problem[]>([]);
   const [runState, setRunState] = useState<RunState>('idle');
   const [codeOpen, setCodeOpen] = useState(false);
+  const [dockTab, setDockTab] = useState<BottomDockTab>('code');
   const [, setSerialVersion] = useState(0);
   const sketchRef = useRef(sketch);
   sketchRef.current = sketch;
@@ -248,7 +248,6 @@ export function App() {
     host.onSnapshot = (snapshot) => {
       editor.getScene()?.setSimulation(snapshot);
       setSimTime(snapshot.time);
-      setMeters(snapshot.meters ?? []);
     };
     host.onError = (event) => {
       setToast(event.message);
@@ -343,9 +342,19 @@ export function App() {
       <div className="toolbar-spacer" />
       <button
         type="button"
+        className="code-toolbar-button"
         disabled={!capabilities.codeEditor}
-        title={capabilities.codeEditor ? 'Toggle the code panel' : unavailableReason('codeEditor')}
-        onClick={() => setCodeOpen((open) => !open)}
+        aria-expanded={codeOpen}
+        aria-controls="bottom-dock"
+        title={capabilities.codeEditor ? 'Toggle the code dock' : unavailableReason('codeEditor')}
+        onClick={() => {
+          if (codeOpen) {
+            setCodeOpen(false);
+            return;
+          }
+          setDockTab('code');
+          setCodeOpen(true);
+        }}
       >
         <ICONS.code />
         Code
@@ -367,23 +376,28 @@ export function App() {
         />
       }
       right={
-        <>
-          <Inspector
-            registry={registry}
-            part={selected}
-            summary={{
-              parts: counts.parts,
-              wires: counts.wires,
-              board: store.getCircuit().board.kind,
-            }}
-            onChange={(key: string, value: ParamValue) => {
-              if (selected) store.setParam(selected.id, key, value);
-            }}
-          />
-          <InstrumentPanel readings={meters} />
-          {codeOpen ? (
-            <>
-              <div className="row">
+        <Inspector
+          registry={registry}
+          part={selected}
+          summary={{
+            parts: counts.parts,
+            wires: counts.wires,
+            board: store.getCircuit().board.kind,
+          }}
+          onChange={(key: string, value: ParamValue) => {
+            if (selected) store.setParam(selected.id, key, value);
+          }}
+        />
+      }
+      dock={
+        <BottomDock
+          open={codeOpen}
+          activeTab={dockTab}
+          onTabChange={setDockTab}
+          onClose={() => setCodeOpen(false)}
+          code={
+            <div className="bottom-dock-code">
+              <div className="bottom-dock-actions">
                 <button type="button" onClick={build}>
                   Build
                 </button>
@@ -401,19 +415,21 @@ export function App() {
                   }}
                 />
               </div>
-              <ProblemsPanel problems={problems} />
-              <div className="serial-host">
-                <SerialMonitor
-                  lines={serialRef.current.toArray()}
-                  onClear={() => {
-                    serialRef.current.clear();
-                    setSerialVersion((version) => version + 1);
-                  }}
-                />
-              </div>
-            </>
-          ) : null}
-        </>
+            </div>
+          }
+          serial={
+            <div className="serial-host">
+              <SerialMonitor
+                lines={serialRef.current.toArray()}
+                onClear={() => {
+                  serialRef.current.clear();
+                  setSerialVersion((version) => version + 1);
+                }}
+              />
+            </div>
+          }
+          problems={<ProblemsPanel problems={problems} />}
+        />
       }
       status={
         <StatusBar

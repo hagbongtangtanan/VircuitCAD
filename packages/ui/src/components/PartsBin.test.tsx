@@ -59,6 +59,19 @@ it('hides planned parts until "Show planned", then cannot place them', () => {
   expect(onPick).not.toHaveBeenCalled();
 });
 
+it('renders every visible part row with art thumbnail', () => {
+  const { container } = render(
+    <PartsBin registry={createDefaultPartRegistry()} onPick={() => {}} />,
+  );
+  const rows = container.querySelectorAll('.part-row');
+  const thumbnails = container.querySelectorAll('[data-testid="part-thumbnail"]');
+  expect(rows.length).toBeGreaterThan(0);
+  expect(thumbnails).toHaveLength(rows.length);
+  for (const thumbnail of thumbnails) {
+    expect(thumbnail.getAttribute('src')).toMatch(/^data:image\/svg\+xml/);
+  }
+});
+
 it('collapses a category accordion with a count', () => {
   render(<PartsBin registry={createDefaultPartRegistry()} onPick={() => {}} />);
   const header = screen.getByRole('button', { name: /^passive \(/ });

@@ -200,6 +200,9 @@ importers:
       '@vircuitcad/core':
         specifier: workspace:*
         version: link:../core
+      '@vircuitcad/parts':
+        specifier: workspace:*
+        version: link:../parts
       monaco-editor:
         specifier: 0.57.0
         version: 0.57.0

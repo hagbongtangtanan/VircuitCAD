@@ -18,6 +18,11 @@ export {
 } from './components/WireColorPicker';
 export { PartsBin, type PartsBinProps } from './components/PartsBin';
 export {
+  BottomDock,
+  type BottomDockProps,
+  type BottomDockTab,
+} from './components/BottomDock';
+export {
   Inspector,
   type InspectorProps,
   type DocumentSummary,

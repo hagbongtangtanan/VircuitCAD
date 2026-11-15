@@ -52,7 +52,23 @@ it('shows a document summary when nothing is selected', () => {
   expect(screen.getByTestId('inspector-summary')).toBeTruthy();
   expect(screen.getByText('4')).toBeTruthy();
   expect(screen.getByText('3')).toBeTruthy();
-  expect(screen.getByText('full')).toBeTruthy();
+  expect(screen.getByText('Breadboard:')).toBeTruthy();
+  expect(screen.getByText('Full size')).toBeTruthy();
+  expect(screen.getByLabelText('Breadboard: Full size')).toBeTruthy();
+});
+
+it('contains no editor or serial controls', () => {
+  const { container } = render(
+    <Inspector
+      registry={createDefaultPartRegistry()}
+      part={undefined}
+      onChange={() => {}}
+      summary={{ parts: 0, wires: 0, board: 'full' }}
+    />,
+  );
+  expect(container.querySelector('[data-testid="code-editor"]')).toBeNull();
+  expect(container.querySelector('[data-testid="serial-lines"]')).toBeNull();
+  expect(container.querySelector('button')).toBeNull();
 });
 
 it('shows the part name with a category icon in the header', () => {

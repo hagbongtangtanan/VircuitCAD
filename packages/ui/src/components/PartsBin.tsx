@@ -1,4 +1,5 @@
 import { isPlaceable, type PartManifest, type PartRegistry } from '@vircuitcad/core';
+import { resolvePartArt, toSvg } from '@vircuitcad/parts/art';
 import { useEffect, useMemo, useState } from 'react';
 
 export type PartsBinProps = {
@@ -55,22 +56,35 @@ export function PartsBin({ registry, onPick }: PartsBinProps) {
     setOpen((previous) => ({ ...previous, [category]: previous[category] === false }));
   };
 
+  const thumbnails = useMemo(
+    () =>
+      new Map(
+        registry.list().map((manifest) => [
+          manifest.id,
+          `data:image/svg+xml;charset=utf-8,${encodeURIComponent(toSvg(resolvePartArt(manifest)))}`,
+        ]),
+      ),
+    [registry],
+  );
+
   return (
     <div className="parts-bin">
-      <input
-        type="search"
-        placeholder="Search parts"
-        aria-label="Search parts"
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
-      />
+      <div className="parts-bin-search">
+        <input
+          type="search"
+          placeholder="Search parts"
+          aria-label="Search parts"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+      </div>
       <label className="parts-bin-toggle">
         <input
           type="checkbox"
           checked={showPlanned}
           onChange={(event) => setShowPlanned(event.target.checked)}
         />
-        Show planned
+        <span>Show planned</span>
       </label>
       {categories.map(([category, manifests]) => {
         const expanded = open[category] !== false;
@@ -80,25 +94,36 @@ export function PartsBin({ registry, onPick }: PartsBinProps) {
             <h3>
               <button
                 type="button"
+                className="parts-category-toggle"
                 aria-expanded={expanded}
                 aria-controls={bodyId}
                 onClick={() => toggleCategory(category)}
               >
-                {category} ({manifests.length})
+                <span className="parts-category-chevron" aria-hidden="true" />
+                <span>{category} ({manifests.length})</span>
               </button>
             </h3>
             <ul id={bodyId} hidden={!expanded}>
               {manifests.map((manifest) => {
                 const placeable = isPlaceable(manifest);
                 return (
-                  <li key={manifest.id}>
+                  <li key={manifest.id} className="part-row-item">
                     <button
                       type="button"
+                      className="part-row"
                       disabled={!placeable}
                       title={placeable ? manifest.name : 'Planned — not available yet'}
                       onClick={() => onPick(manifest.id)}
                     >
-                      {manifest.name}
+                      <img
+                        className="part-thumbnail"
+                        data-testid="part-thumbnail"
+                        src={thumbnails.get(manifest.id)}
+                        alt=""
+                        width="24"
+                        height="24"
+                      />
+                      <span className="part-name">{manifest.name}</span>
                     </button>
                   </li>
                 );

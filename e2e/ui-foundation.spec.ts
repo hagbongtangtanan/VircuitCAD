@@ -188,7 +188,7 @@ test('layout changes refit an untouched viewport but preserve a user-adjusted vi
   await expect.poll(scaleOf).toBeGreaterThan(resizedScale);
   expect(await centered()).toBe(true);
 
-  const canvas = page.getByTestId('canvas-host').locator('canvas');
+  const canvas = await page.getByTestId('canvas-host').locator('canvas');
   await canvas.hover();
   await page.mouse.wheel(0, -240);
   await expect.poll(scaleOf).toBeGreaterThan(resizedScale);
@@ -201,4 +201,105 @@ test('layout changes refit an untouched viewport but preserve a user-adjusted vi
       ),
   );
   expect(await scaleOf()).toBeCloseTo(adjustedScale, 5);
+});
+
+test('the parts panel has compact unwrapped headers, uniform rows, and art thumbnails', async ({
+  page,
+}) => {
+  await ready(page);
+
+  const searchRow = page.locator('.parts-bin-search');
+  const searchInput = page.getByLabel('Search parts');
+  const searchRowBox = await searchRow.boundingBox();
+  const searchInputBox = await searchInput.boundingBox();
+  expect(searchRowBox).not.toBeNull();
+  expect(searchInputBox).not.toBeNull();
+  expect(searchInputBox?.width).toBeCloseTo(searchRowBox?.width ?? 0, 0);
+
+  const headerMetrics = await page
+    .locator('.parts-bin-toggle, .parts-category-toggle')
+    .evaluateAll((elements) =>
+      elements.map((element) => ({
+        scrollHeight: element.scrollHeight,
+        clientHeight: element.clientHeight,
+        whiteSpace: getComputedStyle(element).whiteSpace,
+      })),
+    );
+  expect(headerMetrics.length).toBeGreaterThan(1);
+  for (const metric of headerMetrics) {
+    expect(metric.whiteSpace).toBe('nowrap');
+    expect(metric.scrollHeight).toBeLessThanOrEqual(metric.clientHeight + 1);
+  }
+
+  const rowHeights = await page
+    .locator('.part-row')
+    .evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().height));
+  expect(rowHeights.length).toBeGreaterThan(0);
+  expect(new Set(rowHeights)).toEqual(new Set([32]));
+
+  const rows = page.locator('.part-row');
+  const thumbnails = page.locator('[data-testid="part-thumbnail"]');
+  await expect(thumbnails).toHaveCount(await rows.count());
+  for (const thumbnail of await thumbnails.all()) {
+    expect(await thumbnail.getAttribute('src')).toMatch(/^data:image\/svg\+xml/);
+  }
+});
+
+test('parts remain reachable with the keyboard in visual order', async ({ page }) => {
+  await ready(page);
+  const search = page.getByLabel('Search parts');
+  const planned = page.getByLabel('Show planned');
+  const category = page.locator('.parts-category-toggle').first();
+  const firstPart = page.locator('.part-row').first();
+
+  await search.focus();
+  await page.keyboard.press('Tab');
+  await expect(planned).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(category).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(firstPart).toBeFocused();
+});
+
+test('the inspector contains only selection details with an equal-width unwrapped summary', async ({
+  page,
+}) => {
+  await ready(page);
+  const inspector = page.getByTestId('right-panel');
+
+  await expect(inspector.locator('[data-testid="code-editor"]')).toHaveCount(0);
+  await expect(inspector.locator('[data-testid="serial-lines"]')).toHaveCount(0);
+  await expect(inspector.getByRole('button', { name: 'Build' })).toHaveCount(0);
+  await expect(inspector.getByRole('button', { name: 'Send' })).toHaveCount(0);
+
+  const labels = inspector.locator('.inspector-summary dt');
+  const widths = await labels.evaluateAll((elements) =>
+    elements.map((element) => element.getBoundingClientRect().width),
+  );
+  expect(widths.length).toBeGreaterThan(1);
+  expect(new Set(widths.map((width) => width.toFixed(2))).size).toBe(1);
+
+  const wrappedLabels = await labels.evaluateAll((elements) =>
+    elements.filter(
+      (element) =>
+        element.scrollHeight > element.clientHeight + 1 ||
+        getComputedStyle(element).whiteSpace !== 'nowrap',
+    ).length,
+  );
+  expect(wrappedLabels).toBe(0);
+  await expect(inspector.getByLabel('Breadboard: Full size')).toBeVisible();
+});
+
+test('the code button opens a collapsible tabbed bottom dock', async ({ page }) => {
+  await ready(page);
+  await expect(page.getByTestId('bottom-dock')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Code' }).click();
+  await expect(page.getByTestId('bottom-dock')).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Code' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: 'Serial' })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Problems' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Collapse bottom dock' }).click();
+  await expect(page.getByTestId('bottom-dock')).toHaveCount(0);
 });
