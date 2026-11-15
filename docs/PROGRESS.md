@@ -19,21 +19,14 @@ Do not add columns: scripts parse this table. `done` is set only by `scripts/vc-
 | S13 | UI foundation and part art (run before S04) | done |
 
 ## Handoff
-S13 `stage/s13-ui-foundation` (before S04); spec docs/DESIGN.md; verify with measurable assertions.
-ALL TASKS DONE (T01–T12). Key files: T01 tokens/base.css (CSS-var source of truth, 4.5:1 contrast
-test); T02 `AppShell` grid shell (resizable/collapsible `app-col` panels, persisted `vircuitcad.shell`);
-T03 icons+Toolbar; T04 manifest `status`+`isPlaceable`; T05 art DSL `packages/parts/art`
-(`dsl`/`builders`/`toSvg`/`resolvePartArt` fallback, `ART_PADDING=5`; editor `art-graphics.ts`→Pixi,
-`partTextureKey(part,variant,resolution)`); T06 breadboard `art/board.ts` + Uno labels; T07
-`CanvasControls` (zoom/fit/grid, imperative %, 0 React commits via `window.__renderCount`), pin tooltip,
-wire palette, snap ring, selection handles, cursor, empty hint; T08 `StatusBar` segments + `Inspector`
-enum selects (`ParamSpec.options`) + `formatQuantity`; T09 menu; T10 capabilities; T11 `pnpm e2e:screens`
-→ `artifacts/screens/` (+ gallery, layout checks) uploaded by CI; T12 docs.
-Status: `vc-stage-finish.sh S13` ran full checks green and opened PR #15 (CI green) — now at the HUMAN
-REVIEW GATE (exit 10). Human: open the `vircuitcad-screens` CI artifact, confirm readable at 1366×768 and
-1920×1080, then merge/squash PR #15 (tag `stage-s13-done`) and resume with `/stage` (next stage untouched).
-Notes: tokens in CSS; parallel e2e CPU-bound (`--workers=1`); perf ~13–31 fps/100 parts under SwiftShader;
-full `test` is memory-heavy on this box (3.7 GB) — netlist property tests now use a 30s timeout.
+S13 `stage/s13-ui-foundation`; spec `docs/DESIGN.md`; ALL TASKS DONE (T01–T20).
+T13 HTML empty hint; T14 ResizeObserver initial/refit with 55–85% board fill; T15 parts search/rows/art thumbnails;
+T16 collapsible Code/Serial/Problems bottom dock; T17 two-row 28px serial controls; T18 capability-gated controls;
+T19 injected v0.1.0 version; T20 production bundle excludes E2E globals.
+Every new measurable assertion was mutation-proven to fail, then restored; full checks, 29 E2E and visual-QA pass.
+Status: PR #15 updated; CI green; at HUMAN REVIEW GATE (exit 10). Do not merge without visual approval.
+Human: open `vircuitcad-screens`; review empty/placed/selected/wire/light at 1366x768 and 1920x1080 plus gallery.
+Notes: tokens only; E2E globals require `VITE_E2E=true`; `packages/sim-*` unchanged.
 Blocked: none (awaiting human review).
 --- (previous stages) ---
 S10 DONE (merged, tag stage-s10-done). S11 branch `stage/s11-polish-release`. Done: T03 (core exports
@@ -67,4 +60,4 @@ Gotchas: avr8js `reset()` doesn't zero `cycles`; sim-* eslint permits Node built
 Blocked: none.
 
 ## Human actions pending
-- (none)
+- Review PR #15 and the `vircuitcad-screens` CI artifact; merge only after visual approval.
