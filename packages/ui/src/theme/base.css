@@ -453,7 +453,7 @@ input[type='checkbox'] {
   align-items: center;
   gap: var(--space-1);
   width: 100%;
-  min-height: 0;
+  min-height: var(--size-control);
   padding: var(--space-1) 0;
   border: 0;
   border-radius: 0;
