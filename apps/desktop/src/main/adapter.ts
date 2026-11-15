@@ -37,7 +37,7 @@ export function createElectronPlatformAdapter(): PlatformAdapter {
   const granted = new Set<string>([appData, temp]);
   const appInfo: AppInfo = {
     name: 'VircuitCAD',
-    version: electronApp.getVersion(),
+    version: __APP_VERSION__,
     paths: { appData, temp },
   };
 

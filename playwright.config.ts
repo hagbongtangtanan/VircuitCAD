@@ -24,7 +24,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev:web',
+    command: 'VITE_E2E=true pnpm dev:web',
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

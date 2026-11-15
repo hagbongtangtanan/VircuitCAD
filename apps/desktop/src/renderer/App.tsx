@@ -52,8 +52,10 @@ const CIRCUIT_FILE = 'circuit.vcad';
 let appRenderCount = 0;
 
 export function App() {
-  appRenderCount += 1;
-  window.__renderCount = appRenderCount;
+  if (__E2E__) {
+    appRenderCount += 1;
+    window.__renderCount = appRenderCount;
+  }
   const hostRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<Editor | null>(null);
   const simHostRef = useRef<SimulationHost | undefined>(undefined);
@@ -64,7 +66,6 @@ export function App() {
   const client = useMemo(() => createClient(), []);
   const capabilities = useMemo(() => defaultCapabilities(), []);
 
-  const [version, setVersion] = useState('…');
   const [tool, setTool] = useState<ToolbarTool>('select');
   const [selected, setSelected] = useState<PartInstance | undefined>(undefined);
   const [counts, setCounts] = useState({ parts: 0, wires: 0 });
@@ -242,7 +243,7 @@ export function App() {
     const editor = new Editor({ store, registry });
     editorRef.current = editor;
     setEditor(editor);
-    window.__editor = editor;
+    if (__E2E__) window.__editor = editor;
     const disposers: Array<() => void> = [];
 
     const host = new SimulationHost();
@@ -274,19 +275,16 @@ export function App() {
     );
     disposers.push(editor.onHoverPin(setHoverPin));
 
-    void client.app
-      .info()
-      .then((info) => setVersion(info.version))
-      .catch(() => setVersion('unavailable'));
-
-    window.__app = {
-      store,
-      getCircuit: () => store.getCircuit(),
-      save,
-      load,
-      refresh,
-      loadText: (text: string) => store.replace(deserializeCircuit(text)),
-    };
+    if (__E2E__) {
+      window.__app = {
+        store,
+        getCircuit: () => store.getCircuit(),
+        save,
+        load,
+        refresh,
+        loadText: (text: string) => store.replace(deserializeCircuit(text)),
+      };
+    }
 
     return () => {
       disposed = true;
@@ -297,8 +295,10 @@ export function App() {
       setEditor(undefined);
       editorRef.current = null;
       simHostRef.current = undefined;
-      window.__editor = undefined;
-      window.__app = undefined;
+      if (__E2E__) {
+        window.__editor = undefined;
+        window.__app = undefined;
+      }
     };
   }, []);
 
@@ -447,7 +447,7 @@ export function App() {
           saved={!dirty}
           simState={simState}
           simTime={simTime}
-          version={version}
+          version={__APP_VERSION__}
         />
       }
     >

@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 
+import packageJson from '../../../../package.json' with { type: 'json' };
 import { buildMenuTemplate, type MenuItemSpec } from './menu';
 
 function leaves(spec: MenuItemSpec): MenuItemSpec[] {
@@ -70,4 +71,13 @@ it('shows the version in Help > About', () => {
   const help = buildMenuTemplate({ version: '9.9.9', isDev: false }).find((m) => m.label === 'Help');
   const about = help?.submenu?.find((item) => item.command === 'help.about');
   expect(about?.label).toContain('9.9.9');
+});
+
+it('uses the package version in the Electron About menu', () => {
+  const help = buildMenuTemplate({ version: __APP_VERSION__, isDev: false }).find(
+    (menu) => menu.label === 'Help',
+  );
+  const about = help?.submenu?.find((item) => item.command === 'help.about');
+  expect(__APP_VERSION__).toBe(packageJson.version);
+  expect(about?.label).toContain(packageJson.version);
 });

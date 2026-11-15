@@ -36,7 +36,7 @@ function toMenuItem(spec: MenuItemSpec): MenuItemConstructorOptions {
 }
 
 function applyMenu(): void {
-  const template = buildMenuTemplate({ version: app.getVersion(), isDev: !app.isPackaged });
+  const template = buildMenuTemplate({ version: __APP_VERSION__, isDev: !app.isPackaged });
   Menu.setApplicationMenu(Menu.buildFromTemplate(template.map(toMenuItem)));
 }
 
