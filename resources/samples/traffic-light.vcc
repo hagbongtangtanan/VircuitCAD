@@ -1,0 +1,392 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 100,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "bb1",
+        "type": "breadboard",
+        "position": {
+          "x": 420,
+          "y": 80
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "r1",
+        "type": "resistor",
+        "position": {
+          "x": 520,
+          "y": 170
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "led1",
+        "type": "led",
+        "position": {
+          "x": 590,
+          "y": 100
+        },
+        "rotation": 0,
+        "props": {
+          "color": "red"
+        }
+      },
+      {
+        "id": "r2",
+        "type": "resistor",
+        "position": {
+          "x": 620,
+          "y": 170
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "led2",
+        "type": "led",
+        "position": {
+          "x": 690,
+          "y": 100
+        },
+        "rotation": 0,
+        "props": {
+          "color": "yellow"
+        }
+      },
+      {
+        "id": "r3",
+        "type": "resistor",
+        "position": {
+          "x": 720,
+          "y": 170
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "led3",
+        "type": "led",
+        "position": {
+          "x": 790,
+          "y": 100
+        },
+        "rotation": 0,
+        "props": {
+          "color": "green"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D13"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "a8"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 378,
+            "y": 95
+          },
+          {
+            "x": 520,
+            "y": 95
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "r1",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e8"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "r1",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e12"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "led1",
+          "pinId": "anode"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "d12"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 560,
+            "y": 140
+          },
+          {
+            "x": 560,
+            "y": 180
+          }
+        ]
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "led1",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "top-minus-17"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "uno",
+          "pinId": "D12"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "a18"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 358,
+            "y": 75
+          },
+          {
+            "x": 620,
+            "y": 75
+          }
+        ]
+      },
+      {
+        "id": "w7",
+        "from": {
+          "partId": "r2",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e18"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w8",
+        "from": {
+          "partId": "r2",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e22"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w9",
+        "from": {
+          "partId": "led2",
+          "pinId": "anode"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "d22"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 660,
+            "y": 140
+          },
+          {
+            "x": 660,
+            "y": 180
+          }
+        ]
+      },
+      {
+        "id": "w10",
+        "from": {
+          "partId": "led2",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "top-minus-27"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w11",
+        "from": {
+          "partId": "uno",
+          "pinId": "D11"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "a28"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 338,
+            "y": 55
+          },
+          {
+            "x": 720,
+            "y": 55
+          }
+        ]
+      },
+      {
+        "id": "w12",
+        "from": {
+          "partId": "r3",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e28"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w13",
+        "from": {
+          "partId": "r3",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e32"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w14",
+        "from": {
+          "partId": "led3",
+          "pinId": "anode"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "d32"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 760,
+            "y": 140
+          },
+          {
+            "x": 760,
+            "y": 180
+          }
+        ]
+      },
+      {
+        "id": "w15",
+        "from": {
+          "partId": "led3",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "top-minus-37"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w16",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "top-minus-1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 158,
+            "y": 340
+          },
+          {
+            "x": 420,
+            "y": 340
+          },
+          {
+            "x": 420,
+            "y": 120
+          },
+          {
+            "x": 450,
+            "y": 120
+          }
+        ]
+      }
+    ]
+  },
+  "sketch": "// Traffic light: three LEDs cycle red -> yellow -> green\nstruct Lamp {\n  int pin;\n  const char *name;\n};\n\nLamp lamps[3] = {\n  {13, \"red\"},\n  {12, \"yellow\"},\n  {11, \"green\"},\n};\n\nvoid setup() {\n  for (int i = 0; i < 3; i += 1) {\n    pinMode(lamps[i].pin, OUTPUT);\n  }\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  for (int i = 0; i < 3; i += 1) {\n    digitalWrite(lamps[i].pin, HIGH);\n    Serial.print(lamps[i].name);\n    Serial.println(\" on\");\n    delay(1200);\n    digitalWrite(lamps[i].pin, LOW);\n    delay(200);\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-10-23T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 60,
+    "offsetY": 60
+  }
+}

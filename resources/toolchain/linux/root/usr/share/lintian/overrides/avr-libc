@@ -1,0 +1,5 @@
+avr-libc: arch-independent-package-contains-binary-or-object
+avr-libc: no-code-sections
+avr-libc: groff-message
+avr-libc: national-encoding
+avr-libc: bad-whatis-entry

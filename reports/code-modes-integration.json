@@ -1,0 +1,38 @@
+{
+  "archive": "resources/app.asar",
+  "output": "out/app-code-modes.asar",
+  "patch": "scripts/patch-code-modes.js",
+  "verify": "scripts/verify-code-modes.js",
+  "target": "out/renderer/assets/index-N0START1.js",
+  "install": true,
+  "backup": "/tmp/vc-app-before-code-modes-1795585173855.asar",
+  "unpacked_files": 5768,
+  "unpacked_dirs": 409,
+  "original_archive_sha256": "d6d4c85b728ff28c7a2505a3c26a0c0ccfefb1285ce21f713ebcd012168244e2",
+  "output_prefix": {
+    "field4": 1488764,
+    "field8": 1488760,
+    "jsonLength": 1488755,
+    "padding": 1
+  },
+  "prefix_ok": true,
+  "patched_sha256": "3bf3b4ba88478c868c675afc32d8e15b602ed0e64f24e3bb0c62e1e587e52b90",
+  "output_sha256": "d6d4c85b728ff28c7a2505a3c26a0c0ccfefb1285ce21f713ebcd012168244e2",
+  "changed_files": [
+    "out/renderer/assets/index-N0START1.js"
+  ],
+  "missing_files": [],
+  "extra_files": [],
+  "pack": {
+    "fileCount": 5768,
+    "dirCount": 409,
+    "headerBytes": 1488772,
+    "archiveBytes": 82414148
+  },
+  "packed_files": 5768,
+  "packed_dirs": 409,
+  "packed_compare_ok": true,
+  "packed_hash_ok": true,
+  "verify_pass": true,
+  "pass": true
+}

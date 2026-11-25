@@ -1,0 +1,20 @@
+{
+  "label": "baseline-final-seven",
+  "sample": "seven-segment-counter.vcc",
+  "port": "9350",
+  "durationMs": 6000,
+  "settleMs": 1200,
+  "metrics": {
+    "domParser": 0,
+    "ctxOps": 1632276,
+    "longTasks": 38,
+    "frameCount": 144,
+    "frameP50": 33.39999999999418,
+    "frameP95": 83.39999999999418,
+    "frameMax": 216.80000000001746,
+    "frameMean": 42.15277777777778,
+    "over16": 119,
+    "over33": 90
+  },
+  "runtimeExceptions": []
+}

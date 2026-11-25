@@ -1,0 +1,23 @@
+{
+  "app": "out/app-multi-window.asar",
+  "canvas": {
+    "x": 11,
+    "y": 63,
+    "width": 1146,
+    "height": 744
+  },
+  "dark_theme": "dark",
+  "light_theme": "light",
+  "dark_selection_pixels": 117,
+  "light_selection_pixels": 110,
+  "checks": {
+    "resistor_placed": true,
+    "dark_theme_active": true,
+    "light_theme_active": true,
+    "dark_selection_visible": true,
+    "light_selection_visible": true,
+    "no_runtime_exceptions": true
+  },
+  "runtimeExceptions": [],
+  "pass": true
+}

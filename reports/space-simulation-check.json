@@ -1,0 +1,24 @@
+{
+  "app": "out/app-space.asar",
+  "statuses": {
+    "before": "idle",
+    "after_start": "running",
+    "after_stop": "stopped",
+    "after_pan": "stopped",
+    "after_editor_space": "stopped"
+  },
+  "code_panel_opened": true,
+  "editor_focused": true,
+  "pan_changed_pixels": 247788,
+  "runtimeExceptions": [],
+  "checks": {
+    "space_starts_simulation": true,
+    "space_opens_code_panel": true,
+    "space_stops_simulation": true,
+    "pan_keeps_simulation_idle": true,
+    "pan_moves_the_canvas": true,
+    "editor_space_keeps_simulation_idle": true,
+    "no_runtime_exceptions": true
+  },
+  "pass": true
+}

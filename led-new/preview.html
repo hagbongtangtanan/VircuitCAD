@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>LED preview</title>
+    <style>
+      :root {
+        --hole-pitch: 26.666px;
+        --hole: #64748b;
+        --cell-bg: #0b1220;
+        --cell-border: #1e293b;
+        --text: #e2e8f0;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        background: #050a14;
+        color: var(--text);
+      }
+      body[data-theme="light"] {
+        --hole: #94a3b8;
+        --cell-bg: #f8fafc;
+        --cell-border: #cbd5e1;
+        --text: #0f172a;
+        background: #eef2f7;
+      }
+      header {
+        padding: 14px 20px 6px;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 176px);
+        gap: 12px;
+        padding: 12px 20px 20px;
+      }
+      .cell {
+        width: 176px;
+        height: 178px;
+        border: 1px solid var(--cell-border);
+        border-radius: 6px;
+        background-color: var(--cell-bg);
+        background-image: radial-gradient(circle at center, var(--hole) 1.4px, transparent 1.6px);
+        background-size: var(--hole-pitch) var(--hole-pitch);
+        background-position: calc(50% - var(--hole-pitch) / 2) calc(50% + 44px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        overflow: hidden;
+      }
+      .cell svg { width: 168px; height: 154px; display: block; }
+      .caption { font-size: 10px; padding: 2px 0 5px; letter-spacing: 0.06em; }
+      .single {
+        width: 800px;
+        height: 760px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #050a14;
+        background-image: radial-gradient(circle at center, #64748b 1.4px, transparent 1.6px);
+        background-size: calc(var(--hole-pitch) * 4) calc(var(--hole-pitch) * 4);
+        background-position: center;
+      }
+      .single svg { width: 640px; height: 587px; display: block; }
+    </style>
+    <script src="./dist/renderLedSvg.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      (function () {
+        var params = new URLSearchParams(location.search);
+        var theme = params.get("theme") === "light" ? "light" : "dark";
+        var mode = params.get("mode") === "single" ? "single" : "grid";
+        var colors = ["red", "green", "blue", "yellow", "white"];
+        var states = [
+          { key: "unlit", lit: false, burnt: false },
+          { key: "lit", lit: true, burnt: false },
+          { key: "burnt", lit: false, burnt: true },
+        ];
+        var app = document.getElementById("app");
+        document.body.setAttribute("data-theme", theme);
+        if (mode === "single") {
+          app.innerHTML =
+            '<div class="single">' +
+            LedSvg.renderLedSvg({
+              color: "blue",
+              lit: true,
+              burnt: false,
+              theme: theme,
+              showLabels: true,
+              idPrefix: "single-blue",
+            }) +
+            "</div>";
+          return;
+        }
+        var cells = colors
+          .map(function (color) {
+            return states
+              .map(function (state) {
+                return (
+                  '<div class="cell">' +
+                  LedSvg.renderLedSvg({
+                    color: color,
+                    lit: state.lit,
+                    burnt: state.burnt,
+                    theme: theme,
+                    showLabels: true,
+                    idPrefix: theme + "-" + color + "-" + state.key,
+                  }) +
+                  '<div class="caption">' +
+                  color +
+                  " / " +
+                  state.key +
+                  "</div>" +
+                  "</div>"
+                );
+              })
+              .join("");
+          })
+          .join("");
+        app.innerHTML = '<header>' + theme + "</header>" + '<div class="grid">' + cells + "</div>";
+      })();
+    </script>
+  </body>
+</html>

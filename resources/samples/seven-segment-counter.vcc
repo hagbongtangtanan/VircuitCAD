@@ -1,0 +1,758 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 60,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "bb1",
+        "type": "breadboard",
+        "position": {
+          "x": 380,
+          "y": 80
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "ra",
+        "type": "resistor",
+        "position": {
+          "x": 600,
+          "y": 180
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "rb",
+        "type": "resistor",
+        "position": {
+          "x": 660,
+          "y": 180
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "rf",
+        "type": "resistor",
+        "position": {
+          "x": 720,
+          "y": 180
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "rg",
+        "type": "resistor",
+        "position": {
+          "x": 780,
+          "y": 180
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "rc",
+        "type": "resistor",
+        "position": {
+          "x": 600,
+          "y": 240
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "rd",
+        "type": "resistor",
+        "position": {
+          "x": 660,
+          "y": 240
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "re",
+        "type": "resistor",
+        "position": {
+          "x": 720,
+          "y": 240
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "rdp",
+        "type": "resistor",
+        "position": {
+          "x": 780,
+          "y": 240
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "seg1",
+        "type": "seven-segment",
+        "position": {
+          "x": 505,
+          "y": 180
+        },
+        "rotation": 0,
+        "props": {
+          "color": "red"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "a20"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 118,
+            "y": 40
+          },
+          {
+            "x": 600,
+            "y": 40
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "uno",
+          "pinId": "D3"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "a26"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 138,
+            "y": 55
+          },
+          {
+            "x": 660,
+            "y": 55
+          }
+        ]
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "uno",
+          "pinId": "D4"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j20"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 158,
+            "y": 380
+          },
+          {
+            "x": 600,
+            "y": 380
+          }
+        ]
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "uno",
+          "pinId": "D5"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j26"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 178,
+            "y": 365
+          },
+          {
+            "x": 660,
+            "y": 365
+          }
+        ]
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "uno",
+          "pinId": "D6"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j32"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 198,
+            "y": 350
+          },
+          {
+            "x": 720,
+            "y": 350
+          }
+        ]
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "uno",
+          "pinId": "D7"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "a32"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 218,
+            "y": 70
+          },
+          {
+            "x": 720,
+            "y": 70
+          }
+        ]
+      },
+      {
+        "id": "w7",
+        "from": {
+          "partId": "uno",
+          "pinId": "D8"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "a38"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 238,
+            "y": 85
+          },
+          {
+            "x": 780,
+            "y": 85
+          }
+        ]
+      },
+      {
+        "id": "w8",
+        "from": {
+          "partId": "uno",
+          "pinId": "D9"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j38"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 258,
+            "y": 395
+          },
+          {
+            "x": 780,
+            "y": 395
+          }
+        ]
+      },
+      {
+        "id": "w9",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "top-minus-45"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 40,
+            "y": 320
+          },
+          {
+            "x": 40,
+            "y": 410
+          },
+          {
+            "x": 850,
+            "y": 410
+          }
+        ]
+      },
+      {
+        "id": "w10",
+        "from": {
+          "partId": "bb1",
+          "pinId": "c24"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "a"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 640,
+            "y": 95
+          },
+          {
+            "x": 540,
+            "y": 95
+          }
+        ]
+      },
+      {
+        "id": "w11",
+        "from": {
+          "partId": "bb1",
+          "pinId": "c30"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "b"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 700,
+            "y": 105
+          },
+          {
+            "x": 550,
+            "y": 105
+          }
+        ]
+      },
+      {
+        "id": "w12",
+        "from": {
+          "partId": "bb1",
+          "pinId": "h24"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "c"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 640,
+            "y": 430
+          },
+          {
+            "x": 540,
+            "y": 430
+          }
+        ]
+      },
+      {
+        "id": "w13",
+        "from": {
+          "partId": "bb1",
+          "pinId": "h30"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "d"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 700,
+            "y": 440
+          },
+          {
+            "x": 520,
+            "y": 440
+          }
+        ]
+      },
+      {
+        "id": "w14",
+        "from": {
+          "partId": "bb1",
+          "pinId": "h36"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "e"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 760,
+            "y": 450
+          },
+          {
+            "x": 510,
+            "y": 450
+          }
+        ]
+      },
+      {
+        "id": "w15",
+        "from": {
+          "partId": "bb1",
+          "pinId": "c36"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "f"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 760,
+            "y": 115
+          },
+          {
+            "x": 520,
+            "y": 115
+          }
+        ]
+      },
+      {
+        "id": "w16",
+        "from": {
+          "partId": "bb1",
+          "pinId": "c42"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "g"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 820,
+            "y": 125
+          },
+          {
+            "x": 510,
+            "y": 125
+          }
+        ]
+      },
+      {
+        "id": "w17",
+        "from": {
+          "partId": "bb1",
+          "pinId": "h42"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "dp"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 820,
+            "y": 460
+          },
+          {
+            "x": 550,
+            "y": 460
+          }
+        ]
+      },
+      {
+        "id": "w18",
+        "from": {
+          "partId": "bb1",
+          "pinId": "top-minus-12"
+        },
+        "to": {
+          "partId": "seg1",
+          "pinId": "common"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 520,
+            "y": 180
+          },
+          {
+            "x": 530,
+            "y": 180
+          }
+        ]
+      },
+      {
+        "id": "w19",
+        "from": {
+          "partId": "ra",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e20"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w20",
+        "from": {
+          "partId": "ra",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e24"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w21",
+        "from": {
+          "partId": "rb",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e26"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w22",
+        "from": {
+          "partId": "rb",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e30"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w23",
+        "from": {
+          "partId": "rf",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e32"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w24",
+        "from": {
+          "partId": "rf",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e36"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w25",
+        "from": {
+          "partId": "rg",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e38"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w26",
+        "from": {
+          "partId": "rg",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e42"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w27",
+        "from": {
+          "partId": "rc",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j20"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w28",
+        "from": {
+          "partId": "rc",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j24"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w29",
+        "from": {
+          "partId": "rd",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j26"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w30",
+        "from": {
+          "partId": "rd",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j30"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w31",
+        "from": {
+          "partId": "re",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j32"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w32",
+        "from": {
+          "partId": "re",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j36"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w33",
+        "from": {
+          "partId": "rdp",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j38"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w34",
+        "from": {
+          "partId": "rdp",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "j42"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      }
+    ]
+  },
+  "sketch": "// Common-cathode 7-segment counter: A-G on D2-D8, DP on D9, common to GND.\nconst int segments[8] = {2, 3, 4, 5, 6, 7, 8, 9};\nconst byte digits[10][8] = {\n  {1,1,1,1,1,1,0,0}, {0,1,1,0,0,0,0,0}, {1,1,0,1,1,0,1,0}, {1,1,1,1,0,0,1,0},\n  {0,1,1,0,0,1,1,0}, {1,0,1,1,0,1,1,0}, {1,0,1,1,1,1,1,0}, {1,1,1,0,0,0,0,0},\n  {1,1,1,1,1,1,1,0}, {1,1,1,1,0,1,1,0}\n};\n\nvoid setup() {\n  for (int i = 0; i < 8; i++) pinMode(segments[i], OUTPUT);\n}\n\nvoid loop() {\n  for (int digit = 0; digit < 10; digit++) {\n    for (int segment = 0; segment < 8; segment++) {\n      digitalWrite(segments[segment], digits[digit][segment]);\n    }\n    delay(500);\n  }\n}\n",
+  "metadata": {
+    "created_at": "2026-11-20T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 40,
+    "offsetY": 40
+  },
+  "name": "7-segment counter"
+}

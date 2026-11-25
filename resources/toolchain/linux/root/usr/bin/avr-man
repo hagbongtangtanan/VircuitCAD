@@ -1,0 +1,2 @@
+#! /bin/sh
+exec man -s 3avr "$@"

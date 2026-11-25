@@ -1,0 +1,38 @@
+{
+  "archive": "resources/app.asar",
+  "output": "out/app-canvas-navigation.asar",
+  "patch": "scripts/patch-canvas-navigation.js",
+  "verify": "scripts/verify-canvas-navigation.js",
+  "target": "out/renderer/assets/index-N0START1.js",
+  "install": true,
+  "backup": "/tmp/vc-app-before-canvas-navigation-1795582229506.asar",
+  "unpacked_files": 5768,
+  "unpacked_dirs": 409,
+  "original_archive_sha256": "852117e1bc2e76ea30b0b116f313f870b128087104ae5971ee49b969a8397fc0",
+  "output_prefix": {
+    "field4": 1488764,
+    "field8": 1488760,
+    "jsonLength": 1488755,
+    "padding": 1
+  },
+  "prefix_ok": true,
+  "patched_sha256": "585fe93b39f569e74a6ef45708ed0760b5ccc49a619b9f1de7fc114d2cfc21c3",
+  "output_sha256": "852117e1bc2e76ea30b0b116f313f870b128087104ae5971ee49b969a8397fc0",
+  "changed_files": [
+    "out/renderer/assets/index-N0START1.js"
+  ],
+  "missing_files": [],
+  "extra_files": [],
+  "pack": {
+    "fileCount": 5768,
+    "dirCount": 409,
+    "headerBytes": 1488772,
+    "archiveBytes": 82414096
+  },
+  "packed_files": 5768,
+  "packed_dirs": 409,
+  "packed_compare_ok": true,
+  "packed_hash_ok": true,
+  "verify_pass": true,
+  "pass": true
+}

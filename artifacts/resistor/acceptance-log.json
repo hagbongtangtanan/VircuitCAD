@@ -1,0 +1,1115 @@
+{
+  "oldVsNew": [
+    {
+      "pinId": "lead1",
+      "label": "1",
+      "old": {
+        "x": 0,
+        "y": 10,
+        "pitchSpan": 3
+      },
+      "new": {
+        "x": 0,
+        "y": 10
+      }
+    },
+    {
+      "pinId": "lead2",
+      "label": "2",
+      "old": {
+        "x": 30,
+        "y": 10,
+        "pitchSpan": 3
+      },
+      "new": {
+        "x": 40,
+        "y": 10
+      }
+    }
+  ],
+  "constants": {
+    "pitch": 10,
+    "spanPitches": 4,
+    "bodyLengthPitches": 2.4,
+    "bodyDiameterPitches": 0.85,
+    "endCapDiameterPitches": 1,
+    "endCapLengthPitches": 0.35,
+    "leadWidthPitches": 0.12,
+    "bandWidthPitches": 0.16,
+    "bandSpacingPitches": 0.3,
+    "firstBandInsetPitches": 0.3,
+    "toleranceGapPitches": 0.25,
+    "colors": {
+      "bodyTop": "#D8C69C",
+      "bodyBottom": "#C7B07F",
+      "bodyEdge": "#8F7A50",
+      "highlight": "#FFFFFF",
+      "lead": "#B8BDC2",
+      "leadCenter": "#F2F4F6",
+      "tolerance": "gold"
+    }
+  },
+  "definition": {
+    "size": {
+      "width": 40,
+      "height": 20
+    },
+    "pins": [
+      {
+        "id": "lead1",
+        "label": "1",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "kind": "passive"
+      },
+      {
+        "id": "lead2",
+        "label": "2",
+        "position": {
+          "x": 40,
+          "y": 10
+        },
+        "kind": "passive"
+      }
+    ]
+  },
+  "singleSourceSpan": {
+    "constant": true,
+    "definitionUsesConstant": true,
+    "validatorUsesConstant": true,
+    "noHardcodedDefinitionWidth40": true,
+    "pass": true
+  },
+  "drops": [
+    {
+      "column": 3,
+      "rowY": 150,
+      "partId": "resistor-7c137e98",
+      "preview": [
+        {
+          "x": 50,
+          "y": 150,
+          "stroke": "#3ddc84"
+        },
+        {
+          "x": 90,
+          "y": 150,
+          "stroke": "#3ddc84"
+        }
+      ],
+      "report": {
+        "partId": "resistor-7c137e98",
+        "valid": true,
+        "targetTopLeft": {
+          "x": 50,
+          "y": 140
+        },
+        "pins": [
+          {
+            "pinId": "lead1",
+            "anchor": {
+              "x": 50,
+              "y": 150
+            },
+            "hole": {
+              "x": 50,
+              "y": 150
+            },
+            "holePinId": "h3",
+            "printedLabel": {
+              "row": "h",
+              "column": 3,
+              "label": "h3"
+            },
+            "distance": 0
+          },
+          {
+            "pinId": "lead2",
+            "anchor": {
+              "x": 90,
+              "y": 150
+            },
+            "hole": {
+              "x": 90,
+              "y": 150
+            },
+            "holePinId": "h7",
+            "printedLabel": {
+              "row": "h",
+              "column": 7,
+              "label": "h7"
+            },
+            "distance": 0
+          }
+        ]
+      },
+      "pins": [
+        {
+          "pinId": "lead1",
+          "label": "1",
+          "x": 50,
+          "y": 150
+        },
+        {
+          "pinId": "lead2",
+          "label": "2",
+          "x": 90,
+          "y": 150
+        }
+      ],
+      "printed": [
+        {
+          "row": "h",
+          "column": 3,
+          "label": "h3"
+        },
+        {
+          "row": "h",
+          "column": 7,
+          "label": "h7"
+        }
+      ],
+      "distances": [
+        0,
+        0
+      ],
+      "wireCount": 2
+    },
+    {
+      "column": 8,
+      "rowY": 150,
+      "partId": "resistor-8c16e8c3",
+      "preview": [
+        {
+          "x": 470,
+          "y": 220,
+          "stroke": "#ff4d4f"
+        },
+        {
+          "x": 100,
+          "y": 150,
+          "stroke": "#3ddc84"
+        },
+        {
+          "x": 140,
+          "y": 150,
+          "stroke": "#3ddc84"
+        }
+      ],
+      "report": {
+        "partId": "resistor-8c16e8c3",
+        "valid": true,
+        "targetTopLeft": {
+          "x": 100,
+          "y": 140
+        },
+        "pins": [
+          {
+            "pinId": "lead1",
+            "anchor": {
+              "x": 100,
+              "y": 150
+            },
+            "hole": {
+              "x": 100,
+              "y": 150
+            },
+            "holePinId": "h8",
+            "printedLabel": {
+              "row": "h",
+              "column": 8,
+              "label": "h8"
+            },
+            "distance": 0
+          },
+          {
+            "pinId": "lead2",
+            "anchor": {
+              "x": 140,
+              "y": 150
+            },
+            "hole": {
+              "x": 140,
+              "y": 150
+            },
+            "holePinId": "h12",
+            "printedLabel": {
+              "row": "h",
+              "column": 12,
+              "label": "h12"
+            },
+            "distance": 0
+          }
+        ]
+      },
+      "pins": [
+        {
+          "pinId": "lead1",
+          "label": "1",
+          "x": 100,
+          "y": 150
+        },
+        {
+          "pinId": "lead2",
+          "label": "2",
+          "x": 140,
+          "y": 150
+        }
+      ],
+      "printed": [
+        {
+          "row": "h",
+          "column": 8,
+          "label": "h8"
+        },
+        {
+          "row": "h",
+          "column": 12,
+          "label": "h12"
+        }
+      ],
+      "distances": [
+        0,
+        0
+      ],
+      "wireCount": 2
+    },
+    {
+      "column": 15,
+      "rowY": 150,
+      "partId": "resistor-7d764ace",
+      "preview": [
+        {
+          "x": 470,
+          "y": 220,
+          "stroke": "#ff4d4f"
+        },
+        {
+          "x": 170,
+          "y": 150,
+          "stroke": "#3ddc84"
+        },
+        {
+          "x": 210,
+          "y": 150,
+          "stroke": "#3ddc84"
+        }
+      ],
+      "report": {
+        "partId": "resistor-7d764ace",
+        "valid": true,
+        "targetTopLeft": {
+          "x": 170,
+          "y": 140
+        },
+        "pins": [
+          {
+            "pinId": "lead1",
+            "anchor": {
+              "x": 170,
+              "y": 150
+            },
+            "hole": {
+              "x": 170,
+              "y": 150
+            },
+            "holePinId": "h15",
+            "printedLabel": {
+              "row": "h",
+              "column": 15,
+              "label": "h15"
+            },
+            "distance": 0
+          },
+          {
+            "pinId": "lead2",
+            "anchor": {
+              "x": 210,
+              "y": 150
+            },
+            "hole": {
+              "x": 210,
+              "y": 150
+            },
+            "holePinId": "h19",
+            "printedLabel": {
+              "row": "h",
+              "column": 19,
+              "label": "h19"
+            },
+            "distance": 0
+          }
+        ]
+      },
+      "pins": [
+        {
+          "pinId": "lead1",
+          "label": "1",
+          "x": 170,
+          "y": 150
+        },
+        {
+          "pinId": "lead2",
+          "label": "2",
+          "x": 210,
+          "y": 150
+        }
+      ],
+      "printed": [
+        {
+          "row": "h",
+          "column": 15,
+          "label": "h15"
+        },
+        {
+          "row": "h",
+          "column": 19,
+          "label": "h19"
+        }
+      ],
+      "distances": [
+        0,
+        0
+      ],
+      "wireCount": 2
+    },
+    {
+      "column": 22,
+      "rowY": 150,
+      "partId": "resistor-1511a6e9",
+      "preview": [
+        {
+          "x": 470,
+          "y": 220,
+          "stroke": "#ff4d4f"
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "stroke": "#3ddc84"
+        },
+        {
+          "x": 280,
+          "y": 150,
+          "stroke": "#3ddc84"
+        }
+      ],
+      "report": {
+        "partId": "resistor-1511a6e9",
+        "valid": true,
+        "targetTopLeft": {
+          "x": 240,
+          "y": 140
+        },
+        "pins": [
+          {
+            "pinId": "lead1",
+            "anchor": {
+              "x": 240,
+              "y": 150
+            },
+            "hole": {
+              "x": 240,
+              "y": 150
+            },
+            "holePinId": "h22",
+            "printedLabel": {
+              "row": "h",
+              "column": 22,
+              "label": "h22"
+            },
+            "distance": 0
+          },
+          {
+            "pinId": "lead2",
+            "anchor": {
+              "x": 280,
+              "y": 150
+            },
+            "hole": {
+              "x": 280,
+              "y": 150
+            },
+            "holePinId": "h26",
+            "printedLabel": {
+              "row": "h",
+              "column": 26,
+              "label": "h26"
+            },
+            "distance": 0
+          }
+        ]
+      },
+      "pins": [
+        {
+          "pinId": "lead1",
+          "label": "1",
+          "x": 240,
+          "y": 150
+        },
+        {
+          "pinId": "lead2",
+          "label": "2",
+          "x": 280,
+          "y": 150
+        }
+      ],
+      "printed": [
+        {
+          "row": "h",
+          "column": 22,
+          "label": "h22"
+        },
+        {
+          "row": "h",
+          "column": 26,
+          "label": "h26"
+        }
+      ],
+      "distances": [
+        0,
+        0
+      ],
+      "wireCount": 2
+    },
+    {
+      "column": 35,
+      "rowY": 150,
+      "partId": "resistor-525e8d4f",
+      "preview": [
+        {
+          "x": 470,
+          "y": 220,
+          "stroke": "#ff4d4f"
+        },
+        {
+          "x": 370,
+          "y": 150,
+          "stroke": "#3ddc84"
+        },
+        {
+          "x": 410,
+          "y": 150,
+          "stroke": "#3ddc84"
+        }
+      ],
+      "report": {
+        "partId": "resistor-525e8d4f",
+        "valid": true,
+        "targetTopLeft": {
+          "x": 370,
+          "y": 140
+        },
+        "pins": [
+          {
+            "pinId": "lead1",
+            "anchor": {
+              "x": 370,
+              "y": 150
+            },
+            "hole": {
+              "x": 370,
+              "y": 150
+            },
+            "holePinId": "h35",
+            "printedLabel": {
+              "row": "h",
+              "column": 35,
+              "label": "h35"
+            },
+            "distance": 0
+          },
+          {
+            "pinId": "lead2",
+            "anchor": {
+              "x": 410,
+              "y": 150
+            },
+            "hole": {
+              "x": 410,
+              "y": 150
+            },
+            "holePinId": "h39",
+            "printedLabel": {
+              "row": "h",
+              "column": 39,
+              "label": "h39"
+            },
+            "distance": 0
+          }
+        ]
+      },
+      "pins": [
+        {
+          "pinId": "lead1",
+          "label": "1",
+          "x": 370,
+          "y": 150
+        },
+        {
+          "pinId": "lead2",
+          "label": "2",
+          "x": 410,
+          "y": 150
+        }
+      ],
+      "printed": [
+        {
+          "row": "h",
+          "column": 35,
+          "label": "h35"
+        },
+        {
+          "row": "h",
+          "column": 39,
+          "label": "h39"
+        }
+      ],
+      "distances": [
+        0,
+        0
+      ],
+      "wireCount": 2
+    }
+  ],
+  "bodyMetrics": {
+    "span": 40,
+    "pitch": 10,
+    "body": {
+      "left": 8,
+      "right": 32,
+      "top": 5,
+      "bottom": 15,
+      "length": 24,
+      "diameter": 8.5,
+      "capDiameter": 10
+    },
+    "leadRowCenterY": 10,
+    "neighboringHoles": {
+      "above": {
+        "centerY": 0,
+        "bottomEdge": 3.2
+      },
+      "below": {
+        "centerY": 20,
+        "topEdge": 16.8
+      }
+    },
+    "clearance": {
+      "above": 1.7999999999999998,
+      "below": 1.8000000000000007
+    },
+    "leadWidth": 1.2,
+    "bandWidth": 1.6,
+    "bandCenters": [
+      15.3,
+      18.3,
+      21.3,
+      26.8
+    ],
+    "bands": {
+      "value": 220,
+      "digitCount": 2,
+      "names": [
+        "red",
+        "red",
+        "brown",
+        "gold"
+      ],
+      "colors": [
+        "#c0392b",
+        "#c0392b",
+        "#6b4a2f",
+        "#d4a017"
+      ],
+      "multiplier": 1,
+      "tolerance": "gold"
+    },
+    "selected": true
+  },
+  "bandTable": [
+    {
+      "value": 220,
+      "names": [
+        "red",
+        "red",
+        "brown",
+        "gold"
+      ],
+      "colors": [
+        "#c0392b",
+        "#c0392b",
+        "#6b4a2f",
+        "#d4a017"
+      ],
+      "expected": [
+        "red",
+        "red",
+        "brown",
+        "gold"
+      ],
+      "match": true
+    },
+    {
+      "value": 1000,
+      "names": [
+        "brown",
+        "black",
+        "red",
+        "gold"
+      ],
+      "colors": [
+        "#6b4a2f",
+        "#11131a",
+        "#c0392b",
+        "#d4a017"
+      ],
+      "expected": [
+        "brown",
+        "black",
+        "red",
+        "gold"
+      ],
+      "match": true
+    },
+    {
+      "value": 4700,
+      "names": [
+        "yellow",
+        "violet",
+        "red",
+        "gold"
+      ],
+      "colors": [
+        "#eab308",
+        "#7c3aed",
+        "#c0392b",
+        "#d4a017"
+      ],
+      "expected": [
+        "yellow",
+        "violet",
+        "red",
+        "gold"
+      ],
+      "match": true
+    },
+    {
+      "value": 10000,
+      "names": [
+        "brown",
+        "black",
+        "orange",
+        "gold"
+      ],
+      "colors": [
+        "#6b4a2f",
+        "#11131a",
+        "#d97706",
+        "#d4a017"
+      ],
+      "expected": [
+        "brown",
+        "black",
+        "orange",
+        "gold"
+      ],
+      "match": true
+    },
+    {
+      "value": 100000,
+      "names": [
+        "brown",
+        "black",
+        "yellow",
+        "gold"
+      ],
+      "colors": [
+        "#6b4a2f",
+        "#11131a",
+        "#eab308",
+        "#d4a017"
+      ],
+      "expected": [
+        "brown",
+        "black",
+        "yellow",
+        "gold"
+      ],
+      "match": true
+    },
+    {
+      "value": 1000000,
+      "names": [
+        "brown",
+        "black",
+        "green",
+        "gold"
+      ],
+      "colors": [
+        "#6b4a2f",
+        "#11131a",
+        "#16a34a",
+        "#d4a017"
+      ],
+      "expected": [
+        "brown",
+        "black",
+        "green",
+        "gold"
+      ],
+      "match": true
+    }
+  ],
+  "invalid": {
+    "occupied": {
+      "preview": [
+        {
+          "x": 50,
+          "y": 150,
+          "stroke": "#ff4d4f"
+        },
+        {
+          "x": 90,
+          "y": 150,
+          "stroke": "#ff4d4f"
+        }
+      ],
+      "report": {
+        "partId": "resistor-f420794b",
+        "valid": false,
+        "targetTopLeft": {
+          "x": 50,
+          "y": 140
+        },
+        "pins": [
+          {
+            "pinId": "lead1",
+            "anchor": {
+              "x": 50,
+              "y": 150
+            },
+            "hole": {
+              "x": 50,
+              "y": 150
+            },
+            "holePinId": "h3",
+            "printedLabel": {
+              "row": "h",
+              "column": 3,
+              "label": "h3"
+            },
+            "distance": 0
+          },
+          {
+            "pinId": "lead2",
+            "anchor": {
+              "x": 90,
+              "y": 150
+            },
+            "hole": {
+              "x": 90,
+              "y": 150
+            },
+            "holePinId": "h7",
+            "printedLabel": {
+              "row": "h",
+              "column": 7,
+              "label": "h7"
+            },
+            "distance": 0
+          }
+        ]
+      },
+      "wireCount": 0
+    },
+    "sameStrip": {
+      "preview": [
+        {
+          "x": 30,
+          "y": 70,
+          "stroke": "#ff4d4f"
+        },
+        {
+          "x": 30,
+          "y": 110,
+          "stroke": "#ff4d4f"
+        }
+      ],
+      "report": {
+        "partId": "resistor-62727f5f",
+        "valid": false,
+        "targetTopLeft": {
+          "x": 10,
+          "y": 80
+        },
+        "pins": [
+          {
+            "pinId": "lead1",
+            "anchor": {
+              "x": 30,
+              "y": 70
+            },
+            "hole": {
+              "x": 30,
+              "y": 70
+            },
+            "holePinId": "a1",
+            "printedLabel": {
+              "row": "a",
+              "column": 1,
+              "label": "a1"
+            },
+            "distance": 0
+          },
+          {
+            "pinId": "lead2",
+            "anchor": {
+              "x": 30,
+              "y": 110
+            },
+            "hole": {
+              "x": 30,
+              "y": 110
+            },
+            "holePinId": "e1",
+            "printedLabel": {
+              "row": "e",
+              "column": 1,
+              "label": "e1"
+            },
+            "distance": 0
+          }
+        ]
+      },
+      "wireCount": 0
+    },
+    "offBoard": {
+      "preview": [
+        {
+          "x": 470,
+          "y": 220,
+          "stroke": "#ff4d4f"
+        },
+        {
+          "x": 470,
+          "y": 220,
+          "stroke": "#ff4d4f"
+        }
+      ],
+      "report": {
+        "partId": "resistor-35d06fd0",
+        "valid": false,
+        "targetTopLeft": {
+          "x": 480,
+          "y": 390
+        },
+        "pins": [
+          {
+            "pinId": "lead1",
+            "anchor": {
+              "x": 480,
+              "y": 400
+            },
+            "hole": {
+              "x": 470,
+              "y": 220
+            },
+            "holePinId": "bottom-minus-45",
+            "printedLabel": null,
+            "distance": 180.27756377319946
+          },
+          {
+            "pinId": "lead2",
+            "anchor": {
+              "x": 520,
+              "y": 400
+            },
+            "hole": {
+              "x": 470,
+              "y": 220
+            },
+            "holePinId": "bottom-minus-45",
+            "printedLabel": null,
+            "distance": 186.81541692269406
+          }
+        ]
+      },
+      "wireCount": 0
+    }
+  },
+  "transform": {
+    "rotatedPins": [
+      {
+        "pinId": "lead1",
+        "label": "1",
+        "x": 70,
+        "y": 130
+      },
+      {
+        "pinId": "lead2",
+        "label": "2",
+        "x": 70,
+        "y": 170
+      }
+    ],
+    "rotatedHoleDistances": [
+      {
+        "hole": {
+          "x": 70,
+          "y": 130
+        },
+        "distance": 0
+      },
+      {
+        "hole": {
+          "x": 70,
+          "y": 170
+        },
+        "distance": 0
+      }
+    ],
+    "flippedPins": [
+      {
+        "pinId": "lead1",
+        "label": "1",
+        "x": 70,
+        "y": 170
+      },
+      {
+        "pinId": "lead2",
+        "label": "2",
+        "x": 70,
+        "y": 130
+      }
+    ],
+    "flippedHoleDistances": [
+      {
+        "hole": {
+          "x": 70,
+          "y": 170
+        },
+        "distance": 0
+      },
+      {
+        "hole": {
+          "x": 70,
+          "y": 130
+        },
+        "distance": 0
+      }
+    ],
+    "valueLabels": [
+      {
+        "text": "220 ohm",
+        "scaleX": 1.2,
+        "scaleY": 1.2
+      }
+    ],
+    "wireEndpointsBefore": [
+      {
+        "id": "wire-821ba5fd",
+        "from": {
+          "partId": "resistor-b4d219d1",
+          "pinId": "lead1",
+          "world": {
+            "x": 50,
+            "y": 150
+          }
+        },
+        "to": {
+          "partId": "breadboard-1a5f49da",
+          "pinId": "h3",
+          "world": {
+            "x": 50,
+            "y": 150
+          }
+        }
+      },
+      {
+        "id": "wire-5e7bbcb0",
+        "from": {
+          "partId": "resistor-b4d219d1",
+          "pinId": "lead2",
+          "world": {
+            "x": 90,
+            "y": 150
+          }
+        },
+        "to": {
+          "partId": "breadboard-1a5f49da",
+          "pinId": "h7",
+          "world": {
+            "x": 90,
+            "y": 150
+          }
+        }
+      }
+    ],
+    "wireEndpointsAfter": [
+      {
+        "id": "wire-821ba5fd",
+        "from": {
+          "partId": "resistor-b4d219d1",
+          "pinId": "lead1",
+          "world": {
+            "x": 70,
+            "y": 170
+          }
+        },
+        "to": {
+          "partId": "breadboard-1a5f49da",
+          "pinId": "h3",
+          "world": {
+            "x": 50,
+            "y": 150
+          }
+        }
+      },
+      {
+        "id": "wire-5e7bbcb0",
+        "from": {
+          "partId": "resistor-b4d219d1",
+          "pinId": "lead2",
+          "world": {
+            "x": 70,
+            "y": 130
+          }
+        },
+        "to": {
+          "partId": "breadboard-1a5f49da",
+          "pinId": "h7",
+          "world": {
+            "x": 90,
+            "y": 150
+          }
+        }
+      }
+    ]
+  },
+  "screenshots": {
+    "zoom100": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/resistor/resistor-100.png",
+    "zoom400": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/resistor/resistor-400.png"
+  },
+  "consoleErrors": [],
+  "checks": {
+    "singleSourceSpan": true,
+    "oldPinIdsPreserved": true,
+    "spanIsFourPitches": true,
+    "fiveDrops": true,
+    "greenValidPreview": true,
+    "bodyClearsNeighborHoles": true,
+    "bandTable": true,
+    "occupiedRejected": true,
+    "sameStripRejected": true,
+    "offBoardRejected": true,
+    "rotationKeepsAnchors": true,
+    "flipKeepsAnchors": true,
+    "labelsReadable": true,
+    "wireFollowsPins": true,
+    "consoleErrors": true
+  },
+  "pass": true
+}

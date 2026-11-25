@@ -1,0 +1,48 @@
+{
+  "pass": true,
+  "checks": {
+    "haloPass": true,
+    "flatPass": true,
+    "labelPass": true,
+    "anchorGeometryPass": true,
+    "contrastPass": true,
+    "pinDiff": 0,
+    "interactionPass": true,
+    "sourceChecks": {
+      "noLegacyTokens": true,
+      "noHeavyShadow": true,
+      "haloRadial": true,
+      "lightRing": true,
+      "noLocalLabels": true
+    },
+    "consoleErrors": []
+  },
+  "screenshots": [
+    "../artifacts/led-redesign/after/blue-unlit-dark-100.png",
+    "../artifacts/led-redesign/after/blue-lit-dark-100.png",
+    "../artifacts/led-redesign/after/blue-unlit-dark-400.png",
+    "../artifacts/led-redesign/after/blue-lit-dark-400.png",
+    "../artifacts/led-redesign/after/blue-lit-dark-rotated-flipped-400.png",
+    "../artifacts/led-redesign/after/dark-reference-sheet.png",
+    "../artifacts/led-redesign/after/dark-grayscale.png",
+    "../artifacts/led-redesign/after/breadboard-dark-lit.png",
+    "../artifacts/led-redesign/after/breadboard-dark-unlit.png",
+    "../artifacts/led-redesign/after/dark-anchor-idle.png",
+    "../artifacts/led-redesign/after/dark-anchor-hover.png",
+    "../artifacts/led-redesign/after/dark-anchor-connected.png",
+    "../artifacts/led-redesign/after/dark-anchor-selected.png",
+    "../artifacts/led-redesign/after/blue-unlit-light-100.png",
+    "../artifacts/led-redesign/after/blue-lit-light-100.png",
+    "../artifacts/led-redesign/after/blue-unlit-light-400.png",
+    "../artifacts/led-redesign/after/blue-lit-light-400.png",
+    "../artifacts/led-redesign/after/blue-lit-light-rotated-flipped-400.png",
+    "../artifacts/led-redesign/after/light-reference-sheet.png",
+    "../artifacts/led-redesign/after/light-grayscale.png",
+    "../artifacts/led-redesign/after/breadboard-light-lit.png",
+    "../artifacts/led-redesign/after/breadboard-light-unlit.png",
+    "../artifacts/led-redesign/after/light-anchor-idle.png",
+    "../artifacts/led-redesign/after/light-anchor-hover.png",
+    "../artifacts/led-redesign/after/light-anchor-connected.png",
+    "../artifacts/led-redesign/after/light-anchor-selected.png"
+  ]
+}

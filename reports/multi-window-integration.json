@@ -1,0 +1,38 @@
+{
+  "archive": "resources/app.asar",
+  "output": "out/app-multi-window.asar",
+  "patch": "scripts/patch-multi-window.js",
+  "verify": "scripts/verify-multi-window.js",
+  "target": "out/main/index.js",
+  "install": true,
+  "backup": "/tmp/vc-app-before-multi-window-1795582232448.asar",
+  "unpacked_files": 5768,
+  "unpacked_dirs": 409,
+  "original_archive_sha256": "50290c037027c1544f2e9d675688514db5f1ae086a97963a4f775a76bcf10b58",
+  "output_prefix": {
+    "field4": 1488764,
+    "field8": 1488760,
+    "jsonLength": 1488755,
+    "padding": 1
+  },
+  "prefix_ok": true,
+  "patched_sha256": "6b2016551729bda0155130b069bc9cb71014eb7956a7e6641a0665ac79caffba",
+  "output_sha256": "50290c037027c1544f2e9d675688514db5f1ae086a97963a4f775a76bcf10b58",
+  "changed_files": [
+    "out/main/index.js"
+  ],
+  "missing_files": [],
+  "extra_files": [],
+  "pack": {
+    "fileCount": 5768,
+    "dirCount": 409,
+    "headerBytes": 1488772,
+    "archiveBytes": 82414959
+  },
+  "packed_files": 5768,
+  "packed_dirs": 409,
+  "packed_compare_ok": true,
+  "packed_hash_ok": true,
+  "verify_pass": true,
+  "pass": true
+}

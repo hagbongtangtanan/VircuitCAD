@@ -1,0 +1,14 @@
+{
+  "before": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/led-appearance/after/after-connected.png",
+  "after": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/led-appearance/after/after-selected.png",
+  "diff": {
+    "sameSize": true,
+    "width": 1440,
+    "height": 873,
+    "changedPixels": 63455,
+    "maxChannelDelta": 239,
+    "meanChannelDelta": 0.656715
+  },
+  "pass": false,
+  "consoleErrors": []
+}

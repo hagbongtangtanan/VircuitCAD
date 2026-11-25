@@ -1,0 +1,35 @@
+{
+  "pass": true,
+  "report": [
+    {
+      "target": "recovered-src/out/renderer/assets/index-N0START1.js",
+      "changed": true,
+      "verification": {
+        "motorSet": 1,
+        "gatedSelector": 1,
+        "overlaySnapshot": 1,
+        "elapsedSelectorTotal": 1
+      }
+    },
+    {
+      "target": "recovered-src/out/renderer/assets/index-BU2QbNS1.js",
+      "changed": true,
+      "verification": {
+        "motorSet": 1,
+        "gatedSelector": 1,
+        "overlaySnapshot": 1,
+        "elapsedSelectorTotal": 1
+      }
+    },
+    {
+      "target": "index-BU2QbNS1.js",
+      "changed": true,
+      "verification": {
+        "motorSet": 1,
+        "gatedSelector": 1,
+        "overlaySnapshot": 1,
+        "elapsedSelectorTotal": 1
+      }
+    }
+  ]
+}

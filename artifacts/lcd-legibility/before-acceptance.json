@@ -1,0 +1,772 @@
+{
+  "prefix": "before",
+  "ids": {
+    "parallelId": "lcd-16x2-63e3c9f3",
+    "i2cId": "lcd-16x2-i2c-3c74b95b"
+  },
+  "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-100.png",
+  "screenshots": {
+    "main": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-100.png",
+    "emptyRow": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-empty-row.png",
+    "green": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-green.png",
+    "backlightOff": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-backlight-off.png",
+    "lowContrast": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-low-contrast.png",
+    "lowZoom": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-low-zoom.png",
+    "flipHorizontal": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-flip-horizontal.png",
+    "flipVertical": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/lcd-legibility/before-flip-vertical.png"
+  },
+  "metrics": {
+    "main": {
+      "lcd-16x2-56ae608c": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-47bb3606": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      },
+      "lcd-16x2-63e3c9f3": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-3c74b95b": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      }
+    },
+    "emptyRow": {
+      "lcd-16x2-56ae608c": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-47bb3606": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      },
+      "lcd-16x2-63e3c9f3": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          ""
+        ],
+        "litPixels": 240,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-3c74b95b": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          ""
+        ],
+        "litPixels": 240,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      }
+    },
+    "green": {
+      "lcd-16x2-56ae608c": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-47bb3606": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      },
+      "lcd-16x2-63e3c9f3": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "green",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-3c74b95b": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "green",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      }
+    },
+    "backlightOff": {
+      "lcd-16x2-56ae608c": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-47bb3606": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      },
+      "lcd-16x2-63e3c9f3": {
+        "mode": "pixels",
+        "backlight": false,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-3c74b95b": {
+        "mode": "pixels",
+        "backlight": false,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      }
+    },
+    "lowContrast": {
+      "lcd-16x2-56ae608c": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-47bb3606": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      },
+      "lcd-16x2-63e3c9f3": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.2,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-3c74b95b": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.2,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      }
+    },
+    "lowZoom": {
+      "lcd-16x2-56ae608c": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-47bb3606": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      },
+      "lcd-16x2-63e3c9f3": {
+        "mode": "blocks",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 0,
+        "drawCalls": 159,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-3c74b95b": {
+        "mode": "blocks",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 0,
+        "drawCalls": 159,
+        "pixelSize": 0.48875
+      }
+    },
+    "flipHorizontal": {
+      "lcd-16x2-56ae608c": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-47bb3606": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      },
+      "lcd-16x2-63e3c9f3": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-3c74b95b": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      }
+    },
+    "flipVertical": {
+      "lcd-16x2-56ae608c": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-47bb3606": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      },
+      "lcd-16x2-63e3c9f3": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.7887500000000001
+      },
+      "lcd-16x2-i2c-3c74b95b": {
+        "mode": "pixels",
+        "backlight": true,
+        "theme": "blue",
+        "contrast": 0.85,
+        "lines": [
+          "Hello, Virtcuit!",
+          "LCD Tutorial"
+        ],
+        "litPixels": 312,
+        "drawCalls": 1280,
+        "pixelSize": 0.48875
+      }
+    }
+  },
+  "pins": {
+    "rows": [
+      {
+        "type": "lcd-16x2",
+        "pinId": "vss",
+        "before": {
+          "x": 308,
+          "y": 386
+        },
+        "after": {
+          "x": 308,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "vdd",
+        "before": {
+          "x": 317,
+          "y": 386
+        },
+        "after": {
+          "x": 317,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "v0",
+        "before": {
+          "x": 326,
+          "y": 386
+        },
+        "after": {
+          "x": 326,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "rs",
+        "before": {
+          "x": 335,
+          "y": 386
+        },
+        "after": {
+          "x": 335,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "rw",
+        "before": {
+          "x": 344,
+          "y": 386
+        },
+        "after": {
+          "x": 344,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "e",
+        "before": {
+          "x": 353,
+          "y": 386
+        },
+        "after": {
+          "x": 353,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "d0",
+        "before": {
+          "x": 362,
+          "y": 386
+        },
+        "after": {
+          "x": 362,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "d1",
+        "before": {
+          "x": 371,
+          "y": 386
+        },
+        "after": {
+          "x": 371,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "d2",
+        "before": {
+          "x": 380,
+          "y": 386
+        },
+        "after": {
+          "x": 380,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "d3",
+        "before": {
+          "x": 389,
+          "y": 386
+        },
+        "after": {
+          "x": 389,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "d4",
+        "before": {
+          "x": 398,
+          "y": 386
+        },
+        "after": {
+          "x": 398,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "d5",
+        "before": {
+          "x": 407,
+          "y": 386
+        },
+        "after": {
+          "x": 407,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "d6",
+        "before": {
+          "x": 416,
+          "y": 386
+        },
+        "after": {
+          "x": 416,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "d7",
+        "before": {
+          "x": 425,
+          "y": 386
+        },
+        "after": {
+          "x": 425,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "ledPlus",
+        "before": {
+          "x": 436,
+          "y": 386
+        },
+        "after": {
+          "x": 436,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2",
+        "pinId": "ledMinus",
+        "before": {
+          "x": 446,
+          "y": 386
+        },
+        "after": {
+          "x": 446,
+          "y": 386
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2-i2c",
+        "pinId": "gnd",
+        "before": {
+          "x": 515,
+          "y": 390
+        },
+        "after": {
+          "x": 515,
+          "y": 390
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2-i2c",
+        "pinId": "vcc",
+        "before": {
+          "x": 540,
+          "y": 390
+        },
+        "after": {
+          "x": 540,
+          "y": 390
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2-i2c",
+        "pinId": "sda",
+        "before": {
+          "x": 565,
+          "y": 390
+        },
+        "after": {
+          "x": 565,
+          "y": 390
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      },
+      {
+        "type": "lcd-16x2-i2c",
+        "pinId": "scl",
+        "before": {
+          "x": 590,
+          "y": 390
+        },
+        "after": {
+          "x": 590,
+          "y": 390
+        },
+        "dx": 0,
+        "dy": 0,
+        "difference": 0
+      }
+    ],
+    "maxDifference": 0
+  },
+  "consoleErrors": [],
+  "checks": {
+    "fillRatio": false,
+    "margins": false,
+    "contrastRatio": false,
+    "unlitOpacity": false,
+    "unlitHiddenAtLowContrast": false,
+    "lowZoomBlocks": true,
+    "greenTheme": true,
+    "backlightOff": true,
+    "flipReadable": true,
+    "pins": true,
+    "consoleErrors": true
+  },
+  "pass": true
+}

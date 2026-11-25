@@ -1,0 +1,19 @@
+{
+  "label": "tierA-seven",
+  "sample": "seven-segment-counter.vcc",
+  "durationMs": 6000,
+  "settleMs": 1200,
+  "metrics": {
+    "domParser": 0,
+    "ctxOps": 59170,
+    "longTasks": 0,
+    "frameCount": 359,
+    "frameP50": 16.699999999982538,
+    "frameP95": 16.79999999998836,
+    "frameMax": 33.29999999998836,
+    "frameMean": 16.722562674094693,
+    "over16": 159,
+    "over33": 0
+  },
+  "runtimeExceptions": []
+}

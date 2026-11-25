@@ -1,0 +1,534 @@
+{
+  "dark": [
+    {
+      "token": "--cb-led-blue-core",
+      "before": "—",
+      "after": "#a8ccff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-halo",
+      "before": "—",
+      "after": "#74b4ff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-highlight",
+      "before": "—",
+      "after": "#dbe9ff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-lit",
+      "before": "—",
+      "after": "#63a8ff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-rim",
+      "before": "—",
+      "after": "#284a80",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-unlit",
+      "before": "—",
+      "after": "#3a63a8",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-connected",
+      "before": "—",
+      "after": "#1d4ed8",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-core-opacity",
+      "before": "—",
+      "after": "0.9",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-flange",
+      "before": "—",
+      "after": "#5b6674",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-core",
+      "before": "—",
+      "after": "#9df0ad",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-halo",
+      "before": "—",
+      "after": "#67e585",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-highlight",
+      "before": "—",
+      "after": "#d7f7de",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-lit",
+      "before": "—",
+      "after": "#5fe07a",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-rim",
+      "before": "—",
+      "after": "#285b35",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-unlit",
+      "before": "—",
+      "after": "#397a48",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-halo-opacity",
+      "before": "—",
+      "after": "0.45",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-highlight-opacity",
+      "before": "—",
+      "after": "0.36",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-hover",
+      "before": "—",
+      "after": "#6fb3ff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-label-bg",
+      "before": "—",
+      "after": "#0a1627",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-label-stroke",
+      "before": "—",
+      "after": "#334155",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-label-text",
+      "before": "—",
+      "after": "#edf5ff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-leg",
+      "before": "—",
+      "after": "#5b6674",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-pin",
+      "before": "—",
+      "after": "#b7d2ef",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-core",
+      "before": "—",
+      "after": "#ff9ba0",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-halo",
+      "before": "—",
+      "after": "#ff6b70",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-highlight",
+      "before": "—",
+      "after": "#ffd0d4",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-lit",
+      "before": "—",
+      "after": "#ff5d63",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-rim",
+      "before": "—",
+      "after": "#70282f",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-unlit",
+      "before": "—",
+      "after": "#a3454d",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-ring-opacity",
+      "before": "—",
+      "after": "0",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-selected",
+      "before": "—",
+      "after": "#ffc928",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-surface",
+      "before": "—",
+      "after": "#0a1627",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-core",
+      "before": "—",
+      "after": "#ffffff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-halo",
+      "before": "—",
+      "after": "#dbeafe",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-highlight",
+      "before": "—",
+      "after": "#ffffff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-lit",
+      "before": "—",
+      "after": "#f8fbff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-rim",
+      "before": "—",
+      "after": "#6b7686",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-unlit",
+      "before": "—",
+      "after": "#aab4c2",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-core",
+      "before": "—",
+      "after": "#ffe38a",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-halo",
+      "before": "—",
+      "after": "#ffdb66",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-highlight",
+      "before": "—",
+      "after": "#fff0bd",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-lit",
+      "before": "—",
+      "after": "#ffd54d",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-rim",
+      "before": "—",
+      "after": "#6b521b",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-unlit",
+      "before": "—",
+      "after": "#a07a25",
+      "changed": true
+    }
+  ],
+  "light": [
+    {
+      "token": "--cb-led-blue-core",
+      "before": "—",
+      "after": "#a8c9ff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-halo",
+      "before": "—",
+      "after": "#1e6fd9",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-highlight",
+      "before": "—",
+      "after": "#dbeafe",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-lit",
+      "before": "—",
+      "after": "#1e6fd9",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-rim",
+      "before": "—",
+      "after": "#0f3f91",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-blue-unlit",
+      "before": "—",
+      "after": "#1558b3",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-connected",
+      "before": "—",
+      "after": "#1d4ed8",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-core-opacity",
+      "before": "—",
+      "after": "0.85",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-flange",
+      "before": "—",
+      "after": "#5b6674",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-core",
+      "before": "—",
+      "after": "#9be0a8",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-halo",
+      "before": "—",
+      "after": "#2e9b3e",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-highlight",
+      "before": "—",
+      "after": "#d8f5df",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-lit",
+      "before": "—",
+      "after": "#2e9b3e",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-rim",
+      "before": "—",
+      "after": "#165c2a",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-green-unlit",
+      "before": "—",
+      "after": "#1e7e34",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-halo-opacity",
+      "before": "—",
+      "after": "0.35",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-highlight-opacity",
+      "before": "—",
+      "after": "0.32",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-hover",
+      "before": "—",
+      "after": "#0e7490",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-label-bg",
+      "before": "—",
+      "after": "#ffffff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-label-stroke",
+      "before": "—",
+      "after": "#94a3b8",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-label-text",
+      "before": "—",
+      "after": "#1f2937",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-leg",
+      "before": "—",
+      "after": "#5b6674",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-pin",
+      "before": "—",
+      "after": "#4b5563",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-core",
+      "before": "—",
+      "after": "#ff9d9d",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-halo",
+      "before": "—",
+      "after": "#d32f2f",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-highlight",
+      "before": "—",
+      "after": "#ffd9d9",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-lit",
+      "before": "—",
+      "after": "#d32f2f",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-rim",
+      "before": "—",
+      "after": "#7f1d1a",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-red-unlit",
+      "before": "—",
+      "after": "#b3261e",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-ring-opacity",
+      "before": "—",
+      "after": "0.6",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-selected",
+      "before": "—",
+      "after": "#8a5a00",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-surface",
+      "before": "—",
+      "after": "#ffffff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-core",
+      "before": "—",
+      "after": "#ffffff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-halo",
+      "before": "—",
+      "after": "#5b6674",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-highlight",
+      "before": "—",
+      "after": "#ffffff",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-lit",
+      "before": "—",
+      "after": "#f5f5f5",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-rim",
+      "before": "—",
+      "after": "#5b6674",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-white-unlit",
+      "before": "—",
+      "after": "#d7dbe3",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-core",
+      "before": "—",
+      "after": "#ffd45c",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-halo",
+      "before": "—",
+      "after": "#b77900",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-highlight",
+      "before": "—",
+      "after": "#ffedb8",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-lit",
+      "before": "—",
+      "after": "#e0a800",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-rim",
+      "before": "—",
+      "after": "#6b4700",
+      "changed": true
+    },
+    {
+      "token": "--cb-led-yellow-unlit",
+      "before": "—",
+      "after": "#b77900",
+      "changed": true
+    }
+  ]
+}

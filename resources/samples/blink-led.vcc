@@ -1,0 +1,178 @@
+{
+  "format": "vircuit-project",
+  "version": 2,
+  "circuit": {
+    "version": 1,
+    "parts": [
+      {
+        "id": "uno",
+        "type": "arduino-uno",
+        "position": {
+          "x": 100,
+          "y": 120
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "bb1",
+        "type": "breadboard",
+        "position": {
+          "x": 420,
+          "y": 80
+        },
+        "rotation": 0,
+        "props": {}
+      },
+      {
+        "id": "r1",
+        "type": "resistor",
+        "position": {
+          "x": 540,
+          "y": 170
+        },
+        "rotation": 0,
+        "props": {
+          "resistanceOhms": 220
+        }
+      },
+      {
+        "id": "led1",
+        "type": "led",
+        "position": {
+          "x": 590,
+          "y": 100
+        },
+        "rotation": 0,
+        "props": {
+          "color": "red"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "partId": "uno",
+          "pinId": "D13"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "a10"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 378,
+            "y": 96
+          },
+          {
+            "x": 540,
+            "y": 96
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "from": {
+          "partId": "r1",
+          "pinId": "lead1"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e10"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "partId": "r1",
+          "pinId": "lead2"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "e14"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "partId": "led1",
+          "pinId": "anode"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "d14"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 580,
+            "y": 140
+          },
+          {
+            "x": 580,
+            "y": 180
+          }
+        ]
+      },
+      {
+        "id": "w5",
+        "from": {
+          "partId": "led1",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "top-minus-17"
+        },
+        "color": "#6fb3ff",
+        "waypoints": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "partId": "uno",
+          "pinId": "GND"
+        },
+        "to": {
+          "partId": "bb1",
+          "pinId": "top-minus-1"
+        },
+        "color": "#6fb3ff",
+        "waypoints": [
+          {
+            "x": 158,
+            "y": 340
+          },
+          {
+            "x": 420,
+            "y": 340
+          },
+          {
+            "x": 420,
+            "y": 120
+          },
+          {
+            "x": 450,
+            "y": 120
+          }
+        ]
+      }
+    ]
+  },
+  "sketch": "// Blink: D13 -> 220 ohm -> red LED -> GND\nint ledPin = 13;\n\nvoid setup() {\n  pinMode(ledPin, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(ledPin, HIGH);\n  Serial.println(\"LED on\");\n  delay(500);\n  digitalWrite(ledPin, LOW);\n  Serial.println(\"LED off\");\n  delay(500);\n}\n",
+  "metadata": {
+    "created_at": "2026-10-23T00:00:00.000Z",
+    "app_version": "0.5.0-beta.2"
+  },
+  "viewport": {
+    "scale": 1,
+    "offsetX": 60,
+    "offsetY": 60
+  }
+}

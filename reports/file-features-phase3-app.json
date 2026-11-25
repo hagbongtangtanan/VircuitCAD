@@ -1,0 +1,44 @@
+{
+  "runtime_dir": "out/patched/runtime",
+  "counts": {
+    "PASS": 5
+  },
+  "results": [
+    {
+      "id": "R1",
+      "check": "the patched build starts and renders the File menu",
+      "status": "PASS",
+      "evidence": "ui_ready=true cdp_page=file:///home/kheil_gwapo/projects/OldVircuitCAD/out/patched/runtime/out/renderer/index.html",
+      "severity": "none"
+    },
+    {
+      "id": "R2",
+      "check": "an edit marks the document dirty",
+      "status": "PASS",
+      "evidence": "renamed=true dirty_dot=true title=\"Guarded Project\"",
+      "severity": "none"
+    },
+    {
+      "id": "R3",
+      "check": "New is blocked while the unsaved-changes confirmation is pending",
+      "status": "PASS",
+      "evidence": "clicked=true title_after=\"Guarded Project\" dirty_after=true window_title=\"• Guarded Project — VircuitCAD\"",
+      "severity": "none"
+    },
+    {
+      "id": "R4",
+      "check": "the renderer stays responsive while the confirmation is open",
+      "status": "PASS",
+      "evidence": "ready_state=complete",
+      "severity": "none"
+    },
+    {
+      "id": "R5",
+      "check": "the patched renderer raised no uncaught exceptions",
+      "status": "PASS",
+      "evidence": "no exceptions",
+      "severity": "none"
+    }
+  ],
+  "stderr": "\nDevTools listening on ws://127.0.0.1:9333/devtools/browser/2a34d965-27d1-4a81-8807-02e9fa119c23\n"
+}

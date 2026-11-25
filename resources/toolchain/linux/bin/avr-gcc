@@ -1,0 +1,6 @@
+#!/bin/sh
+TOOLCHAIN_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../root" && pwd)"
+exec "$TOOLCHAIN_ROOT/usr/bin/avr-gcc" \
+  -B"$TOOLCHAIN_ROOT/usr/lib/gcc/avr/14.3.0/" \
+  -I"$TOOLCHAIN_ROOT/usr/lib/avr/include" \
+  "$@"

@@ -1,0 +1,379 @@
+{
+  "main_bundle": "work/app/out/main/index.js",
+  "temp_dir": "/tmp/vcircuitcad-files-14hpia",
+  "counts": {
+    "PASS": 29,
+    "FAIL": 14,
+    "NOT PRESENT": 3
+  },
+  "results": [
+    {
+      "id": "A1",
+      "section": "A. data safety",
+      "check": "save writes a valid project file",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "saved=/tmp/vcircuitcad-files-14hpia/a1.vcc format=vircuit-project version=2"
+    },
+    {
+      "id": "A1",
+      "section": "A. data safety",
+      "check": "save is atomic (target survives a crash during the write)",
+      "status": "FAIL",
+      "severity": "Critical",
+      "evidence": "rejected=true target_intact=false bytes_before=1121 bytes_after=20"
+    },
+    {
+      "id": "A1",
+      "section": "A. data safety",
+      "check": "a locked file is retried before the save fails",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "rename_attempts=0 saved=/tmp/vcircuitcad-files-14hpia/a1-retry.vcc error=null"
+    },
+    {
+      "id": "A1",
+      "section": "A. data safety",
+      "check": "a rename failure is reported with the file name and keeps the old file",
+      "status": "FAIL",
+      "severity": "High",
+      "evidence": "message=null old_file_intact=true"
+    },
+    {
+      "id": "A1",
+      "section": "A. data safety",
+      "check": "no temporary files are left behind",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "after_success=none after_failure=none"
+    },
+    {
+      "id": "A2",
+      "section": "A. data safety",
+      "check": "the backup keeps exactly one previous generation",
+      "status": "FAIL",
+      "severity": "Medium",
+      "evidence": "backup_is_previous_generation=false current_is_newest=true"
+    },
+    {
+      "id": "A2",
+      "section": "A. data safety",
+      "check": "a backup of the previous version is kept",
+      "status": "FAIL",
+      "severity": "High",
+      "evidence": "backup_exists=false backup_matches_previous=false"
+    },
+    {
+      "id": "A3",
+      "section": "A. data safety",
+      "check": "a failed write reports the file name and keeps the document dirty",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "error=\"ENOENT: no such file or directory, open '/tmp/vcircuitcad-files-14hpia/a3/missing-dir/a3.vcc'\" mentions_file=true"
+    },
+    {
+      "id": "A3",
+      "section": "A. data safety",
+      "check": "a failed write is never silent (handler rejects)",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "handler_rejected=true"
+    },
+    {
+      "id": "A4",
+      "section": "A. data safety",
+      "check": "corrupt, empty, wrong-type and oversized files are rejected",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "corrupt.vcc:rejected empty.vcc:rejected wrong.vcc:rejected huge.vcc:rejected"
+    },
+    {
+      "id": "A4",
+      "section": "A. data safety",
+      "check": "an oversized file is rejected before it is read into memory",
+      "status": "FAIL",
+      "severity": "Medium",
+      "evidence": "bytes_read_before_rejection=5242880 (cap is 4194304)"
+    },
+    {
+      "id": "A5",
+      "section": "A. data safety",
+      "check": "the window close event asks the renderer before closing",
+      "status": "FAIL",
+      "severity": "Critical",
+      "evidence": "main window has a \"close\" listener: false"
+    },
+    {
+      "id": "A5",
+      "section": "A. data safety",
+      "check": "the app guards before-quit",
+      "status": "FAIL",
+      "severity": "Critical",
+      "evidence": "app \"before-quit\" handler registered: false"
+    },
+    {
+      "id": "A5",
+      "section": "A. data safety",
+      "check": "a discard confirmation channel exists for in-app actions",
+      "status": "FAIL",
+      "severity": "Critical",
+      "evidence": "ipc channel file:confirm-discard registered: false"
+    },
+    {
+      "id": "A5",
+      "section": "A. data safety",
+      "check": "quitting the app is blocked until the renderer answers",
+      "status": "FAIL",
+      "severity": "Critical",
+      "evidence": "no before-quit handler"
+    },
+    {
+      "id": "A5",
+      "section": "A. data safety",
+      "check": "closing the window is blocked until the renderer answers",
+      "status": "FAIL",
+      "severity": "Critical",
+      "evidence": "file:close-decision is not registered"
+    },
+    {
+      "id": "A5",
+      "section": "A. data safety",
+      "check": "the renderer asks before New/Open/Sample discards the document",
+      "status": "FAIL",
+      "severity": "Critical",
+      "evidence": "renderer has a discard guard: false; unguarded actions: newProject,open,openSample,loadStarter,receiveOpened"
+    },
+    {
+      "id": "A6",
+      "section": "A. data safety",
+      "check": "the dirty flag is derived from the document, sketch and name only",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "computeDirty() mentions viewport=false selection=false"
+    },
+    {
+      "id": "A6",
+      "section": "A. data safety",
+      "check": "the dirty flag is cleared only after a successful save",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "dirty:false assignments=2 markSaved() calls=6"
+    },
+    {
+      "id": "A7",
+      "section": "A. data safety",
+      "check": "runtime damage state is not part of the saved document",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "saved keys=format,version,metadata,viewport,name,circuit,sketch forbidden_found=none"
+    },
+    {
+      "id": "B8",
+      "section": "B. compatibility",
+      "check": "version 1 files still load",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "loaded version=1"
+    },
+    {
+      "id": "B8",
+      "section": "B. compatibility",
+      "check": "a newer version is rejected instead of being downgraded",
+      "status": "PASS",
+      "severity": "Low",
+      "evidence": "message=\"This is not a VircuitCAD project: version — Invalid input: expected 2\""
+    },
+    {
+      "id": "B9",
+      "section": "B. compatibility",
+      "check": "unknown fields survive a load/save round trip",
+      "status": "FAIL",
+      "severity": "Medium",
+      "evidence": "message=\"This is not a VircuitCAD project:  — Unrecognized key: \\\"futureField\\\"\""
+    },
+    {
+      "id": "B10",
+      "section": "B. compatibility",
+      "check": "every bundled sample round-trips with 0 differences",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "samples=4 differences=0 "
+    },
+    {
+      "id": "C11",
+      "section": "C. behaviour",
+      "check": "save without a path asks for a location and enforces the extension",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "dialog_shown=true defaultPath=Harness.vcc saved=/tmp/vcircuitcad-files-14hpia/c11.vcc"
+    },
+    {
+      "id": "C11",
+      "section": "C. behaviour",
+      "check": "the default file name follows the project name",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "defaultPath=My-Circuit-2.vcc"
+    },
+    {
+      "id": "C11",
+      "section": "C. behaviour",
+      "check": "a renderer-supplied path outside the approved set is not written directly",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "dialog_shown=true saved=/tmp/vcircuitcad-files-14hpia/c11c.vcc"
+    },
+    {
+      "id": "C12",
+      "section": "C. behaviour",
+      "check": "samples are listed and opened read-only by the main process",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "samples=4 opened=/home/kheil_gwapo/projects/OldVircuitCAD/resources/samples/blink-led.vcc"
+    },
+    {
+      "id": "C12",
+      "section": "C. behaviour",
+      "check": "the renderer clears the path after opening a sample",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "renderer openSample() sets path:null = true (work/readable/.../index-BU2QbNS1.js)"
+    },
+    {
+      "id": "C13",
+      "section": "C. behaviour",
+      "check": "a recent-files list exists",
+      "status": "NOT PRESENT",
+      "severity": "Low",
+      "evidence": "renderer mentions a recent-files list: false"
+    },
+    {
+      "id": "C14",
+      "section": "C. behaviour",
+      "check": "autosave or crash recovery exists",
+      "status": "NOT PRESENT",
+      "severity": "Medium",
+      "evidence": "renderer mentions autosave/recovery: false"
+    },
+    {
+      "id": "C15",
+      "section": "C. behaviour",
+      "check": "unicode and spaces in paths are handled",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "saved=/tmp/vcircuitcad-files-14hpia/My Circuits/Circuit Ω.vcc readable=true"
+    },
+    {
+      "id": "C15",
+      "section": "C. behaviour",
+      "check": "a path that is too long fails with a clear message",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "message=\"ENAMETOOLONG: name too long, open '/tmp/vcircuitcad-files-14hpia/nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.vcc'\""
+    },
+    {
+      "id": "C16",
+      "section": "C. behaviour",
+      "check": "opening the same file from a second instance is guarded",
+      "status": "FAIL",
+      "severity": "High",
+      "evidence": "second-instance handler=true file_delivered_to_renderer=true discard_guard_available=false"
+    },
+    {
+      "id": "D17",
+      "section": "D. security",
+      "check": "the browser window is isolated",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "contextIsolation=true nodeIntegration=false sandbox=true"
+    },
+    {
+      "id": "D17",
+      "section": "D. security",
+      "check": "non-string and relative save paths are rejected by the schema",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "rejected_number=true rejected_object=true"
+    },
+    {
+      "id": "D17",
+      "section": "D. security",
+      "check": "the renderer cannot choose an arbitrary extension",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "saved=/tmp/vcircuitcad-files-14hpia/evil.sh.vcc"
+    },
+    {
+      "id": "D18",
+      "section": "D. security",
+      "check": "__proto__ and constructor keys are rejected",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "message=\"This is not a VircuitCAD project:  — Unrecognized keys: \\\"__proto__\\\", \\\"constructor\\\"\" prototype_polluted=false"
+    },
+    {
+      "id": "D18",
+      "section": "D. security",
+      "check": "NaN and Infinity coordinates are rejected",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "nan_rejected=true infinity_rejected=true"
+    },
+    {
+      "id": "D18",
+      "section": "D. security",
+      "check": "duplicate part ids and dangling wires are reported",
+      "status": "FAIL",
+      "severity": "Medium",
+      "evidence": "message=null (duplicate ids and dangling wires are accepted silently)"
+    },
+    {
+      "id": "E19",
+      "section": "E. exports",
+      "check": "a PNG export writes a decodable file",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "saved=/tmp/vcircuitcad-files-14hpia/e19.png png_signature=true bytes=70"
+    },
+    {
+      "id": "E19",
+      "section": "E. exports",
+      "check": "a non-PNG payload is rejected with an error",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "message=\"The image data is not a PNG.\""
+    },
+    {
+      "id": "E19",
+      "section": "E. exports",
+      "check": "a non-PDF payload is rejected with an error",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "message=\"[\\n  {\\n    \\\"origin\\\": \\\"string\\\",\\n    \\\"code\\\": \\\"too_small\\\",\\n    \\\"minimum\\\": 32,\\n    \\\"inclusive\\\": true,\\n    \\\"path\\\": [\\n      \\\"data\\\"\\n    ],\\n    \\\"message\\\": \\\"Too small: expected string to have >=32 characters\\\"\\n  }\\n]\""
+    },
+    {
+      "id": "E19",
+      "section": "E. exports",
+      "check": "sketch and HEX exports are written",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "sketch=/tmp/vcircuitcad-files-14hpia/e19.ino hex=/tmp/vcircuitcad-files-14hpia/e19.hex"
+    },
+    {
+      "id": "E19",
+      "section": "E. exports",
+      "check": "an invalid HEX payload is rejected",
+      "status": "PASS",
+      "severity": "none",
+      "evidence": "message=\"There is no compiled HEX to export.\""
+    },
+    {
+      "id": "E19",
+      "section": "E. exports",
+      "check": "SVG, netlist and BOM exports exist",
+      "status": "NOT PRESENT",
+      "severity": "Low",
+      "evidence": "svg=false netlist=false bom=false"
+    }
+  ]
+}

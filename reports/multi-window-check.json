@@ -1,0 +1,36 @@
+{
+  "app": "out/app-multi-window.asar",
+  "project": "/tmp/vc-multi-window-check-Ia0nQL/opened-project.vcc",
+  "second_instance_exit": 0,
+  "before": {
+    "pages": 1,
+    "opened_toast": false,
+    "zoom": "100%"
+  },
+  "windows": [
+    {
+      "id": "2E7C4A04E723982292B5340D3DA656F8",
+      "opened_toast": true,
+      "zoom": "100%",
+      "hasCanvas": true
+    },
+    {
+      "id": "D6527263DAD1F892517C4E6D038406A7",
+      "opened_toast": false,
+      "zoom": "100%",
+      "hasCanvas": true
+    }
+  ],
+  "checks": {
+    "started_one_window": true,
+    "first_window_untouched": true,
+    "second_instance_exited": true,
+    "second_window_created": true,
+    "file_opened_in_new_window": true,
+    "first_window_kept_its_project": true,
+    "both_windows_ready": true,
+    "no_runtime_exceptions": true
+  },
+  "runtimeExceptions": [],
+  "pass": true
+}

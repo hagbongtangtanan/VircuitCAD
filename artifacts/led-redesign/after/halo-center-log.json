@@ -1,0 +1,67 @@
+{
+  "rows": [
+    {
+      "theme": "dark",
+      "partId": "blue-lit",
+      "centerDifference": {
+        "x": 0,
+        "y": 0
+      },
+      "haloType": "radial-gradient",
+      "hardEdge": false,
+      "haloRadius": 20,
+      "outerRing": null,
+      "domeRadius": 10
+    },
+    {
+      "theme": "dark",
+      "partId": "blue-unlit",
+      "centerDifference": {
+        "x": 0,
+        "y": 0
+      },
+      "haloType": "radial-gradient",
+      "hardEdge": false,
+      "haloRadius": 18.400000000000002,
+      "outerRing": null,
+      "domeRadius": 10
+    },
+    {
+      "theme": "light",
+      "partId": "blue-lit",
+      "centerDifference": {
+        "x": 0,
+        "y": 0
+      },
+      "haloType": "radial-gradient",
+      "hardEdge": false,
+      "haloRadius": 18,
+      "outerRing": {
+        "radius": 16,
+        "opacity": 0.6,
+        "width": 1
+      },
+      "domeRadius": 10
+    },
+    {
+      "theme": "light",
+      "partId": "blue-unlit",
+      "centerDifference": {
+        "x": 0,
+        "y": 0
+      },
+      "haloType": "radial-gradient",
+      "hardEdge": false,
+      "haloRadius": 16.560000000000002,
+      "outerRing": {
+        "radius": 15.04,
+        "opacity": 0.27,
+        "width": 1
+      },
+      "domeRadius": 10
+    }
+  ],
+  "pass": true,
+  "sourceHasHalo": true,
+  "sourceHasRing": true
+}

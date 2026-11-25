@@ -1,0 +1,59 @@
+{
+  "pins": [
+    {
+      "partId": "led1",
+      "color": "red",
+      "pins": [
+        {
+          "pinId": "anode",
+          "label": "A",
+          "x": 600,
+          "y": 140
+        },
+        {
+          "pinId": "cathode",
+          "label": "K",
+          "x": 610,
+          "y": 140
+        }
+      ]
+    },
+    {
+      "partId": "led2",
+      "color": "yellow",
+      "pins": [
+        {
+          "pinId": "anode",
+          "label": "A",
+          "x": 700,
+          "y": 140
+        },
+        {
+          "pinId": "cathode",
+          "label": "K",
+          "x": 710,
+          "y": 140
+        }
+      ]
+    },
+    {
+      "partId": "led3",
+      "color": "green",
+      "pins": [
+        {
+          "pinId": "anode",
+          "label": "A",
+          "x": 800,
+          "y": 140
+        },
+        {
+          "pinId": "cathode",
+          "label": "K",
+          "x": 810,
+          "y": 140
+        }
+      ]
+    }
+  ],
+  "hitStrokeWidth": 10
+}

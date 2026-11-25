@@ -1,0 +1,213 @@
+{
+  "rows": [
+    {
+      "theme": "dark",
+      "state": "idle",
+      "entries": [
+        {
+          "key": "led1:anode",
+          "x": 600,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#b7d2ef",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        },
+        {
+          "key": "led1:cathode",
+          "x": 610,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#b7d2ef",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "state": "idle",
+      "entries": [
+        {
+          "key": "led1:anode",
+          "x": 600,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#4b5563",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        },
+        {
+          "key": "led1:cathode",
+          "x": 610,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#4b5563",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "state": "hover",
+      "entries": [
+        {
+          "key": "led1:anode",
+          "x": 600,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#b7d2ef",
+          "stroke": "#6fb3ff",
+          "state": "hovered"
+        },
+        {
+          "key": "led1:cathode",
+          "x": 610,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#b7d2ef",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "state": "hover",
+      "entries": [
+        {
+          "key": "led1:anode",
+          "x": 600,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#4b5563",
+          "stroke": "#0e7490",
+          "state": "hovered"
+        },
+        {
+          "key": "led1:cathode",
+          "x": 610,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#4b5563",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "state": "connected",
+      "entries": [
+        {
+          "key": "led1:anode",
+          "x": 600,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#b7d2ef",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        },
+        {
+          "key": "led1:cathode",
+          "x": 610,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#b7d2ef",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "state": "connected",
+      "entries": [
+        {
+          "key": "led1:anode",
+          "x": 600,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#4b5563",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        },
+        {
+          "key": "led1:cathode",
+          "x": 610,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#4b5563",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "state": "selected",
+      "entries": [
+        {
+          "key": "led1:anode",
+          "x": 600,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#b7d2ef",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        },
+        {
+          "key": "led1:cathode",
+          "x": 610,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#b7d2ef",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "state": "selected",
+      "entries": [
+        {
+          "key": "led1:anode",
+          "x": 600,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#4b5563",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        },
+        {
+          "key": "led1:cathode",
+          "x": 610,
+          "y": 140,
+          "radius": 2,
+          "hitStrokeWidth": 4,
+          "fill": "#4b5563",
+          "stroke": "#1d4ed8",
+          "state": "idle"
+        }
+      ]
+    }
+  ],
+  "pass": true
+}

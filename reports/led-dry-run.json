@@ -1,0 +1,67 @@
+{
+  "source": "work/readable/out/renderer/assets/index-BU2QbNS1.js",
+  "temp_source": "/tmp/vc-led-dry-run-SLbxIk/source.js",
+  "temp_patched": "/tmp/vc-led-dry-run-SLbxIk/patched.js",
+  "source_bytes": 3845703,
+  "patched_bytes": 3864168,
+  "bytes_delta": 18465,
+  "source_lines": 109630,
+  "patched_lines": 110067,
+  "protected_paths": [
+    "work/app/out/renderer/assets/index-BU2QbNS1.js",
+    "resources/app.asar",
+    "out/app.asar"
+  ],
+  "protected_hashes_before": {
+    "work/app/out/renderer/assets/index-BU2QbNS1.js": "f7331a0bddb9d2fa46dc9372053a2dbe17b2bbcbbe6201b36ac782f70e178236",
+    "resources/app.asar": "a7190d567fc2fa09f00514ccf34501b716eac61b83ae8d137a847cf425366c02",
+    "out/app.asar": null
+  },
+  "protected_hashes_after": {
+    "work/app/out/renderer/assets/index-BU2QbNS1.js": "f7331a0bddb9d2fa46dc9372053a2dbe17b2bbcbbe6201b36ac782f70e178236",
+    "resources/app.asar": "a7190d567fc2fa09f00514ccf34501b716eac61b83ae8d137a847cf425366c02",
+    "out/app.asar": null
+  },
+  "protected_unchanged": true,
+  "verify": {
+    "source": "../../../../tmp/vc-led-dry-run-SLbxIk/source.js",
+    "patched": "../../../../tmp/vc-led-dry-run-SLbxIk/patched.js",
+    "source_bytes": 3845703,
+    "patched_bytes": 3864168,
+    "source_lines": 109630,
+    "patched_lines": 110067,
+    "source_sha256": "efa6f858e97a0faa6dac24a10a71a115f683ff8f4989addf64d8dccc9dd21f9a",
+    "patched_sha256": "0146216fda6541edebab9eaba18cc098e4138513e2053685920eb2518d9a6142",
+    "led_definition_sha256": "7660f3642bce832ba33471e2573e4e22de6d7e20241563219f19620575e4e56b",
+    "fit_scale": "0.5",
+    "origin": "20,40",
+    "anode_part_local": {
+      "x": 10,
+      "y": 40
+    },
+    "cathode_part_local": {
+      "x": 30,
+      "y": 40
+    },
+    "injection_bytes": 21409,
+    "old_led_block_bytes": 3169,
+    "checks": {
+      "marker_count": true,
+      "renderer_call_count": true,
+      "old_led_case_absent": true,
+      "led_definition_unchanged": true,
+      "pin_hit_stroke_unchanged": true,
+      "led_colors_unchanged": true,
+      "module_present": true,
+      "adapter_scale_matches": true,
+      "adapter_origin_matches": true,
+      "fit_maps_pins": true,
+      "restored_matches_source": true,
+      "syntax_ok": true
+    },
+    "restore_error": null,
+    "syntax_error": null,
+    "pass": true
+  },
+  "pass": true
+}

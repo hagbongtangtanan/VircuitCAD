@@ -1,0 +1,38 @@
+{
+  "archive": "resources/app.asar",
+  "output": "out/app-resistor-selection.asar",
+  "patch": "scripts/patch-resistor-selection.js",
+  "verify": "scripts/verify-resistor-selection.js",
+  "target": "out/renderer/assets/index-N0START1.js",
+  "install": true,
+  "backup": "/tmp/vc-app-before-resistor-selection-1795582226380.asar",
+  "unpacked_files": 5768,
+  "unpacked_dirs": 409,
+  "original_archive_sha256": "b56d9cb7daee40ff22776045d02a0de691bb7057261b1c9ccbda8d458d9b90ae",
+  "output_prefix": {
+    "field4": 1488764,
+    "field8": 1488760,
+    "jsonLength": 1488755,
+    "padding": 1
+  },
+  "prefix_ok": true,
+  "patched_sha256": "9baa97e38d4730e604fdd4ae71176ed2782a5ee148a450838e488cdecbaa1ae5",
+  "output_sha256": "b56d9cb7daee40ff22776045d02a0de691bb7057261b1c9ccbda8d458d9b90ae",
+  "changed_files": [
+    "out/renderer/assets/index-N0START1.js"
+  ],
+  "missing_files": [],
+  "extra_files": [],
+  "pack": {
+    "fileCount": 5768,
+    "dirCount": 409,
+    "headerBytes": 1488772,
+    "archiveBytes": 82413595
+  },
+  "packed_files": 5768,
+  "packed_dirs": 409,
+  "packed_compare_ok": true,
+  "packed_hash_ok": true,
+  "verify_pass": true,
+  "pass": true
+}

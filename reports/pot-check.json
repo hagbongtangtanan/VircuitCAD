@@ -1,0 +1,1120 @@
+{
+  "generatedAt": "2026-11-25T01:29:14.991Z",
+  "pxPerUnit": 4,
+  "backgroundSource": "reports/pot-backgrounds.json (live app canvas pixels)",
+  "backgrounds": [
+    "near-black",
+    "near-white",
+    "cream",
+    "red-rail",
+    "blue-rail"
+  ],
+  "extraBackgrounds": [
+    "red-rail-canonical",
+    "blue-rail-canonical",
+    "cream-light",
+    "cream-dark"
+  ],
+  "contrast": {
+    "dark/near-black": {
+      "background": "#050A14",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 1.0847941021136172,
+        "bodyRimVsBackground": 7.438717182003345,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 7.582645505397252
+      },
+      "silhouetteBest": 7.438717182003345,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "dark/near-white": {
+      "background": "#EEF2F7",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 16.245039589484154,
+        "bodyRimVsBackground": 2.3690271728449614,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 2.3240600029015055
+      },
+      "silhouetteBest": 16.245039589484154,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "dark/cream": {
+      "background": "#E6E1CF",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 13.94588969539025,
+        "bodyRimVsBackground": 2.0337402969005103,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 1.9951373012912381
+      },
+      "silhouetteBest": 13.94588969539025,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "dark/red-rail": {
+      "background": "#D75250",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 4.532911884069679,
+        "bodyRimVsBackground": 1.5127719219253872,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 1.5420418512791823
+      },
+      "silhouetteBest": 4.532911884069679,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "dark/blue-rail": {
+      "background": "#6591D3",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 5.691289183189428,
+        "bodyRimVsBackground": 1.2048696880553995,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 1.2281821584541264
+      },
+      "silhouetteBest": 5.691289183189428,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "light/near-black": {
+      "background": "#050A14",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 1.2096282541857648,
+        "bodyRimVsBackground": 10.524359334571958,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 4.098025880840175
+      },
+      "silhouetteBest": 10.524359334571958,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    },
+    "light/near-white": {
+      "background": "#EEF2F7",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 14.568544570858132,
+        "bodyRimVsBackground": 1.6744509166829356,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 4.30024691099844
+      },
+      "silhouetteBest": 14.568544570858132,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    },
+    "light/cream": {
+      "background": "#E6E1CF",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 12.506667927056466,
+        "bodyRimVsBackground": 1.437466966810071,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 3.6916357607738655
+      },
+      "silhouetteBest": 12.506667927056466,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    },
+    "light/red-rail": {
+      "background": "#D75250",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 4.065113443096177,
+        "bodyRimVsBackground": 2.1402823777346627,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 1.1999133778607018
+      },
+      "silhouetteBest": 4.065113443096177,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    },
+    "light/blue-rail": {
+      "background": "#6591D3",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 5.103945710579263,
+        "bodyRimVsBackground": 1.7046597199725269,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 1.506549035771622
+      },
+      "silhouetteBest": 5.103945710579263,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    }
+  },
+  "extraContrast": {
+    "dark/red-rail-canonical": {
+      "background": "#D64545",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 4.171336025138918,
+        "bodyRimVsBackground": 1.6439006067736177,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 1.675707684845032
+      },
+      "silhouetteBest": 4.171336025138918,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "dark/blue-rail-canonical": {
+      "background": "#2F6FD6",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 3.7967132404819552,
+        "bodyRimVsBackground": 1.8061047512537594,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 1.8410502428434417
+      },
+      "silhouetteBest": 3.7967132404819552,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "dark/cream-light": {
+      "background": "#EFEBDD",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 15.304227824961224,
+        "bodyRimVsBackground": 2.2318278374780105,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 2.1894648866419972
+      },
+      "silhouetteBest": 15.304227824961224,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "dark/cream-dark": {
+      "background": "#D8D5CC",
+      "sampled": {
+        "bodyOuter": "#0b1620",
+        "bodyRim": "#7fa3be",
+        "well": "#16232e",
+        "tick": "#b7ccdd",
+        "knobMean": "#588dd4",
+        "pointer": "#0f1822"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 12.444589197909508,
+        "bodyRimVsBackground": 1.814804439370201,
+        "pointerVsKnob": 5.271040430416851,
+        "tickVsWell": 9.661263085637513,
+        "knobMeanVsWell": 4.709770390497391,
+        "tailVsBody": 6.989939833396214,
+        "tailVsBackground": 1.7803571267455436
+      },
+      "silhouetteBest": 12.444589197909508,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#0B1620",
+        "bodyRim": "#7FA3BE",
+        "well": "#16232E",
+        "tick": "#B7CCDD",
+        "pointer": "#0F1822"
+      }
+    },
+    "light/red-rail-canonical": {
+      "background": "#D64545",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 3.7408523671189293,
+        "bodyRimVsBackground": 2.3258043386651566,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 1.104200131863744
+      },
+      "silhouetteBest": 3.7408523671189293,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    },
+    "light/blue-rail-canonical": {
+      "background": "#2F6FD6",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 3.4048908137185387,
+        "bodyRimVsBackground": 2.5552921199987244,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 1.0050332161023592
+      },
+      "silhouetteBest": 3.4048908137185387,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    },
+    "light/cream-light": {
+      "background": "#EFEBDD",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 13.724824981949748,
+        "bodyRimVsBackground": 1.5774771227531708,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 4.051203326836317
+      },
+      "silhouetteBest": 13.724824981949748,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    },
+    "light/cream-dark": {
+      "background": "#D8D5CC",
+      "sampled": {
+        "bodyOuter": "#14212b",
+        "bodyRim": "#a8c0d4",
+        "well": "#1b2a37",
+        "tick": "#a9bed0",
+        "knobMean": "#5484c4",
+        "pointer": "#0a1119"
+      },
+      "ratios": {
+        "bodyOuterVsBackground": 11.160302281634594,
+        "bodyRimVsBackground": 1.282721022340323,
+        "pointerVsKnob": 4.958688669719163,
+        "tickVsWell": 7.650761844012813,
+        "knobMeanVsWell": 3.831158142527324,
+        "tailVsBody": 3.3878390874712765,
+        "tailVsBackground": 3.2942244284585476
+      },
+      "silhouetteBest": 11.160302281634594,
+      "pass": {
+        "silhouette": true,
+        "pointerVsKnob": true,
+        "tickVsWell": true,
+        "knobMeanVsWell": true,
+        "tailVsBody": true
+      },
+      "tokens": {
+        "bodyOuter": "#14212B",
+        "bodyRim": "#A8C0D4",
+        "well": "#1B2A37",
+        "tick": "#A9BED0",
+        "pointer": "#0A1119"
+      }
+    }
+  },
+  "geometry": {
+    "dark": {
+      "body": {
+        "diameter": 45.25,
+        "diameterStrokeCorrected": 44.05,
+        "centreX": -0.1750000000000007,
+        "centreY": -46.25,
+        "lowestPixelY": -23.5,
+        "lowestPixelYStrokeCorrected": -24.1
+      },
+      "pins": [
+        {
+          "name": "left",
+          "x": -10,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 26.37980827539754,
+          "tailLengthPass": true,
+          "distanceFromCentre": 47.269863549623246
+        },
+        {
+          "name": "middle",
+          "x": 0,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 24.000000000000004,
+          "tailLengthPass": true,
+          "distanceFromCentre": 46.2
+        },
+        {
+          "name": "right",
+          "x": 10,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 26.37980827539754,
+          "tailLengthPass": true,
+          "distanceFromCentre": 47.269863549623246
+        }
+      ],
+      "ticks": {
+        "count": 24,
+        "runs": [
+          {
+            "start": -1.75,
+            "end": 0.25
+          },
+          {
+            "start": 13.75,
+            "end": 14.5
+          },
+          {
+            "start": 27.75,
+            "end": 30
+          },
+          {
+            "start": 44,
+            "end": 45.25
+          }
+        ]
+      },
+      "rimDots": {
+        "count": 8
+      },
+      "pointer": {
+        "angleDeg": -0.8731725797420713,
+        "pixels": 1265,
+        "tipRadius": 11.803812943282349
+      },
+      "opaqueBox": {
+        "minX": -22.8,
+        "maxX": 22.7,
+        "minY": -69,
+        "maxY": 2
+      }
+    },
+    "light": {
+      "body": {
+        "diameter": 45.25,
+        "diameterStrokeCorrected": 44.05,
+        "centreX": -0.1750000000000007,
+        "centreY": -46.25,
+        "lowestPixelY": -23.5,
+        "lowestPixelYStrokeCorrected": -24.1
+      },
+      "pins": [
+        {
+          "name": "left",
+          "x": -10,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 26.37980827539754,
+          "tailLengthPass": true,
+          "distanceFromCentre": 47.269863549623246
+        },
+        {
+          "name": "middle",
+          "x": 0,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 24.000000000000004,
+          "tailLengthPass": true,
+          "distanceFromCentre": 46.2
+        },
+        {
+          "name": "right",
+          "x": 10,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 26.37980827539754,
+          "tailLengthPass": true,
+          "distanceFromCentre": 47.269863549623246
+        }
+      ],
+      "ticks": {
+        "count": 24,
+        "runs": [
+          {
+            "start": -1.75,
+            "end": 0.25
+          },
+          {
+            "start": 13.75,
+            "end": 14.5
+          },
+          {
+            "start": 27.75,
+            "end": 30
+          },
+          {
+            "start": 44,
+            "end": 45.25
+          }
+        ]
+      },
+      "rimDots": {
+        "count": 8
+      },
+      "pointer": {
+        "angleDeg": -0.8881743700366536,
+        "pixels": 1265,
+        "tipRadius": 11.577672477661473
+      },
+      "opaqueBox": {
+        "minX": -22.8,
+        "maxX": 22.7,
+        "minY": -69,
+        "maxY": 2
+      }
+    }
+  },
+  "pointerSweep": {
+    "dark": [
+      {
+        "value": 0,
+        "expectedDeg": -135,
+        "measuredDeg": -133.87765778457916,
+        "deltaDeg": 1.1223422154208436,
+        "pass": true
+      },
+      {
+        "value": 0.25,
+        "expectedDeg": -67.5,
+        "measuredDeg": -67.69784776063737,
+        "deltaDeg": 0.19784776063737297,
+        "pass": true
+      },
+      {
+        "value": 0.5,
+        "expectedDeg": 0,
+        "measuredDeg": -0.8731725797420713,
+        "deltaDeg": 0.8731725797420713,
+        "pass": true
+      },
+      {
+        "value": 0.75,
+        "expectedDeg": 67.5,
+        "measuredDeg": 66.81432227687883,
+        "deltaDeg": 0.6856777231211737,
+        "pass": true
+      },
+      {
+        "value": 1,
+        "expectedDeg": 135,
+        "measuredDeg": 135.12674789086248,
+        "deltaDeg": 0.1267478908624753,
+        "pass": true
+      }
+    ],
+    "light": [
+      {
+        "value": 0,
+        "expectedDeg": -135,
+        "measuredDeg": -133.75197227044535,
+        "deltaDeg": 1.24802772955465,
+        "pass": true
+      },
+      {
+        "value": 0.25,
+        "expectedDeg": -67.5,
+        "measuredDeg": -67.47319898570633,
+        "deltaDeg": 0.026801014293667436,
+        "pass": true
+      },
+      {
+        "value": 0.5,
+        "expectedDeg": 0,
+        "measuredDeg": -0.8881743700366536,
+        "deltaDeg": 0.8881743700366536,
+        "pass": true
+      },
+      {
+        "value": 0.75,
+        "expectedDeg": 67.5,
+        "measuredDeg": 66.58420821946525,
+        "deltaDeg": 0.9157917805347466,
+        "pass": true
+      },
+      {
+        "value": 1,
+        "expectedDeg": 135,
+        "measuredDeg": 135,
+        "deltaDeg": 0,
+        "pass": true
+      }
+    ]
+  },
+  "sheets": [
+    "pot-new/out/sheet-dark-near-black.png",
+    "pot-new/out/sheet-dark-near-white.png",
+    "pot-new/out/sheet-dark-cream.png",
+    "pot-new/out/sheet-dark-red-rail.png",
+    "pot-new/out/sheet-dark-blue-rail.png",
+    "pot-new/out/sheet-crop-400-dark.png",
+    "pot-new/out/sheet-light-near-black.png",
+    "pot-new/out/sheet-light-near-white.png",
+    "pot-new/out/sheet-light-cream.png",
+    "pot-new/out/sheet-light-red-rail.png",
+    "pot-new/out/sheet-light-blue-rail.png",
+    "pot-new/out/sheet-crop-400-light.png"
+  ],
+  "geometryChecks": {
+    "dark": {
+      "bodyDiameter": {
+        "measured": 44.05,
+        "target": 44.4,
+        "pass": true
+      },
+      "bodyCentre": {
+        "measuredX": -0.1750000000000007,
+        "measuredY": -46.25,
+        "targetX": 0,
+        "targetY": -46.2,
+        "pass": true
+      },
+      "lowestBodyPixel": {
+        "measured": -24.1,
+        "target": -24.000000000000004,
+        "pass": true
+      },
+      "tickCount": {
+        "measured": 24,
+        "target": 24,
+        "pass": true
+      },
+      "rimDotCount": {
+        "measured": 8,
+        "target": 8,
+        "pass": true
+      },
+      "pins": [
+        {
+          "name": "left",
+          "x": -10,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 26.37980827539754,
+          "tailLengthPass": true,
+          "pass": true
+        },
+        {
+          "name": "middle",
+          "x": 0,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 24.000000000000004,
+          "tailLengthPass": true,
+          "pass": true
+        },
+        {
+          "name": "right",
+          "x": 10,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 26.37980827539754,
+          "tailLengthPass": true,
+          "pass": true
+        }
+      ],
+      "opaqueBox": {
+        "measured": {
+          "minX": -22.8,
+          "maxX": 22.7,
+          "minY": -69,
+          "maxY": 2
+        },
+        "target": {
+          "minX": -22.8,
+          "maxX": 22.8,
+          "minY": -69,
+          "maxY": 2
+        },
+        "pass": true
+      },
+      "pointerSweep": {
+        "values": [
+          {
+            "value": 0,
+            "expectedDeg": -135,
+            "measuredDeg": -133.87765778457916,
+            "deltaDeg": 1.1223422154208436,
+            "pass": true
+          },
+          {
+            "value": 0.25,
+            "expectedDeg": -67.5,
+            "measuredDeg": -67.69784776063737,
+            "deltaDeg": 0.19784776063737297,
+            "pass": true
+          },
+          {
+            "value": 0.5,
+            "expectedDeg": 0,
+            "measuredDeg": -0.8731725797420713,
+            "deltaDeg": 0.8731725797420713,
+            "pass": true
+          },
+          {
+            "value": 0.75,
+            "expectedDeg": 67.5,
+            "measuredDeg": 66.81432227687883,
+            "deltaDeg": 0.6856777231211737,
+            "pass": true
+          },
+          {
+            "value": 1,
+            "expectedDeg": 135,
+            "measuredDeg": 135.12674789086248,
+            "deltaDeg": 0.1267478908624753,
+            "pass": true
+          }
+        ],
+        "pass": true
+      }
+    },
+    "light": {
+      "bodyDiameter": {
+        "measured": 44.05,
+        "target": 44.4,
+        "pass": true
+      },
+      "bodyCentre": {
+        "measuredX": -0.1750000000000007,
+        "measuredY": -46.25,
+        "targetX": 0,
+        "targetY": -46.2,
+        "pass": true
+      },
+      "lowestBodyPixel": {
+        "measured": -24.1,
+        "target": -24.000000000000004,
+        "pass": true
+      },
+      "tickCount": {
+        "measured": 24,
+        "target": 24,
+        "pass": true
+      },
+      "rimDotCount": {
+        "measured": 8,
+        "target": 8,
+        "pass": true
+      },
+      "pins": [
+        {
+          "name": "left",
+          "x": -10,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 26.37980827539754,
+          "tailLengthPass": true,
+          "pass": true
+        },
+        {
+          "name": "middle",
+          "x": 0,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 24.000000000000004,
+          "tailLengthPass": true,
+          "pass": true
+        },
+        {
+          "name": "right",
+          "x": 10,
+          "y": 0,
+          "covered": true,
+          "visibleTail": 26.37980827539754,
+          "tailLengthPass": true,
+          "pass": true
+        }
+      ],
+      "opaqueBox": {
+        "measured": {
+          "minX": -22.8,
+          "maxX": 22.7,
+          "minY": -69,
+          "maxY": 2
+        },
+        "target": {
+          "minX": -22.8,
+          "maxX": 22.8,
+          "minY": -69,
+          "maxY": 2
+        },
+        "pass": true
+      },
+      "pointerSweep": {
+        "values": [
+          {
+            "value": 0,
+            "expectedDeg": -135,
+            "measuredDeg": -133.75197227044535,
+            "deltaDeg": 1.24802772955465,
+            "pass": true
+          },
+          {
+            "value": 0.25,
+            "expectedDeg": -67.5,
+            "measuredDeg": -67.47319898570633,
+            "deltaDeg": 0.026801014293667436,
+            "pass": true
+          },
+          {
+            "value": 0.5,
+            "expectedDeg": 0,
+            "measuredDeg": -0.8881743700366536,
+            "deltaDeg": 0.8881743700366536,
+            "pass": true
+          },
+          {
+            "value": 0.75,
+            "expectedDeg": 67.5,
+            "measuredDeg": 66.58420821946525,
+            "deltaDeg": 0.9157917805347466,
+            "pass": true
+          },
+          {
+            "value": 1,
+            "expectedDeg": 135,
+            "measuredDeg": 135,
+            "deltaDeg": 0,
+            "pass": true
+          }
+        ],
+        "pass": true
+      }
+    }
+  }
+}

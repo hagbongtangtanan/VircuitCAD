@@ -1,0 +1,1193 @@
+{
+  "cases": 30,
+  "errors": [],
+  "node_count_min": 38,
+  "node_count_max": 42,
+  "anode_design": [
+    -20,
+    0
+  ],
+  "cathode_design": [
+    20,
+    0
+  ],
+  "pitch": 40,
+  "anchor_spacing": 40,
+  "view_box": "-120 -180 240 220",
+  "body_hit_design": [
+    -52,
+    -120,
+    104,
+    128
+  ],
+  "anchor_hit_radius_design": 8,
+  "design_scale": 0.25,
+  "origin_part_local": [
+    15,
+    40
+  ],
+  "mapped_anode_part_local": [
+    10,
+    40
+  ],
+  "mapped_cathode_part_local": [
+    20,
+    40
+  ],
+  "mapped_body_hit_part_local": [
+    2,
+    10,
+    26,
+    32
+  ],
+  "mapped_anchor_hit_radius_part_local": 2,
+  "mapped_view_box_part_local": [
+    -15,
+    -5,
+    60,
+    55
+  ],
+  "pass": true,
+  "cases_detail": [
+    {
+      "index": 0,
+      "color": "red",
+      "theme": "dark",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 1,
+      "color": "red",
+      "theme": "dark",
+      "lit": true,
+      "burnt": false,
+      "nodes": 41,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": false,
+      "_debugCore": true,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 2,
+      "color": "red",
+      "theme": "dark",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 3,
+      "color": "green",
+      "theme": "dark",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 4,
+      "color": "green",
+      "theme": "dark",
+      "lit": true,
+      "burnt": false,
+      "nodes": 41,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": false,
+      "_debugCore": true,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 5,
+      "color": "green",
+      "theme": "dark",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 6,
+      "color": "blue",
+      "theme": "dark",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 7,
+      "color": "blue",
+      "theme": "dark",
+      "lit": true,
+      "burnt": false,
+      "nodes": 41,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": false,
+      "_debugCore": true,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 8,
+      "color": "blue",
+      "theme": "dark",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 9,
+      "color": "yellow",
+      "theme": "dark",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 10,
+      "color": "yellow",
+      "theme": "dark",
+      "lit": true,
+      "burnt": false,
+      "nodes": 41,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": false,
+      "_debugCore": true,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 11,
+      "color": "yellow",
+      "theme": "dark",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 12,
+      "color": "white",
+      "theme": "dark",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 13,
+      "color": "white",
+      "theme": "dark",
+      "lit": true,
+      "burnt": false,
+      "nodes": 41,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": false,
+      "_debugCore": true,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 14,
+      "color": "white",
+      "theme": "dark",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 15,
+      "color": "red",
+      "theme": "light",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 16,
+      "color": "red",
+      "theme": "light",
+      "lit": true,
+      "burnt": false,
+      "nodes": 42,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": true,
+      "_debugCore": true,
+      "_debugRing": true,
+      "labels": true
+    },
+    {
+      "index": 17,
+      "color": "red",
+      "theme": "light",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 18,
+      "color": "green",
+      "theme": "light",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 19,
+      "color": "green",
+      "theme": "light",
+      "lit": true,
+      "burnt": false,
+      "nodes": 42,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": true,
+      "_debugCore": true,
+      "_debugRing": true,
+      "labels": true
+    },
+    {
+      "index": 20,
+      "color": "green",
+      "theme": "light",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 21,
+      "color": "blue",
+      "theme": "light",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 22,
+      "color": "blue",
+      "theme": "light",
+      "lit": true,
+      "burnt": false,
+      "nodes": 42,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": true,
+      "_debugCore": true,
+      "_debugRing": true,
+      "labels": true
+    },
+    {
+      "index": 23,
+      "color": "blue",
+      "theme": "light",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 24,
+      "color": "yellow",
+      "theme": "light",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 25,
+      "color": "yellow",
+      "theme": "light",
+      "lit": true,
+      "burnt": false,
+      "nodes": 42,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": true,
+      "_debugCore": true,
+      "_debugRing": true,
+      "labels": true
+    },
+    {
+      "index": 26,
+      "color": "yellow",
+      "theme": "light",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 27,
+      "color": "white",
+      "theme": "light",
+      "lit": false,
+      "burnt": false,
+      "nodes": 39,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    },
+    {
+      "index": 28,
+      "color": "white",
+      "theme": "light",
+      "lit": true,
+      "burnt": false,
+      "nodes": 42,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": true,
+      "core": true,
+      "ring": true,
+      "_debugCore": true,
+      "_debugRing": true,
+      "labels": true
+    },
+    {
+      "index": 29,
+      "color": "white",
+      "theme": "light",
+      "lit": false,
+      "burnt": true,
+      "nodes": 38,
+      "anode": [
+        -20,
+        0
+      ],
+      "cathode": [
+        20,
+        0
+      ],
+      "pitch": 40,
+      "anchorSpacing": 40,
+      "viewBox": "-120 -180 240 220",
+      "bodyHit": [
+        -52,
+        -120,
+        104,
+        128
+      ],
+      "anodeHitRadius": 8,
+      "cathodeHitRadius": 8,
+      "halo": false,
+      "legAnode": true,
+      "legCathode": true,
+      "flange": true,
+      "dome": true,
+      "highlight": false,
+      "core": false,
+      "ring": false,
+      "_debugCore": false,
+      "_debugRing": false,
+      "labels": true
+    }
+  ]
+}

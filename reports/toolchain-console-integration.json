@@ -1,0 +1,38 @@
+{
+  "archive": "resources/app.asar",
+  "output": "out/app-toolchain-console.asar",
+  "patch": "scripts/patch-toolchain-console.js",
+  "verify": "scripts/verify-toolchain-console.js",
+  "target": "out/main/index.js",
+  "install": true,
+  "backup": "/tmp/vc-app-before-toolchain-console-1795582221775.asar",
+  "unpacked_files": 5768,
+  "unpacked_dirs": 409,
+  "original_archive_sha256": "8bc4b60677d1b803a1d0a0cfec43f94b11880a4dca327744c6d8e34d3f7dfcc5",
+  "output_prefix": {
+    "field4": 1488764,
+    "field8": 1488760,
+    "jsonLength": 1488755,
+    "padding": 1
+  },
+  "prefix_ok": true,
+  "patched_sha256": "b4219d06438636e0a73926eec2b36e6752624f535f7dc621fe94d3959e6dd781",
+  "output_sha256": "8bc4b60677d1b803a1d0a0cfec43f94b11880a4dca327744c6d8e34d3f7dfcc5",
+  "changed_files": [
+    "out/main/index.js"
+  ],
+  "missing_files": [],
+  "extra_files": [],
+  "pack": {
+    "fileCount": 5768,
+    "dirCount": 409,
+    "headerBytes": 1488772,
+    "archiveBytes": 82413549
+  },
+  "packed_files": 5768,
+  "packed_dirs": 409,
+  "packed_compare_ok": true,
+  "packed_hash_ok": true,
+  "verify_pass": true,
+  "pass": true
+}

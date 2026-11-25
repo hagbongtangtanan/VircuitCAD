@@ -1,0 +1,1170 @@
+{
+  "pinTable": [
+    {
+      "pinId": "g",
+      "oldLabel": "g",
+      "newLabel": "G",
+      "old": {
+        "x": 21,
+        "y": 90
+      },
+      "new": {
+        "x": 5,
+        "y": 0
+      }
+    },
+    {
+      "pinId": "f",
+      "oldLabel": "f",
+      "newLabel": "F",
+      "old": {
+        "x": 7,
+        "y": 90
+      },
+      "new": {
+        "x": 15,
+        "y": 0
+      }
+    },
+    {
+      "pinId": "common",
+      "oldLabel": "CC",
+      "newLabel": "CC",
+      "old": {
+        "x": 49,
+        "y": 90
+      },
+      "new": {
+        "x": 25,
+        "y": 0
+      }
+    },
+    {
+      "pinId": "a",
+      "oldLabel": "a",
+      "newLabel": "A",
+      "old": {
+        "x": 7,
+        "y": 0
+      },
+      "new": {
+        "x": 35,
+        "y": 0
+      }
+    },
+    {
+      "pinId": "b",
+      "oldLabel": "b",
+      "newLabel": "B",
+      "old": {
+        "x": 21,
+        "y": 0
+      },
+      "new": {
+        "x": 45,
+        "y": 0
+      }
+    },
+    {
+      "pinId": "e",
+      "oldLabel": "e",
+      "newLabel": "E",
+      "old": {
+        "x": 63,
+        "y": 0
+      },
+      "new": {
+        "x": 5,
+        "y": 60
+      }
+    },
+    {
+      "pinId": "d",
+      "oldLabel": "d",
+      "newLabel": "D",
+      "old": {
+        "x": 49,
+        "y": 0
+      },
+      "new": {
+        "x": 15,
+        "y": 60
+      }
+    },
+    {
+      "pinId": "common2",
+      "oldLabel": "CC",
+      "newLabel": "CC",
+      "old": {
+        "x": 63,
+        "y": 90
+      },
+      "new": {
+        "x": 25,
+        "y": 60
+      }
+    },
+    {
+      "pinId": "c",
+      "oldLabel": "c",
+      "newLabel": "C",
+      "old": {
+        "x": 35,
+        "y": 0
+      },
+      "new": {
+        "x": 35,
+        "y": 60
+      }
+    },
+    {
+      "pinId": "dp",
+      "oldLabel": "DP",
+      "newLabel": "DP",
+      "old": {
+        "x": 35,
+        "y": 90
+      },
+      "new": {
+        "x": 45,
+        "y": 60
+      }
+    }
+  ],
+  "spacing": {
+    "pitch": 10,
+    "rowGap": 60,
+    "topX": [
+      5,
+      15,
+      25,
+      35,
+      45
+    ],
+    "bottomX": [
+      5,
+      15,
+      25,
+      35,
+      45
+    ]
+  },
+  "visual": {
+    "body": {
+      "x": 0,
+      "y": -5,
+      "width": 50,
+      "height": 70
+    },
+    "digitArea": {
+      "x": 9,
+      "y": 6,
+      "width": 32,
+      "height": 48
+    },
+    "segmentBounds": {
+      "left": 8.268629150101525,
+      "right": 41.731370849898475,
+      "top": 6.200000000000003,
+      "bottom": 53.8
+    },
+    "thicknessPitch": 0.6,
+    "gapPitch": 0.08,
+    "horizontalLengthPitch": 2.6,
+    "verticalLengthPitch": 2,
+    "bevelPitch": 0.3,
+    "verticalAspect": 3.3333333333333335,
+    "slantDeg": 0,
+    "dpRadiusPitch": 0.25,
+    "digitTop": -2.38,
+    "digitBottom": 2.38,
+    "digitWidth": 3.346274169979695,
+    "digitHeight": 4.76,
+    "neighborGaps": {
+      "A-F": 0.07999999999999985,
+      "A-B": 0.07999999999999985,
+      "F-G": 0.07999999999999985,
+      "B-G": 0.07999999999999985,
+      "E-G": 0.07999999999999985,
+      "C-G": 0.07999999999999985,
+      "E-D": 0.07999999999999985,
+      "C-D": 0.07999999999999985,
+      "F-E": 0.07999999999999971,
+      "B-C": 0.07999999999999971
+    },
+    "renderedNeighborGaps": {
+      "A-F": 0.07999999999999985,
+      "A-B": 0.07999999999999985,
+      "F-G": 0.07999999999999985,
+      "B-G": 0.07999999999999985,
+      "E-G": 0.07999999999999985,
+      "C-G": 0.07999999999999985,
+      "E-D": 0.07999999999999985,
+      "C-D": 0.07999999999999985,
+      "F-E": 0.07999999999999971,
+      "B-C": 0.07999999999999971
+    },
+    "maxGapError": 2.914335439641036e-16,
+    "maxRenderedGapError": 2.914335439641036e-16,
+    "topIdleClearance": 0.34000000000000025,
+    "topActiveClearance": 0.07000000000000028,
+    "bottomIdleClearance": 0.3400000000000006,
+    "bottomActiveClearance": 0.07000000000000028,
+    "dpPinClearance": 0.35600225733346763,
+    "dpSegmentClearance": 0.20541190146942806,
+    "bodyOverhangTop": 5,
+    "bodyOverhangBottom": 5,
+    "adjacentHoles": {
+      "topRow": "b",
+      "bottomRow": "i",
+      "holeRadius": 1.1,
+      "bodyTopWorld": 85,
+      "bodyBottomWorld": 155,
+      "topClearance": 3.9000000000000057,
+      "bottomClearance": 3.9000000000000057
+    },
+    "padRings": 10,
+    "idleRingPitch": 0.28,
+    "labelChips": 10,
+    "chipsUpright": true,
+    "labelsOutsideBody": true,
+    "slantSwitch": {
+      "minusSix": -6,
+      "backToZero": 0,
+      "maxGapErrorMinusSix": 2.914335439641036e-16,
+      "maxGapErrorBackToZero": 2.914335439641036e-16
+    }
+  },
+  "renderedSegments": [
+    {
+      "fill": "#3a3d43",
+      "pointCount": 12
+    },
+    {
+      "fill": "#3a3d43",
+      "pointCount": 12
+    },
+    {
+      "fill": "#3a3d43",
+      "pointCount": 12
+    },
+    {
+      "fill": "#3a3d43",
+      "pointCount": 12
+    },
+    {
+      "fill": "#3a3d43",
+      "pointCount": 12
+    },
+    {
+      "fill": "#3a3d43",
+      "pointCount": 12
+    },
+    {
+      "fill": "#3a3d43",
+      "pointCount": 12
+    }
+  ],
+  "drops": [
+    {
+      "column": 5,
+      "valid": true,
+      "previewStroke": "#3ddc84",
+      "maxDistance": 0,
+      "rows": [
+        "c",
+        "c",
+        "c",
+        "c",
+        "c",
+        "h",
+        "h",
+        "h",
+        "h",
+        "h"
+      ],
+      "columns": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pins": [
+        {
+          "pinId": "g",
+          "hole": "c5",
+          "row": "c",
+          "column": 5,
+          "distance": 0
+        },
+        {
+          "pinId": "f",
+          "hole": "c6",
+          "row": "c",
+          "column": 6,
+          "distance": 0
+        },
+        {
+          "pinId": "common",
+          "hole": "c7",
+          "row": "c",
+          "column": 7,
+          "distance": 0
+        },
+        {
+          "pinId": "a",
+          "hole": "c8",
+          "row": "c",
+          "column": 8,
+          "distance": 0
+        },
+        {
+          "pinId": "b",
+          "hole": "c9",
+          "row": "c",
+          "column": 9,
+          "distance": 0
+        },
+        {
+          "pinId": "e",
+          "hole": "h5",
+          "row": "h",
+          "column": 5,
+          "distance": 0
+        },
+        {
+          "pinId": "d",
+          "hole": "h6",
+          "row": "h",
+          "column": 6,
+          "distance": 0
+        },
+        {
+          "pinId": "common2",
+          "hole": "h7",
+          "row": "h",
+          "column": 7,
+          "distance": 0
+        },
+        {
+          "pinId": "c",
+          "hole": "h8",
+          "row": "h",
+          "column": 8,
+          "distance": 0
+        },
+        {
+          "pinId": "dp",
+          "hole": "h9",
+          "row": "h",
+          "column": 9,
+          "distance": 0
+        }
+      ]
+    },
+    {
+      "column": 11,
+      "valid": true,
+      "previewStroke": "#3ddc84",
+      "maxDistance": 0,
+      "rows": [
+        "c",
+        "c",
+        "c",
+        "c",
+        "c",
+        "h",
+        "h",
+        "h",
+        "h",
+        "h"
+      ],
+      "columns": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "pins": [
+        {
+          "pinId": "g",
+          "hole": "c11",
+          "row": "c",
+          "column": 11,
+          "distance": 0
+        },
+        {
+          "pinId": "f",
+          "hole": "c12",
+          "row": "c",
+          "column": 12,
+          "distance": 0
+        },
+        {
+          "pinId": "common",
+          "hole": "c13",
+          "row": "c",
+          "column": 13,
+          "distance": 0
+        },
+        {
+          "pinId": "a",
+          "hole": "c14",
+          "row": "c",
+          "column": 14,
+          "distance": 0
+        },
+        {
+          "pinId": "b",
+          "hole": "c15",
+          "row": "c",
+          "column": 15,
+          "distance": 0
+        },
+        {
+          "pinId": "e",
+          "hole": "h11",
+          "row": "h",
+          "column": 11,
+          "distance": 0
+        },
+        {
+          "pinId": "d",
+          "hole": "h12",
+          "row": "h",
+          "column": 12,
+          "distance": 0
+        },
+        {
+          "pinId": "common2",
+          "hole": "h13",
+          "row": "h",
+          "column": 13,
+          "distance": 0
+        },
+        {
+          "pinId": "c",
+          "hole": "h14",
+          "row": "h",
+          "column": 14,
+          "distance": 0
+        },
+        {
+          "pinId": "dp",
+          "hole": "h15",
+          "row": "h",
+          "column": 15,
+          "distance": 0
+        }
+      ]
+    },
+    {
+      "column": 17,
+      "valid": true,
+      "previewStroke": "#3ddc84",
+      "maxDistance": 0,
+      "rows": [
+        "c",
+        "c",
+        "c",
+        "c",
+        "c",
+        "h",
+        "h",
+        "h",
+        "h",
+        "h"
+      ],
+      "columns": [
+        17,
+        18,
+        19,
+        20,
+        21,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "pins": [
+        {
+          "pinId": "g",
+          "hole": "c17",
+          "row": "c",
+          "column": 17,
+          "distance": 0
+        },
+        {
+          "pinId": "f",
+          "hole": "c18",
+          "row": "c",
+          "column": 18,
+          "distance": 0
+        },
+        {
+          "pinId": "common",
+          "hole": "c19",
+          "row": "c",
+          "column": 19,
+          "distance": 0
+        },
+        {
+          "pinId": "a",
+          "hole": "c20",
+          "row": "c",
+          "column": 20,
+          "distance": 0
+        },
+        {
+          "pinId": "b",
+          "hole": "c21",
+          "row": "c",
+          "column": 21,
+          "distance": 0
+        },
+        {
+          "pinId": "e",
+          "hole": "h17",
+          "row": "h",
+          "column": 17,
+          "distance": 0
+        },
+        {
+          "pinId": "d",
+          "hole": "h18",
+          "row": "h",
+          "column": 18,
+          "distance": 0
+        },
+        {
+          "pinId": "common2",
+          "hole": "h19",
+          "row": "h",
+          "column": 19,
+          "distance": 0
+        },
+        {
+          "pinId": "c",
+          "hole": "h20",
+          "row": "h",
+          "column": 20,
+          "distance": 0
+        },
+        {
+          "pinId": "dp",
+          "hole": "h21",
+          "row": "h",
+          "column": 21,
+          "distance": 0
+        }
+      ]
+    },
+    {
+      "column": 24,
+      "valid": true,
+      "previewStroke": "#3ddc84",
+      "maxDistance": 0,
+      "rows": [
+        "c",
+        "c",
+        "c",
+        "c",
+        "c",
+        "h",
+        "h",
+        "h",
+        "h",
+        "h"
+      ],
+      "columns": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "pins": [
+        {
+          "pinId": "g",
+          "hole": "c24",
+          "row": "c",
+          "column": 24,
+          "distance": 0
+        },
+        {
+          "pinId": "f",
+          "hole": "c25",
+          "row": "c",
+          "column": 25,
+          "distance": 0
+        },
+        {
+          "pinId": "common",
+          "hole": "c26",
+          "row": "c",
+          "column": 26,
+          "distance": 0
+        },
+        {
+          "pinId": "a",
+          "hole": "c27",
+          "row": "c",
+          "column": 27,
+          "distance": 0
+        },
+        {
+          "pinId": "b",
+          "hole": "c28",
+          "row": "c",
+          "column": 28,
+          "distance": 0
+        },
+        {
+          "pinId": "e",
+          "hole": "h24",
+          "row": "h",
+          "column": 24,
+          "distance": 0
+        },
+        {
+          "pinId": "d",
+          "hole": "h25",
+          "row": "h",
+          "column": 25,
+          "distance": 0
+        },
+        {
+          "pinId": "common2",
+          "hole": "h26",
+          "row": "h",
+          "column": 26,
+          "distance": 0
+        },
+        {
+          "pinId": "c",
+          "hole": "h27",
+          "row": "h",
+          "column": 27,
+          "distance": 0
+        },
+        {
+          "pinId": "dp",
+          "hole": "h28",
+          "row": "h",
+          "column": 28,
+          "distance": 0
+        }
+      ]
+    },
+    {
+      "column": 33,
+      "valid": true,
+      "previewStroke": "#3ddc84",
+      "maxDistance": 0,
+      "rows": [
+        "c",
+        "c",
+        "c",
+        "c",
+        "c",
+        "h",
+        "h",
+        "h",
+        "h",
+        "h"
+      ],
+      "columns": [
+        33,
+        34,
+        35,
+        36,
+        37,
+        33,
+        34,
+        35,
+        36,
+        37
+      ],
+      "pins": [
+        {
+          "pinId": "g",
+          "hole": "c33",
+          "row": "c",
+          "column": 33,
+          "distance": 0
+        },
+        {
+          "pinId": "f",
+          "hole": "c34",
+          "row": "c",
+          "column": 34,
+          "distance": 0
+        },
+        {
+          "pinId": "common",
+          "hole": "c35",
+          "row": "c",
+          "column": 35,
+          "distance": 0
+        },
+        {
+          "pinId": "a",
+          "hole": "c36",
+          "row": "c",
+          "column": 36,
+          "distance": 0
+        },
+        {
+          "pinId": "b",
+          "hole": "c37",
+          "row": "c",
+          "column": 37,
+          "distance": 0
+        },
+        {
+          "pinId": "e",
+          "hole": "h33",
+          "row": "h",
+          "column": 33,
+          "distance": 0
+        },
+        {
+          "pinId": "d",
+          "hole": "h34",
+          "row": "h",
+          "column": 34,
+          "distance": 0
+        },
+        {
+          "pinId": "common2",
+          "hole": "h35",
+          "row": "h",
+          "column": 35,
+          "distance": 0
+        },
+        {
+          "pinId": "c",
+          "hole": "h36",
+          "row": "h",
+          "column": 36,
+          "distance": 0
+        },
+        {
+          "pinId": "dp",
+          "hole": "h37",
+          "row": "h",
+          "column": 37,
+          "distance": 0
+        }
+      ]
+    }
+  ],
+  "segmentTable": [
+    {
+      "pinId": "a",
+      "segment": "A",
+      "litSegments": [
+        "a"
+      ],
+      "renderedOnCount": 1,
+      "onlyMatch": true
+    },
+    {
+      "pinId": "b",
+      "segment": "B",
+      "litSegments": [
+        "b"
+      ],
+      "renderedOnCount": 1,
+      "onlyMatch": true
+    },
+    {
+      "pinId": "c",
+      "segment": "C",
+      "litSegments": [
+        "c"
+      ],
+      "renderedOnCount": 1,
+      "onlyMatch": true
+    },
+    {
+      "pinId": "d",
+      "segment": "D",
+      "litSegments": [
+        "d"
+      ],
+      "renderedOnCount": 1,
+      "onlyMatch": true
+    },
+    {
+      "pinId": "e",
+      "segment": "E",
+      "litSegments": [
+        "e"
+      ],
+      "renderedOnCount": 1,
+      "onlyMatch": true
+    },
+    {
+      "pinId": "f",
+      "segment": "F",
+      "litSegments": [
+        "f"
+      ],
+      "renderedOnCount": 1,
+      "onlyMatch": true
+    },
+    {
+      "pinId": "g",
+      "segment": "G",
+      "litSegments": [
+        "g"
+      ],
+      "renderedOnCount": 1,
+      "onlyMatch": true
+    },
+    {
+      "pinId": "dp",
+      "segment": "DP",
+      "litSegments": [
+        "dp"
+      ],
+      "renderedOnCount": 1,
+      "onlyMatch": true
+    }
+  ],
+  "occupiedRejected": {
+    "valid": false,
+    "previewStroke": "#ff4d4f",
+    "wires": 0
+  },
+  "transforms": [
+    {
+      "name": "upright",
+      "valid": true,
+      "maxDistance": 0,
+      "rows": [
+        "c",
+        "c",
+        "c",
+        "c",
+        "c",
+        "h",
+        "h",
+        "h",
+        "h",
+        "h"
+      ],
+      "columns": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "labels": [
+        "G",
+        "F",
+        "CC",
+        "A",
+        "B",
+        "E",
+        "D",
+        "CC",
+        "C",
+        "DP"
+      ],
+      "labelsUpright": true
+    },
+    {
+      "name": "flip-horizontal",
+      "valid": true,
+      "maxDistance": 0,
+      "rows": [
+        "c",
+        "c",
+        "c",
+        "c",
+        "c",
+        "h",
+        "h",
+        "h",
+        "h",
+        "h"
+      ],
+      "columns": [
+        10,
+        9,
+        8,
+        7,
+        6,
+        10,
+        9,
+        8,
+        7,
+        6
+      ],
+      "labels": [
+        "G",
+        "F",
+        "CC",
+        "A",
+        "B",
+        "E",
+        "D",
+        "CC",
+        "C",
+        "DP"
+      ],
+      "labelsUpright": true
+    },
+    {
+      "name": "flip-vertical",
+      "valid": true,
+      "maxDistance": 0,
+      "rows": [
+        "h",
+        "h",
+        "h",
+        "h",
+        "h",
+        "c",
+        "c",
+        "c",
+        "c",
+        "c"
+      ],
+      "columns": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "labels": [
+        "G",
+        "F",
+        "CC",
+        "A",
+        "B",
+        "E",
+        "D",
+        "CC",
+        "C",
+        "DP"
+      ],
+      "labelsUpright": true
+    },
+    {
+      "name": "rotation-180",
+      "valid": true,
+      "maxDistance": 0,
+      "rows": [
+        "h",
+        "h",
+        "h",
+        "h",
+        "h",
+        "c",
+        "c",
+        "c",
+        "c",
+        "c"
+      ],
+      "columns": [
+        10,
+        9,
+        8,
+        7,
+        6,
+        10,
+        9,
+        8,
+        7,
+        6
+      ],
+      "labels": [
+        "G",
+        "F",
+        "CC",
+        "A",
+        "B",
+        "E",
+        "D",
+        "CC",
+        "C",
+        "DP"
+      ],
+      "labelsUpright": true
+    },
+    {
+      "name": "rotation-90",
+      "valid": true,
+      "maxDistance": 0,
+      "rows": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "columns": [
+        10,
+        10,
+        10,
+        10,
+        10,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "labels": [
+        "G",
+        "F",
+        "CC",
+        "A",
+        "B",
+        "E",
+        "D",
+        "CC",
+        "C",
+        "DP"
+      ],
+      "labelsUpright": true
+    },
+    {
+      "name": "rotation-270",
+      "valid": true,
+      "maxDistance": 0,
+      "rows": [
+        "e",
+        "d",
+        "c",
+        "b",
+        "a",
+        "e",
+        "d",
+        "c",
+        "b",
+        "a"
+      ],
+      "columns": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "labels": [
+        "G",
+        "F",
+        "CC",
+        "A",
+        "B",
+        "E",
+        "D",
+        "CC",
+        "C",
+        "DP"
+      ],
+      "labelsUpright": true
+    }
+  ],
+  "wireFollow": {
+    "beforeRef": {
+      "partId": "seven-segment-7beb71d8",
+      "pinId": "a"
+    },
+    "afterRef": {
+      "partId": "seven-segment-7beb71d8",
+      "pinId": "a"
+    },
+    "beforeWorld": {
+      "x": 295,
+      "y": 260
+    },
+    "afterEndpointWorld": {
+      "x": 190,
+      "y": 90
+    },
+    "afterPinWorld": {
+      "x": 190,
+      "y": 90
+    },
+    "endpointMatchesPin": true
+  },
+  "consoleErrors": [],
+  "checks": {
+    "pinIdsUnchanged": true,
+    "spacing": true,
+    "topRowCF": true,
+    "bottomRowH": true,
+    "dropAlignment": true,
+    "dropPreviewGreen": true,
+    "segmentStates": true,
+    "segmentsRendered": true,
+    "segmentVisualStates": true,
+    "tallBody": true,
+    "bodyCentered": true,
+    "bodyOverhangsPins": true,
+    "digitAreaSized": true,
+    "digitFitsNominalArea": true,
+    "segmentConstants": true,
+    "neighborGapsExact": true,
+    "verticalSegmentsAspect": true,
+    "slantDefaultZero": true,
+    "slantSwitchWorks": true,
+    "dpRadiusRound": true,
+    "digitClearsPinRings": true,
+    "dpClearOfPinsAndDigits": true,
+    "adjacentHolesClear": true,
+    "padRingsVisible": true,
+    "labelChipsVisible": true,
+    "labelChipsUprightOutsideBody": true,
+    "occupiedRejected": true,
+    "transformsValid": true,
+    "wireFollowsPin": true,
+    "consoleErrors": true
+  },
+  "pass": true
+}

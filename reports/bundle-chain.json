@@ -1,0 +1,66 @@
+{
+  "chain": {
+    "package": {
+      "path": "work/app/package.json",
+      "mainValue": "out/main/index.js",
+      "line": 8
+    },
+    "mainEntry": {
+      "path": "work/app/out/main/index.js",
+      "loadUrlLine": 1751,
+      "loadFileLine": 1753,
+      "loadFileTarget": "../renderer/index.html"
+    },
+    "rendererHtml": {
+      "path": "work/app/out/renderer/index.html",
+      "scriptLine": 12,
+      "scriptSrc": "./assets/index-BU2QbNS1.js"
+    },
+    "loadedBundle": "work/app/out/renderer/assets/index-BU2QbNS1.js",
+    "workingBundle": "work/readable/out/renderer/assets/index-BU2QbNS1.js",
+    "loadedSha256": "f7331a0bddb9d2fa46dc9372053a2dbe17b2bbcbbe6201b36ac782f70e178236",
+    "workingSha256": "efa6f858e97a0faa6dac24a10a71a115f683ff8f4989addf64d8dccc9dd21f9a",
+    "loadedNameMatchesWorkingName": true,
+    "loadedPathEqualsWorkingPath": false,
+    "workingBundleReferencedByHtml": false
+  },
+  "copyCount": 6,
+  "copies": [
+    {
+      "path": "extracted-raw/out/renderer/assets/index-BU2QbNS1.js",
+      "size": 460,
+      "sha256": "df76a01a4329a9f53c429f4f19f46249ed0847baca4fbcebc84c823aaead3c33",
+      "role": "leftover"
+    },
+    {
+      "path": "index-BU2QbNS1.js",
+      "size": 4190822,
+      "sha256": "155c87a3d8f3ed5d5669688fec9dfc3a7215a6620710b4e05d753f2667c7b6ee",
+      "role": "leftover"
+    },
+    {
+      "path": "recovered-src/out/renderer/assets/index-BU2QbNS1.js",
+      "size": 4190822,
+      "sha256": "155c87a3d8f3ed5d5669688fec9dfc3a7215a6620710b4e05d753f2667c7b6ee",
+      "role": "leftover"
+    },
+    {
+      "path": "recovered-src/out/renderer/assets/index-N0START1.js",
+      "size": 4190822,
+      "sha256": "155c87a3d8f3ed5d5669688fec9dfc3a7215a6620710b4e05d753f2667c7b6ee",
+      "role": "leftover"
+    },
+    {
+      "path": "work/app/out/renderer/assets/index-BU2QbNS1.js",
+      "size": 4040022,
+      "sha256": "f7331a0bddb9d2fa46dc9372053a2dbe17b2bbcbbe6201b36ac782f70e178236",
+      "role": "loaded"
+    },
+    {
+      "path": "work/readable/out/renderer/assets/index-BU2QbNS1.js",
+      "size": 3845703,
+      "sha256": "efa6f858e97a0faa6dac24a10a71a115f683ff8f4989addf64d8dccc9dd21f9a",
+      "role": "working-source"
+    }
+  ]
+}

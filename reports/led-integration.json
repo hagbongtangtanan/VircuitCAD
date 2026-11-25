@@ -1,0 +1,44 @@
+{
+  "archive": "pristine/app.asar",
+  "output": "out/patched/app-glow.asar",
+  "install": false,
+  "backup": null,
+  "unpacked_files": 5764,
+  "unpacked_dirs": 409,
+  "loaded_bundle": "out/renderer/assets/index-BU2QbNS1.js",
+  "original_archive_sha256": "3cbc4837276d8a321899da4736805463f2c5bdc39f3f6eacd824f10344165d0a",
+  "original_prefix": {
+    "field4": 1487688,
+    "field8": 1487684,
+    "jsonLength": 1487680,
+    "padding": 0
+  },
+  "output_prefix": {
+    "field4": 1487708,
+    "field8": 1487704,
+    "jsonLength": 1487700,
+    "padding": 0
+  },
+  "prefix_ok": true,
+  "patched_bundle_sha256": "5a6a2ed0adcdcb579308da194ee55723463f74d089ebc709bd18774973082980",
+  "output_sha256": "d173d0dd90d2125ae28de74f4492be4337f39c39b75d8b29fda65fd4d2669da7",
+  "fit_scale": "0.5",
+  "origin": "20,40",
+  "changed_files": [
+    "out/renderer/assets/index-BU2QbNS1.js"
+  ],
+  "missing_files": [],
+  "extra_files": [],
+  "pack": {
+    "fileCount": 5764,
+    "dirCount": 409,
+    "headerBytes": 1487716,
+    "archiveBytes": 73936498
+  },
+  "packed_files": 5764,
+  "packed_dirs": 409,
+  "packed_compare_ok": true,
+  "packed_bundle_hash_ok": true,
+  "verify_pass": true,
+  "pass": true
+}

@@ -1,0 +1,248 @@
+{
+  "checked": 12,
+  "results": [
+    {
+      "id": "blink-led.vcc",
+      "selector": "sample-card-blink-led.vcc",
+      "kind": "sample",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Blink led"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "potentiometer.vcc",
+      "selector": "sample-card-potentiometer.vcc",
+      "kind": "sample",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Potentiometer"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "seven-segment-counter.vcc",
+      "selector": "sample-card-seven-segment-counter.vcc",
+      "kind": "sample",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Seven segment counter"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "traffic-light.vcc",
+      "selector": "sample-card-traffic-light.vcc",
+      "kind": "sample",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Traffic light"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "uno-blink",
+      "selector": "starter-card-uno-blink",
+      "kind": "starter",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Blink an LED"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "uno-button-led",
+      "selector": "starter-card-uno-button-led",
+      "kind": "starter",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Button-controlled LED"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "uno-traffic-light",
+      "selector": "starter-card-uno-traffic-light",
+      "kind": "starter",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Traffic light"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "uno-servo",
+      "selector": "starter-card-uno-servo",
+      "kind": "starter",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Sweep a micro servo"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "uno-millis-timer",
+      "selector": "starter-card-uno-millis-timer",
+      "kind": "starter",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Millis timer"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "uno-ultrasonic",
+      "selector": "starter-card-uno-ultrasonic",
+      "kind": "starter",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Measure distance with ultrasonic"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "uno-ldr",
+      "selector": "starter-card-uno-ldr",
+      "kind": "starter",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Read light level with photoresistor"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    },
+    {
+      "id": "uno-lcd-hello",
+      "selector": "starter-card-uno-lcd-hello",
+      "kind": "starter",
+      "started": {
+        "loaded": true,
+        "status": "running",
+        "error": null,
+        "title": "Hello on an LCD"
+      },
+      "status": "running",
+      "simError": null,
+      "events": [],
+      "failedParts": [],
+      "failedSegments": [],
+      "deadPins": [],
+      "failedWires": [],
+      "warnings": [],
+      "pass": true
+    }
+  ],
+  "consoleErrors": [],
+  "pass": true,
+  "logFile": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/electrical-safety/acceptance-log.json"
+}

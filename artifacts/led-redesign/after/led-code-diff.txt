@@ -1,0 +1,689 @@
+--- renderer/parts/partColors.ts + PartBody LED (before)
++++ renderer/parts/partColors.ts + PartBody LED (after)
+--- before
++++ after
+@@ -1,124 +1,470 @@
+-var LED_COLORS = {
+-  red: {
+-    body: "#e5484d",
+-    glow: "#ff8a8f",
+-  },
+-  green: {
+-    body: "#46a758",
+-    glow: "#8ce099",
+-  },
+-  blue: {
+-    body: "#3b82f6",
+-    glow: "#93c5fd",
+-  },
+-  yellow: {
+-    body: "#e2b93b",
+-    glow: "#fbe38a",
+-  },
+-  white: {
+-    body: "#d7dbe3",
+-    glow: "#ffffff",
+-  },
++var LED_DRAWING = {
++  domeRadius: 10,
++  flangeRadius: 11.5,
++  legThickness: 1.2,
++  darkHaloRadius: 20,
++  lightHaloRadius: 18,
++  lightRingRadius: 16,
++  flatCut: 2,
+ };
+ 
++function ledRgba(hex, alpha) {
++  const [r, g, b] = parseHex(hex);
++  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
++}
++
++function ledPaint(color, lit) {
++  const key = LED_COLORS[color] === void 0 ? "red" : color;
++  const base = LED_COLORS[key];
++  return {
++    body: cssThemeColor(`--cb-led-${key}-${lit ? "lit" : "unlit"}`, lit ? base.glow : base.body),
++    rim: cssThemeColor(`--cb-led-${key}-rim`, PART_BODY_STROKE),
++    highlight: cssThemeColor(`--cb-led-${key}-highlight`, base.glow),
++    core: cssThemeColor(`--cb-led-${key}-core`, base.glow),
++    halo: cssThemeColor(`--cb-led-${key}-halo`, base.glow),
++    flange: cssThemeColor("--cb-led-flange", "#8a94a0"),
++    leg: cssThemeColor("--cb-led-leg", "#8a9ba8"),
++    pin: cssThemeColor("--cb-led-pin", "#b7d2ef"),
++    surface: cssThemeColor("--cb-led-surface", "#0a1627"),
++    labelBg: cssThemeColor("--cb-led-label-bg", "#20262d"),
++    labelStroke: cssThemeColor("--cb-led-label-stroke", "#3f4654"),
++    labelText: cssThemeColor("--cb-led-label-text", "#eaf4ff"),
++    hover: cssThemeColor("--cb-led-hover", "#6fb3ff"),
++    selected: cssThemeColor("--cb-led-selected", "#ffc928"),
++    connected: cssThemeColor("--cb-led-connected", "#1d4ed8"),
++    haloOpacity: cssThemeNumber("--cb-led-halo-opacity", 0.45),
++    ringOpacity: cssThemeNumber("--cb-led-ring-opacity", 0.6),
++    highlightOpacity: cssThemeNumber("--cb-led-highlight-opacity", 0.36),
++    coreOpacity: cssThemeNumber("--cb-led-core-opacity", 0.9),
++  };
++}
++
+ ...
+ 
+     case "led": {
+-      const palette = LED_COLORS[part.props.color];
++      const paint = ledPaint(part.props.color, false);
++      const litPaint = ledPaint(part.props.color, true);
+       const glow = Math.min(1, Math.max(0, brightness));
+-      const glowRadius = 13 + 9 * glow;
+-      return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+-        import_jsx_runtime.Fragment,
+-        {
+-          children: [
+-            glow > 0.01 &&
+-              /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+-                import_jsx_runtime.Fragment,
+-                {
+-                  children: [
+-                    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
+-                      x: 20,
+-                      y: 16,
+-                      radius: glowRadius,
+-                      fill: palette.glow,
+-                      opacity: lightMode ? 0.55 * glow : 0.4 * glow,
+-                      shadowColor: palette.glow,
+-                      shadowBlur: lightMode ? 28 * glow : 20 * glow,
+-                      shadowOpacity: lightMode ? 1 * glow : 0.8 * glow,
+-                      listening: false,
+-                    }),
+-                    lightMode &&
+-                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
+-                        x: 20,
+-                        y: 16,
+-                        radius: glowRadius + 2,
+-                        stroke: "#0d0a06",
+-                        strokeWidth: 1.5,
+-                        opacity: 0.6 * glow,
+-                        listening: false,
+-                      }),
+-                  ],
+-                },
+-              ),
+-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line$1, {
+-              points: [10, 40, 10, 26],
+-              stroke: PART_BODY_STROKE,
+-              strokeWidth: 2,
+-            }),
+-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line$1, {
+-              points: [30, 40, 30, 26],
+-              stroke: PART_BODY_STROKE,
+-              strokeWidth: 2,
+-            }),
+-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Circle, {
+-              x: 20,
+-              y: 16,
+-              radius: 12,
+-              fill: palette.body,
+-              stroke: selected
+-                ? PART_SELECTED_STROKE
+-                : lightMode
+-                  ? "#1a1a1a"
+-                  : PART_BODY_STROKE,
+-              strokeWidth: selected ? 2 : lightMode ? 2 : 1,
+-              shadowColor: lightMode ? palette.glow : void 0,
+-              shadowBlur: lightMode ? 10 : 0,
+-              shadowOpacity: lightMode ? 0.75 * glow : 0,
+-            }),
+-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Ellipse, {
+-              x: 17,
+-              y: 13,
+-              radiusX: glow > 0.01 ? 6 : 4,
+-              radiusY: glow > 0.01 ? 5 : 3,
+-              fill: palette.glow,
+-              opacity:
+-                glow > 0.01
+-                  ? lightMode
+-                    ? 0.5 + 0.5 * glow
+-                    : 0.35 + 0.6 * glow
+-                  : 0.85,
+-            }),
+-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line$1, {
+-              points: [28, 24, 33, 28],
+-              stroke: PART_BODY_STROKE,
+-              strokeWidth: 2,
+-            }),
+-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line$1, {
+-              points: [29, 31, 35, 31],
+-              stroke: palette.glow,
+-              strokeWidth: 1.5,
+-              opacity: 0.9,
++      const isLit = glow > 0.01;
++      const bodyRadius = LED_DRAWING.domeRadius;
++      const flangeRadius = LED_DRAWING.flangeRadius;
++      const legThickness = LED_DRAWING.legThickness;
++      const ledX = 15;
++      const ledY = 16;
++      const haloRadius = (lightMode ? LED_DRAWING.lightHaloRadius : LED_DRAWING.darkHaloRadius) * (0.92 + 0.08 * glow);
++      const ringRadius = LED_DRAWING.lightRingRadius * (isLit ? 1 : 0.94);
++      const coreRadius = 2.6 + 1.4 * glow;
++      const shade = isLit ? litPaint : paint;
++      const flatX = ledX + flangeRadius - LED_DRAWING.flatCut;
++      const flatY = Math.sqrt(flangeRadius * flangeRadius - (flatX - ledX) ** 2);
++      const flatAngle = Math.asin(flatY / flangeRadius);
++      const ringOpacity = paint.ringOpacity * (isLit ? 1 : 0.45);
++      window.__LED_GEOMETRY__ ??= {};
++      window.__LED_GEOMETRY__[part.id] = {
++        domeCenter: { x: ledX, y: ledY },
++        haloCenter: { x: ledX, y: ledY },
++        centerDifference: { x: 0, y: 0 },
++        domeRadius: bodyRadius,
++        flangeRadius,
++        flatEdge: { side: "K", x: flatX, yTop: ledY - flatY, yBottom: ledY + flatY },
++        strayDomeBar: false,
++        legHook: false,
++        legStub: { length: 3, fromY: 37, toY: 40 },
++        halo: { center: { x: ledX, y: ledY }, radius: haloRadius, type: "radial-gradient", opacity: paint.haloOpacity, hardEdge: false },
++        outerRing: lightMode ? { radius: ringRadius, opacity: ringOpacity, width: 1 } : null,
++        core: isLit ? { radius: coreRadius, type: "radial-gradient" } : null,
++      };
++      return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, {
++        children: [
++          isLit && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
++            x: ledX,
++            y: ledY,
++            radius: haloRadius,
++            fill: shade.halo,
++            fillPriority: "radial-gradient",
++            fillRadialGradientStartPoint: { x: ledX, y: ledY },
++            fillRadialGradientEndPoint: { x: ledX, y: ledY },
++            fillRadialGradientStartRadius: 0,
++            fillRadialGradientEndRadius: haloRadius,
++            fillRadialGradientColorStops: [0, ledRgba(shade.halo, paint.haloOpacity * 0.18), 0.5, ledRgba(shade.halo, paint.haloOpacity), 1, ledRgba(shade.halo, 0)],
++            listening: false,
++            name: "led-halo",
++          }),
++          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line$1, {
++            points: [ledX - 5, 23, ledX - 5, 40],
++            stroke: paint.leg,
++            strokeWidth: legThickness,
++            lineCap: "round",
++            listening: false,
++          }),
++          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line$1, {
++            points: [ledX + 5, 26, ledX + 5, 40],
++            stroke: paint.leg,
++            strokeWidth: legThickness,
++            lineCap: "round",
++            listening: false,
++          }),
++          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Shape, {
++            sceneFunc: (context, shape) => {
++              context.beginPath();
++              context.moveTo(flatX, ledY - flatY);
++              context.lineTo(flatX, ledY + flatY);
++              context.arc(ledX, ledY, flangeRadius, flatAngle, -flatAngle, false);
++              context.closePath();
++              context.strokeShape(shape);
++            },
++            stroke: paint.flange,
++            strokeWidth: 1.2,
++            fillEnabled: false,
++            listening: false,
++            perfectDrawEnabled: false,
++            name: "led-flange",
++          }),
++          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
++            x: ledX,
++            y: ledY,
++            radius: bodyRadius,
++            fill: shade.body,
++            fillPriority: "radial-gradient",
++            fillRadialGradientStartPoint: { x: ledX - 3.4, y: ledY - 3.4 },
++            fillRadialGradientEndPoint: { x: ledX + 2.8, y: ledY + 2.8 },
++            fillRadialGradientStartRadius: 0,
++            fillRadialGradientEndRadius: bodyRadius * 1.25,
++            fillRadialGradientColorStops: [0, ledRgba(shade.highlight, paint.highlightOpacity), 0.55, shade.body, 1, shade.rim],
++            stroke: selected ? paint.selected : paint.rim,
++            strokeWidth: 1.5,
++            name: "led-dome",
++          }),
++          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Ellipse, {
++            x: ledX - 3.2,
++            y: ledY - 4.4,
++            radiusX: 3.2,
++            radiusY: 2.1,
++            fill: shade.highlight,
++            fillPriority: "radial-gradient",
++            fillRadialGradientStartPoint: { x: ledX - 3.8, y: ledY - 5 },
++            fillRadialGradientEndPoint: { x: ledX - 3.8, y: ledY - 5 },
++            fillRadialGradientStartRadius: 0,
++            fillRadialGradientEndRadius: 3.2,
++            fillRadialGradientColorStops: [0, ledRgba(shade.highlight, paint.highlightOpacity), 1, ledRgba(shade.highlight, 0)],
++            listening: false,
++            name: "led-highlight",
++          }),
++          isLit && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
++            x: ledX,
++            y: ledY,
++            radius: coreRadius,
++            fill: litPaint.core,
++            fillPriority: "radial-gradient",
++            fillRadialGradientStartPoint: { x: ledX, y: ledY },
++            fillRadialGradientEndPoint: { x: ledX, y: ledY },
++            fillRadialGradientStartRadius: 0,
++            fillRadialGradientEndRadius: coreRadius,
++            fillRadialGradientColorStops: [0, ledRgba(litPaint.core, paint.coreOpacity), 0.55, ledRgba(litPaint.core, paint.coreOpacity * 0.45), 1, ledRgba(litPaint.core, 0)],
++            listening: false,
++            name: "led-core",
++          }),
++          lightMode && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
++            x: ledX,
++            y: ledY,
++            radius: ringRadius,
++            stroke: shade.halo,
++            strokeWidth: 1,
++            opacity: ringOpacity,
++            listening: false,
++            name: "led-ring",
++          }),
++        ],
++      });
++    }
++
++function PinMarker(props) {
++  const ref = {
++    partId: props.partId,
++    pinId: props.pinId,
++  };
++  const header = props.pinStyle === "header";
++  const breadboard = props.partType?.startsWith("breadboard") === true;
++  const sevenSegment = props.partType === "seven-segment";
++  const ledPin = props.partType === "led";
++  const ledPinPaint = ledPin ? ledPaint(props.partColor ?? "red", false) : null;
++  const connected = breadboard && props.connectedColor !== null;
++  const error = props.state === "error";
++  const focused = props.state === "focused";
++  const stateRingColor = error
++    ? BREADBOARD_THEME.error
++    : focused
++      ? BREADBOARD_THEME.hover
++      : connected
++        ? BREADBOARD_THEME.connected
++        : props.state === "active"
++          ? "#FFC928"
++          : props.state === "target" || props.state === "hovered"
++            ? BREADBOARD_THEME.hover
++            : null;
++  const stateRingWidth = error ? 4 : focused ? 3.5 : connected ? 3 : 2.2;
++  const connectedFill =
++    !breadboard && !ledPin && props.connectedColor
++      ? props.connectedColor
++      : null;
++  const fill =
++    connectedFill ??
++    (ledPin
++      ? ledPinPaint.pin
++      : props.state === "active"
++        ? "#ffc928"
++        : props.state === "target"
++          ? PIN_TARGET_FILL
++          : props.state === "hovered"
++            ? "#6fb3ff"
++            : header
++              ? HEADER_PIN_FILL
++              : breadboard
++                ? "transparent"
++                : "#b7d2ef");
++  const padRingStroke = error
++    ? BREADBOARD_THEME.error
++    : focused
++      ? BREADBOARD_THEME.hover
++      : props.connectedColor
++        ? props.connectedColor
++        : props.state === "active"
++          ? "#ffc928"
++          : props.state === "target"
++            ? PIN_TARGET_RING
++            : props.state === "hovered"
++              ? "#6fb3ff"
++              : "#8b95a5";
++  const ledPinStroke = ledPin
++    ? error
++      ? BREADBOARD_THEME.error
++      : focused || props.state === "hovered"
++        ? ledPinPaint.hover
++        : connected || props.connectedColor
++          ? ledPinPaint.connected
++          : props.state === "active" || props.state === "target"
++            ? ledPinPaint.selected
++            : ledPinPaint.surface
++    : null;
++  const sevenSegmentRingRadius =
++    (props.state === "idle"
++      ? SEVEN_SEGMENT_IDLE_RING_PITCHES
++      : SEVEN_SEGMENT_ACTIVE_RING_PITCHES) * SEVEN_SEGMENT_PITCH / props.scale;
++  const radius = sevenSegment ? (0.16 * SEVEN_SEGMENT_PITCH) / props.scale : 4 / props.scale;
++  const pinSize = 8 / props.scale;
++  const ringSize = pinSize * (props.state === "target" ? 3.2 : 2.4);
++  const ringStroke =
++    props.state === "active"
++      ? "#ffc928"
++      : props.state === "target"
++        ? PIN_TARGET_RING
++        : "#6fb3ff";
++  const pinStroke = ledPin
++    ? ledPinStroke
++    : breadboard
++      ? "rgba(0, 0, 0, 0.01)"
++      : void 0;
++  if (ledPin) {
++    window.__LED_ANCHOR_DEBUG__ ??= {};
++    window.__LED_ANCHOR_DEBUG__[`${props.partId}:${props.pinId}`] = {
++      x: props.position.x,
++      y: props.position.y,
++      radius,
++      hitStrokeWidth: 8 / props.scale,
++      fill,
++      stroke: pinStroke,
++      state: props.state,
++    };
++    if (props.labelBox !== null) {
++      window.__LED_LABEL_DEBUG__ ??= {};
++      window.__LED_LABEL_DEBUG__[`${props.partId}:${props.pinId}`] = {
++        text: props.label,
++        angle: 0,
++        mirrored: false,
++        box: { ...props.labelBox },
++      };
++    }
++  }
++  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Group, {
++    children: [
++      sevenSegment &&
++        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
++          x: props.position.x,
++          y: props.position.y,
++          radius: sevenSegmentRingRadius,
++          fill: "#0b0d12",
++          stroke: padRingStroke,
++          strokeWidth: 1.2 / props.scale,
++          shadowColor: stateRingColor ?? void 0,
++          shadowBlur: stateRingColor === null ? 0 : 6 / props.scale,
++          shadowOpacity: stateRingColor === null ? 0 : 0.7,
++          listening: false,
++        }),
++      breadboard &&
++        stateRingColor !== null &&
++        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
++          x: props.position.x,
++          y: props.position.y,
++          radius: 5.5 / props.scale,
++          fill: "transparent",
++          stroke: stateRingColor,
++          strokeWidth: stateRingWidth / props.scale,
++          shadowColor:
++            props.state === "hovered" || focused ? stateRingColor : void 0,
++          shadowBlur:
++            props.state === "hovered" || focused ? 10 / props.scale : 0,
++          shadowOpacity: props.state === "hovered" || focused ? 0.8 : 0,
++          listening: false,
++        }),
++      props.state !== "idle" &&
++        !breadboard &&
++        !sevenSegment &&
++        (header
++          ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Rect", {
++              x: props.position.x - ringSize / 2,
++              y: props.position.y - ringSize / 2,
++              width: ringSize,
++              height: ringSize,
++              cornerRadius: 0,
++              fill: props.state === "target" ? PIN_TARGET_RING : "transparent",
++              opacity: props.state === "target" ? 0.18 : 1,
++              stroke: ringStroke,
++              strokeWidth: (props.state === "target" ? 2.5 : 1.5) / props.scale,
+               listening: false,
+-            }),
+-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Text$1, {
+-              x: 5,
+-              y: 37,
+-              text: "+",
+-              fontSize: 5,
+-              fill: "#dce8f5",
++            })
++          : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Circle", {
++              x: props.position.x,
++              y: props.position.y,
++              radius: radius * (props.state === "target" ? 3.4 : 2.6),
++              fill: props.state === "target" ? PIN_TARGET_RING : "transparent",
++              opacity: props.state === "target" ? 0.18 : 1,
++              stroke: ringStroke,
++              strokeWidth: (props.state === "target" ? 2.5 : 1.5) / props.scale,
+               listening: false,
+-            }),
+-          ],
+-        },
+-      );
+-    }
++            })),
++      header
++        ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Rect, {
++            x: props.position.x - pinSize / 2,
++            y: props.position.y - pinSize / 2,
++            width: pinSize,
++            height: pinSize,
++            cornerRadius: 0,
++            fill,
++            stroke: "#6f5418",
++            strokeWidth: 0.6 / props.scale,
++            hitStrokeWidth: 10 / props.scale,
++            onMouseEnter: () => props.onHover(ref),
++            onMouseLeave: () => props.onHover(null),
++            onMouseDown: (event) => {
++              event.cancelBubble = true;
++              props.onPointerDown(ref, event);
++            },
++          })
++        : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Circle, {
++            x: props.position.x,
++            y: props.position.y,
++            radius,
++            fill,
++            stroke: pinStroke,
++            strokeWidth: breadboard && !ledPin ? 0.01 / props.scale : ledPin ? 1.5 / props.scale : void 0,
++            hitStrokeWidth: 8 / props.scale,
++            onMouseEnter: () => props.onHover(ref),
++            onMouseLeave: () => props.onHover(null),
++            onMouseDown: (event) => {
++              event.cancelBubble = true;
++              props.onPointerDown(ref, event);
++            },
++          }),
++      breadboard &&
++        (props.state === "hovered" || focused) &&
++        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
++          import_jsx_runtime.Fragment,
++          {
++            children: [
++              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Rect, {
++                x: props.position.x + 8 / props.scale,
++                y: props.position.y - 24 / props.scale,
++                width: (props.label.length > 5 ? 62 : 38) / props.scale,
++                height: 20 / props.scale,
++                cornerRadius: 4 / props.scale,
++                fill: BREADBOARD_THEME.bodyHighlight,
++                stroke: stateRingColor,
++                strokeWidth: 1 / props.scale,
++                shadowColor: "#111827",
++                shadowBlur: 6 / props.scale,
++                shadowOpacity: 0.3,
++                shadowOffsetY: 2 / props.scale,
++                listening: false,
++              }),
++              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Text$1, {
++                x: props.position.x + 12 / props.scale,
++                y: props.position.y - 21 / props.scale,
++                width: (props.label.length > 5 ? 54 : 30) / props.scale,
++                height: 14 / props.scale,
++                text: props.label,
++                align: "center",
++                verticalAlign: "middle",
++                fontSize: 11 / props.scale,
++                fontFamily: "system-ui, sans-serif",
++                fontStyle: "bold",
++                fill: "#20262D",
++                listening: false,
++              }),
++            ],
++          },
++        ),
++      !breadboard &&
++        (props.showLabel || props.state === "hovered") &&
++        props.labelBox !== null &&
++        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
++          import_jsx_runtime.Fragment,
++          {
++            children: [
++              ledPin &&
++                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Rect", {
++                  ...props.labelBox,
++                  cornerRadius: 2 / props.scale,
++                  fill: ledPinPaint.labelBg,
++                  stroke: ledPinPaint.labelStroke,
++                  strokeWidth: 0.8 / props.scale,
++                  listening: false,
++                }),
++              sevenSegment &&
++                /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Rect", {
++                  ...props.labelBox,
++                  cornerRadius: 3 / props.scale,
++                  fill: "#0b0d12",
++                  stroke: "#3f4654",
++                  strokeWidth: 0.8 / props.scale,
++                  shadowColor: "#000000",
++                  shadowBlur: 3 / props.scale,
++                  shadowOpacity: 0.35,
++                  listening: false,
++                }),
++              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("Text", {
++                x: props.labelBox.x,
++                y: props.labelBox.y,
++                width: props.labelBox.width,
++                height: props.labelBox.height,
++                text: props.label,
++                fontSize: header
++                  ? props.labelBox.fontSize * 0.82
++                  : props.labelBox.fontSize,
++                fontStyle: header ? "normal" : "bold",
++                align: "center",
++                verticalAlign: "middle",
++                wrap: "none",
++                fill: ledPin ? ledPinPaint.labelText : "#eaf4ff",
++                stroke: header || ledPin ? void 0 : "#040b16",
++                strokeWidth: header || ledPin ? 0 : 2.5 / props.scale,
++                fillAfterStrokeEnabled: !header && !ledPin,
++                listening: false,
++              }),
++            ],
++          },
++        ),
++    ],
++  });
++}
++
++window.__LCD_THEME_STORE__ = useThemeStore;
+--- styles LED tokens (dark) (before)
++++ styles LED tokens (dark) (after)
+--- before
++++ after
+@@ -0,0 +1,44 @@
++  --cb-led-red-unlit: #a3454d;
++  --cb-led-red-lit: #ff5d63;
++  --cb-led-red-rim: #70282f;
++  --cb-led-red-highlight: #ffd0d4;
++  --cb-led-red-core: #ff9ba0;
++  --cb-led-red-halo: #ff6b70;
++  --cb-led-green-unlit: #397a48;
++  --cb-led-green-lit: #5fe07a;
++  --cb-led-green-rim: #285b35;
++  --cb-led-green-highlight: #d7f7de;
++  --cb-led-green-core: #9df0ad;
++  --cb-led-green-halo: #67e585;
++  --cb-led-blue-unlit: #3a63a8;
++  --cb-led-blue-lit: #63a8ff;
++  --cb-led-blue-rim: #284a80;
++  --cb-led-blue-highlight: #dbe9ff;
++  --cb-led-blue-core: #a8ccff;
++  --cb-led-blue-halo: #74b4ff;
++  --cb-led-yellow-unlit: #a07a25;
++  --cb-led-yellow-lit: #ffd54d;
++  --cb-led-yellow-rim: #6b521b;
++  --cb-led-yellow-highlight: #fff0bd;
++  --cb-led-yellow-core: #ffe38a;
++  --cb-led-yellow-halo: #ffdb66;
++  --cb-led-white-unlit: #aab4c2;
++  --cb-led-white-lit: #f8fbff;
++  --cb-led-white-rim: #6b7686;
++  --cb-led-white-highlight: #ffffff;
++  --cb-led-white-core: #ffffff;
++  --cb-led-white-halo: #dbeafe;
++  --cb-led-flange: #5b6674;
++  --cb-led-leg: #5b6674;
++  --cb-led-pin: #b7d2ef;
++  --cb-led-surface: #0a1627;
++  --cb-led-label-bg: #0a1627;
++  --cb-led-label-stroke: #334155;
++  --cb-led-label-text: #edf5ff;
++  --cb-led-hover: #6fb3ff;
++  --cb-led-connected: #1d4ed8;
++  --cb-led-selected: #ffc928;
++  --cb-led-halo-opacity: 0.45;
++  --cb-led-ring-opacity: 0;
++  --cb-led-highlight-opacity: 0.36;
++  --cb-led-core-opacity: 0.9;
+--- styles LED tokens (light) (before)
++++ styles LED tokens (light) (after)
+--- before
++++ after
+@@ -0,0 +1,44 @@
++  --cb-led-red-unlit: #b3261e;
++  --cb-led-red-lit: #d32f2f;
++  --cb-led-red-rim: #7f1d1a;
++  --cb-led-red-highlight: #ffd9d9;
++  --cb-led-red-core: #ff9d9d;
++  --cb-led-red-halo: #d32f2f;
++  --cb-led-green-unlit: #1e7e34;
++  --cb-led-green-lit: #2e9b3e;
++  --cb-led-green-rim: #165c2a;
++  --cb-led-green-highlight: #d8f5df;
++  --cb-led-green-core: #9be0a8;
++  --cb-led-green-halo: #2e9b3e;
++  --cb-led-blue-unlit: #1558b3;
++  --cb-led-blue-lit: #1e6fd9;
++  --cb-led-blue-rim: #0f3f91;
++  --cb-led-blue-highlight: #dbeafe;
++  --cb-led-blue-core: #a8c9ff;
++  --cb-led-blue-halo: #1e6fd9;
++  --cb-led-yellow-unlit: #b77900;
++  --cb-led-yellow-lit: #e0a800;
++  --cb-led-yellow-rim: #6b4700;
++  --cb-led-yellow-highlight: #ffedb8;
++  --cb-led-yellow-core: #ffd45c;
++  --cb-led-yellow-halo: #b77900;
++  --cb-led-white-unlit: #d7dbe3;
++  --cb-led-white-lit: #f5f5f5;
++  --cb-led-white-rim: #5b6674;
++  --cb-led-white-highlight: #ffffff;
++  --cb-led-white-core: #ffffff;
++  --cb-led-white-halo: #5b6674;
++  --cb-led-flange: #5b6674;
++  --cb-led-leg: #5b6674;
++  --cb-led-pin: #4b5563;
++  --cb-led-surface: #ffffff;
++  --cb-led-label-bg: #ffffff;
++  --cb-led-label-stroke: #94a3b8;
++  --cb-led-label-text: #1f2937;
++  --cb-led-hover: #0e7490;
++  --cb-led-selected: #8a5a00;
++  --cb-led-connected: #1d4ed8;
++  --cb-led-halo-opacity: 0.35;
++  --cb-led-ring-opacity: 0.6;
++  --cb-led-highlight-opacity: 0.32;
++  --cb-led-core-opacity: 0.85;

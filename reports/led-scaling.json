@@ -1,0 +1,93 @@
+{
+  "existing": {
+    "definition": "work/app/out/renderer/assets/index-BU2QbNS1.js:60840-60867",
+    "size": { "width": 40, "height": 40 },
+    "pins": {
+      "anode": { "id": "anode", "label": "A", "x": 10, "y": 40 },
+      "cathode": { "id": "cathode", "label": "K", "x": 30, "y": 40 }
+    },
+    "pin_spacing": 20,
+    "part_local_to_world": {
+      "multiplier": 1,
+      "factor_exists": false,
+      "formula": "world = part.position + rotate(local, part.rotation, size)",
+      "flip_multipliers": [-1, 1],
+      "evidence": [
+        "work/app/out/renderer/assets/index-BU2QbNS1.js:64281-64314",
+        "work/app/out/renderer/assets/index-BU2QbNS1.js:60716-60755",
+        "work/app/out/renderer/assets/index-BU2QbNS1.js:75623-75650"
+      ]
+    },
+    "zoom": {
+      "world_to_screen": "screen = world * viewport.scale + viewport.offset",
+      "part_local_unit_equals_world_unit": true
+    },
+    "hit_area": {
+      "pin_marker": {
+        "radius_world": "4 / viewport.scale",
+        "hit_stroke_width_world": "8 / viewport.scale",
+        "effective_hit_radius_world": "8 / viewport.scale",
+        "effective_hit_radius_at_scale_1": 8,
+        "evidence": "work/app/out/renderer/assets/index-BU2QbNS1.js:75335-75454"
+      },
+      "wire_snap": {
+        "radius_world": "min(16, 14 / viewport.scale)",
+        "radius_at_scale_1": 14,
+        "evidence": "work/app/out/renderer/assets/index-BU2QbNS1.js:75272-75290"
+      },
+      "body_shapes": {
+        "circle_center": [20, 16],
+        "circle_radius": 12,
+        "legs": [[10, 40, 10, 26], [30, 40, 30, 26]],
+        "explicit_rectangular_hit_area": false
+      }
+    }
+  },
+  "led_new_design": {
+    "source": "led-new/src/renderLedSvg.ts:31-130",
+    "pitch": 40,
+    "anchors": {
+      "anode": [-20, 0],
+      "cathode": [20, 0]
+    },
+    "anchor_spacing": 40,
+    "body_hit_design": {
+      "x": -52,
+      "y": -110,
+      "width": 104,
+      "height": 118
+    },
+    "anchor_hit_radius_design": 8,
+    "view_box_design": [-120, -180, 240, 220]
+  },
+  "fit": {
+    "scale_formula": "existing_pin_spacing / led_new_anchor_spacing",
+    "scale": 0.5,
+    "origin_formula": "existing_anode - scale * led_new_anode",
+    "origin_part_local": [20, 40],
+    "mapping_formula": "partLocal = (20, 40) + 0.5 * design",
+    "mapped_anchors": {
+      "anode": [10, 40],
+      "cathode": [30, 40]
+    },
+    "mapped_body_hit_part_local": {
+      "x": -6,
+      "y": -15,
+      "width": 52,
+      "height": 59
+    },
+    "mapped_anchor_hit_radius_part_local": 4,
+    "mapped_view_box_part_local": [-40, -50, 120, 110]
+  },
+  "worked_example": {
+    "part_position": [590, 100],
+    "rotation": 0,
+    "scale": 1,
+    "anode_design": [-20, 0],
+    "anode_part_local": [10, 40],
+    "anode_world": [600, 140],
+    "cathode_design": [20, 0],
+    "cathode_part_local": [30, 40],
+    "cathode_world": [620, 140]
+  }
+}

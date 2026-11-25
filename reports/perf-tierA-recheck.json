@@ -1,0 +1,20 @@
+{
+  "label": "tierA-recheck",
+  "sample": "traffic-light.vcc",
+  "port": "9222",
+  "durationMs": 6000,
+  "settleMs": 1200,
+  "metrics": {
+    "domParser": 0,
+    "ctxOps": 5239,
+    "longTasks": 1,
+    "frameCount": 296,
+    "frameP50": 16.699999999953434,
+    "frameP95": 50,
+    "frameMax": 83.39999999990687,
+    "frameMean": 20.33783783783784,
+    "over16": 87,
+    "over33": 38
+  },
+  "runtimeExceptions": []
+}

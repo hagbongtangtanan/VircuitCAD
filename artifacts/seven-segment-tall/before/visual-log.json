@@ -1,0 +1,59 @@
+{
+  "geometry": null,
+  "pinDiffs": [
+    {
+      "pinId": "g",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "f",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "common",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "a",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "b",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "e",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "d",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "common2",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "c",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "dp",
+      "dx": 0,
+      "dy": 0
+    }
+  ],
+  "pinCoordinatesUnchanged": true,
+  "screenshot100": "artifacts/seven-segment-tall/before/segments-100.png",
+  "screenshot400": "artifacts/seven-segment-tall/before/segments-400.png",
+  "strip": "artifacts/seven-segment-tall/before/digits-0-9.png"
+}

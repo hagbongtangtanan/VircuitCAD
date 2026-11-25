@@ -1,0 +1,50 @@
+{
+  "app": "out/app-pot.asar",
+  "sample": "resources/samples/potentiometer.vcc",
+  "screenshot": "pot-new/out/app-app-pot-pot.png",
+  "value": 0.5,
+  "canvasRect": {
+    "x": 11,
+    "y": 63,
+    "width": 1146,
+    "height": 744
+  },
+  "knob": {
+    "centre": {
+      "x": 581.5,
+      "y": 617.5
+    },
+    "expectedCentre": {
+      "x": 582.2,
+      "y": 618
+    },
+    "centreDelta": {
+      "x": -0.7000000000000455,
+      "y": -0.5
+    },
+    "radiusPx": 10.124228365658293,
+    "expectedRadiusPx": 10.8,
+    "bodyRadiusPx": 22.5,
+    "expectedBodyRadiusPx": 22.2,
+    "pixels": 251,
+    "zoom": 1
+  },
+  "pointer": {
+    "expectedDeg": 90,
+    "partRotationDeg": 90,
+    "measuredDeg": 90,
+    "deltaDeg": 0,
+    "pixels": 62
+  },
+  "tokens": {
+    "pointer": "#0F1822",
+    "knobTop": "#7DAAE6",
+    "knobBottom": "#4F86D0"
+  },
+  "contrasts": {
+    "pointerVsKnobTop": 7.46511301642949,
+    "pointerVsKnobBottom": 4.815159939503241
+  },
+  "runtimeExceptions": [],
+  "pass": true
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "partId": "seg1",
+    "type": "seven-segment",
+    "position": { "x": 0, "y": 0 },
+    "rotation": 0,
+    "flipX": false,
+    "flipY": false,
+    "pins": [
+      { "pinId": "a", "label": "a", "x": 7, "y": 0 },
+      { "pinId": "b", "label": "b", "x": 21, "y": 0 },
+      { "pinId": "c", "label": "c", "x": 35, "y": 0 },
+      { "pinId": "d", "label": "d", "x": 49, "y": 0 },
+      { "pinId": "e", "label": "e", "x": 63, "y": 0 },
+      { "pinId": "f", "label": "f", "x": 7, "y": 90 },
+      { "pinId": "g", "label": "g", "x": 21, "y": 90 },
+      { "pinId": "dp", "label": "DP", "x": 35, "y": 90 },
+      { "pinId": "common", "label": "CC", "x": 49, "y": 90 },
+      { "pinId": "common2", "label": "CC", "x": 63, "y": 90 }
+    ]
+  }
+]

@@ -1,0 +1,254 @@
+{
+  "base": {
+    "dark": {
+      "blue-unlit:anode": {
+        "text": "A",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 268.85,
+          "y": 241.5,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "bottom",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-unlit:cathode": {
+        "text": "K",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 281.5,
+          "y": 238.5625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "right",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-lit:anode": {
+        "text": "A",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 528.85,
+          "y": 241.5,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "bottom",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-lit:cathode": {
+        "text": "K",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 541.5,
+          "y": 238.5625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "right",
+          "row": 0,
+          "inside": false
+        }
+      }
+    },
+    "light": {
+      "blue-lit:anode": {
+        "text": "A",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 528.85,
+          "y": 241.5,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "bottom",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-lit:cathode": {
+        "text": "K",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 541.5,
+          "y": 238.5625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "right",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-unlit:anode": {
+        "text": "A",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 268.85,
+          "y": 241.5,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "bottom",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-unlit:cathode": {
+        "text": "K",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 281.5,
+          "y": 238.5625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "right",
+          "row": 0,
+          "inside": false
+        }
+      }
+    }
+  },
+  "transformed": {
+    "dark": {
+      "blue-unlit:anode": {
+        "text": "A",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 268.85,
+          "y": 241.5,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "bottom",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-unlit:cathode": {
+        "text": "K",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 281.5,
+          "y": 238.5625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "right",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-lit:anode": {
+        "text": "A",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 501.20000000000005,
+          "y": 213.5625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "bottom",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-lit:cathode": {
+        "text": "K",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 503.85,
+          "y": 200.625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "left",
+          "row": 0,
+          "inside": false
+        }
+      }
+    },
+    "light": {
+      "blue-lit:anode": {
+        "text": "A",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 501.20000000000005,
+          "y": 213.5625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "bottom",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-lit:cathode": {
+        "text": "K",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 503.85,
+          "y": 200.625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "left",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-unlit:anode": {
+        "text": "A",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 268.85,
+          "y": 241.5,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "bottom",
+          "row": 0,
+          "inside": false
+        }
+      },
+      "blue-unlit:cathode": {
+        "text": "K",
+        "angle": 0,
+        "mirrored": false,
+        "box": {
+          "x": 281.5,
+          "y": 238.5625,
+          "width": 2.3,
+          "height": 2.875,
+          "fontSize": 2.5,
+          "edge": "right",
+          "row": 0,
+          "inside": false
+        }
+      }
+    }
+  }
+}

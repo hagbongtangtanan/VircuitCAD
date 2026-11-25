@@ -1,0 +1,19 @@
+{
+  "label": "baseline2",
+  "sample": "traffic-light.vcc",
+  "durationMs": 6000,
+  "settleMs": 1200,
+  "metrics": {
+    "domParser": 207,
+    "ctxOps": 266679,
+    "longTasks": 0,
+    "frameCount": 139,
+    "frameP50": 33.40000000002328,
+    "frameP95": 83.39999999999418,
+    "frameMax": 100.10000000000582,
+    "frameMean": 43.54892086330927,
+    "over16": 108,
+    "over33": 71
+  },
+  "runtimeExceptions": []
+}

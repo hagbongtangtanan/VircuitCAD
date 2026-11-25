@@ -1,0 +1,36 @@
+{
+  "source": "live app canvas pixels (Konva layer canvases, getImageData)",
+  "runtime": "resources/app.asar",
+  "dark": {
+    "theme": "dark",
+    "canvases": 6,
+    "cream": {
+      "hex": "#E6E1CF",
+      "pixels": 6319
+    },
+    "redRail": {
+      "hex": "#D75250",
+      "pixels": 1390
+    },
+    "blueRail": {
+      "hex": "#6591D3",
+      "pixels": 2057
+    }
+  },
+  "light": {
+    "theme": "light",
+    "canvases": 6,
+    "cream": {
+      "hex": "#E6E1CF",
+      "pixels": 6319
+    },
+    "redRail": {
+      "hex": "#D75250",
+      "pixels": 1390
+    },
+    "blueRail": {
+      "hex": "#6D92B6",
+      "pixels": 3505
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "app": "out/app-library-sections.asar",
+  "select": {
+    "found": true,
+    "value": "all",
+    "options": [
+      {
+        "value": "all",
+        "label": "All parts"
+      },
+      {
+        "value": "boards",
+        "label": "Boards"
+      },
+      {
+        "value": "outputs",
+        "label": "Outputs"
+      },
+      {
+        "value": "inputs",
+        "label": "Inputs"
+      },
+      {
+        "value": "passives",
+        "label": "Passives"
+      }
+    ]
+  },
+  "default_view": {
+    "cards": [
+      "arduino-uno",
+      "breadboard",
+      "led",
+      "seven-segment",
+      "servo",
+      "lcd-16x2",
+      "lcd-16x2-i2c",
+      "push-button",
+      "potentiometer",
+      "ldr",
+      "ultrasonic-hcsr04",
+      "resistor"
+    ],
+    "groups": [
+      "Boards",
+      "Outputs",
+      "Inputs",
+      "Passives"
+    ]
+  },
+  "boards_view": {
+    "selected": "boards",
+    "cards": [
+      "arduino-uno",
+      "breadboard"
+    ]
+  },
+  "save": {
+    "ok": true,
+    "saved": {
+      "path": "/tmp/vc-library-sections-check-7rnfxK/jumper-project.vcc"
+    },
+    "saved_file": true,
+    "saved_bytes": 532
+  },
+  "checks": {
+    "section_select_found": true,
+    "all_section_is_default": true,
+    "basic_section_removed": true,
+    "section_options_kept": true,
+    "library_shows_twelve_cards": true,
+    "jumper_wire_not_offered": true,
+    "library_groups_shown": true,
+    "boards_section_narrows": true,
+    "save_dialog_stubbed": true,
+    "jumper_project_saves": true,
+    "jumper_project_keeps_part": true,
+    "no_runtime_exceptions": true
+  },
+  "runtimeExceptions": [],
+  "pass": true
+}

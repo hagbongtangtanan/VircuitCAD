@@ -1,0 +1,40 @@
+{
+  "archive": "resources/app.asar",
+  "output": "out/app-library-sections.asar",
+  "install": true,
+  "backup": "/tmp/vc-app-before-library-sections-1795567229633.asar",
+  "unpacked_files": 5768,
+  "unpacked_dirs": 409,
+  "loaded_bundle": "out/renderer/assets/index-N0START1.js",
+  "main_bundle": "out/main/index.js",
+  "original_archive_sha256": "c540479b241047ca8eeafc19d8cf0411cb6bbc9f8196521ed54163f4c990d11f",
+  "output_prefix": {
+    "field4": 1488764,
+    "field8": 1488760,
+    "jsonLength": 1488755,
+    "padding": 1
+  },
+  "prefix_ok": true,
+  "patched_bundle_sha256": "2223699a42f0fa30d4a524212327e08431fcaa19b107dd3bc4e4a889af8754c3",
+  "patched_main_sha256": "090a7a63fcba2959589d52c266a3d23ae2bef1139fc9c9a2ad94b796a3a74a06",
+  "output_sha256": "c540479b241047ca8eeafc19d8cf0411cb6bbc9f8196521ed54163f4c990d11f",
+  "changed_files": [
+    "out/main/index.js",
+    "out/renderer/assets/index-N0START1.js"
+  ],
+  "missing_files": [],
+  "extra_files": [],
+  "pack": {
+    "fileCount": 5768,
+    "dirCount": 409,
+    "headerBytes": 1488772,
+    "archiveBytes": 82413483
+  },
+  "packed_files": 5768,
+  "packed_dirs": 409,
+  "packed_compare_ok": true,
+  "packed_bundle_hash_ok": true,
+  "packed_main_hash_ok": true,
+  "verify_pass": true,
+  "pass": true
+}

@@ -1,0 +1,130 @@
+{
+  "title": "Traffic light — VircuitCAD",
+  "initialTheme": "dark",
+  "clicks": {
+    "zoomIn": true,
+    "theme": true
+  },
+  "lightThemeObserved": "light",
+  "screenshots": [
+    "traffic-dark-zoom1",
+    "traffic-dark-zoom2"
+  ],
+  "frames": [
+    {
+      "file": "led-new/out/app-clips/traffic-sim-00.png",
+      "colors": {
+        "red": 535,
+        "green": 751,
+        "yellow": 3615,
+        "white": 900
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-01.png",
+      "colors": {
+        "red": 2762,
+        "green": 757,
+        "yellow": 3628,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-02.png",
+      "colors": {
+        "red": 2762,
+        "green": 754,
+        "yellow": 3628,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-03.png",
+      "colors": {
+        "red": 2762,
+        "green": 755,
+        "yellow": 3628,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-04.png",
+      "colors": {
+        "red": 2762,
+        "green": 751,
+        "yellow": 3628,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-05.png",
+      "colors": {
+        "red": 2762,
+        "green": 754,
+        "yellow": 3628,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-06.png",
+      "colors": {
+        "red": 2762,
+        "green": 753,
+        "yellow": 3628,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-07.png",
+      "colors": {
+        "red": 2762,
+        "green": 752,
+        "yellow": 3628,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-08.png",
+      "colors": {
+        "red": 2639,
+        "green": 754,
+        "yellow": 3772,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-09.png",
+      "colors": {
+        "red": 2639,
+        "green": 753,
+        "yellow": 3772,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-10.png",
+      "colors": {
+        "red": 2601,
+        "green": 907,
+        "yellow": 3628,
+        "white": 1085
+      }
+    },
+    {
+      "file": "led-new/out/app-clips/traffic-sim-11.png",
+      "colors": {
+        "red": 2601,
+        "green": 905,
+        "yellow": 3628,
+        "white": 1085
+      }
+    }
+  ],
+  "observed": {
+    "red": true,
+    "green": true,
+    "yellow": true
+  },
+  "runtimeExceptions": [],
+  "pass": true
+}

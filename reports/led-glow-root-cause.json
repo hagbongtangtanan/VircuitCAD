@@ -1,0 +1,56 @@
+{
+  "rootCauseFile": "scripts/led-patch-adapter.js",
+  "rootCauseLine": 115,
+  "rootCause": "Konva circle gradients are local to the shape, but the adapter supplied the SVG circle's absolute center as the local gradient center.",
+  "clippingLine": 115,
+  "clippingMechanism": "The radial gradient center was shifted upward by 70 design units, so the lower half fell outside the gradient before reaching the flange.",
+  "adapter": {
+    "clipPathMaskOverflowForeignObject": [],
+    "gradientCenter": [
+      {
+        "line": 115,
+        "text": "const center = geometry.center || { x: 0, y: 0 };"
+      }
+    ]
+  },
+  "renderer": {
+    "clipPathMaskOverflowForeignObject": [],
+    "glowDrawOrder": [
+      {
+        "line": 99,
+        "text": "const glow = lit ? `<circle data-layer=\"glow\" cx=\"${LED_SPEC.GLOW_CX}\" cy=\"${LED_SPEC.GLOW_CY}\" r=\"${LED_SPEC.GLOW_RADIUS}\" fill=\"url(#${prefix}-glow)\" pointer-events=\"none\"/>` : \"\";"
+      }
+    ],
+    "viewBox": [
+      {
+        "line": 107,
+        "text": "return `<svg xmlns=\"http://www.w3.org/2000/svg\" id=\"${prefix}-root\" viewBox=\"-120 -180 240 220\" data-part-type=\"led\" data-color=\"${color}\" data-lit=\"${lit}\" data-burnt=\"${burnt}\" data-theme=\"${theme}\" data-pitch=\"${PITCH}\" data-anchor-spacing=\"${ANCHOR_SPACING}\"><defs>${defs}</defs>${labelStyle}${glow}<g data-layer=\"legs\" fill=\"none\" stroke-linecap=\"round\"><path data-layer=\"leg-anode\" d=\"${legAPath}\" stroke=\"${LED_SPEC.LEG_COLOR}\" stroke-width=\"${LED_SPEC.LEG_WIDTH}\"/><path data-layer=\"leg-anode-edge\" d=\"${legAPath}\" stroke=\"${LED_SPEC.LEG_EDGE_COLOR}\" stroke-width=\"${LED_SPEC.LEG_EDGE_WIDTH}\"/><path data-layer=\"leg-cathode\" d=\"${legKPath}\" stroke=\"${LED_SPEC.LEG_COLOR}\" stroke-width=\"${LED_SPEC.LEG_WIDTH}\"/><path data-layer=\"leg-cathode-edge\" d=\"${legKPath}\" stroke=\"${LED_SPEC.LEG_EDGE_COLOR}\" stroke-width=\"${LED_SPEC.LEG_EDGE_WIDTH}\"/></g><path data-layer=\"flange\" d=\"${flangePath}\" fill=\"${palette.flange}\" stroke=\"${palette.rim}\" stroke-width=\"${LED_SPEC.OUTLINE_WIDTH}\"/><g data-layer=\"body\"><path d=\"${bodyPath}\" fill=\"url(#${prefix}-body)\"/>${cup}</g>${core}${highlight}${ring}<path data-layer=\"outline\" d=\"${bodyPath}\" fill=\"none\" stroke=\"${palette.rim}\" stroke-width=\"${LED_SPEC.OUTLINE_WIDTH}\" stroke-opacity=\"${LED_SPEC.OUTLINE_OPACITY}\" pointer-events=\"none\"/>${selection}<g data-layer=\"anchors\"><circle data-anchor=\"anode\" cx=\"${ANCHOR_A_X}\" cy=\"${ANCHOR_Y}\" r=\"3.2\" fill=\"${palette.pin}\" stroke=\"${palette.surface}\" stroke-width=\"1.5\"/><circle data-anchor=\"cathode\" cx=\"${ANCHOR_K_X}\" cy=\"${ANCHOR_Y}\" r=\"3.2\" fill=\"${palette.pin}\" stroke=\"${palette.surface}\" stroke-width=\"1.5\"/></g>${labels}<g data-layer=\"hit-areas\" fill=\"transparent\" pointer-events=\"all\"><rect data-hit=\"body\" x=\"-52\" y=\"-120\" width=\"104\" height=\"128\"/><circle data-hit=\"anode\" cx=\"${ANCHOR_A_X}\" cy=\"${ANCHOR_Y}\" r=\"8\"/><circle data-hit=\"cathode\" cx=\"${ANCHOR_K_X}\" cy=\"${ANCHOR_Y}\" r=\"8\"/></g></svg>`;"
+      }
+    ],
+    "sameSvgAndGroup": true
+  },
+  "glowBbox": {
+    "minX": -100,
+    "maxX": 100,
+    "minY": -170,
+    "maxY": 30,
+    "constants": [
+      {
+        "line": 81,
+        "text": "BBOX_WITH_GLOW_MIN_X: -100,"
+      },
+      {
+        "line": 82,
+        "text": "BBOX_WITH_GLOW_MAX_X: 100,"
+      },
+      {
+        "line": 83,
+        "text": "BBOX_WITH_GLOW_MIN_Y: -170,"
+      },
+      {
+        "line": 84,
+        "text": "BBOX_WITH_GLOW_MAX_Y: 32,"
+      }
+    ]
+  }
+}

@@ -1,0 +1,362 @@
+{
+  "canvas": "#f7fafc",
+  "darkExistingTokenChanges": [],
+  "darkRemovedTokens": [],
+  "darkAddedTokens": [
+    "--cb-led-core-opacity",
+    "--cb-led-blue-body",
+    "--cb-led-rim",
+    "--cb-led-red-glow",
+    "--cb-led-highlight",
+    "--cb-led-anchor",
+    "--cb-led-blue-glow",
+    "--cb-led-hover",
+    "--cb-led-connected",
+    "--cb-led-shadow-opacity",
+    "--cb-led-white-lit",
+    "--cb-led-edge",
+    "--cb-led-glow-opacity",
+    "--cb-led-green-lit",
+    "--cb-led-white-body",
+    "--cb-led-highlight-opacity",
+    "--cb-led-leg",
+    "--cb-led-red-body",
+    "--cb-led-green-glow",
+    "--cb-led-core",
+    "--cb-led-anchor-ring",
+    "--cb-led-yellow-body",
+    "--cb-led-white-glow",
+    "--cb-led-selected",
+    "--cb-led-yellow-glow",
+    "--cb-led-body-opacity",
+    "--cb-led-green-body",
+    "--cb-led-label",
+    "--cb-led-yellow-lit",
+    "--cb-led-red-lit",
+    "--cb-led-flange",
+    "--cb-led-blue-lit"
+  ],
+  "pinDiffs": [
+    {
+      "partId": "led1",
+      "pinId": "anode",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "partId": "led1",
+      "pinId": "cathode",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "partId": "led2",
+      "pinId": "anode",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "partId": "led2",
+      "pinId": "cathode",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "partId": "led3",
+      "pinId": "anode",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "partId": "led3",
+      "pinId": "cathode",
+      "dx": 0,
+      "dy": 0
+    }
+  ],
+  "hitStrokeWidth": {
+    "before": 10,
+    "after": 10
+  },
+  "tokenChanges": [
+    {
+      "token": "--cb-led-red-body",
+      "old": "#e5484d",
+      "new": "#b3261e",
+      "oldRatio": 3.73,
+      "newRatio": 6.24,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-red-lit",
+      "old": "#e5484d",
+      "new": "#d32f2f",
+      "oldRatio": 3.73,
+      "newRatio": 4.75,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-red-glow",
+      "old": "#ff8a8f",
+      "new": "#d32f2f",
+      "oldRatio": 2.16,
+      "newRatio": 2.85,
+      "target": 1.5,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-green-body",
+      "old": "#46a758",
+      "new": "#1e7e34",
+      "oldRatio": 2.89,
+      "newRatio": 4.9,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-green-lit",
+      "old": "#46a758",
+      "new": "#2e9b3e",
+      "oldRatio": 2.89,
+      "newRatio": 3.41,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-green-glow",
+      "old": "#8ce099",
+      "new": "#2e9b3e",
+      "oldRatio": 1.51,
+      "newRatio": 2.17,
+      "target": 1.5,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-blue-body",
+      "old": "#3b82f6",
+      "new": "#1558b3",
+      "oldRatio": 3.51,
+      "newRatio": 6.51,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-blue-lit",
+      "old": "#3b82f6",
+      "new": "#1e6fd9",
+      "oldRatio": 3.51,
+      "newRatio": 4.63,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-blue-glow",
+      "old": "#93c5fd",
+      "new": "#1e6fd9",
+      "oldRatio": 1.72,
+      "newRatio": 2.58,
+      "target": 1.5,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-yellow-body",
+      "old": "#e2b93b",
+      "new": "#b77900",
+      "oldRatio": 1.78,
+      "newRatio": 3.49,
+      "target": 1.5,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-yellow-lit",
+      "old": "#e2b93b",
+      "new": "#e0a800",
+      "oldRatio": 1.78,
+      "newRatio": 2.05,
+      "target": 1.5,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-yellow-glow",
+      "old": "#fbe38a",
+      "new": "#e0a800",
+      "oldRatio": 1.22,
+      "newRatio": 1.6,
+      "target": 1.5,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-white-body",
+      "old": "#d7dbe3",
+      "new": "#d7dbe3",
+      "oldRatio": 1.32,
+      "newRatio": 1.32,
+      "target": 1,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-white-lit",
+      "old": "#d7dbe3",
+      "new": "#f5f5f5",
+      "oldRatio": 1.32,
+      "newRatio": 1.04,
+      "target": 1,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-white-glow",
+      "old": "#ffffff",
+      "new": "#94a3b8",
+      "oldRatio": 1.05,
+      "newRatio": 1.73,
+      "target": 1.5,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-rim",
+      "old": "#5f86ad",
+      "new": "#050b14",
+      "oldRatio": 3.64,
+      "newRatio": 18.82,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-flange",
+      "old": "#8a94a0",
+      "new": "#4b5563",
+      "oldRatio": 2.94,
+      "newRatio": 7.21,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-leg",
+      "old": "#8a9ba8",
+      "new": "#4b5563",
+      "oldRatio": 2.73,
+      "newRatio": 7.21,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-edge",
+      "old": "#5a6b7d",
+      "new": "#050b14",
+      "oldRatio": 5.23,
+      "newRatio": 18.82,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-highlight",
+      "old": "#ffffff",
+      "new": "#ffffff",
+      "oldRatio": 1.05,
+      "newRatio": null,
+      "target": null,
+      "pass": null
+    },
+    {
+      "token": "--cb-led-label",
+      "old": "#dce8f5",
+      "new": "#374151",
+      "oldRatio": 1.19,
+      "newRatio": 9.83,
+      "target": 4.5,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-anchor",
+      "old": "#b7d2ef",
+      "new": "#050b14",
+      "oldRatio": 1.49,
+      "newRatio": 18.82,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-connected",
+      "old": "#b7d2ef",
+      "new": "#1d4ed8",
+      "oldRatio": 1.49,
+      "newRatio": 6.39,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-hover",
+      "old": "#6fb3ff",
+      "new": "#0e7490",
+      "oldRatio": 2.09,
+      "newRatio": 5.11,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-selected",
+      "old": "#ffc928",
+      "new": "#8a5a00",
+      "oldRatio": 1.47,
+      "newRatio": 5.65,
+      "target": 3,
+      "pass": true
+    },
+    {
+      "token": "--cb-led-anchor-ring",
+      "old": null,
+      "new": "#ffffff",
+      "oldRatio": null,
+      "newRatio": null,
+      "target": null,
+      "pass": null
+    },
+    {
+      "token": "--cb-led-glow-opacity",
+      "old": null,
+      "new": "0.65",
+      "oldRatio": null,
+      "newRatio": null,
+      "target": null,
+      "pass": null
+    },
+    {
+      "token": "--cb-led-highlight-opacity",
+      "old": null,
+      "new": "0.4",
+      "oldRatio": null,
+      "newRatio": null,
+      "target": null,
+      "pass": null
+    },
+    {
+      "token": "--cb-led-core-opacity",
+      "old": null,
+      "new": "0.92",
+      "oldRatio": null,
+      "newRatio": null,
+      "target": null,
+      "pass": null
+    },
+    {
+      "token": "--cb-led-body-opacity",
+      "old": null,
+      "new": "1",
+      "oldRatio": null,
+      "newRatio": null,
+      "target": null,
+      "pass": null
+    },
+    {
+      "token": "--cb-led-shadow-opacity",
+      "old": null,
+      "new": "0",
+      "oldRatio": null,
+      "newRatio": null,
+      "target": null,
+      "pass": null
+    }
+  ]
+}

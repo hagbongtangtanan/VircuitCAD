@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "baselineAppHash": "38590f75eee13f217a1e82912725dbfd6f57096dbed3a22da230bc9ed105fbb5",
+  "afterAppHash": "380d7fd3a69358ccc438da3d3069e12bc97a052441acd136c1610d0e522ae704",
+  "rendererBundleHash": "26183daef86931bcbf9f62e272cbc8709a72a9c35c0dda427e6cdbfa4df9a9bd",
+  "darkScreenshot": {
+    "pass": true,
+    "changedPixels": 0
+  },
+  "darkComputedTokenDiff": {
+    "existingChanges": 0,
+    "addedLedTokens": 32,
+    "removedTokens": 0
+  },
+  "pinGeometry": {
+    "nonZeroCoordinateDiffs": 0,
+    "hitStrokeWidth": {
+      "before": 10,
+      "after": 10
+    }
+  },
+  "contrast": {
+    "pass": true,
+    "rows": 95,
+    "failures": []
+  },
+  "stateRings": {
+    "hoverVsConnectedChangedPixels": 993,
+    "selectedVsConnectedChangedPixels": 63455
+  },
+  "interaction": {
+    "pass": true,
+    "wireCount": 2,
+    "drag": {
+      "before": {
+        "x": 590,
+        "y": 100
+      },
+      "after": {
+        "x": 620,
+        "y": 120
+      },
+      "dx": 30,
+      "dy": 20
+    },
+    "consoleErrors": []
+  },
+  "performance": {
+    "baseline": {
+      "samples": 119,
+      "average": 16.679831932697976,
+      "worst": 24
+    },
+    "after": {
+      "samples": 119,
+      "average": 16.673949579856977,
+      "worst": 18.799999997019768
+    }
+  },
+  "regressions": {
+    "neat": true,
+    "safety": true,
+    "samples": true,
+    "lcd": true,
+    "damage": true
+  },
+  "screenshots": {
+    "beforeLight100": "artifacts/led-appearance/before/before-light-100.png",
+    "beforeLight200": "artifacts/led-appearance/before/before-light-200.png",
+    "beforeGridLight200": "artifacts/led-appearance/before/before-grid-light-200.png",
+    "beforeAllLight100": "artifacts/led-appearance/before/before-all-light-100.png",
+    "afterLight100": "artifacts/led-appearance/after/after-light-100.png",
+    "afterLight200": "artifacts/led-appearance/after/after-light-200.png",
+    "afterGridLight200": "artifacts/led-appearance/after/after-grid-light-200.png",
+    "afterAllLight100": "artifacts/led-appearance/after/after-all-light-100.png",
+    "afterGrayscale": "artifacts/led-appearance/after/after-grayscale-grayscale.png",
+    "afterHover": "artifacts/led-appearance/after/after-hover.png",
+    "afterConnected": "artifacts/led-appearance/after/after-connected.png",
+    "afterSelected": "artifacts/led-appearance/after/after-selected.png",
+    "beforeDark100": "artifacts/led-appearance/before/before-dark-dark-100.png",
+    "afterDark100": "artifacts/led-appearance/after/after-dark-dark-100.png"
+  }
+}

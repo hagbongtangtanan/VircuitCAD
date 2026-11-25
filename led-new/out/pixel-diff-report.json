@@ -1,0 +1,922 @@
+[
+  {
+    "tag": "red-dark-unlit-white-zoom1",
+    "color": "red",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "red-dark-lit-white-zoom1",
+    "color": "red",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "red-dark-unlit-dark-zoom1",
+    "color": "red",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "red-dark-lit-dark-zoom1",
+    "color": "red",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "red-light-unlit-white-zoom1",
+    "color": "red",
+    "theme": "light",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "red-light-lit-white-zoom1",
+    "color": "red",
+    "theme": "light",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "red-light-unlit-dark-zoom1",
+    "color": "red",
+    "theme": "light",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "red-light-lit-dark-zoom1",
+    "color": "red",
+    "theme": "light",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "green-dark-unlit-white-zoom1",
+    "color": "green",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "green-dark-lit-white-zoom1",
+    "color": "green",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "green-dark-unlit-dark-zoom1",
+    "color": "green",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "green-dark-lit-dark-zoom1",
+    "color": "green",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "green-light-unlit-white-zoom1",
+    "color": "green",
+    "theme": "light",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "green-light-lit-white-zoom1",
+    "color": "green",
+    "theme": "light",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "green-light-unlit-dark-zoom1",
+    "color": "green",
+    "theme": "light",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "green-light-lit-dark-zoom1",
+    "color": "green",
+    "theme": "light",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "blue-dark-unlit-white-zoom1",
+    "color": "blue",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "blue-dark-lit-white-zoom1",
+    "color": "blue",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "blue-dark-unlit-dark-zoom1",
+    "color": "blue",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "blue-dark-lit-dark-zoom1",
+    "color": "blue",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "blue-light-unlit-white-zoom1",
+    "color": "blue",
+    "theme": "light",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "blue-light-lit-white-zoom1",
+    "color": "blue",
+    "theme": "light",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "blue-light-unlit-dark-zoom1",
+    "color": "blue",
+    "theme": "light",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "blue-light-lit-dark-zoom1",
+    "color": "blue",
+    "theme": "light",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "yellow-dark-unlit-white-zoom1",
+    "color": "yellow",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "yellow-dark-lit-white-zoom1",
+    "color": "yellow",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "yellow-dark-unlit-dark-zoom1",
+    "color": "yellow",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "yellow-dark-lit-dark-zoom1",
+    "color": "yellow",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "yellow-light-unlit-white-zoom1",
+    "color": "yellow",
+    "theme": "light",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "yellow-light-lit-white-zoom1",
+    "color": "yellow",
+    "theme": "light",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "yellow-light-unlit-dark-zoom1",
+    "color": "yellow",
+    "theme": "light",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "yellow-light-lit-dark-zoom1",
+    "color": "yellow",
+    "theme": "light",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "white-dark-unlit-white-zoom1",
+    "color": "white",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "white-dark-lit-white-zoom1",
+    "color": "white",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "white-dark-unlit-dark-zoom1",
+    "color": "white",
+    "theme": "dark",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "white-dark-lit-dark-zoom1",
+    "color": "white",
+    "theme": "dark",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "white-light-unlit-white-zoom1",
+    "color": "white",
+    "theme": "light",
+    "lit": false,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "white-light-lit-white-zoom1",
+    "color": "white",
+    "theme": "light",
+    "lit": true,
+    "bgName": "white",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "white-light-unlit-dark-zoom1",
+    "color": "white",
+    "theme": "light",
+    "lit": false,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  },
+  {
+    "tag": "white-light-lit-dark-zoom1",
+    "color": "white",
+    "theme": "light",
+    "lit": true,
+    "bgName": "dark",
+    "bbox": {
+      "minX": -39,
+      "maxX": 38.75,
+      "minY": 11,
+      "maxY": 110.5
+    },
+    "headWidth": 77.75,
+    "headWidthRatio": 1.94375,
+    "headCenterX": -0.125,
+    "mad": [
+      0,
+      0,
+      0
+    ],
+    "diffFrac": 0,
+    "pass": false
+  }
+]

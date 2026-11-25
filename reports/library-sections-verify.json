@@ -1,0 +1,47 @@
+{
+  "patched": "out/patched/library-sections/app/out/renderer/assets/index-N0START1.js",
+  "main": "out/patched/library-sections/app/out/main/index.js",
+  "bytes": 4054376,
+  "sha256": "2223699a42f0fa30d4a524212327e08431fcaa19b107dd3bc4e4a889af8754c3",
+  "library_types": [
+    "arduino-uno",
+    "breadboard",
+    "led",
+    "resistor",
+    "push-button",
+    "potentiometer",
+    "ldr",
+    "ultrasonic-hcsr04",
+    "lcd-16x2",
+    "lcd-16x2-i2c",
+    "servo",
+    "seven-segment"
+  ],
+  "section_labels": [
+    "all",
+    "boards",
+    "outputs",
+    "inputs",
+    "passives"
+  ],
+  "checks": {
+    "renderer_marker": true,
+    "library_types_found": true,
+    "library_types_match": true,
+    "jumper_wire_not_in_library": true,
+    "basic_types_removed": true,
+    "basic_section_removed": true,
+    "section_labels_kept": true,
+    "all_section_default": true,
+    "basic_branch_removed": true,
+    "pool_simplified": true,
+    "tour_text_updated": true,
+    "tour_text_no_basic": true,
+    "jumper_type_still_registered": true,
+    "main_marker": true,
+    "main_marker_placed": true,
+    "main_jumper_props": true,
+    "main_jumper_variant": true
+  },
+  "pass": true
+}

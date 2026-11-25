@@ -1,0 +1,36 @@
+{
+  "archive": "resources/app.asar",
+  "output": "out/app-space.asar",
+  "install": true,
+  "backup": "/tmp/vc-app-before-space-1795560307367.asar",
+  "unpacked_files": 5768,
+  "unpacked_dirs": 409,
+  "loaded_bundle": "out/renderer/assets/index-N0START1.js",
+  "original_archive_sha256": "c4b14955a4dd42720da56442a1f180239a33e8ef1472ae33f01460f6d4b56d63",
+  "output_prefix": {
+    "field4": 1488764,
+    "field8": 1488760,
+    "jsonLength": 1488755,
+    "padding": 1
+  },
+  "prefix_ok": true,
+  "patched_bundle_sha256": "67c03af1745b64a76c557fde037011ec241c49d058ea6ee890140f45212f25ed",
+  "output_sha256": "c4b14955a4dd42720da56442a1f180239a33e8ef1472ae33f01460f6d4b56d63",
+  "changed_files": [
+    "out/renderer/assets/index-N0START1.js"
+  ],
+  "missing_files": [],
+  "extra_files": [],
+  "pack": {
+    "fileCount": 5768,
+    "dirCount": 409,
+    "headerBytes": 1488772,
+    "archiveBytes": 82414201
+  },
+  "packed_files": 5768,
+  "packed_dirs": 409,
+  "packed_compare_ok": true,
+  "packed_bundle_hash_ok": true,
+  "verify_pass": true,
+  "pass": true
+}

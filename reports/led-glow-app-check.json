@@ -1,0 +1,731 @@
+{
+  "source": "embedded uno-traffic-light.vcc starter",
+  "opened": true,
+  "crops": [
+    {
+      "theme": "dark",
+      "zoom": 1,
+      "label": "100%",
+      "full": "led-new/out/glow/traffic-dark-zoom1-full.png",
+      "detections": [
+        {
+          "color": "red",
+          "count": 784,
+          "centerX": 702,
+          "centerY": 394,
+          "crop": {
+            "left": 627,
+            "top": 319,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-dark-zoom1-still.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3238,
+          "centerX": 695,
+          "centerY": 440,
+          "crop": {
+            "left": 620,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-dark-zoom1-still.png"
+        },
+        {
+          "color": "green",
+          "count": 972,
+          "centerX": 721,
+          "centerY": 437,
+          "crop": {
+            "left": 646,
+            "top": 362,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-dark-zoom1-still.png"
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "zoom": 2,
+      "label": "207%",
+      "full": "led-new/out/glow/traffic-dark-zoom2-full.png",
+      "detections": [
+        {
+          "color": "red",
+          "count": 1104,
+          "centerX": 681,
+          "centerY": 394,
+          "crop": {
+            "left": 551,
+            "top": 264,
+            "width": 260,
+            "height": 260
+          },
+          "file": "led-new/out/glow/traffic-red-dark-zoom2-still.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3369,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 561,
+            "top": 310,
+            "width": 260,
+            "height": 260
+          },
+          "file": "led-new/out/glow/traffic-yellow-dark-zoom2-still.png"
+        },
+        {
+          "color": "green",
+          "count": 1311,
+          "centerX": 716,
+          "centerY": 437,
+          "crop": {
+            "left": 586,
+            "top": 307,
+            "width": 260,
+            "height": 260
+          },
+          "file": "led-new/out/glow/traffic-green-dark-zoom2-still.png"
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "zoom": 1,
+      "label": "100%",
+      "full": "led-new/out/glow/traffic-light-zoom1-full.png",
+      "detections": [
+        {
+          "color": "red",
+          "count": 784,
+          "centerX": 702,
+          "centerY": 394,
+          "crop": {
+            "left": 627,
+            "top": 319,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-light-zoom1-still.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3238,
+          "centerX": 695,
+          "centerY": 440,
+          "crop": {
+            "left": 620,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-light-zoom1-still.png"
+        },
+        {
+          "color": "green",
+          "count": 972,
+          "centerX": 721,
+          "centerY": 437,
+          "crop": {
+            "left": 646,
+            "top": 362,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-light-zoom1-still.png"
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "zoom": 2,
+      "label": "207%",
+      "full": "led-new/out/glow/traffic-light-zoom2-full.png",
+      "detections": [
+        {
+          "color": "red",
+          "count": 1104,
+          "centerX": 681,
+          "centerY": 394,
+          "crop": {
+            "left": 551,
+            "top": 264,
+            "width": 260,
+            "height": 260
+          },
+          "file": "led-new/out/glow/traffic-red-light-zoom2-still.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3369,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 561,
+            "top": 310,
+            "width": 260,
+            "height": 260
+          },
+          "file": "led-new/out/glow/traffic-yellow-light-zoom2-still.png"
+        },
+        {
+          "color": "green",
+          "count": 1311,
+          "centerX": 716,
+          "centerY": 437,
+          "crop": {
+            "left": 586,
+            "top": 307,
+            "width": 260,
+            "height": 260
+          },
+          "file": "led-new/out/glow/traffic-green-light-zoom2-still.png"
+        }
+      ]
+    }
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3732,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-00.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3383,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-00.png"
+        },
+        {
+          "color": "green",
+          "count": 1097,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-00.png"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3712,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-01.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-01.png"
+        },
+        {
+          "color": "green",
+          "count": 1099,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-01.png"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3712,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-02.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-02.png"
+        },
+        {
+          "color": "green",
+          "count": 1099,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-02.png"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3712,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-03.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-03.png"
+        },
+        {
+          "color": "green",
+          "count": 1096,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-03.png"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3712,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-04.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-04.png"
+        },
+        {
+          "color": "green",
+          "count": 1097,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-04.png"
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3712,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-05.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-05.png"
+        },
+        {
+          "color": "green",
+          "count": 1097,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-05.png"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3712,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-06.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-06.png"
+        },
+        {
+          "color": "green",
+          "count": 1096,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-06.png"
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3199,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-07.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3902,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-07.png"
+        },
+        {
+          "color": "green",
+          "count": 1139,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-07.png"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3199,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-08.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3902,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-08.png"
+        },
+        {
+          "color": "green",
+          "count": 1143,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-08.png"
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3157,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-09.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-09.png"
+        },
+        {
+          "color": "green",
+          "count": 1876,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-09.png"
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3157,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-10.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-10.png"
+        },
+        {
+          "color": "green",
+          "count": 1875,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-10.png"
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "detections": [
+        {
+          "color": "red",
+          "count": 3157,
+          "centerX": 681,
+          "centerY": 387,
+          "crop": {
+            "left": 606,
+            "top": 312,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-red-simulation-zoom1-11.png"
+        },
+        {
+          "color": "yellow",
+          "count": 3249,
+          "centerX": 691,
+          "centerY": 440,
+          "crop": {
+            "left": 616,
+            "top": 365,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-yellow-simulation-zoom1-11.png"
+        },
+        {
+          "color": "green",
+          "count": 1875,
+          "centerX": 716,
+          "centerY": 442,
+          "crop": {
+            "left": 641,
+            "top": 367,
+            "width": 150,
+            "height": 150
+          },
+          "file": "led-new/out/glow/traffic-green-simulation-zoom1-11.png"
+        }
+      ]
+    }
+  ],
+  "observed": {
+    "red": true,
+    "yellow": true,
+    "green": true
+  },
+  "runtimeExceptions": [],
+  "pass": true
+}

@@ -1,0 +1,122 @@
+{
+  "command": "light",
+  "theme": "light",
+  "screenshots": {
+    "light100": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-100.png",
+    "light200": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-200.png",
+    "lightBrowserZoom200": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-browser-zoom-200.png",
+    "moreContrast": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-more-contrast.png",
+    "forcedColors": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-forced-colors.png"
+  },
+  "palette": {
+    "ok": true,
+    "wireId": "w1",
+    "colors": {
+      "positive": "#8a5a00",
+      "ground": "#1d4ed8",
+      "signal": "#0e7490",
+      "signalBlue": "#4338ca",
+      "signalIce": "#1e5a88",
+      "ink": "#111827"
+    }
+  },
+  "wireShots": [
+    {
+      "name": "positive",
+      "canonical": "#ffc928",
+      "display": "#8a5a00",
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-wire-positive.png"
+    },
+    {
+      "name": "ground",
+      "canonical": "#2f7df6",
+      "display": "#1d4ed8",
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-wire-ground.png"
+    },
+    {
+      "name": "signal",
+      "canonical": "#6fb3ff",
+      "display": "#0e7490",
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-wire-signal.png"
+    },
+    {
+      "name": "signalBlue",
+      "canonical": "#2e78c7",
+      "display": "#4338ca",
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-wire-signalBlue.png"
+    },
+    {
+      "name": "signalIce",
+      "canonical": "#b9d9ff",
+      "display": "#1e5a88",
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-wire-signalIce.png"
+    },
+    {
+      "name": "ink",
+      "canonical": "#101a27",
+      "display": "#111827",
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-wire-ink.png"
+    }
+  ],
+  "focus": [
+    {
+      "index": 1,
+      "active": {
+        "tag": "BUTTON",
+        "className": "cb-brand-button",
+        "testId": null,
+        "text": "VircuitCAD\nBETA"
+      },
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-focus-1.png"
+    },
+    {
+      "index": 2,
+      "active": {
+        "tag": "INPUT",
+        "className": "cb-title-input",
+        "testId": "project-title",
+        "text": ""
+      },
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-focus-2.png"
+    },
+    {
+      "index": 3,
+      "active": {
+        "tag": "BUTTON",
+        "className": "cb-tab is-active",
+        "testId": null,
+        "text": "Circuit"
+      },
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-focus-3.png"
+    },
+    {
+      "index": 4,
+      "active": {
+        "tag": "BUTTON",
+        "className": "cb-tab",
+        "testId": null,
+        "text": "Schematic"
+      },
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-focus-4.png"
+    },
+    {
+      "index": 5,
+      "active": {
+        "tag": "BUTTON",
+        "className": "cb-button",
+        "testId": "file-menu-toggle",
+        "text": "File"
+      },
+      "screenshot": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/light-theme/light-focus-5.png"
+    }
+  ],
+  "forcedColors": {
+    "supported": true
+  },
+  "browserZoom": {
+    "supported": true,
+    "method": "Emulation.setPageScaleFactor"
+  },
+  "consoleErrors": [],
+  "pass": true
+}

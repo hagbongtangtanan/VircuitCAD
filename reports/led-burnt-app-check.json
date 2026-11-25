@@ -1,0 +1,107 @@
+{
+  "source": "embedded traffic-light.vcc starter",
+  "opened": true,
+  "burn": true,
+  "phases": [
+    {
+      "label": "baseline-running",
+      "redPixelMax": 627,
+      "redPixelFrames": [
+        627,
+        627,
+        627,
+        627,
+        627,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "label": "after-burn",
+      "damageButton": "Damage 1",
+      "failedParts": [
+        "led1"
+      ]
+    },
+    {
+      "label": "burnt-running",
+      "redPixelMax": 0,
+      "redPixelFrames": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "label": "after-stop",
+      "damageButton": "Damage 1",
+      "failedParts": [
+        "led1"
+      ]
+    },
+    {
+      "label": "after-restart",
+      "damageButton": "Damage 1",
+      "failedParts": [
+        "led1"
+      ]
+    },
+    {
+      "label": "burnt-restarted",
+      "redPixelMax": 0,
+      "redPixelFrames": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "label": "after-repair",
+      "damageButton": "Damage",
+      "failedParts": []
+    },
+    {
+      "label": "repaired-running",
+      "redPixelMax": 627,
+      "redPixelFrames": [
+        627,
+        627,
+        627,
+        627,
+        627,
+        627,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "runtimeExceptions": [],
+  "pass": true
+}

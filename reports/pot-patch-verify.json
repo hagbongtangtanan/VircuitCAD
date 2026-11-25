@@ -1,0 +1,176 @@
+{
+  "source": "work/readable/out/renderer/assets/index-BU2QbNS1.js",
+  "patched": "out/patched/work/readable/out/renderer/assets/index-BU2QbNS1.js",
+  "source_sha256": "efa6f858e97a0faa6dac24a10a71a115f683ff8f4989addf64d8dccc9dd21f9a",
+  "patched_sha256": "a318ce0f484f88d8042f679bc1646bb67b006f7ffa1a9ddb3e8b6cf2d2b21555",
+  "checks": [
+    {
+      "name": "old drawing removed: const angle = ((-135 + 270 * Math.min(1, Math.ma",
+      "pass": true,
+      "detail": {
+        "source": 1,
+        "patched": 0
+      }
+    },
+    {
+      "name": "old drawing removed: points: [30, 27, 30, 40],",
+      "pass": true,
+      "detail": {
+        "source": 1,
+        "patched": 0
+      }
+    },
+    {
+      "name": "marker count",
+      "pass": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "old pot thumbnail removed",
+      "pass": true,
+      "detail": {
+        "source": 1,
+        "patched": 0
+      }
+    },
+    {
+      "name": "pot thumbnail uses the shared module",
+      "pass": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "adapter call count",
+      "pass": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "module injection",
+      "pass": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "PartBody potentiometer case count",
+      "pass": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "design scale matches the spec",
+      "pass": true,
+      "detail": {
+        "patched": "1",
+        "spec": 1
+      }
+    },
+    {
+      "name": "origin matches the spec",
+      "pass": true,
+      "detail": {
+        "patched": "30,90",
+        "spec": "30,90"
+      }
+    },
+    {
+      "name": "potentiometer definition size",
+      "pass": true,
+      "detail": {
+        "patched": "width: 60, height: 90,",
+        "spec": "60x90"
+      }
+    },
+    {
+      "name": "potentiometer definition pin 1",
+      "pass": true,
+      "detail": {
+        "patched": "20,90",
+        "spec": "20,90"
+      }
+    },
+    {
+      "name": "potentiometer definition pin 2",
+      "pass": true,
+      "detail": {
+        "patched": "30,90",
+        "spec": "30,90"
+      }
+    },
+    {
+      "name": "potentiometer definition pin 3",
+      "pass": true,
+      "detail": {
+        "patched": "40,90",
+        "spec": "40,90"
+      }
+    },
+    {
+      "name": "pins land on the app anchors",
+      "pass": true,
+      "detail": {
+        "anchors": [
+          {
+            "name": "left",
+            "design": {
+              "x": -10,
+              "y": 0
+            },
+            "world": {
+              "x": 20,
+              "y": 90
+            },
+            "app": {
+              "x": 20,
+              "y": 90
+            }
+          },
+          {
+            "name": "middle",
+            "design": {
+              "x": 0,
+              "y": 0
+            },
+            "world": {
+              "x": 30,
+              "y": 90
+            },
+            "app": {
+              "x": 30,
+              "y": 90
+            }
+          },
+          {
+            "name": "right",
+            "design": {
+              "x": 10,
+              "y": 0
+            },
+            "world": {
+              "x": 40,
+              "y": 90
+            },
+            "app": {
+              "x": 40,
+              "y": 90
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "patched bundle parses",
+      "pass": true,
+      "detail": {
+        "detail": "ok"
+      }
+    }
+  ],
+  "pass": true
+}

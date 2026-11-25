@@ -1,0 +1,6 @@
+node_modules/
+!work/app/node_modules/
+!work/app/**/node_modules/
+/out/
+/releases/
+/VircuitCAD.exe

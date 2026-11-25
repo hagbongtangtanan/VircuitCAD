@@ -1,0 +1,47 @@
+{
+  "app": "out/app-pot.asar",
+  "card": {
+    "x": 1293,
+    "y": 499.34375,
+    "width": 106,
+    "height": 89.796875
+  },
+  "crop": {
+    "left": 1293,
+    "top": 499,
+    "width": 106,
+    "height": 90
+  },
+  "thumbnail": {
+    "width": 192,
+    "height": 112,
+    "opaque": 3734,
+    "box": {
+      "x": 65,
+      "y": 8,
+      "width": 62,
+      "height": 94
+    },
+    "shapeRatio": 0.6595744680851063
+  },
+  "pixelCounts": {
+    "oldBody": 0,
+    "rim": 303,
+    "body": 1789,
+    "pointer": 1742,
+    "knob": 214,
+    "tail": 550
+  },
+  "tokens": {
+    "bodyRim": "#A8C0D4",
+    "bodyOuter": "#14212B",
+    "pointer": "#0A1119",
+    "knobBottom": "#4C7DBE"
+  },
+  "files": {
+    "screenshot": "pot-new/out/app-parts-panel.png",
+    "crop": "pot-new/out/app-pot-thumbnail.png"
+  },
+  "runtimeExceptions": [],
+  "pass": true
+}

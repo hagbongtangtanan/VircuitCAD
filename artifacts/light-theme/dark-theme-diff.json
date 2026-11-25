@@ -1,0 +1,14 @@
+{
+  "before": "artifacts/light-theme-baseline/dark-theme.png",
+  "after": "artifacts/light-theme/dark-theme.png",
+  "diff": {
+    "sameSize": true,
+    "width": 1440,
+    "height": 873,
+    "changedPixels": 0,
+    "maxChannelDelta": 0,
+    "meanChannelDelta": 0
+  },
+  "pass": true,
+  "consoleErrors": []
+}

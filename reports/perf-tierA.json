@@ -1,0 +1,19 @@
+{
+  "label": "tierA",
+  "sample": "traffic-light.vcc",
+  "durationMs": 6000,
+  "settleMs": 1200,
+  "metrics": {
+    "domParser": 2,
+    "ctxOps": 10450,
+    "longTasks": 0,
+    "frameCount": 360,
+    "frameP50": 16.699999999982538,
+    "frameP95": 16.79999999998836,
+    "frameMax": 16.800000000017462,
+    "frameMean": 16.675833333333383,
+    "over16": 157,
+    "over33": 0
+  },
+  "runtimeExceptions": []
+}

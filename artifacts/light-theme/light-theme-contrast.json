@@ -1,0 +1,1405 @@
+{
+  "theme": "light",
+  "port": "9334",
+  "passes": [
+    {
+      "media": "normal",
+      "tokens": {
+        "--cb-page": "#f1f5f9",
+        "--cb-surface": "#ffffff",
+        "--cb-surface-sunken": "#f3f7fb",
+        "--cb-surface-hover": "#e2eaf5",
+        "--cb-border": "#6f869e",
+        "--cb-border-strong": "#526b86",
+        "--cb-text": "#081523",
+        "--cb-text-muted": "#425c7a",
+        "--cb-text-faint": "#52657e",
+        "--cb-primary": "#8a5a00",
+        "--cb-primary-hover": "#704700",
+        "--cb-primary-soft": "#fff1cc",
+        "--cb-on-primary": "#ffffff",
+        "--cb-run": "#237a57",
+        "--cb-run-hover": "#1a6445",
+        "--cb-stop": "#b83232",
+        "--cb-stop-hover": "#8e2a2a",
+        "--cb-stop-soft": "#fff1f1",
+        "--cb-warn": "#8a5a00",
+        "--cb-warn-soft": "#fff1cc",
+        "--cb-warn-border": "#8a5a00",
+        "--cb-on-stop": "#ffffff",
+        "--cb-canvas": "#f7fafc",
+        "--cb-canvas-grid": "#7c90a5",
+        "--cb-canvas-grid-strong": "#526b86",
+        "--cb-schematic-wire": "#1d4ed8",
+        "--cb-wire-positive": "#8a5a00",
+        "--cb-wire-ground": "#1d4ed8",
+        "--cb-wire-signal": "#0e7490",
+        "--cb-wire-signal-blue": "#4338ca",
+        "--cb-wire-signal-ice": "#1e5a88",
+        "--cb-wire-ink": "#111827",
+        "--cb-wire-selected": "#8a5a00",
+        "--cb-wire-waypoint": "#ffffff",
+        "--cb-damage-text": "#a32916",
+        "--cb-damage-border": "#a32916",
+        "--cb-damage-active-text": "#075985",
+        "--cb-damage-active-border": "#075985",
+        "--cb-damage-warning": "#7a4b00"
+      },
+      "rows": [
+        {
+          "name": "body text",
+          "foreground": "#081523",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 18.39,
+          "pass": true
+        },
+        {
+          "name": "muted text",
+          "foreground": "#425c7a",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 6.9,
+          "pass": true
+        },
+        {
+          "name": "faint text",
+          "foreground": "#52657e",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.96,
+          "pass": true
+        },
+        {
+          "name": "primary text",
+          "foreground": "#8a5a00",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "primary on soft",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "on primary",
+          "foreground": "#ffffff",
+          "background": "#8a5a00",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "run button",
+          "foreground": "#ffffff",
+          "background": "#237a57",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.26,
+          "pass": true
+        },
+        {
+          "name": "stop button",
+          "foreground": "#ffffff",
+          "background": "#b83232",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "warning badge",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "border",
+          "foreground": "#6f869e",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 3.76,
+          "pass": true
+        },
+        {
+          "name": "strong border",
+          "foreground": "#526b86",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.52,
+          "pass": true
+        },
+        {
+          "name": "warning border",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "damage text",
+          "foreground": "#a32916",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.28,
+          "pass": true
+        },
+        {
+          "name": "damage active",
+          "foreground": "#075985",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.56,
+          "pass": true
+        },
+        {
+          "name": "damage warning",
+          "foreground": "#7a4b00",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.41,
+          "pass": true
+        },
+        {
+          "name": "disabled control",
+          "foreground": "#425c7a",
+          "background": "#ffffff",
+          "opacity": 0.62,
+          "min": 2,
+          "ratio": 2.88,
+          "pass": true
+        },
+        {
+          "name": "canvas grid",
+          "foreground": "#7c90a5",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 3.14,
+          "pass": true
+        },
+        {
+          "name": "canvas major grid",
+          "foreground": "#526b86",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.26,
+          "pass": true
+        },
+        {
+          "name": "schematic wire",
+          "foreground": "#1d4ed8",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.39,
+          "pass": true
+        },
+        {
+          "name": "wire positive",
+          "foreground": "#8a5a00",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.65,
+          "pass": true
+        },
+        {
+          "name": "wire ground",
+          "foreground": "#1d4ed8",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.39,
+          "pass": true
+        },
+        {
+          "name": "wire signal",
+          "foreground": "#0e7490",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.11,
+          "pass": true
+        },
+        {
+          "name": "wire signal blue",
+          "foreground": "#4338ca",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.54,
+          "pass": true
+        },
+        {
+          "name": "wire signal ice",
+          "foreground": "#1e5a88",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.97,
+          "pass": true
+        },
+        {
+          "name": "wire ink",
+          "foreground": "#111827",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 16.92,
+          "pass": true
+        },
+        {
+          "name": "wire selected",
+          "foreground": "#8a5a00",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.65,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on positive",
+          "foreground": "#ffffff",
+          "background": "#8a5a00",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on ground",
+          "foreground": "#ffffff",
+          "background": "#1d4ed8",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.7,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal",
+          "foreground": "#ffffff",
+          "background": "#0e7490",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.36,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal blue",
+          "foreground": "#ffffff",
+          "background": "#4338ca",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.9,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal ice",
+          "foreground": "#ffffff",
+          "background": "#1e5a88",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.31,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on ink",
+          "foreground": "#ffffff",
+          "background": "#111827",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 17.74,
+          "pass": true
+        },
+        {
+          "name": "swatch positive",
+          "foreground": "#8a5a00",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.51,
+          "pass": true
+        },
+        {
+          "name": "swatch ground",
+          "foreground": "#1d4ed8",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.23,
+          "pass": true
+        },
+        {
+          "name": "swatch signal",
+          "foreground": "#0e7490",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 4.98,
+          "pass": true
+        },
+        {
+          "name": "swatch signal blue",
+          "foreground": "#4338ca",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.34,
+          "pass": true
+        },
+        {
+          "name": "swatch signal ice",
+          "foreground": "#1e5a88",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.79,
+          "pass": true
+        },
+        {
+          "name": "swatch ink",
+          "foreground": "#111827",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 16.48,
+          "pass": true
+        }
+      ],
+      "fonts": [
+        {
+          "selector": ".cb-beta-badge",
+          "fontSize": "11px",
+          "pass": true
+        },
+        {
+          "selector": ".cb-serial-badge",
+          "fontSize": "11px",
+          "pass": true
+        },
+        {
+          "selector": ".cb-tour-eyebrow",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-eyebrow",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-chip span",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sample-group-count",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-shortcut-group h3",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-designator",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-value",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-netlabel",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-value",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-pin-name",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-pin-number",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-titleblock-project",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-titleblock-sheet",
+          "fontSize": null,
+          "pass": true
+        }
+      ],
+      "pass": true
+    },
+    {
+      "media": "more",
+      "tokens": {
+        "--cb-page": "#f1f5f9",
+        "--cb-surface": "#ffffff",
+        "--cb-surface-sunken": "#f3f7fb",
+        "--cb-surface-hover": "#e2eaf5",
+        "--cb-border": "#334155",
+        "--cb-border-strong": "#1e293b",
+        "--cb-text": "#000000",
+        "--cb-text-muted": "#1f2937",
+        "--cb-text-faint": "#334155",
+        "--cb-primary": "#8a5a00",
+        "--cb-primary-hover": "#704700",
+        "--cb-primary-soft": "#fff1cc",
+        "--cb-on-primary": "#ffffff",
+        "--cb-run": "#237a57",
+        "--cb-run-hover": "#1a6445",
+        "--cb-stop": "#b83232",
+        "--cb-stop-hover": "#8e2a2a",
+        "--cb-stop-soft": "#fff1f1",
+        "--cb-warn": "#8a5a00",
+        "--cb-warn-soft": "#fff1cc",
+        "--cb-warn-border": "#8a5a00",
+        "--cb-on-stop": "#ffffff",
+        "--cb-canvas": "#f7fafc",
+        "--cb-canvas-grid": "#64748b",
+        "--cb-canvas-grid-strong": "#334155",
+        "--cb-schematic-wire": "#1d4ed8",
+        "--cb-wire-positive": "#8a5a00",
+        "--cb-wire-ground": "#1d4ed8",
+        "--cb-wire-signal": "#0e7490",
+        "--cb-wire-signal-blue": "#4338ca",
+        "--cb-wire-signal-ice": "#1e5a88",
+        "--cb-wire-ink": "#111827",
+        "--cb-wire-selected": "#8a5a00",
+        "--cb-wire-waypoint": "#ffffff",
+        "--cb-damage-text": "#a32916",
+        "--cb-damage-border": "#a32916",
+        "--cb-damage-active-text": "#075985",
+        "--cb-damage-active-border": "#075985",
+        "--cb-damage-warning": "#7a4b00"
+      },
+      "rows": [
+        {
+          "name": "body text",
+          "foreground": "#000000",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 21,
+          "pass": true
+        },
+        {
+          "name": "muted text",
+          "foreground": "#1f2937",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 14.68,
+          "pass": true
+        },
+        {
+          "name": "faint text",
+          "foreground": "#334155",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 10.35,
+          "pass": true
+        },
+        {
+          "name": "primary text",
+          "foreground": "#8a5a00",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "primary on soft",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "on primary",
+          "foreground": "#ffffff",
+          "background": "#8a5a00",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "run button",
+          "foreground": "#ffffff",
+          "background": "#237a57",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.26,
+          "pass": true
+        },
+        {
+          "name": "stop button",
+          "foreground": "#ffffff",
+          "background": "#b83232",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "warning badge",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "border",
+          "foreground": "#334155",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 10.35,
+          "pass": true
+        },
+        {
+          "name": "strong border",
+          "foreground": "#1e293b",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 14.63,
+          "pass": true
+        },
+        {
+          "name": "warning border",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "damage text",
+          "foreground": "#a32916",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.28,
+          "pass": true
+        },
+        {
+          "name": "damage active",
+          "foreground": "#075985",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.56,
+          "pass": true
+        },
+        {
+          "name": "damage warning",
+          "foreground": "#7a4b00",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.41,
+          "pass": true
+        },
+        {
+          "name": "disabled control",
+          "foreground": "#1f2937",
+          "background": "#ffffff",
+          "opacity": 0.62,
+          "min": 2,
+          "ratio": 4.31,
+          "pass": true
+        },
+        {
+          "name": "canvas grid",
+          "foreground": "#64748b",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 4.54,
+          "pass": true
+        },
+        {
+          "name": "canvas major grid",
+          "foreground": "#334155",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 9.88,
+          "pass": true
+        },
+        {
+          "name": "schematic wire",
+          "foreground": "#1d4ed8",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.39,
+          "pass": true
+        },
+        {
+          "name": "wire positive",
+          "foreground": "#8a5a00",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.65,
+          "pass": true
+        },
+        {
+          "name": "wire ground",
+          "foreground": "#1d4ed8",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.39,
+          "pass": true
+        },
+        {
+          "name": "wire signal",
+          "foreground": "#0e7490",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.11,
+          "pass": true
+        },
+        {
+          "name": "wire signal blue",
+          "foreground": "#4338ca",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.54,
+          "pass": true
+        },
+        {
+          "name": "wire signal ice",
+          "foreground": "#1e5a88",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.97,
+          "pass": true
+        },
+        {
+          "name": "wire ink",
+          "foreground": "#111827",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 16.92,
+          "pass": true
+        },
+        {
+          "name": "wire selected",
+          "foreground": "#8a5a00",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.65,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on positive",
+          "foreground": "#ffffff",
+          "background": "#8a5a00",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on ground",
+          "foreground": "#ffffff",
+          "background": "#1d4ed8",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.7,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal",
+          "foreground": "#ffffff",
+          "background": "#0e7490",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.36,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal blue",
+          "foreground": "#ffffff",
+          "background": "#4338ca",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.9,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal ice",
+          "foreground": "#ffffff",
+          "background": "#1e5a88",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.31,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on ink",
+          "foreground": "#ffffff",
+          "background": "#111827",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 17.74,
+          "pass": true
+        },
+        {
+          "name": "swatch positive",
+          "foreground": "#8a5a00",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.51,
+          "pass": true
+        },
+        {
+          "name": "swatch ground",
+          "foreground": "#1d4ed8",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.23,
+          "pass": true
+        },
+        {
+          "name": "swatch signal",
+          "foreground": "#0e7490",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 4.98,
+          "pass": true
+        },
+        {
+          "name": "swatch signal blue",
+          "foreground": "#4338ca",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.34,
+          "pass": true
+        },
+        {
+          "name": "swatch signal ice",
+          "foreground": "#1e5a88",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.79,
+          "pass": true
+        },
+        {
+          "name": "swatch ink",
+          "foreground": "#111827",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 16.48,
+          "pass": true
+        }
+      ],
+      "fonts": [
+        {
+          "selector": ".cb-beta-badge",
+          "fontSize": "11px",
+          "pass": true
+        },
+        {
+          "selector": ".cb-serial-badge",
+          "fontSize": "11px",
+          "pass": true
+        },
+        {
+          "selector": ".cb-tour-eyebrow",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-eyebrow",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-chip span",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sample-group-count",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-shortcut-group h3",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-designator",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-value",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-netlabel",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-value",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-pin-name",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-pin-number",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-titleblock-project",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-titleblock-sheet",
+          "fontSize": null,
+          "pass": true
+        }
+      ],
+      "pass": true
+    },
+    {
+      "media": "less",
+      "tokens": {
+        "--cb-page": "#f1f5f9",
+        "--cb-surface": "#ffffff",
+        "--cb-surface-sunken": "#f3f7fb",
+        "--cb-surface-hover": "#e2eaf5",
+        "--cb-border": "#6f869e",
+        "--cb-border-strong": "#526b86",
+        "--cb-text": "#081523",
+        "--cb-text-muted": "#425c7a",
+        "--cb-text-faint": "#52657e",
+        "--cb-primary": "#8a5a00",
+        "--cb-primary-hover": "#704700",
+        "--cb-primary-soft": "#fff1cc",
+        "--cb-on-primary": "#ffffff",
+        "--cb-run": "#237a57",
+        "--cb-run-hover": "#1a6445",
+        "--cb-stop": "#b83232",
+        "--cb-stop-hover": "#8e2a2a",
+        "--cb-stop-soft": "#fff1f1",
+        "--cb-warn": "#8a5a00",
+        "--cb-warn-soft": "#fff1cc",
+        "--cb-warn-border": "#8a5a00",
+        "--cb-on-stop": "#ffffff",
+        "--cb-canvas": "#f7fafc",
+        "--cb-canvas-grid": "#7c90a5",
+        "--cb-canvas-grid-strong": "#526b86",
+        "--cb-schematic-wire": "#1d4ed8",
+        "--cb-wire-positive": "#8a5a00",
+        "--cb-wire-ground": "#1d4ed8",
+        "--cb-wire-signal": "#0e7490",
+        "--cb-wire-signal-blue": "#4338ca",
+        "--cb-wire-signal-ice": "#1e5a88",
+        "--cb-wire-ink": "#111827",
+        "--cb-wire-selected": "#8a5a00",
+        "--cb-wire-waypoint": "#ffffff",
+        "--cb-damage-text": "#a32916",
+        "--cb-damage-border": "#a32916",
+        "--cb-damage-active-text": "#075985",
+        "--cb-damage-active-border": "#075985",
+        "--cb-damage-warning": "#7a4b00"
+      },
+      "rows": [
+        {
+          "name": "body text",
+          "foreground": "#081523",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 18.39,
+          "pass": true
+        },
+        {
+          "name": "muted text",
+          "foreground": "#425c7a",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 6.9,
+          "pass": true
+        },
+        {
+          "name": "faint text",
+          "foreground": "#52657e",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.96,
+          "pass": true
+        },
+        {
+          "name": "primary text",
+          "foreground": "#8a5a00",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "primary on soft",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "on primary",
+          "foreground": "#ffffff",
+          "background": "#8a5a00",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "run button",
+          "foreground": "#ffffff",
+          "background": "#237a57",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.26,
+          "pass": true
+        },
+        {
+          "name": "stop button",
+          "foreground": "#ffffff",
+          "background": "#b83232",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "warning badge",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "border",
+          "foreground": "#6f869e",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 3.76,
+          "pass": true
+        },
+        {
+          "name": "strong border",
+          "foreground": "#526b86",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.52,
+          "pass": true
+        },
+        {
+          "name": "warning border",
+          "foreground": "#8a5a00",
+          "background": "#fff1cc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.28,
+          "pass": true
+        },
+        {
+          "name": "damage text",
+          "foreground": "#a32916",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.28,
+          "pass": true
+        },
+        {
+          "name": "damage active",
+          "foreground": "#075985",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.56,
+          "pass": true
+        },
+        {
+          "name": "damage warning",
+          "foreground": "#7a4b00",
+          "background": "#ffffff",
+          "opacity": 1,
+          "min": 4.5,
+          "ratio": 7.41,
+          "pass": true
+        },
+        {
+          "name": "disabled control",
+          "foreground": "#425c7a",
+          "background": "#ffffff",
+          "opacity": 0.62,
+          "min": 2,
+          "ratio": 2.88,
+          "pass": true
+        },
+        {
+          "name": "canvas grid",
+          "foreground": "#7c90a5",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 3.14,
+          "pass": true
+        },
+        {
+          "name": "canvas major grid",
+          "foreground": "#526b86",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.26,
+          "pass": true
+        },
+        {
+          "name": "schematic wire",
+          "foreground": "#1d4ed8",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.39,
+          "pass": true
+        },
+        {
+          "name": "wire positive",
+          "foreground": "#8a5a00",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.65,
+          "pass": true
+        },
+        {
+          "name": "wire ground",
+          "foreground": "#1d4ed8",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.39,
+          "pass": true
+        },
+        {
+          "name": "wire signal",
+          "foreground": "#0e7490",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.11,
+          "pass": true
+        },
+        {
+          "name": "wire signal blue",
+          "foreground": "#4338ca",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.54,
+          "pass": true
+        },
+        {
+          "name": "wire signal ice",
+          "foreground": "#1e5a88",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.97,
+          "pass": true
+        },
+        {
+          "name": "wire ink",
+          "foreground": "#111827",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 16.92,
+          "pass": true
+        },
+        {
+          "name": "wire selected",
+          "foreground": "#8a5a00",
+          "background": "#f7fafc",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.65,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on positive",
+          "foreground": "#ffffff",
+          "background": "#8a5a00",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.93,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on ground",
+          "foreground": "#ffffff",
+          "background": "#1d4ed8",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.7,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal",
+          "foreground": "#ffffff",
+          "background": "#0e7490",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.36,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal blue",
+          "foreground": "#ffffff",
+          "background": "#4338ca",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.9,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on signal ice",
+          "foreground": "#ffffff",
+          "background": "#1e5a88",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.31,
+          "pass": true
+        },
+        {
+          "name": "waypoint outline on ink",
+          "foreground": "#ffffff",
+          "background": "#111827",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 17.74,
+          "pass": true
+        },
+        {
+          "name": "swatch positive",
+          "foreground": "#8a5a00",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 5.51,
+          "pass": true
+        },
+        {
+          "name": "swatch ground",
+          "foreground": "#1d4ed8",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.23,
+          "pass": true
+        },
+        {
+          "name": "swatch signal",
+          "foreground": "#0e7490",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 4.98,
+          "pass": true
+        },
+        {
+          "name": "swatch signal blue",
+          "foreground": "#4338ca",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 7.34,
+          "pass": true
+        },
+        {
+          "name": "swatch signal ice",
+          "foreground": "#1e5a88",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 6.79,
+          "pass": true
+        },
+        {
+          "name": "swatch ink",
+          "foreground": "#111827",
+          "background": "#f3f7fb",
+          "opacity": 1,
+          "min": 3,
+          "ratio": 16.48,
+          "pass": true
+        }
+      ],
+      "fonts": [
+        {
+          "selector": ".cb-beta-badge",
+          "fontSize": "11px",
+          "pass": true
+        },
+        {
+          "selector": ".cb-serial-badge",
+          "fontSize": "11px",
+          "pass": true
+        },
+        {
+          "selector": ".cb-tour-eyebrow",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-eyebrow",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-chip span",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sample-group-count",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-shortcut-group h3",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-designator",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-value",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-netlabel",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-value",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-pin-name",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-original-pin-number",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-titleblock-project",
+          "fontSize": null,
+          "pass": true
+        },
+        {
+          "selector": ".cb-sch-titleblock-sheet",
+          "fontSize": null,
+          "pass": true
+        }
+      ],
+      "pass": true
+    }
+  ],
+  "pass": true
+}

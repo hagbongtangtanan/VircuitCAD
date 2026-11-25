@@ -1,0 +1,19 @@
+{
+  "label": "baseline-seven",
+  "sample": "seven-segment-counter.vcc",
+  "durationMs": 6000,
+  "settleMs": 1200,
+  "metrics": {
+    "domParser": 0,
+    "ctxOps": 1210971,
+    "longTasks": 3,
+    "frameCount": 114,
+    "frameP50": 66.60000000000582,
+    "frameP95": 100.10000000000582,
+    "frameMax": 116.80000000001746,
+    "frameMean": 52.51491228070186,
+    "over16": 94,
+    "over33": 72
+  },
+  "runtimeExceptions": []
+}

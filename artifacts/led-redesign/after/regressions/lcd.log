@@ -1,0 +1,139 @@
+{
+  "loaded": {
+    "title": "Hello on an LCD",
+    "partTypes": [
+      "arduino-uno",
+      "lcd-16x2-i2c"
+    ],
+    "wireCount": 4
+  },
+  "beforeSim": {
+    "simStatus": "stopped",
+    "display": null,
+    "metrics": {
+      "mode": "blocks",
+      "backlight": false,
+      "powerConnected": true,
+      "backlightFactor": 0.16,
+      "theme": "blue",
+      "contrast": 0.85,
+      "lines": [
+        "",
+        ""
+      ],
+      "litPixels": 0,
+      "drawCalls": 1120,
+      "cellSize": {
+        "width": 4.68913230607214,
+        "height": 8.821926880915381
+      },
+      "pixelPitch": 0.9378264612144279,
+      "pixelSize": 0.8440438150929851,
+      "pixelGap": 0.09378264612144283,
+      "fillRatio": 0.9,
+      "glassMargin": {
+        "x": 4.618407398913362,
+        "y": 0.9984496124031033,
+        "xRatio": 0.050200080422971326,
+        "yRatio": 0.05000000000000013
+      },
+      "unlitDrawn": true,
+      "unlitOpacity": 0.05,
+      "glareOpacity": 0.011200000000000002,
+      "glowBlur": 0.5,
+      "glowOpacity": 0.24,
+      "contrastRatio": 1.5149901146777787,
+      "litColor": "#797d80",
+      "glassColor": "#5b6164",
+      "minimumStrokePx": 2,
+      "renderedPixelSize": 0.8440438150929851
+    }
+  },
+  "state": {
+    "status": "running",
+    "error": null,
+    "simStatusText": "simulating · 28.9 s",
+    "display": {
+      "lines": [
+        "",
+        ""
+      ],
+      "backlight": true
+    },
+    "metrics": {
+      "mode": "blocks",
+      "backlight": true,
+      "powerConnected": true,
+      "backlightFactor": 1,
+      "theme": "blue",
+      "contrast": 0.85,
+      "lines": [
+        "",
+        ""
+      ],
+      "litPixels": 0,
+      "drawCalls": 1120,
+      "cellSize": {
+        "width": 4.68913230607214,
+        "height": 8.821926880915381
+      },
+      "pixelPitch": 0.9378264612144279,
+      "pixelSize": 0.8440438150929851,
+      "pixelGap": 0.09378264612144283,
+      "fillRatio": 0.9,
+      "glassMargin": {
+        "x": 4.618407398913362,
+        "y": 0.9984496124031033,
+        "xRatio": 0.050200080422971326,
+        "yRatio": 0.05000000000000013
+      },
+      "unlitDrawn": true,
+      "unlitOpacity": 0.05,
+      "glareOpacity": 0.07,
+      "glowBlur": 0.5,
+      "glowOpacity": 0.24,
+      "contrastRatio": 8.819274659309874,
+      "litColor": "#ffffff",
+      "glassColor": "#1742a8",
+      "minimumStrokePx": 2,
+      "renderedPixelSize": 0.8440438150929851
+    },
+    "engine": {
+      "twiState": {
+        "targetPartId": "lcd1",
+        "expectAddress": true,
+        "expectData": false,
+        "addressWritten": false,
+        "selected": false,
+        "intFlag": false,
+        "status": 8,
+        "starts": 0,
+        "writes": 0,
+        "lastBytes": []
+      },
+      "lcdState": {
+        "lines": [
+          "",
+          ""
+        ],
+        "row": 0,
+        "column": 0,
+        "nibble": null,
+        "initPhase": 0,
+        "lastEnable": false,
+        "pendingEnable": null,
+        "backlight": true
+      }
+    }
+  },
+  "backlightStates": [
+    true
+  ],
+  "sketchLitColors": [
+    "#ffffff"
+  ],
+  "screenshot": "/tmp/opencode/lcd-sketch-response/lcd-sketch-response.png",
+  "consoleErrors": [],
+  "pass": false,
+  "logFile": "/tmp/opencode/lcd-sketch-response/acceptance-log.json"
+}

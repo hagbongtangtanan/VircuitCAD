@@ -1,0 +1,20 @@
+{
+  "label": "baseline-recheck",
+  "sample": "traffic-light.vcc",
+  "port": "9350",
+  "durationMs": 6000,
+  "settleMs": 1200,
+  "metrics": {
+    "domParser": 210,
+    "ctxOps": 361767,
+    "longTasks": 19,
+    "frameCount": 188,
+    "frameP50": 33.30000000000291,
+    "frameP95": 66.79999999999563,
+    "frameMax": 150.10000000000582,
+    "frameMean": 32.376063829787256,
+    "over16": 134,
+    "over33": 101
+  },
+  "runtimeExceptions": []
+}

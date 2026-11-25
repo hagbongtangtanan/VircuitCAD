@@ -1,0 +1,41 @@
+{
+  "archive": "resources/app.asar",
+  "output": "out/patched/app-persisted.asar",
+  "install": true,
+  "loaded_bundle": "out/renderer/assets/index-N0START1.js",
+  "design_scale": "0.25",
+  "origin": "15,40",
+  "glow_radius": 225,
+  "peak_alpha": {
+    "dark": 0.7,
+    "light": 0.85
+  },
+  "perf": {
+    "motorSet": 1,
+    "gatedSelector": 1,
+    "overlaySnapshot": 1,
+    "elapsedSelectorTotal": 1
+  },
+  "original_sha256": "30f89b988be1895f33f5c40cd89a428ca88b4b3f34cbbf37cab1a9ac82cd4381",
+  "output_sha256": "30f89b988be1895f33f5c40cd89a428ca88b4b3f34cbbf37cab1a9ac82cd4381",
+  "packed": {
+    "fileCount": 5768,
+    "dirCount": 409,
+    "headerBytes": 1488772,
+    "archiveBytes": 82378645
+  },
+  "prefix_ok": true,
+  "comparison": {
+    "ok": true,
+    "expectedFileCount": 5768,
+    "actualFileCount": 5768,
+    "expectedDirCount": 409,
+    "actualDirCount": 409,
+    "missing": [],
+    "extra": [],
+    "changed": [],
+    "dirsMissing": [],
+    "dirsExtra": []
+  },
+  "pass": true
+}

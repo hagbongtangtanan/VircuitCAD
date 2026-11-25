@@ -1,0 +1,40 @@
+{
+  "wiring": {
+    "count": 2,
+    "endpoints": [
+      {
+        "from": {
+          "partId": "led1",
+          "pinId": "anode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "D13"
+        }
+      },
+      {
+        "from": {
+          "partId": "led1",
+          "pinId": "cathode"
+        },
+        "to": {
+          "partId": "uno",
+          "pinId": "GND"
+        }
+      }
+    ]
+  },
+  "drag": {
+    "before": {
+      "x": 590,
+      "y": 100
+    },
+    "after": {
+      "x": 620,
+      "y": 120
+    },
+    "dx": 30,
+    "dy": 20
+  },
+  "pass": true
+}

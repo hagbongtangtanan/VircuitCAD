@@ -1,0 +1,44 @@
+{
+  "app": "out/app-library-sections.asar",
+  "canvas": {
+    "x": 11,
+    "y": 63,
+    "width": 1146,
+    "height": 744
+  },
+  "without_devtools": {
+    "label": "without-devtools",
+    "frames": {
+      "count": 75,
+      "p50": 33.29999999999927,
+      "p95": 50.100000000000364,
+      "max": 100,
+      "mean": 30.017333333333323,
+      "over16": 50,
+      "over33": 36
+    },
+    "ctxOps": 71291,
+    "rawCount": 75
+  },
+  "with_devtools": {
+    "label": "with-devtools",
+    "frames": {
+      "count": 76,
+      "p50": 16.80000000000109,
+      "p95": 50.100000000000364,
+      "max": 50.100000000000364,
+      "mean": 26.769736842105264,
+      "over16": 53,
+      "over33": 27
+    },
+    "ctxOps": 68783,
+    "rawCount": 76
+  },
+  "runtimeExceptions": [],
+  "checks": {
+    "pan_draw_calls_bounded": true,
+    "frames_measured": true,
+    "no_runtime_exceptions": true
+  },
+  "pass": true
+}

@@ -1,0 +1,82 @@
+{
+  "app": "out/app-pot.asar",
+  "sample": "resources/samples/potentiometer.vcc",
+  "value": 0.5,
+  "zoom": 1,
+  "pxPerDesignUnit": 1,
+  "crop": {
+    "left": 534,
+    "top": 595,
+    "width": 71,
+    "height": 46
+  },
+  "background": "#030813",
+  "features": {
+    "app": {
+      "centre": {
+        "x": 47.5,
+        "y": 22.5
+      },
+      "bodyRadius": 22.5,
+      "knobRadius": 10.124228365658293,
+      "rimBox": {
+        "minX": 25,
+        "maxX": 70,
+        "minY": 1,
+        "maxY": 44,
+        "pixels": 76
+      },
+      "pointerAngle": 90,
+      "pointerPixels": 60
+    },
+    "reference": {
+      "centre": {
+        "x": 47.5,
+        "y": 22.5
+      },
+      "bodyRadius": 22.5,
+      "knobRadius": 10.124228365658293,
+      "rimBox": {
+        "minX": 25,
+        "maxX": 70,
+        "minY": 1,
+        "maxY": 44,
+        "pixels": 89
+      },
+      "pointerAngle": 90,
+      "pointerPixels": 60
+    },
+    "delta": {
+      "centreX": 0,
+      "centreY": 0,
+      "bodyRadius": 0,
+      "knobRadius": 0,
+      "pointerAngle": 0
+    }
+  },
+  "pointer": {
+    "expectedDeg": 90,
+    "partRotationDeg": 90,
+    "appDeg": 90,
+    "referenceDeg": 90
+  },
+  "pixelTolerance": 24,
+  "blockSize": 4,
+  "blurSigma": 2,
+  "comparedBlocks": "18x12",
+  "meanAbsoluteDifference": [
+    1.5176470588235293,
+    1.0588235294117647,
+    0.6235294117647059
+  ],
+  "diffFraction": 0,
+  "diffPixels": 0,
+  "totalPixels": 85,
+  "runtimeExceptions": [],
+  "files": {
+    "screenshot": "pot-new/out/diff/app-pot-0_5.png",
+    "reference": "pot-new/out/diff/ref-pot-0_5.png",
+    "diff": "pot-new/out/diff/diff-pot-0_5.png"
+  },
+  "pass": true
+}

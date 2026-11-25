@@ -1,0 +1,111 @@
+{
+  "geometry": {
+    "pitch": 10,
+    "thickness": 6.2,
+    "gap": 0.8,
+    "verticalLength": 24,
+    "horizontalLength": 24,
+    "bevel": 2.2,
+    "verticalAspect": 3.8709677419354835,
+    "stackHeight": 69.8,
+    "slantDeg": -7,
+    "skewX": -0.1227845609029046,
+    "offColor": "#3A3D43",
+    "body": {
+      "x": 0,
+      "y": -5,
+      "width": 50,
+      "height": 70
+    },
+    "center": {
+      "x": 25,
+      "y": 30
+    },
+    "digitArea": {
+      "x": 8.5,
+      "y": 2,
+      "width": 33,
+      "height": 56
+    },
+    "segmentBounds": {
+      "left": 3.5,
+      "right": 46.5,
+      "top": -4.899999999999999,
+      "bottom": 64.89999999999999
+    },
+    "dp": {
+      "x": 42.90064001426722,
+      "y": 58.5,
+      "radius": 3,
+      "baseX": 46.4,
+      "baseY": 58.5
+    },
+    "bodyOverhangTop": 5,
+    "bodyOverhangBottom": 5,
+    "adjacentHoles": {
+      "topRow": "b",
+      "bottomRow": "i",
+      "holeRadius": 1.1,
+      "bodyTopWorld": 85,
+      "bodyBottomWorld": 155,
+      "topClearance": 3.9000000000000057,
+      "bottomClearance": 3.9000000000000057
+    }
+  },
+  "pinDiffs": [
+    {
+      "pinId": "g",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "f",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "common",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "a",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "b",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "e",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "d",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "common2",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "c",
+      "dx": 0,
+      "dy": 0
+    },
+    {
+      "pinId": "dp",
+      "dx": 0,
+      "dy": 0
+    }
+  ],
+  "pinCoordinatesUnchanged": true,
+  "screenshot100": "artifacts/seven-segment-interlock/before/segments-100.png",
+  "screenshot400": "artifacts/seven-segment-interlock/before/segments-400.png",
+  "strip": "artifacts/seven-segment-interlock/before/digits-0-9.png"
+}

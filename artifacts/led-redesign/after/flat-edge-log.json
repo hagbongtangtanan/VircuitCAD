@@ -1,0 +1,61 @@
+{
+  "rows": [
+    {
+      "theme": "dark",
+      "partId": "blue-lit",
+      "flatEdge": {
+        "side": "K",
+        "x": 24.5,
+        "yTop": 9.51925930159214,
+        "yBottom": 22.48074069840786
+      },
+      "strayDomeBar": false,
+      "legHook": false,
+      "flangeRadius": 11.5,
+      "domeRadius": 10
+    },
+    {
+      "theme": "dark",
+      "partId": "blue-unlit",
+      "flatEdge": {
+        "side": "K",
+        "x": 24.5,
+        "yTop": 9.51925930159214,
+        "yBottom": 22.48074069840786
+      },
+      "strayDomeBar": false,
+      "legHook": false,
+      "flangeRadius": 11.5,
+      "domeRadius": 10
+    },
+    {
+      "theme": "light",
+      "partId": "blue-lit",
+      "flatEdge": {
+        "side": "K",
+        "x": 24.5,
+        "yTop": 9.51925930159214,
+        "yBottom": 22.48074069840786
+      },
+      "strayDomeBar": false,
+      "legHook": false,
+      "flangeRadius": 11.5,
+      "domeRadius": 10
+    },
+    {
+      "theme": "light",
+      "partId": "blue-unlit",
+      "flatEdge": {
+        "side": "K",
+        "x": 24.5,
+        "yTop": 9.51925930159214,
+        "yBottom": 22.48074069840786
+      },
+      "strayDomeBar": false,
+      "legHook": false,
+      "flangeRadius": 11.5,
+      "domeRadius": 10
+    }
+  ],
+  "pass": true
+}

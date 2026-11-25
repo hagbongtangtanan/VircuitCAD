@@ -1,0 +1,66 @@
+{
+  "source": "embedded traffic-light.vcc starter",
+  "opened": true,
+  "phases": [
+    {
+      "label": "baseline",
+      "greyPixels": 4438
+    },
+    {
+      "label": "at-burn",
+      "greyPixels": 7012
+    },
+    {
+      "label": "after-1000ms",
+      "greyPixels": 7157
+    },
+    {
+      "label": "after-2000ms",
+      "greyPixels": 5801
+    },
+    {
+      "label": "after-3000ms",
+      "greyPixels": 5571
+    },
+    {
+      "label": "after-4000ms",
+      "greyPixels": 4054
+    },
+    {
+      "label": "after-5000ms",
+      "greyPixels": 4054
+    },
+    {
+      "label": "after-restart",
+      "greyPixels": 4054
+    }
+  ],
+  "decay": [
+    7157,
+    5801,
+    5571,
+    4054,
+    4054
+  ],
+  "baseline": 4438,
+  "atBurn": 7012,
+  "faded": 4054,
+  "afterRestart": 4054,
+  "light_theme": {
+    "bulb_box": {
+      "minX": 646,
+      "minY": 223,
+      "maxX": 665,
+      "maxY": 232,
+      "width": 19,
+      "height": 9
+    },
+    "removed_red_pixels": 70,
+    "dark_bulb_pixels": 115,
+    "dark_bulb_ratio": 0.575,
+    "warm_icon_pixels": 13,
+    "dark_oval_pixels": 0
+  },
+  "runtimeExceptions": [],
+  "pass": true
+}

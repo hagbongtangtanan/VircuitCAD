@@ -1,0 +1,1907 @@
+{
+  "cases": 100,
+  "failures": 0,
+  "pass": true,
+  "results": [
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#70282e",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#70282e",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#70282e",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#70282e",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#70282e",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#d3a5a4",
+      "glowHex": "#1b121c",
+      "glowHue": 294,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#d3a5a4",
+      "glowHex": "#efe5ea",
+      "glowHue": 330,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#d3a5a4",
+      "glowHex": "#f4dcbf",
+      "glowHue": 33,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#d3a5a4",
+      "glowHex": "#952432",
+      "glowHue": 353,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "dark",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#d3a5a4",
+      "glowHex": "#324f89",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#7e1d19",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#7e1d19",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#7e1d19",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#7e1d19",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#7e1d19",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#dca5a4",
+      "glowHex": "#130c15",
+      "glowHue": 287,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#dca5a4",
+      "glowHex": "#ece3e8",
+      "glowHue": 327,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#dca5a4",
+      "glowHex": "#f0dabc",
+      "glowHue": 35,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#dca5a4",
+      "glowHex": "#901e2c",
+      "glowHue": 353,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "red",
+      "theme": "light",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#dca5a4",
+      "glowHex": "#2a4b85",
+      "glowHue": 218,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#285a35",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#285a35",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#285a35",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#285a35",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#285a35",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#a4c2ab",
+      "glowHex": "#0d1d1e",
+      "glowHue": 184,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#a4c2ab",
+      "glowHex": "#e1f0ec",
+      "glowHue": 164,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#a4c2ab",
+      "glowHex": "#e6e7c1",
+      "glowHue": 62,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#a4c2ab",
+      "glowHex": "#872f34",
+      "glowHue": 357,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "dark",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#a4c2ab",
+      "glowHex": "#245a8b",
+      "glowHue": 209,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#155c29",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#155c29",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#155c29",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#155c29",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#155c29",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#a3c9ab",
+      "glowHex": "#071416",
+      "glowHue": 188,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#a3c9ab",
+      "glowHex": "#e0ebe9",
+      "glowHue": 169,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#a3c9ab",
+      "glowHex": "#e4e2bd",
+      "glowHue": 57,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#a3c9ab",
+      "glowHex": "#84262d",
+      "glowHue": 356,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "green",
+      "theme": "light",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#a3c9ab",
+      "glowHex": "#1e5386",
+      "glowHue": 209,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#284980",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#284980",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#284980",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#284980",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#284980",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#a1b7d6",
+      "glowHex": "#0e1929",
+      "glowHue": 216,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#a1b7d6",
+      "glowHex": "#e2ecf7",
+      "glowHue": 211,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#a1b7d6",
+      "glowHex": "#e7e3cc",
+      "glowHue": 51,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#a1b7d6",
+      "glowHex": "#882b3f",
+      "glowHue": 347,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "dark",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#a1b7d6",
+      "glowHex": "#255696",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#0e3e91",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#0e3e91",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#0e3e91",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#0e3e91",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#0e3e91",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#9ebae1",
+      "glowHex": "#061121",
+      "glowHue": 216,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#9ebae1",
+      "glowHex": "#dfe8f4",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#9ebae1",
+      "glowHex": "#e3dfc8",
+      "glowHue": 51,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#9ebae1",
+      "glowHex": "#832338",
+      "glowHue": 347,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "blue",
+      "theme": "light",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#9ebae1",
+      "glowHex": "#1d5091",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#6a511a",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#6a511a",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#6a511a",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#6a511a",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#6a511a",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#d2bf9a",
+      "glowHex": "#1b1c1b",
+      "glowHue": 120,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#d2bf9a",
+      "glowHex": "#efefe9",
+      "glowHue": 60,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#d2bf9a",
+      "glowHex": "#f4e6be",
+      "glowHue": 44,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#d2bf9a",
+      "glowHex": "#952e31",
+      "glowHue": 358,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "dark",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#d2bf9a",
+      "glowHex": "#325988",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#6a4600",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#6a4600",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#6a4600",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#6a4600",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#6a4600",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#dbc895",
+      "glowHex": "#111212",
+      "glowHue": 180,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#dbc895",
+      "glowHex": "#eae9e5",
+      "glowHue": 48,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#dbc895",
+      "glowHex": "#eee0b9",
+      "glowHue": 44,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#dbc895",
+      "glowHex": "#8e2429",
+      "glowHue": 357,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "yellow",
+      "theme": "light",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#dbc895",
+      "glowHex": "#285182",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#6a7585",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#6a7585",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#6a7585",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#6a7585",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#6a7585",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#dadce1",
+      "glowHex": "#171e28",
+      "glowHue": 215,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#dadce1",
+      "glowHex": "#ebf1f6",
+      "glowHue": 207,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#dadce1",
+      "glowHex": "#f0e8cb",
+      "glowHue": 47,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#dadce1",
+      "glowHex": "#91303e",
+      "glowHue": 351,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "dark",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#dadce1",
+      "glowHex": "#2e5b95",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": false,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#5a6574",
+      "glowHex": "#050a14",
+      "glowHue": 220,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": false,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#5a6574",
+      "glowHex": "#eef2f7",
+      "glowHue": 213,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": false,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#5a6574",
+      "glowHex": "#f3e8c8",
+      "glowHue": 45,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": false,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#5a6574",
+      "glowHex": "#8b1e2d",
+      "glowHue": 352,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": false,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#5a6574",
+      "glowHex": "#1e4e8c",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": true,
+      "background": "dark",
+      "backgroundHex": "#050A14",
+      "bodyHex": "#dddfe2",
+      "glowHex": "#0a101a",
+      "glowHue": 218,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": true,
+      "background": "light",
+      "backgroundHex": "#EEF2F7",
+      "bodyHex": "#dddfe2",
+      "glowHex": "#e3e7ed",
+      "glowHue": 216,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": true,
+      "background": "breadboard",
+      "backgroundHex": "#F3E8C8",
+      "bodyHex": "#dddfe2",
+      "glowHex": "#e7dec1",
+      "glowHue": 46,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": true,
+      "background": "redRail",
+      "backgroundHex": "#8B1E2D",
+      "bodyHex": "#dddfe2",
+      "glowHex": "#872231",
+      "glowHue": 351,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    },
+    {
+      "color": "white",
+      "theme": "light",
+      "lit": true,
+      "background": "blueRail",
+      "backgroundHex": "#1E4E8C",
+      "bodyHex": "#dddfe2",
+      "glowHex": "#214f8a",
+      "glowHue": 214,
+      "checks": {
+        "body_contrast": true,
+        "lit_glow_visible": true,
+        "lit_glow_hue": true,
+        "ring_state": true,
+        "core_state": true,
+        "valid_svg": true
+      },
+      "pass": true
+    }
+  ]
+}

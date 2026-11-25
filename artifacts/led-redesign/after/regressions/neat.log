@@ -1,0 +1,81 @@
+{
+  "checked": 12,
+  "failures": [],
+  "results": [
+    {
+      "name": "blink-led",
+      "wireCount": 6,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "potentiometer",
+      "wireCount": 6,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "seven-segment-counter",
+      "wireCount": 34,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "traffic-light",
+      "wireCount": 16,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "uno-blink",
+      "wireCount": 3,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "uno-button-led",
+      "wireCount": 5,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "uno-traffic-light",
+      "wireCount": 9,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "uno-servo",
+      "wireCount": 3,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "uno-millis-timer",
+      "wireCount": 3,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "uno-ultrasonic",
+      "wireCount": 4,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "uno-ldr",
+      "wireCount": 4,
+      "diagonalSegments": 0,
+      "diagonals": []
+    },
+    {
+      "name": "uno-lcd-hello",
+      "wireCount": 4,
+      "diagonalSegments": 0,
+      "diagonals": []
+    }
+  ],
+  "consoleErrors": [],
+  "pass": true,
+  "logFile": "/home/kheil_gwapo/projects/OldVircuitCAD/artifacts/neat-wiring/acceptance-log.json"
+}

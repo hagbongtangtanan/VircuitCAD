@@ -1,0 +1,646 @@
+{
+  "opened": {
+    "open": true,
+    "title": "Pick a working circuit",
+    "titlePaddingLeft": "24px",
+    "chevronIcons": 8,
+    "count": "12 circuits",
+    "toggleAll": "Collapse all",
+    "groups": [
+      {
+        "id": "microcontrollers",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "inputs",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "sensors",
+        "expanded": true,
+        "hidden": false,
+        "cards": 2
+      },
+      {
+        "id": "displays",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "outputs",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "actuators",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "timers",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "samples",
+        "expanded": true,
+        "hidden": false,
+        "cards": 4
+      }
+    ],
+    "totalCards": 12,
+    "sampleCards": [
+      {
+        "id": "blink-led.vcc",
+        "title": "Blink Led"
+      },
+      {
+        "id": "potentiometer.vcc",
+        "title": "Potentiometer"
+      },
+      {
+        "id": "seven-segment-counter.vcc",
+        "title": "Seven Segment Counter"
+      },
+      {
+        "id": "traffic-light.vcc",
+        "title": "Traffic Light"
+      }
+    ]
+  },
+  "collapsed": {
+    "open": true,
+    "title": "Pick a working circuit",
+    "titlePaddingLeft": "24px",
+    "chevronIcons": 8,
+    "count": "12 circuits",
+    "toggleAll": "Expand all",
+    "groups": [
+      {
+        "id": "microcontrollers",
+        "expanded": false,
+        "hidden": true,
+        "cards": 1
+      },
+      {
+        "id": "inputs",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "sensors",
+        "expanded": true,
+        "hidden": false,
+        "cards": 2
+      },
+      {
+        "id": "displays",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "outputs",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "actuators",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "timers",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "samples",
+        "expanded": true,
+        "hidden": false,
+        "cards": 4
+      }
+    ],
+    "totalCards": 12,
+    "sampleCards": [
+      {
+        "id": "blink-led.vcc",
+        "title": "Blink Led"
+      },
+      {
+        "id": "potentiometer.vcc",
+        "title": "Potentiometer"
+      },
+      {
+        "id": "seven-segment-counter.vcc",
+        "title": "Seven Segment Counter"
+      },
+      {
+        "id": "traffic-light.vcc",
+        "title": "Traffic Light"
+      }
+    ]
+  },
+  "allCollapsedText": "Expand all",
+  "allExpanded": {
+    "open": true,
+    "title": "Pick a working circuit",
+    "titlePaddingLeft": "24px",
+    "chevronIcons": 8,
+    "count": "12 circuits",
+    "toggleAll": "Collapse all",
+    "groups": [
+      {
+        "id": "microcontrollers",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "inputs",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "sensors",
+        "expanded": true,
+        "hidden": false,
+        "cards": 2
+      },
+      {
+        "id": "displays",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "outputs",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "actuators",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "timers",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "samples",
+        "expanded": true,
+        "hidden": false,
+        "cards": 4
+      }
+    ],
+    "totalCards": 12,
+    "sampleCards": [
+      {
+        "id": "blink-led.vcc",
+        "title": "Blink Led"
+      },
+      {
+        "id": "potentiometer.vcc",
+        "title": "Potentiometer"
+      },
+      {
+        "id": "seven-segment-counter.vcc",
+        "title": "Seven Segment Counter"
+      },
+      {
+        "id": "traffic-light.vcc",
+        "title": "Traffic Light"
+      }
+    ]
+  },
+  "searched": {
+    "open": true,
+    "title": "Pick a working circuit",
+    "titlePaddingLeft": "24px",
+    "chevronIcons": 4,
+    "count": "4 circuits",
+    "toggleAll": "Collapse all",
+    "groups": [
+      {
+        "id": "microcontrollers",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "displays",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "timers",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      },
+      {
+        "id": "samples",
+        "expanded": true,
+        "hidden": false,
+        "cards": 1
+      }
+    ],
+    "totalCards": 4,
+    "sampleCards": [
+      {
+        "id": "blink-led.vcc",
+        "title": "Blink Led"
+      }
+    ]
+  },
+  "lcdResult": {
+    "modalOpen": false,
+    "title": "Hello on an LCD",
+    "types": [
+      "arduino-uno",
+      "lcd-16x2-i2c"
+    ],
+    "wires": 4
+  },
+  "starterResult": {
+    "modalOpen": false,
+    "title": "Button-controlled LED",
+    "parts": 4,
+    "wires": 5
+  },
+  "sampleResult": {
+    "modalOpen": false,
+    "title": "Blink led",
+    "types": [
+      "arduino-uno",
+      "breadboard",
+      "resistor",
+      "led"
+    ],
+    "parts": 4,
+    "fromParts": [
+      "uno",
+      "r1",
+      "led1"
+    ],
+    "toParts": [
+      "bb1"
+    ],
+    "directPartWires": 0,
+    "wires": 6
+  },
+  "trafficResult": {
+    "modalOpen": false,
+    "title": "Traffic light",
+    "types": [
+      "arduino-uno",
+      "breadboard",
+      "resistor",
+      "led",
+      "resistor",
+      "led",
+      "resistor",
+      "led"
+    ],
+    "parts": 8,
+    "fromParts": [
+      "uno",
+      "r1",
+      "led1",
+      "r2",
+      "led2",
+      "r3",
+      "led3"
+    ],
+    "toParts": [
+      "bb1"
+    ],
+    "directPartWires": 0,
+    "wires": 16
+  },
+  "sevenSegmentCard": {
+    "id": "seven-segment-counter.vcc",
+    "title": "Seven Segment Counter"
+  },
+  "sevenSegmentSampleResult": {
+    "modalOpen": false,
+    "title": "Seven segment counter",
+    "types": [
+      "arduino-uno",
+      "breadboard",
+      "resistor",
+      "resistor",
+      "resistor",
+      "resistor",
+      "resistor",
+      "resistor",
+      "resistor",
+      "resistor",
+      "seven-segment"
+    ],
+    "resistorCount": 8,
+    "fromParts": [
+      "uno",
+      "bb1",
+      "ra",
+      "rb",
+      "rf",
+      "rg",
+      "rc",
+      "rd",
+      "re",
+      "rdp"
+    ],
+    "toParts": [
+      "bb1",
+      "seg1"
+    ],
+    "directPartWires": 0,
+    "pins": [
+      "a20",
+      "a26",
+      "j20",
+      "j26",
+      "j32",
+      "a32",
+      "a38",
+      "j38",
+      "top-minus-45",
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "dp",
+      "common",
+      "e20",
+      "e24",
+      "e26",
+      "e30",
+      "e32",
+      "e36",
+      "e38",
+      "e42",
+      "j20",
+      "j24",
+      "j26",
+      "j30",
+      "j32",
+      "j36",
+      "j38",
+      "j42"
+    ],
+    "wires": 34
+  },
+  "potentiometerCard": {
+    "id": "potentiometer.vcc",
+    "title": "Potentiometer"
+  },
+  "potentiometerResult": {
+    "modalOpen": false,
+    "title": "Potentiometer",
+    "types": [
+      "arduino-uno",
+      "potentiometer",
+      "resistor",
+      "led"
+    ],
+    "wires": 6
+  },
+  "connectivity": [
+    {
+      "file": "blink-led.vcc",
+      "pass": true,
+      "connections": [
+        {
+          "from": "uno:D13",
+          "to": "r1:lead1",
+          "connected": true
+        },
+        {
+          "from": "r1:lead2",
+          "to": "led1:anode",
+          "connected": true
+        },
+        {
+          "from": "led1:cathode",
+          "to": "uno:GND",
+          "connected": true
+        }
+      ]
+    },
+    {
+      "file": "traffic-light.vcc",
+      "pass": true,
+      "connections": [
+        {
+          "from": "uno:D13",
+          "to": "r1:lead1",
+          "connected": true
+        },
+        {
+          "from": "r1:lead2",
+          "to": "led1:anode",
+          "connected": true
+        },
+        {
+          "from": "led1:cathode",
+          "to": "uno:GND",
+          "connected": true
+        },
+        {
+          "from": "uno:D12",
+          "to": "r2:lead1",
+          "connected": true
+        },
+        {
+          "from": "r2:lead2",
+          "to": "led2:anode",
+          "connected": true
+        },
+        {
+          "from": "led2:cathode",
+          "to": "uno:GND",
+          "connected": true
+        },
+        {
+          "from": "uno:D11",
+          "to": "r3:lead1",
+          "connected": true
+        },
+        {
+          "from": "r3:lead2",
+          "to": "led3:anode",
+          "connected": true
+        },
+        {
+          "from": "led3:cathode",
+          "to": "uno:GND",
+          "connected": true
+        }
+      ]
+    },
+    {
+      "file": "seven-segment-counter.vcc",
+      "pass": true,
+      "connections": [
+        {
+          "from": "uno:D2",
+          "to": "ra:lead1",
+          "connected": true
+        },
+        {
+          "from": "ra:lead2",
+          "to": "seg1:a",
+          "connected": true
+        },
+        {
+          "from": "uno:D3",
+          "to": "rb:lead1",
+          "connected": true
+        },
+        {
+          "from": "rb:lead2",
+          "to": "seg1:b",
+          "connected": true
+        },
+        {
+          "from": "uno:D4",
+          "to": "rc:lead1",
+          "connected": true
+        },
+        {
+          "from": "rc:lead2",
+          "to": "seg1:c",
+          "connected": true
+        },
+        {
+          "from": "uno:D5",
+          "to": "rd:lead1",
+          "connected": true
+        },
+        {
+          "from": "rd:lead2",
+          "to": "seg1:d",
+          "connected": true
+        },
+        {
+          "from": "uno:D6",
+          "to": "re:lead1",
+          "connected": true
+        },
+        {
+          "from": "re:lead2",
+          "to": "seg1:e",
+          "connected": true
+        },
+        {
+          "from": "uno:D7",
+          "to": "rf:lead1",
+          "connected": true
+        },
+        {
+          "from": "rf:lead2",
+          "to": "seg1:f",
+          "connected": true
+        },
+        {
+          "from": "uno:D8",
+          "to": "rg:lead1",
+          "connected": true
+        },
+        {
+          "from": "rg:lead2",
+          "to": "seg1:g",
+          "connected": true
+        },
+        {
+          "from": "uno:D9",
+          "to": "rdp:lead1",
+          "connected": true
+        },
+        {
+          "from": "rdp:lead2",
+          "to": "seg1:dp",
+          "connected": true
+        },
+        {
+          "from": "uno:GND",
+          "to": "seg1:common",
+          "connected": true
+        }
+      ]
+    },
+    {
+      "file": "potentiometer.vcc",
+      "pass": true,
+      "connections": [
+        {
+          "from": "uno:5V",
+          "to": "pot1:3",
+          "connected": true
+        },
+        {
+          "from": "uno:GND",
+          "to": "pot1:1",
+          "connected": true
+        },
+        {
+          "from": "uno:A0",
+          "to": "pot1:2",
+          "connected": true
+        },
+        {
+          "from": "uno:D9",
+          "to": "r1:lead1",
+          "connected": true
+        },
+        {
+          "from": "r1:lead2",
+          "to": "led1:anode",
+          "connected": true
+        },
+        {
+          "from": "led1:cathode",
+          "to": "uno:GND2",
+          "connected": true
+        }
+      ]
+    }
+  ],
+  "fileMenuItem": "Sample circuits…",
+  "fileMenuOpened": true,
+  "screenshots": [
+    "/tmp/opencode/samples-menu/samples-open.png",
+    "/tmp/opencode/samples-menu/samples-collapsed.png",
+    "/tmp/opencode/samples-menu/samples-search.png",
+    "/tmp/opencode/samples-menu/blink-led-sample.png",
+    "/tmp/opencode/samples-menu/traffic-light-sample.png",
+    "/tmp/opencode/samples-menu/seven-segment-sample.png",
+    "/tmp/opencode/samples-menu/potentiometer-sample.png"
+  ],
+  "consoleErrors": [],
+  "pass": false,
+  "logFile": "/tmp/opencode/samples-menu/acceptance-log.json"
+}
